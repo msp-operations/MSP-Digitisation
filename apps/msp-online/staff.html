@@ -91,6 +91,11 @@
   .card.contact .ic{color:var(--msp-orange)}
   .card.contact a{color:var(--msp-sky);font-size:12.5px;font-weight:600;word-break:break-all}
   .card.contact a:hover{color:#fff}
+  .card.contact .fb{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;margin:4px 0 2px;border:0;border-radius:9px;background:var(--msp-sky);color:var(--msp-navy);font:inherit;font-size:13px;font-weight:700;padding:8px 14px;cursor:pointer}
+  .card.contact .fb svg{width:14px;height:14px}
+  .card.contact .fb:hover,.card.contact .fb:focus-visible{background:#fff;outline:none}
+  .foot a{color:rgba(255,255,255,.6);text-decoration:none;border-bottom:1px solid rgba(255,255,255,.2)}
+  .foot a:hover{color:#fff}
 
   @media (max-width:1100px){
     .grid,body.staff .grid{--cols:2}
@@ -140,6 +145,7 @@
 <script>window.MSP_HUB = 'staff';</script>
 <script src="projects.js"></script>
 <script src="msp-ui/msp-shell.js"></script>
+<script src="backend.js"></script>
 <script>
 (function () {
   var HUBKEY = window.MSP_HUB || 'students';
@@ -209,8 +215,18 @@
   var c = document.createElement('div');
   c.className = 'card contact';
   c.innerHTML = '<span class="ic">' + MSPShell.icon('mail') + '</span><div class="end"><h2>Something not working?</h2>' +
-    '<p>Tell the team that builds these tools.</p><a href="mailto:' + FEEDBACK + '">' + FEEDBACK + '</a></div>';
+    '<p>Tell the team that builds these tools.</p><button type="button" class="fb">Send feedback ' + ARROW() + '</button>' +
+    '<a href="mailto:' + FEEDBACK + '">' + FEEDBACK + '</a></div>';
+  c.querySelector('.fb').addEventListener('click', function (e) {
+    MSPFeedback.open({ hub: HUBKEY, tools: P.map(function (p) { return p.name; }), returnFocus: e.currentTarget });
+  });
   grid.appendChild(c);
+
+  // the staff hub links to the team inbox (only the hub team can sign in there)
+  if (HUBKEY === 'staff') {
+    var inbox = document.createElement('a'); inbox.href = 'inbox/'; inbox.textContent = 'Team inbox';
+    var foot = document.querySelector('.foot'); foot.appendChild(document.createTextNode(' · ')); foot.appendChild(inbox);
+  }
 })();
 </script>
 </body>

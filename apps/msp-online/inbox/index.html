@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Team inbox · MSP Digital Hub</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#011B3C">
+<link rel="icon" type="image/png" href="../msp-ui/favicon.png">
+<link rel="stylesheet" href="../msp-ui/msp-ui.css">
+<style>
+  /* The team inbox: feedback sent from the two hubs ("Something not working?").
+     Only the people in hub_admin can read it (database rules in backend/hub-feedback.sql);
+     sign-in is a one-time link by email, no password. */
+  body{margin:0;font-family:var(--msp-font);background:var(--msp-g0);color:var(--msp-g9);-webkit-font-smoothing:antialiased}
+  .top{background:var(--msp-navy);color:#fff}
+  .wrap{max-width:980px;margin:0 auto;padding:0 24px;box-sizing:border-box}
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:64px}
+  .brand{display:flex;align-items:center;gap:12px;color:#fff;text-decoration:none}
+  .brand img{width:34px;height:34px}
+  .brand small{display:block;font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--msp-sky)}
+  .brand b{font-family:var(--msp-font-display);font-size:16px}
+  .who{display:flex;align-items:center;gap:10px;font-size:12.5px;color:rgba(255,255,255,.75)}
+  .who button{background:rgba(255,255,255,.1);color:#fff;border:0;border-radius:8px;padding:7px 12px;font:inherit;font-weight:600;cursor:pointer}
+  .who button:hover{background:rgba(255,255,255,.2)}
+  main.wrap{padding-top:32px;padding-bottom:60px}
+  h1{font-family:var(--msp-font-display);font-size:28px;letter-spacing:-.02em;margin:0 0 6px}
+  .sub{color:var(--msp-g5);font-size:14px;margin:0 0 24px}
+  .panel{background:#fff;border:1px solid var(--msp-g2);border-radius:16px;padding:24px;max-width:460px}
+  .panel label{display:block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--msp-g5);margin-bottom:8px}
+  .panel input{width:100%;box-sizing:border-box;height:44px;border:1.5px solid var(--msp-g2);border-radius:10px;padding:0 12px;font:inherit;font-size:15px}
+  .panel input:focus{outline:2px solid var(--msp-sky);outline-offset:1px;border-color:var(--msp-navy)}
+  .btn{border:0;border-radius:10px;background:var(--msp-navy);color:#fff;font:inherit;font-size:14px;font-weight:700;padding:11px 18px;cursor:pointer}
+  .btn:hover{background:var(--msp-navy3)} .btn[disabled]{opacity:.6;cursor:wait}
+  .btn.ghost{background:var(--msp-g1);color:var(--msp-g7)} .btn.ghost:hover{background:var(--msp-g2)}
+  .btn:focus-visible{outline:2px solid var(--msp-sky);outline-offset:2px}
+  .msg{font-size:13.5px;margin:12px 0 0;line-height:1.5}
+  .msg.err{color:var(--msp-err)} .msg.ok{color:var(--msp-ok)}
+  .bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px}
+  .bar select{height:38px;border:1.5px solid var(--msp-g2);border-radius:9px;padding:0 10px;font:inherit;font-size:13.5px;background:#fff}
+  .bar label{display:flex;align-items:center;gap:6px;font-size:13.5px;color:var(--msp-g7)}
+  .bar .count{margin-left:auto;font-size:13px;color:var(--msp-g5)}
+  .item{background:#fff;border:1px solid var(--msp-g2);border-radius:14px;padding:16px 18px;margin-bottom:10px}
+  .item.done{opacity:.6}
+  .meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:12.5px;color:var(--msp-g5);margin-bottom:8px}
+  .tag{font-size:11px;font-weight:700;letter-spacing:.04em;padding:3px 9px;border-radius:999px;background:var(--msp-a-bg);color:var(--msp-a)}
+  .tag.Problem{background:var(--msp-e-bg);color:var(--msp-e)} .tag.Suggestion{background:var(--msp-b-bg);color:var(--msp-b)} .tag.Other{background:var(--msp-g1);color:var(--msp-g7)}
+  .tag.tool{background:var(--msp-navy);color:#fff}
+  .text{white-space:pre-wrap;font-size:14.5px;line-height:1.55;margin:0 0 10px}
+  .acts{display:flex;gap:8px;flex-wrap:wrap}
+  .acts button{border:1px solid var(--msp-g2);background:#fff;border-radius:8px;padding:6px 11px;font:inherit;font-size:12.5px;font-weight:600;color:var(--msp-g7);cursor:pointer}
+  .acts button:hover{background:var(--msp-g1)} .acts .del:hover{background:var(--msp-err-bg);color:var(--msp-err);border-color:var(--msp-err-bd)}
+  .empty{color:var(--msp-g5);font-size:14px;padding:30px 0}
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="../v3/staff.html"><img src="../msp-ui/msp-emblem-white.png" alt=""><span><small>MSP Digital Hub</small><b>Team inbox</b></span></a>
+  <div class="who" id="who" hidden><span id="whoEmail"></span><button type="button" id="signOut">Sign out</button></div>
+</div></header>
+
+<main class="wrap">
+  <h1>Team inbox</h1>
+  <p class="sub">What students and staff send with "Something not working?" on the two hubs.</p>
+
+  <section class="panel" id="signin" hidden>
+    <form id="signinForm">
+      <label for="email">Your UM email</label>
+      <input id="email" type="email" autocomplete="email" required placeholder="name@maastrichtuniversity.nl">
+      <p class="msg">We email you a sign-in link. No password.</p>
+      <button class="btn" type="submit" id="sendLink">Email me a sign-in link</button>
+      <p class="msg" id="signinMsg" role="status"></p>
+    </form>
+  </section>
+
+  <section class="panel" id="notTeam" hidden>
+    <p class="msg err" style="margin-top:0">You are signed in as <b id="ntEmail"></b>, but this address is not on the team list for the inbox.</p>
+    <p class="msg">Ask Martijn to add it.</p>
+  </section>
+
+  <section id="list" hidden>
+    <div class="bar">
+      <select id="fTool" aria-label="Filter by tool"><option value="">All tools</option></select>
+      <select id="fHub" aria-label="Filter by hub"><option value="">Both hubs</option><option value="students">Student hub</option><option value="staff">Staff hub</option></select>
+      <label><input type="checkbox" id="fOpen" checked> Open only</label>
+      <button class="btn ghost" type="button" id="csv">Export CSV</button>
+      <button class="btn ghost" type="button" id="reload">Refresh</button>
+      <span class="count" id="count"></span>
+    </div>
+    <div id="items"></div>
+  </section>
+</main>
+
+<script src="../backend.js"></script>
+<script>
+(function () {
+  var B = MSPBackend.config, KEY = 'msp-inbox-session', session = null, rows = [];
+  var $ = function (id) { return document.getElementById(id); };
+  function show(id) { ['signin', 'notTeam', 'list'].forEach(function (x) { $(x).hidden = x !== id; }); }
+  function store(s) { session = s; try { if (s) localStorage.setItem(KEY, JSON.stringify(s)); else localStorage.removeItem(KEY); } catch (e) {} }
+  function load() { try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { return null; } }
+
+  function auth(path, body, token) {
+    return fetch(B.url + '/auth/v1/' + path, {
+      method: body ? 'POST' : 'GET',
+      headers: { apikey: B.key, Authorization: 'Bearer ' + (token || B.key), 'Content-Type': 'application/json' },
+      body: body ? JSON.stringify(body) : undefined
+    }).then(function (r) { return r.text().then(function (t) { var j = t ? JSON.parse(t) : {}; if (!r.ok) throw new Error(j.msg || j.error_description || j.message || ('HTTP ' + r.status)); return j; }); });
+  }
+  function rest(path, opts, token) {
+    opts = opts || {};
+    return fetch(B.url + '/rest/v1/' + path, {
+      method: opts.method || 'GET',
+      headers: { apikey: B.key, Authorization: 'Bearer ' + token, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+      body: opts.body ? JSON.stringify(opts.body) : undefined
+    }).then(function (r) { return r.text().then(function (t) { if (!r.ok) throw new Error(t || ('HTTP ' + r.status)); return t ? JSON.parse(t) : null; }); });
+  }
+
+  // a valid access token, refreshed when it is about to expire
+  function token() {
+    if (!session) return Promise.reject(new Error('signed out'));
+    if (Date.now() / 1000 < session.expires_at - 60) return Promise.resolve(session.access_token);
+    return auth('token?grant_type=refresh_token', { refresh_token: session.refresh_token }).then(function (j) {
+      store({ access_token: j.access_token, refresh_token: j.refresh_token, expires_at: Math.floor(Date.now() / 1000) + (j.expires_in || 3600), email: session.email });
+      return session.access_token;
+    });
+  }
+
+  // coming back from the email link: the tokens are in the address after '#'
+  var h = new URLSearchParams(location.hash.slice(1));
+  if (h.get('access_token')) {
+    store({ access_token: h.get('access_token'), refresh_token: h.get('refresh_token'), expires_at: Math.floor(Date.now() / 1000) + Number(h.get('expires_in') || 3600), email: '' });
+    history.replaceState(null, '', location.pathname);
+  } else if (h.get('error_description')) {
+    history.replaceState(null, '', location.pathname);
+    $('signinMsg').className = 'msg err'; $('signinMsg').textContent = 'That link did not work (' + h.get('error_description') + '). Ask for a new one.';
+  } else {
+    session = load();
+  }
+
+  $('signinForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var email = $('email').value.trim().toLowerCase(), btn = $('sendLink'), m = $('signinMsg');
+    if (!email) return;
+    btn.disabled = true; m.className = 'msg'; m.textContent = 'Sending…';
+    fetch(B.url + '/auth/v1/otp?redirect_to=' + encodeURIComponent(location.origin + location.pathname), {
+      method: 'POST', headers: { apikey: B.key, Authorization: 'Bearer ' + B.key, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, create_user: true })
+    }).then(function (r) {
+      btn.disabled = false;
+      if (r.ok) { m.className = 'msg ok'; m.textContent = 'Check your inbox for the sign-in link (it can take a few minutes). Request only one.'; }
+      else return r.json().then(function (j) { throw new Error(j.msg || j.message || ('HTTP ' + r.status)); });
+    }).catch(function (err) { btn.disabled = false; m.className = 'msg err'; m.textContent = 'Could not send the link: ' + err.message; });
+  });
+
+  $('signOut').addEventListener('click', function () {
+    var t = session && session.access_token;
+    store(null);
+    if (t) fetch(B.url + '/auth/v1/logout', { method: 'POST', headers: { apikey: B.key, Authorization: 'Bearer ' + t } }).catch(function () {});
+    start();
+  });
+
+  function start() {
+    if (!session) { $('who').hidden = true; show('signin'); return; }
+    token().then(function (t) {
+      return auth('user', null, t).then(function (u) {
+        session.email = u.email || ''; store(session);
+        $('whoEmail').textContent = session.email; $('who').hidden = false;
+        return MSPBackend.rpc('is_hub_admin', {}, t);
+      });
+    }).then(function (ok) {
+      if (!ok) { $('ntEmail').textContent = session.email; show('notTeam'); return; }
+      show('list'); refresh();
+    }).catch(function () { store(null); $('who').hidden = true; show('signin'); });
+  }
+
+  function refresh() {
+    token().then(function (t) { return rest('hub_feedback?select=*&order=created_at.desc&limit=1000', null, t); })
+      .then(function (data) {
+        rows = data || [];
+        var tools = Array.from(new Set(rows.map(function (r) { return r.tool; }))).sort();
+        var sel = $('fTool'), keep = sel.value;
+        sel.length = 1;
+        tools.forEach(function (x) { var o = document.createElement('option'); o.value = x; o.textContent = x; sel.appendChild(o); });
+        sel.value = tools.indexOf(keep) >= 0 ? keep : '';
+        render();
+      })
+      .catch(function (err) { $('items').innerHTML = ''; var p = document.createElement('p'); p.className = 'msg err'; p.textContent = 'Could not load the inbox: ' + err.message; $('items').appendChild(p); });
+  }
+
+  function visible() {
+    return rows.filter(function (r) {
+      return (!$('fTool').value || r.tool === $('fTool').value) && (!$('fHub').value || r.hub === $('fHub').value) && (!$('fOpen').checked || !r.handled);
+    });
+  }
+
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+  function render() {
+    var list = visible(), box = $('items');
+    box.innerHTML = '';
+    $('count').textContent = list.length + ' shown · ' + rows.filter(function (r) { return !r.handled; }).length + ' open';
+    if (!list.length) { box.appendChild(el('p', 'empty', rows.length ? 'Nothing matches these filters.' : 'No feedback yet.')); return; }
+    list.forEach(function (r) {
+      var it = el('article', 'item' + (r.handled ? ' done' : ''));
+      var meta = el('div', 'meta');
+      meta.appendChild(el('span', 'tag tool', r.tool));
+      meta.appendChild(el('span', 'tag ' + r.category, r.category));
+      meta.appendChild(el('span', null, new Date(r.created_at).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })));
+      meta.appendChild(el('span', null, r.hub === 'staff' ? 'staff hub' : 'student hub'));
+      if (r.name) meta.appendChild(el('span', null, 'from ' + r.name));
+      it.appendChild(meta);
+      it.appendChild(el('p', 'text', r.message));
+      var acts = el('div', 'acts');
+      var hb = el('button', null, r.handled ? 'Reopen' : 'Mark handled'); hb.type = 'button';
+      hb.addEventListener('click', function () { update(r, { handled: !r.handled }); });
+      var db = el('button', 'del', 'Delete'); db.type = 'button';
+      db.addEventListener('click', function () { if (confirm('Delete this message for good?')) remove(r); });
+      acts.appendChild(hb); acts.appendChild(db);
+      it.appendChild(acts);
+      box.appendChild(it);
+    });
+  }
+
+  function update(r, patch) {
+    token().then(function (t) { return rest('hub_feedback?id=eq.' + encodeURIComponent(r.id), { method: 'PATCH', body: patch }, t); })
+      .then(function () { Object.assign(r, patch); render(); }, function (err) { alert('Could not save: ' + err.message); });
+  }
+  function remove(r) {
+    token().then(function (t) { return rest('hub_feedback?id=eq.' + encodeURIComponent(r.id), { method: 'DELETE' }, t); })
+      .then(function () { rows = rows.filter(function (x) { return x.id !== r.id; }); render(); }, function (err) { alert('Could not delete: ' + err.message); });
+  }
+
+  $('csv').addEventListener('click', function () {
+    var q = function (v) { v = v == null ? '' : String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+    var lines = [['date', 'hub', 'tool', 'kind', 'message', 'name', 'handled', 'page'].join(',')].concat(visible().map(function (r) {
+      return [r.created_at, r.hub, r.tool, r.category, r.message, r.name, r.handled, r.page].map(q).join(',');
+    }));
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob(['﻿' + lines.join('\n')], { type: 'text/csv' }));
+    a.download = 'hub-feedback-' + new Date().toISOString().slice(0, 10) + '.csv';
+    a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+  });
+  ['fTool', 'fHub', 'fOpen'].forEach(function (id) { $(id).addEventListener('change', render); });
+  $('reload').addEventListener('click', refresh);
+
+  start();
+})();
+</script>
+</body>
+</html>

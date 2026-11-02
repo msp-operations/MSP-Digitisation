@@ -135,6 +135,11 @@
   .hb-card.contact .ic{color:var(--msp-orange)}
   .hb-card.contact a{color:var(--msp-sky);font-size:12.5px;font-weight:600;word-break:break-all}
   .hb-card.contact a:hover{color:#fff}
+  .hb-card.contact .fb{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;margin:4px 0 2px;border:0;border-radius:9px;background:var(--msp-sky);color:var(--msp-navy);font:inherit;font-size:13px;font-weight:700;padding:8px 14px;cursor:pointer}
+  .hb-card.contact .fb svg{width:14px;height:14px}
+  .hb-card.contact .fb:hover,.hb-card.contact .fb:focus-visible{background:#fff;outline:none}
+  .hb-foot a{color:rgba(255,255,255,.6);text-decoration:none;border-bottom:1px solid rgba(255,255,255,.2)}
+  .hb-foot a:hover{color:#fff}
   .hb-foot{padding-top:40px;padding-bottom:28px;font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.02em}
   body.home .hb-card{animation:hrise .55s cubic-bezier(.2,.7,.2,1) both}
   @keyframes hrise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
@@ -293,6 +298,7 @@
 
 <script src="tools.js"></script>
 <script src="msp-ui/msp-shell.js"></script>
+<script src="../backend.js"></script>
 <script>
 (function () {
   var V = window.V3, I = MSPShell.icon;
@@ -376,8 +382,16 @@
   var contact = document.createElement('div');
   contact.className = 'hb-card contact';
   contact.innerHTML = '<span class="ic">' + I('mail') + '</span><div class="end"><h2>Something not working?</h2><p>Tell the team that builds these tools.</p>' +
-    '<a href="mailto:' + FEEDBACK + '">' + FEEDBACK + '</a></div>';
+    '<button type="button" class="fb">Send feedback ' + ARROW + '</button><a href="mailto:' + FEEDBACK + '">' + FEEDBACK + '</a></div>';
+  contact.querySelector('.fb').addEventListener('click', function (e) {
+    MSPFeedback.open({ hub: key, tools: tools.map(function (t) { return t.name; }), returnFocus: e.currentTarget });
+  });
   $('hGrid').appendChild(contact);
+  // the staff hub links to the team inbox (only the hub team can sign in there)
+  if (key === 'staff') {
+    var inbox = document.createElement('a'); inbox.href = '../inbox/'; inbox.textContent = 'Team inbox';
+    var foot = document.querySelector('.hb-foot'); foot.appendChild(document.createTextNode(' · ')); foot.appendChild(inbox);
+  }
   // the search card opens its tool with the question in the link (?q=), which the FAQ picks up
   function openWithSearch(t, q) {
     var u = t.url + (t.url.indexOf('?') < 0 ? '?' : '&') + 'q=' + encodeURIComponent(q);
