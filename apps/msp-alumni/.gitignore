@@ -1,0 +1,10 @@
+node_modules/
+.DS_Store
+Thumbs.db
+*.log
+
+# Raw alumni database (personal data, ~1,400 people) is kept LOCAL ONLY, never committed.
+# The source spreadsheet lives outside this repo at:
+#   c:\dev\MSP\Operations Department\Operations Projects\Alumni\MSP Alumni Database - CLEANED v3.xlsx
+# The site itself reads only the aggregated data.js (see docs/UPDATE-GUIDE.md).
+*.xlsx

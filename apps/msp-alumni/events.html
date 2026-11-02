@@ -1,0 +1,1626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#001C3D">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="MSP Alumni">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192x192.png">
+    <title>Events | MSP Alumni Network</title>
+    <link rel="icon" type="image/png" href="assets/logos/maastricht-science-programme-logo.png">
+    <meta name="description" content="MSP Alumni events — talks, reunions, and community gatherings connecting graduates worldwide.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="shared.css">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@0.576.0/dist/umd/lucide.js"></script>
+    <script src="data.js"></script>
+    <script src="data-bind.js"></script>
+    
+    <style>
+        :root {
+            --um-dark-blue: #001C3D;
+            --um-darker-blue: #00101f;
+            --um-light-blue: #00A2DB;
+            --um-light-blue-glow: rgba(0, 162, 219, 0.4);
+            --um-orange: #E84E10;
+            --um-orange-glow: rgba(232, 78, 16, 0.4);
+            --um-white: #FFFFFF;
+            --um-gray-50: #f8fafc;
+            --um-gray-100: #f1f5f9;
+            --um-gray-200: #e2e8f0;
+            --um-gray-300: #cbd5e1;
+            --um-gray-400: #94a3b8;
+            --um-gray-500: #64748b;
+            --um-gray-600: #475569;
+            --um-gray-700: #334155;
+            --um-gray-800: #1e293b;
+            
+            --font-heading: var(--font-display);
+            --font-body: 'Plus Jakarta Sans', sans-serif;
+            
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.1), 0 16px 48px rgba(0,0,0,0.1);
+            --shadow-xl: 0 20px 40px rgba(0,0,0,0.12), 0 30px 60px rgba(0,0,0,0.1);
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-xl: 28px;
+            
+            --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+        body { 
+            font-family: var(--font-body); 
+            font-size: 16px; 
+            line-height: 1.7; 
+            color: var(--um-dark-blue); 
+            background: var(--um-white);
+            overflow-x: hidden;
+        }
+        h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading); line-height: 1.15; letter-spacing: -0.02em; }
+        a { color: var(--um-light-blue); text-decoration: none; transition: color var(--transition-fast); }
+        a:hover { color: var(--um-orange); }
+        img { max-width: 100%; height: auto; }
+
+        /* ============================================
+           HEADER
+        ============================================ */
+        header {
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,28,61,0.06);
+            padding: 0 50px;
+            height: 72px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            transition: all var(--transition-smooth);
+        }
+        header.scrolled {
+            background: var(--um-dark-blue);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        header.scrolled .logo-text h1,
+        header.scrolled .logo-text p { color: white; }
+        header.scrolled .logo-text p { color: rgba(255,255,255,0.7); }
+        header.scrolled .header-nav a { color: rgba(255,255,255,0.8); }
+        header.scrolled .header-nav a:hover { color: white; background: rgba(255,255,255,0.1); }
+        header.scrolled .header-nav a.active { color: white; }
+        header.scrolled .logo-img { filter: brightness(0) invert(1); }
+
+        .logo { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+        .logo-img { height: 44px; width: auto; transition: transform var(--transition-smooth); }
+        .logo:hover .logo-img { transform: scale(1.02); }
+        .logo-text h1 { font-size: 15px; font-weight: 700; color: var(--um-dark-blue); margin: 0; line-height: 1.2; }
+        .logo-text p { font-size: 11px; color: var(--um-gray-500); margin: 0; font-weight: 500; }
+
+        .header-nav { display: flex; gap: 6px; align-items: center; }
+        .header-nav a {
+            font-size: 14px; font-weight: 500; padding: 10px 18px;
+            border-radius: var(--radius-sm); color: var(--um-gray-600);
+            transition: all var(--transition-fast); position: relative;
+        }
+        .header-nav a:hover { color: var(--um-dark-blue); background: var(--um-gray-50); }
+        .header-nav a.active { color: var(--um-dark-blue); font-weight: 600; }
+        .header-nav a.active::after {
+            content: ''; position: absolute; bottom: 4px; left: 50%;
+            transform: translateX(-50%); width: 20px; height: 2px;
+            background: var(--um-orange); border-radius: 2px;
+        }
+        .header-nav .btn-cta {
+            background: linear-gradient(135deg, var(--um-orange) 0%, #d94008 100%);
+            color: white; margin-left: 12px;
+            box-shadow: 0 2px 8px rgba(232,78,16,0.25); border: none;
+        }
+        .header-nav .btn-cta:hover {
+            background: linear-gradient(135deg, #ff5a1f 0%, var(--um-orange) 100%);
+            transform: translateY(-1px); box-shadow: 0 4px 16px rgba(232,78,16,0.35); color: white;
+        }
+
+        /* Mobile menu toggle button */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            z-index: 1002;
+            width: 32px;
+            height: 32px;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: var(--um-dark-blue);
+            border-radius: 2px;
+            position: absolute;
+            left: 5px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .menu-toggle span:nth-child(1) { top: 8px; }
+        .menu-toggle span:nth-child(2) { top: 15px; }
+        .menu-toggle span:nth-child(3) { top: 22px; }
+
+        .menu-toggle.open span:nth-child(1) {
+            top: 15px;
+            transform: rotate(45deg);
+        }
+
+        .menu-toggle.open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-toggle.open span:nth-child(3) {
+            top: 15px;
+            transform: rotate(-45deg);
+        }
+
+        header.scrolled .menu-toggle span {
+            background: white;
+        }
+
+        /* Mobile nav overlay */
+        @media (max-width: 900px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            .header-nav {
+                position: fixed;
+                top: 0;
+                right: 0;
+                width: 280px;
+                height: 100vh;
+                height: 100dvh;
+                background: white;
+                flex-direction: column;
+                align-items: stretch;
+                padding: 80px 24px 32px;
+                gap: 0;
+                box-shadow: -4px 0 24px rgba(0,0,0,0.12);
+                transform: translateX(100%);
+                visibility: hidden;
+                transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.35s;
+                z-index: 1001;
+                overflow-y: auto;
+            }
+
+            .header-nav.open {
+                transform: translateX(0);
+                visibility: visible;
+            }
+
+            .header-nav a {
+                font-size: 16px;
+                padding: 14px 16px;
+                border-radius: var(--radius-sm);
+                color: var(--um-gray-600);
+                border-bottom: 1px solid var(--um-gray-100);
+            }
+
+            .header-nav a:last-child {
+                border-bottom: none;
+            }
+
+            .header-nav a:hover,
+            .header-nav a.active {
+                background: var(--um-gray-50);
+                color: var(--um-dark-blue);
+            }
+
+            .header-nav .btn-cta {
+                margin-left: 0;
+                margin-top: 12px;
+                text-align: center;
+            }
+        }
+
+        /* ============================================
+           HERO
+        ============================================ */
+        .hero {
+            background: linear-gradient(165deg, #000a14 0%, var(--um-dark-blue) 35%, #001a35 70%, #00243d 100%);
+            padding: 140px 50px 100px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                linear-gradient(rgba(0,162,219,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,162,219,0.03) 1px, transparent 1px);
+            background-size: 80px 80px;
+            mask-image: radial-gradient(ellipse at 50% 50%, black 0%, transparent 70%);
+            -webkit-mask-image: radial-gradient(ellipse at 50% 50%, black 0%, transparent 70%);
+        }
+        .hero-orb {
+            position: absolute; border-radius: 50%;
+            filter: blur(100px); opacity: 0.2;
+        }
+        .hero-orb-1 { width: 500px; height: 500px; background: var(--um-light-blue); top: -200px; right: -100px; }
+        .hero-orb-2 { width: 300px; height: 300px; background: var(--um-orange); bottom: -100px; left: -50px; }
+        .hero-content {
+            max-width: 1200px; margin: 0 auto;
+            position: relative; z-index: 2;
+        }
+        .hero-eyebrow {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 6px 16px;
+            background: rgba(0,162,219,0.15);
+            border: 1px solid rgba(0,162,219,0.3);
+            border-radius: 100px;
+            font-size: 11px; font-weight: 600;
+            color: rgba(255,255,255,0.9);
+            text-transform: uppercase; letter-spacing: 1.5px;
+            margin-bottom: 24px;
+        }
+        .hero-eyebrow i { width: 14px; height: 14px; color: var(--um-light-blue); }
+        .hero h1 {
+            font-size: 64px; font-weight: 800;
+            letter-spacing: -0.03em; line-height: 1.05;
+            color: white; margin-bottom: 20px;
+        }
+        .hero h1 span { color: var(--um-orange); }
+        .hero-subtitle {
+            font-size: 19px; color: rgba(255,255,255,0.7);
+            line-height: 1.7; max-width: 600px;
+        }
+
+        /* ============================================
+           SECTION LAYOUT
+        ============================================ */
+        .section-label {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 2px; color: var(--um-light-blue);
+            margin-bottom: 16px;
+        }
+        .section-label::before, .section-label::after {
+            content: ''; width: 30px; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--um-light-blue));
+        }
+        .section-label::after { background: linear-gradient(90deg, var(--um-light-blue), transparent); }
+
+        /* ============================================
+           EVENTS — compact rows (redesign)
+        ============================================ */
+        .events-upcoming { background: var(--um-white); padding: 72px 24px 40px; }
+        .events-past     { background: var(--um-gray-50); padding: 40px 24px 90px; }
+        .ev-header { max-width: 880px; margin: 0 auto 24px; }
+        .ev-title-lg { font-family: var(--font-heading); font-size: 30px; font-weight: 700; color: var(--um-dark-blue); margin: 8px 0 6px; letter-spacing: -0.5px; }
+        .ev-sub { font-size: 15px; color: var(--um-gray-500); }
+
+        .ev-list { max-width: 880px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+
+        .ev-row {
+            position: relative; cursor: pointer;
+            display: grid; grid-template-columns: 210px 1fr; gap: 20px;
+            background: var(--um-white); border: 1px solid var(--um-gray-200);
+            border-radius: var(--radius-md); padding: 14px;
+            box-shadow: var(--shadow-sm);
+            transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+        }
+        .ev-row:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+
+        .ev-thumb {
+            position: relative; aspect-ratio: 16 / 9; border-radius: var(--radius-sm);
+            overflow: hidden; cursor: pointer;
+            background: linear-gradient(135deg, var(--um-dark-blue), var(--um-light-blue));
+        }
+        .ev-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+        .ev-ph { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.85); }
+        .ev-ph i { width: 34px; height: 34px; }
+        .ev-badge { position: absolute; top: 8px; left: 8px; z-index: 2; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 3px 8px; border-radius: 999px; color: #fff; }
+        .ev-badge.past { background: rgba(0,28,61,0.72); }
+        .ev-badge.upcoming { background: var(--um-orange); }
+
+        .ev-body { min-width: 0; display: flex; flex-direction: column; gap: 5px; }
+        .ev-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--um-light-blue); }
+        .ev-tag.alt { color: var(--um-orange); }
+        .ev-tag i { width: 13px; height: 13px; }
+        h3.ev-title { font-family: var(--font-heading); font-size: 17px; font-weight: 600; color: var(--um-dark-blue); line-height: 1.25; margin: 0; }
+        .ev-meta { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12.5px; color: var(--um-gray-500); }
+        .ev-meta span { display: inline-flex; align-items: center; gap: 5px; }
+        .ev-meta i { width: 13px; height: 13px; }
+        .ev-desc { font-size: 13px; color: var(--um-gray-500); line-height: 1.55; margin: 2px 0 0; }
+        .ev-speakers { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 2px; }
+        .ev-spk { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 500; color: var(--um-gray-700); }
+        .ev-spk em { font-style: normal; color: var(--um-gray-400); }
+        .ev-spk .av { width: 22px; height: 22px; border-radius: 50%; background: var(--um-light-blue); color: #fff; font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+
+        .ev-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+        .ev-btn { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-body); font-size: 12.5px; font-weight: 600; padding: 7px 13px; border-radius: 8px; text-decoration: none; cursor: pointer; border: 1px solid transparent; transition: background var(--transition-fast); }
+        .ev-btn i { width: 15px; height: 15px; }
+        .ev-btn.primary { background: var(--um-dark-blue); color: #fff; }
+        .ev-btn.primary:hover { background: var(--um-darker-blue); }
+        .ev-btn.ghost { background: var(--um-gray-100); color: var(--um-gray-700); }
+        .ev-btn.ghost:hover { background: var(--um-gray-200); }
+        .ev-btn.soon { background: var(--um-gray-100); color: var(--um-gray-400); cursor: default; }
+
+        .ev-chev { position: absolute; top: 14px; right: 14px; width: 18px; height: 18px; color: var(--um-gray-300); transition: transform var(--transition-fast), color var(--transition-fast); }
+        .ev-row:hover .ev-chev { color: var(--um-gray-400); }
+        .ev-row.expanded .ev-chev { transform: rotate(180deg); color: var(--um-light-blue); }
+        .ev-details { max-height: 0; overflow: hidden; opacity: 0; transition: max-height var(--transition-smooth), opacity var(--transition-smooth), margin-top var(--transition-smooth); }
+        .ev-details p { font-size: 13.5px; color: var(--um-gray-600); line-height: 1.6; margin: 0; padding-top: 12px; border-top: 1px solid var(--um-gray-100); }
+        .ev-row.expanded .ev-details { max-height: 340px; opacity: 1; margin-top: 8px; }
+
+        /* Event detail modal */
+        .event-modal { position: fixed; inset: 0; z-index: 1000; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(0,16,31,0.72); backdrop-filter: blur(3px); }
+        .event-modal.active { display: flex; }
+        .event-modal-card { position: relative; background: var(--um-white); border-radius: var(--radius-lg); max-width: 820px; width: 100%; max-height: 92vh; overflow-y: auto; box-shadow: var(--shadow-xl); }
+        .event-modal-img { width: 100%; aspect-ratio: 16 / 9; background-size: cover; background-position: center; background-color: var(--um-dark-blue); border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+        .event-modal-body { display: flex; flex-direction: column; padding: 28px 36px 34px; }
+        .event-modal-body .ev-tag { font-size: 12px; }
+        .event-modal-body h3.ev-title { font-size: 25px; margin: 2px 0; }
+        .event-modal-body .ev-meta { font-size: 13.5px; margin-top: 4px; }
+        .event-modal-body .ev-speakers { margin-top: 12px; }
+        .event-modal-body .ev-details { order: 1; max-height: none; opacity: 1; margin-top: 14px; }
+        .event-modal-body .ev-details p { font-size: 14.5px; padding-top: 14px; }
+        .event-modal-body .ev-actions { order: 2; margin-top: 18px; }
+        .event-modal-close { position: absolute; top: 12px; right: 12px; z-index: 2; width: 34px; height: 34px; border-radius: 50%; border: none; background: rgba(0,0,0,0.45); color: #fff; font-size: 22px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background var(--transition-fast); }
+        .event-modal-close:hover { background: rgba(0,0,0,0.7); }
+
+        @media (max-width: 620px) {
+            .ev-row { grid-template-columns: 1fr; gap: 12px; }
+            .ev-thumb { max-width: 260px; }
+        }
+
+        /* ============================================
+           FOOTER
+        ============================================ */
+        footer {
+            background: var(--um-dark-blue);
+            color: rgba(255,255,255,0.7);
+            padding: 60px 50px 30px;
+        }
+        .footer-container {
+            max-width: 1200px; margin: 0 auto;
+            display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 60px; padding-bottom: 40px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .footer-brand { padding-right: 20px; }
+        .footer-logo { height: 40px; width: auto; filter: brightness(0) invert(1); margin-bottom: 16px; }
+        .footer-brand h3 { font-size: 16px; font-weight: 700; color: white; margin-bottom: 10px; }
+        .footer-brand p { font-size: 14px; line-height: 1.7; }
+        .footer-links-group h4 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.5); margin-bottom: 16px; }
+        .footer-links-group a { display: block; font-size: 14px; color: rgba(255,255,255,0.65); padding: 5px 0; transition: color var(--transition-fast); }
+        .footer-links-group a:hover { color: white; }
+        .footer-bottom { max-width: 1200px; margin: 0 auto; padding-top: 24px; font-size: 13px; color: rgba(255,255,255,0.35); }
+
+        /* ============================================
+           SUMMARY MODAL
+        ============================================ */
+        .summary-modal {
+            display: none;
+            position: fixed; inset: 0;
+            z-index: 9998;
+            background: rgba(0,0,0,0.6);
+            align-items: center; justify-content: center;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            padding: 40px 20px;
+        }
+        .summary-modal.active { display: flex; }
+        .summary-modal-content {
+            background: white;
+            border-radius: var(--radius-xl);
+            max-width: 820px; width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+            animation: lightbox-in 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        .summary-modal-header {
+            position: sticky; top: 0; z-index: 2;
+            background: linear-gradient(135deg, var(--um-dark-blue) 0%, #002550 100%);
+            padding: 40px 48px 32px;
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+        }
+        .summary-modal-header .summary-series-tag {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 2px; color: var(--um-light-blue);
+            margin-bottom: 16px;
+        }
+        .summary-modal-header h2 {
+            font-family: var(--font-heading);
+            font-size: 28px; font-weight: 700;
+            color: white; line-height: 1.15; margin-bottom: 6px;
+        }
+        .summary-modal-header h3 {
+            font-family: var(--font-heading);
+            font-size: 18px; font-weight: 500;
+            color: rgba(255,255,255,0.7); margin-bottom: 12px;
+        }
+        .summary-modal-header .summary-meta {
+            font-size: 13px; color: rgba(255,255,255,0.5);
+        }
+        .summary-modal-close {
+            position: absolute; top: 20px; right: 24px;
+            background: rgba(255,255,255,0.1); border: none;
+            color: white; font-size: 20px; cursor: pointer;
+            width: 36px; height: 36px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            transition: background var(--transition-fast);
+            font-family: var(--font-heading);
+        }
+        .summary-modal-close:hover { background: rgba(255,255,255,0.2); }
+        .summary-modal-body {
+            padding: 40px 48px 48px;
+        }
+        .summary-section {
+            margin-bottom: 40px;
+        }
+        .summary-section:last-child { margin-bottom: 0; }
+        .summary-section-number {
+            font-family: var(--font-heading);
+            font-size: 11px; font-weight: 700;
+            color: var(--um-light-blue);
+            text-transform: uppercase; letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+        .summary-section h4 {
+            font-family: var(--font-heading);
+            font-size: 20px; font-weight: 700;
+            color: var(--um-dark-blue);
+            margin-bottom: 16px; line-height: 1.2;
+        }
+        .summary-section p {
+            font-size: 15px; color: var(--um-gray-600);
+            line-height: 1.8; margin-bottom: 14px;
+        }
+        .summary-section p:last-child { margin-bottom: 0; }
+        .summary-blockquote {
+            padding: 20px 28px;
+            background: var(--um-gray-50);
+            border-left: 3px solid var(--um-orange);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            margin: 24px 0;
+            font-family: var(--font-heading);
+            font-size: 16px; font-weight: 600;
+            color: var(--um-dark-blue);
+            line-height: 1.5;
+            font-style: italic;
+        }
+        .summary-timeline {
+            margin: 20px 0;
+        }
+        .summary-timeline-item {
+            display: grid;
+            grid-template-columns: 90px 1fr;
+            gap: 20px;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--um-gray-100);
+        }
+        .summary-timeline-item:last-child { border-bottom: none; }
+        .summary-timeline-year {
+            font-family: var(--font-heading);
+            font-size: 13px; font-weight: 700;
+            color: var(--um-orange);
+            padding-top: 2px;
+        }
+        .summary-timeline-label {
+            font-family: var(--font-heading);
+            font-size: 14px; font-weight: 700;
+            color: var(--um-dark-blue);
+            margin-bottom: 4px;
+        }
+        .summary-timeline-desc {
+            font-size: 14px; color: var(--um-gray-600);
+            line-height: 1.7;
+        }
+        .summary-arrow-item {
+            padding: 8px 0 8px 20px;
+            position: relative;
+            font-size: 15px; color: var(--um-gray-600);
+            line-height: 1.7;
+        }
+        .summary-arrow-item::before {
+            content: '→';
+            position: absolute; left: 0;
+            color: var(--um-orange); font-weight: 700;
+        }
+        .summary-subheading {
+            font-family: var(--font-heading);
+            font-size: 15px; font-weight: 700;
+            color: var(--um-dark-blue);
+            margin: 20px 0 8px; text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .summary-qa {
+            margin: 20px 0;
+        }
+        .summary-qa-item {
+            margin-bottom: 20px;
+        }
+        .summary-qa-item:last-child { margin-bottom: 0; }
+        .summary-qa-q {
+            font-family: var(--font-heading);
+            font-size: 14px; font-weight: 700;
+            color: var(--um-dark-blue);
+            margin-bottom: 6px;
+            display: flex; gap: 8px;
+        }
+        .summary-qa-q span { color: var(--um-orange); flex-shrink: 0; }
+        .summary-qa-a {
+            font-size: 14px; color: var(--um-gray-600);
+            line-height: 1.75; padding-left: 24px;
+        }
+        .summary-footer-note {
+            margin-top: 40px;
+            padding-top: 24px;
+            border-top: 1px solid var(--um-gray-200);
+            font-size: 12px; color: var(--um-gray-400);
+            text-align: center;
+            font-style: italic;
+        }
+
+        /* ============================================
+           INTEREST MODAL
+        ============================================ */
+        .interest-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,20,40,0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
+            padding: 20px;
+        }
+        .interest-overlay.active {
+            opacity: 1; pointer-events: auto;
+        }
+        .interest-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            max-width: 480px; width: 100%;
+            overflow: hidden;
+            transform: translateY(30px) scale(0.96);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .interest-overlay.active .interest-card {
+            transform: translateY(0) scale(1);
+        }
+        .interest-card-header {
+            background: linear-gradient(135deg, var(--um-dark-blue) 0%, #001a35 100%);
+            padding: 28px 32px;
+            position: relative;
+        }
+        .interest-card-header h3 {
+            color: white; font-size: 22px; margin-bottom: 4px;
+        }
+        .interest-card-header p {
+            color: rgba(255,255,255,0.65); font-size: 14px;
+        }
+        .interest-close {
+            position: absolute; top: 16px; right: 16px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 50%; width: 32px; height: 32px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: rgba(255,255,255,0.7);
+            transition: all var(--transition-fast);
+        }
+        .interest-close:hover {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+        .interest-close i { width: 16px; height: 16px; }
+        .interest-card-body {
+            padding: 28px 32px 32px;
+        }
+
+        /* Role selector */
+        .interest-role-selector {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+            margin-bottom: 24px;
+        }
+        .interest-role-btn {
+            padding: 16px;
+            border: 2px solid var(--um-gray-200);
+            border-radius: var(--radius-md);
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            transition: all var(--transition-fast);
+        }
+        .interest-role-btn:hover {
+            border-color: var(--um-light-blue);
+            background: rgba(0,162,219,0.04);
+        }
+        .interest-role-btn.selected {
+            border-color: var(--um-light-blue);
+            background: rgba(0,162,219,0.08);
+        }
+        .interest-role-btn .role-icon {
+            font-size: 28px; margin-bottom: 6px;
+        }
+        .interest-role-btn .role-label {
+            font-weight: 600; font-size: 15px;
+            color: var(--um-dark-blue);
+        }
+        .interest-role-btn .role-desc {
+            font-size: 12px; color: var(--um-gray-500);
+            margin-top: 2px;
+        }
+
+        /* Form fields */
+        .interest-fields {
+            display: none;
+        }
+        .interest-fields.visible {
+            display: block;
+            animation: fadeSlideUp 0.3s ease;
+        }
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .interest-field {
+            margin-bottom: 16px;
+        }
+        .interest-field label {
+            display: block;
+            font-size: 13px; font-weight: 600;
+            color: var(--um-gray-700);
+            margin-bottom: 6px;
+        }
+        .interest-field input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid var(--um-gray-200);
+            border-radius: var(--radius-sm);
+            font-family: var(--font-body);
+            font-size: 15px;
+            color: var(--um-dark-blue);
+            transition: border-color var(--transition-fast);
+            outline: none;
+        }
+        .interest-field input:focus {
+            border-color: var(--um-light-blue);
+            box-shadow: 0 0 0 3px rgba(0,162,219,0.1);
+        }
+        .interest-field input::placeholder {
+            color: var(--um-gray-400);
+        }
+        .interest-submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--um-orange);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-body);
+            font-size: 15px; font-weight: 600;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: all var(--transition-fast);
+            margin-top: 8px;
+        }
+        .interest-submit-btn:hover {
+            background: #d14400;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(232,78,16,0.3);
+        }
+        .interest-submit-btn:disabled {
+            opacity: 0.6; cursor: not-allowed; transform: none;
+            box-shadow: none;
+        }
+        .interest-submit-btn i { width: 16px; height: 16px; }
+
+        /* Success state */
+        .interest-success {
+            display: none;
+            text-align: center;
+            padding: 20px 0;
+        }
+        .interest-success.visible {
+            display: block;
+        }
+        .interest-success-icon {
+            width: 56px; height: 56px;
+            background: rgba(34,197,94,0.1);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 16px;
+            color: #22c55e;
+        }
+        .interest-success-icon i { width: 28px; height: 28px; }
+        .interest-success h4 {
+            font-size: 18px; color: var(--um-dark-blue);
+            margin-bottom: 8px;
+        }
+        .interest-success p {
+            font-size: 14px; color: var(--um-gray-500);
+            line-height: 1.6;
+        }
+
+        /* Error state */
+        .interest-error {
+            display: none;
+            background: rgba(239,68,68,0.08);
+            border: 1px solid rgba(239,68,68,0.2);
+            border-radius: var(--radius-sm);
+            padding: 12px 16px;
+            font-size: 13px;
+            color: #dc2626;
+            margin-bottom: 16px;
+        }
+        .interest-error.visible {
+            display: block;
+        }
+
+        /* ============================================
+           RESPONSIVE
+        ============================================ */
+        @media (max-width: 900px) {
+            header { padding: 0 24px; }
+            .hero { padding: 120px 24px 80px; }
+            .hero h1 { font-size: 42px; }
+            .events-upcoming, .events-past { padding: 70px 24px; }
+            .footer-container { grid-template-columns: 1fr 1fr; gap: 40px; }
+        }
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 32px; }
+            .hero-subtitle { font-size: 16px; }
+            .event-body { padding: 32px 24px; }
+            .event-title { font-size: 22px; }
+            .events-section-title { font-size: 30px; }
+            .footer-container { grid-template-columns: 1fr; gap: 30px; }
+            .summary-modal { padding: 20px 12px; }
+            .summary-modal-header { padding: 32px 24px 24px; }
+            .summary-modal-header h2 { font-size: 22px; }
+            .summary-modal-body { padding: 28px 24px 32px; }
+            .summary-timeline-item { grid-template-columns: 70px 1fr; gap: 12px; }
+            .interest-card-header { padding: 24px; }
+            .interest-card-body { padding: 24px; }
+            .interest-card-header h3 { font-size: 19px; }
+        }
+            html { overflow-x: clip; } /* keeps the off-canvas phone menu and hero glow from widening the page */
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header id="header">
+        <a href="index.html" class="logo">
+            <img src="assets/logos/maastricht-science-programme-logo.png" alt="MSP" class="logo-img">
+            <div class="logo-text">
+                <h1>MSP Alumni Network</h1>
+                <p>Maastricht Science Programme</p>
+            </div>
+        </a>
+        <nav class="header-nav">
+            <a href="index.html">Home</a>
+            <a href="destinations.html">Destinations</a>
+            <a href="community.html">Community</a>
+            <a href="events.html" class="active">Events</a>
+            <a href="stories.html">Stories</a>
+            <a href="considering-msp.html" class="btn-cta">Considering MSP?</a>
+        </nav>
+        <button class="menu-toggle" onclick="toggleMobileNav(this)" aria-label="Menu"><span></span><span></span><span></span></button>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-orb hero-orb-1"></div>
+        <div class="hero-orb hero-orb-2"></div>
+        <div class="hero-content">
+            <div class="hero-eyebrow">
+                <i data-lucide="calendar"></i>
+                MSP Alumni Events
+            </div>
+            <h1>Connect.<br><span>Meet. Grow.</span></h1>
+            <p class="hero-subtitle">
+                From alumni talks to university reunions — events that bring the MSP community together, wherever you are.
+            </p>
+        </div>
+    </section>
+
+    <section class="events-upcoming">
+        <div class="ev-header">
+            <div class="section-label">On the calendar</div>
+            <h2 class="ev-title-lg">Upcoming</h2>
+        </div>
+        <div class="ev-list">
+            <article class="ev-row">
+                <i data-lucide="maximize-2" class="ev-chev"></i>
+                <div class="ev-thumb">
+                    <span class="ev-badge upcoming">This Saturday</span>
+                    <span class="ev-ph"><i data-lucide="graduation-cap"></i></span>
+                    <img src="assets/images/msp-15-year.png" alt="MSP 15 Years: Alumni &amp; Staff Party" onerror="this.remove()">
+                </div>
+                <div class="ev-body">
+                    <div class="ev-tag"><i data-lucide="party-popper"></i> 15th Anniversary</div>
+                    <h3 class="ev-title">MSP 15 Years: Alumni &amp; Staff Party</h3>
+                    <div class="ev-meta">
+                        <span><i data-lucide="calendar"></i> Saturday 10 October 2026, 15:00 to 19:30</span>
+                        <span><i data-lucide="map-pin"></i> Tapijn, Maastricht</span>
+                    </div>
+                    <div class="ev-actions">
+                        <a href="https://msp15.nl" target="_blank" rel="noopener" class="ev-btn primary"><i data-lucide="external-link"></i> Event website</a>
+                    </div>
+                    <div class="ev-details">
+                        <p>The Maastricht Science Programme turns 15, and we are celebrating with alumni from every class since 2014 and the staff who taught them: short alumni talks, a quiz, and drinks at Tapijn. Everything you need to know about the day is on the event website.</p>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section class="events-past">
+        <div class="ev-header">
+            <div class="section-label">Archive</div>
+            <h2 class="ev-title-lg">Past Events</h2>
+            <p class="ev-sub">Talks, reunions and gatherings. Click any event for details, and watch the recordings back.</p>
+        </div>
+        <div class="ev-list">
+
+            <article class="ev-row">
+                <i data-lucide="maximize-2" class="ev-chev"></i>
+                <div class="ev-thumb">
+                    <span class="ev-badge past">Past</span>
+                    <span class="ev-ph"><i data-lucide="party-popper"></i></span>
+                    <img src="assets/images/UM50.png" alt="UM 50 Alumni Homecoming" onerror="this.remove()">
+                </div>
+                <div class="ev-body">
+                    <div class="ev-tag alt"><i data-lucide="party-popper"></i> Reunion</div>
+                    <h3 class="ev-title">UM 50 Alumni Homecoming</h3>
+                    <div class="ev-meta">
+                        <span><i data-lucide="calendar"></i> 23 May 2026</span>
+                        <span><i data-lucide="map-pin"></i> UCM + Tapijn, Maastricht</span>
+                    </div>
+                    <div class="ev-actions">
+                        <a href="https://surfdrive.surf.nl/s/E7y7yz23FKm2rSp" target="_blank" class="ev-btn ghost"><i data-lucide="image"></i> View photos</a>
+                    </div>
+                    <div class="ev-details">
+                        <p>Maastricht University turned 50, and we celebrated together. MSP alumni joined a festive reunion day with a Back to the Future pub quiz and a light lunch from food trucks at the University College Maastricht building, before walking together to the university-wide celebration at Tapijnkazerne.</p>
+                    </div>
+                </div>
+            </article>
+
+            <article class="ev-row" id="talk-mark">
+                <i data-lucide="maximize-2" class="ev-chev"></i>
+                <div class="ev-thumb">
+                    <span class="ev-badge past">Past</span>
+                    <span class="ev-ph"><i data-lucide="atom"></i></span>
+                    <img src="assets/images/mark-fingerhuth-talk.png" alt="Computational Drug Discovery with Mark Fingerhuth" onerror="this.remove()">
+                </div>
+                <div class="ev-body">
+                    <div class="ev-tag"><i data-lucide="mic"></i> MSP Alumni Talk</div>
+                    <h3 class="ev-title">Computational Drug Discovery with Mark Fingerhuth</h3>
+                    <div class="ev-meta">
+                        <span><i data-lucide="calendar"></i> 8 May 2026</span>
+                        <span><i data-lucide="video"></i> Online</span>
+                    </div>
+                    <div class="ev-speakers">
+                        <span class="ev-spk"><span class="av">MF</span> Mark Fingerhuth <em>ProteinQure</em></span>
+                    </div>
+                    <div class="ev-actions">
+                        <a href="https://surfdrive.surf.nl/s/BTPHbb5QWpydEew" target="_blank" class="ev-btn primary"><i data-lucide="play-circle"></i> Watch</a>
+                        <a href="mailto:msp-alumni@maastrichtuniversity.nl?subject=Alumni%20Talk%20Recording%20Access%20Code" class="ev-btn ghost"><i data-lucide="mail"></i> Access code</a>
+                        <a href="https://www.proteinqure.com" target="_blank" class="ev-btn ghost"><i data-lucide="globe"></i> ProteinQure</a>
+                    </div>
+                    <div class="ev-details">
+                        <p>MSP alumnus Mark Fingerhuth shared his work at ProteinQure, where machine learning and computational methods are used to design proteins and accelerate drug discovery, and reflected on his path from MSP into deep tech.</p>
+                    </div>
+                </div>
+            </article>
+
+            <article class="ev-row" id="talk-kai-brecht">
+                <i data-lucide="maximize-2" class="ev-chev"></i>
+                <div class="ev-thumb">
+                    <span class="ev-badge past">Past</span>
+                    <span class="ev-ph"><i data-lucide="orbit"></i></span>
+                    <img src="assets/images/kai-brecht-talk.png" alt="Binary Black Holes, Gravitational Waves and ETPathfinder" onerror="this.remove()">
+                </div>
+                <div class="ev-body">
+                    <div class="ev-tag"><i data-lucide="mic"></i> Alumni x Academic Committee Talk</div>
+                    <h3 class="ev-title">Binary Black Holes, Gravitational Waves &amp; ETPathfinder</h3>
+                    <div class="ev-meta">
+                        <span><i data-lucide="calendar"></i> 28 Apr 2026</span>
+                        <span><i data-lucide="map-pin"></i> ETPathfinder, Maastricht + online</span>
+                    </div>
+                    <div class="ev-speakers">
+                        <span class="ev-spk"><span class="av">KH</span> Kai Hendriks <em>Niels Bohr Institute</em></span>
+                        <span class="ev-spk"><span class="av">BS</span> Brecht Slootmaekers <em>GWFP, Maastricht &amp; Nikhef</em></span>
+                    </div>
+                    <div class="ev-actions">
+                        <a href="https://surfdrive.surf.nl/s/nGE4y2CX5WABwP9" target="_blank" class="ev-btn primary"><i data-lucide="play-circle"></i> Watch</a>
+                        <a href="mailto:msp-alumni@maastrichtuniversity.nl?subject=Alumni%20Talk%20Recording%20Access%20Code" class="ev-btn ghost"><i data-lucide="mail"></i> Access code</a>
+                        <a href="https://www.kaihendriks.com/" target="_blank" class="ev-btn ghost"><i data-lucide="globe"></i> Kai's site</a>
+                    </div>
+                    <div class="ev-details">
+                        <p>Two MSP alumni returned to talk gravitational waves and the next generation of detectors. Kai Hendriks shared his work on how binary black holes form by reading the imprint their environment leaves on the gravitational-wave signal, and what the Einstein Telescope could reveal. Brecht Slootmaekers followed with his research at the GWFP group. Q&amp;A moderated by Gideon Koekoek.</p>
+                    </div>
+                </div>
+            </article>
+
+            <article class="ev-row" id="talk-aliya-thomas">
+                <i data-lucide="maximize-2" class="ev-chev"></i>
+                <div class="ev-thumb">
+                    <span class="ev-badge past">Past</span>
+                    <span class="ev-ph"><i data-lucide="brain"></i></span>
+                    <img src="assets/images/foto for website.png" alt="Understanding Chronic Stress and Burnout" onerror="this.remove()">
+                </div>
+                <div class="ev-body">
+                    <div class="ev-tag"><i data-lucide="mic"></i> MSP Alumni Talk</div>
+                    <h3 class="ev-title">Understanding Chronic Stress &amp; Burnout</h3>
+                    <div class="ev-meta">
+                        <span><i data-lucide="calendar"></i> 26 Mar 2026</span>
+                        <span><i data-lucide="video"></i> Online</span>
+                    </div>
+                    <div class="ev-speakers">
+                        <span class="ev-spk"><span class="av">AS</span> Aliya Shah <em>Psychotherapist, Nairobi</em></span>
+                        <span class="ev-spk"><span class="av">TR</span> Thomas von Rein <em>Neuroscience, Cologne</em></span>
+                    </div>
+                    <div class="ev-actions">
+                        <a href="https://surfdrive.surf.nl/s/GJHAmneP8wHJoB7" target="_blank" class="ev-btn primary"><i data-lucide="play-circle"></i> Watch</a>
+                        <a href="mailto:msp-alumni@maastrichtuniversity.nl?subject=Alumni%20Talk%20Recording%20Access%20Code" class="ev-btn ghost"><i data-lucide="mail"></i> Access code</a>
+                        <button class="ev-btn ghost" onclick="openBurnoutSummaryModal(); return false;"><i data-lucide="file-text"></i> Summary</button>
+                    </div>
+                    <div class="ev-details">
+                        <p>A psychotherapist in Nairobi and a neuroscience researcher in Cologne unpacked what chronic stress and burnout really do to the brain and body, and what actually helps in recovery. Polyvagal theory, vagal tone, somatic practices, co-regulation, and cross-cultural perspectives on stress.</p>
+                    </div>
+                </div>
+            </article>
+
+            <article class="ev-row" id="talk-jordi">
+                <i data-lucide="maximize-2" class="ev-chev"></i>
+                <div class="ev-thumb">
+                    <span class="ev-badge past">Past</span>
+                    <span class="ev-ph"><i data-lucide="rocket"></i></span>
+                    <img src="assets/images/Jordi Alumnbi Talk.png" alt="Entrepreneurship and Sustainability with Jordi Ferrer Orri" onerror="this.remove()">
+                </div>
+                <div class="ev-body">
+                    <div class="ev-tag"><i data-lucide="mic"></i> MSP Alumni Talk</div>
+                    <h3 class="ev-title">Entrepreneurship &amp; Sustainability with Jordi Ferrer Orri</h3>
+                    <div class="ev-meta">
+                        <span><i data-lucide="calendar"></i> 26 Feb 2026</span>
+                        <span><i data-lucide="video"></i> Online</span>
+                    </div>
+                    <div class="ev-speakers">
+                        <span class="ev-spk"><span class="av">JF</span> Jordi Ferrer Orri <em>Entrepreneur, Materials &amp; Sustainability</em></span>
+                    </div>
+                    <div class="ev-actions">
+                        <a href="https://surfdrive.surf.nl/s/LQ8MTzsMJNog3xb" target="_blank" class="ev-btn primary"><i data-lucide="play-circle"></i> Watch</a>
+                        <a href="mailto:msp-alumni@maastrichtuniversity.nl?subject=Alumni%20Talk%20Recording%20Access%20Code" class="ev-btn ghost"><i data-lucide="mail"></i> Access code</a>
+                        <button class="ev-btn ghost" onclick="openSummaryModal(); return false;"><i data-lucide="file-text"></i> Summary</button>
+                    </div>
+                    <div class="ev-details">
+                        <p>MSP alumnus Jordi Ferrer Orri shared his entrepreneurial journey in the materials and sustainability space: the key lessons, the challenges, and how his MSP experience translated into real-world entrepreneurial paths. The first talk in the MSP Alumni Talk series.</p>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+    </section>
+
+    <!-- Event detail modal -->
+    <div class="event-modal" id="eventModal" onclick="closeEventModal(event)">
+        <div class="event-modal-card" onclick="event.stopPropagation()">
+            <button class="event-modal-close" onclick="closeEventModal()" aria-label="Close">&times;</button>
+            <div class="event-modal-img" id="eventModalImg"></div>
+            <div class="event-modal-body" id="eventModalBody"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-brand">
+                <img src="assets/logos/maastricht-science-programme-logo.png" alt="MSP" class="footer-logo">
+                <h3>MSP Alumni Network</h3>
+                <p>Connecting MSP graduates from the Maastricht Science Programme across the world. Part of the Faculty of Science and Engineering at Maastricht University.</p>
+            </div>
+            <div class="footer-links-group">
+                <h4>Explore</h4>
+                <a href="index.html">Home</a>
+                <a href="destinations.html">Destinations</a>
+                <a href="community.html">Community</a>
+                <a href="events.html">Events</a>
+                <a href="stories.html">Stories</a>
+            </div>
+            <div class="footer-links-group">
+                <h4>Connect</h4>
+                <a href="considering-msp.html">Considering MSP?</a>
+                <a href="https://www.maastrichtuniversity.nl" target="_blank">Maastricht University</a>
+                <a href="privacy.html">Privacy Policy</a>
+            </div>
+            <div class="footer-links-group">
+                <h4>Follow Us</h4>
+                <a href="https://www.instagram.com/msp_alumni/" target="_blank">Instagram</a>
+                <a href="https://www.linkedin.com/groups/12893377/" target="_blank">LinkedIn (MSP)</a>
+                <a href="https://www.linkedin.com/groups/4689010/" target="_blank">LinkedIn (FSE)</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 MSP Alumni Network. Maastricht University, Faculty of Science and Engineering.</p>
+        </div>
+    </footer>
+
+    <!-- Summary Modal -->
+    <div class="summary-modal" id="summaryModal" onclick="closeSummaryModal(event)">
+        <div class="summary-modal-content" onclick="event.stopPropagation()">
+            <button class="summary-modal-close" onclick="closeSummaryModal()">&times;</button>
+            <div class="summary-modal-header">
+                <div class="summary-series-tag">MSP Alumni Talk Series</div>
+                <h2>Entrepreneurship &amp; Sustainability in Deep Tech</h2>
+                <h3>A conversation with Jordi Ferrer Orri</h3>
+                <div class="summary-meta">February 26, 2026 &nbsp;·&nbsp; MSP, Maastricht University</div>
+            </div>
+            <div class="summary-modal-body">
+
+                <!-- 01 INTRODUCTION -->
+                <div class="summary-section">
+                    <div class="summary-section-number">01</div>
+                    <h4>Introduction &amp; Context</h4>
+                    <p>This was the first session in a new MSP alumni talk series — an initiative designed to give current students and fellow graduates a window into life after MSP. Alumni joined from across the Netherlands, Spain, Finland, the US, India, and France. Jordi Ferrer Orri, MSP class of 2015–2018, was the guest speaker.</p>
+                    <p>Jordi studied physical chemistry and polymer science at MSP. He went on to Cambridge for a combined Masters and PhD, and has since moved through the startup world, building and working in deep tech companies focused on sustainable materials. The talk covered his career arc and the lessons he has drawn from roughly a decade of work at the frontier of science and entrepreneurship.</p>
+                </div>
+
+                <!-- 02 CAREER JOURNEY -->
+                <div class="summary-section">
+                    <div class="summary-section-number">02</div>
+                    <h4>Jordi's Career Journey</h4>
+                    <p>Below is a structured overview of Jordi's path since leaving MSP — not a tidy linear progression, but a series of deliberate pivots, each one building on the last.</p>
+                    <div class="summary-timeline">
+                        <div class="summary-timeline-item">
+                            <div class="summary-timeline-year">2015–18</div>
+                            <div>
+                                <div class="summary-timeline-label">MSP</div>
+                                <div class="summary-timeline-desc">Majored in physical chemistry and polymer science. Developed a taste for research and cross-disciplinary curiosity. Credits MSP with building the scientific mindset that has underpinned everything since.</div>
+                            </div>
+                        </div>
+                        <div class="summary-timeline-item">
+                            <div class="summary-timeline-year">2018–22</div>
+                            <div>
+                                <div class="summary-timeline-label">Cambridge PhD</div>
+                                <div class="summary-timeline-desc">Five years completing a Masters and PhD in nanotechnology at Cambridge. Research evolved into materials science and machine learning — largely self-taught. Learned that if something interests you, you dive in, even if it's outside your official field.</div>
+                            </div>
+                        </div>
+                        <div class="summary-timeline-item">
+                            <div class="summary-timeline-year">2022</div>
+                            <div>
+                                <div class="summary-timeline-label">Entrepreneur First</div>
+                                <div class="summary-timeline-desc">Joined a London incubator for people early in their careers who want to build something but don't yet have a co-founder or clear problem space. An 8-week sprint to find a co-founder, followed by 3 months to identify a problem and pitch for pre-seed funding.</div>
+                            </div>
+                        </div>
+                        <div class="summary-timeline-item">
+                            <div class="summary-timeline-year">2022–23</div>
+                            <div>
+                                <div class="summary-timeline-label">Biomer (CTO &amp; Co-founder)</div>
+                                <div class="summary-timeline-desc">Co-founded Biomer, developing sustainable alternatives to PFAS — toxic synthetic chemicals still widely used in consumer goods and industry. Managed significant capital and a move to New York. The startup ended due to co-founder misalignment, not technical failure. The technology was patented.</div>
+                            </div>
+                        </div>
+                        <div class="summary-timeline-item">
+                            <div class="summary-timeline-year">2023–24</div>
+                            <div>
+                                <div class="summary-timeline-label">Anfrico (Principal ML Engineer)</div>
+                                <div class="summary-timeline-desc">Joined a 10–15 person later-stage startup as Principal ML Engineer. Learned what it takes to go from seed to Series A — a shift from proving the technology works to managing teams, scaling processes, and chasing product-market fit. Technology was productised successfully within a year.</div>
+                            </div>
+                        </div>
+                        <div class="summary-timeline-item">
+                            <div class="summary-timeline-year">2024–</div>
+                            <div>
+                                <div class="summary-timeline-label">Industry Fellowship</div>
+                                <div class="summary-timeline-desc">Awarded a UK industry fellowship — a rare position bridging academia and industry — to build a research team applying AI agents and models to the design of sustainable, non-toxic chemistry. Scientifically ambitious, commercially grounded.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="summary-blockquote">"If you found something interesting, just dive in."</div>
+                </div>
+
+                <!-- 03 KEY THEMES -->
+                <div class="summary-section">
+                    <div class="summary-section-number">03</div>
+                    <h4>Key Themes &amp; Lessons</h4>
+
+                    <div class="summary-subheading">What Jordi Has Learned He Loves</div>
+                    <p>Three threads run through Jordi's career, sometimes explicitly, sometimes quietly:</p>
+                    <div class="summary-arrow-item"><strong>Consolidating deep tech</strong> — bridging the gap between what universities prove in labs (TRL 1–3) and what industry can commercialise (TRL 3–7+). Not creating science from scratch, but connecting existing innovations and asking: what would it take to turn this into a product?</div>
+                    <div class="summary-arrow-item"><strong>Sustainable materials</strong> — from bio-based polymers at MSP to energy materials during his PhD, PFAS alternatives at Biomer, and now AI-driven sustainable chemistry. The only fully consistent theme across ten years.</div>
+                    <div class="summary-arrow-item"><strong>Digitising the physical world</strong> — self-teaching Python during his PhD turned out to be one of the most consequential decisions of his career. AI/ML has gone from niche to essential.</div>
+
+                    <div class="summary-blockquote">"AI is going to become the next universal soft skill — how to understand how these tools work and how to interact with them."</div>
+
+                    <div class="summary-subheading">Breadth vs. Depth</div>
+                    <p>Jordi's career doesn't fit the mould of deep specialisation. He has moved across polymers, energy materials, machine learning, and biochemistry — and is honest that in some contexts (large corporations hiring for niche roles), this is a disadvantage. In early-stage startups, it's an asset. The key is knowing which context you're in, and playing accordingly.</p>
+                    <div class="summary-blockquote">"I've managed to play this to my advantage rather than let it hinder my career."</div>
+
+                    <div class="summary-subheading">Four Ways to Fund Independent Innovation</div>
+                    <div class="summary-arrow-item"><strong>Venture Capital / Angel Investment</strong> — Fast money with relatively low proof requirements at pre-seed — but you are selling part of your company and, effectively, your time. Investors expect rapid growth and your life to revolve around the startup. Jordi's caution: it looks shinier than it is. Talk to people who have raised VC before going down that path.</div>
+                    <div class="summary-arrow-item"><strong>Grants</strong> — Companies of all sizes rely heavily on public funding. Being good at writing grants is an underrated path to research independence — letting you decide what you work on and when.</div>
+                    <div class="summary-arrow-item"><strong>Bootstrapping</strong> — Difficult for deep tech (expensive equipment, long timelines), but increasingly viable for software and some engineering startups — especially as AI tools reduce the team size needed to ship products.</div>
+                    <div class="summary-arrow-item"><strong>Academic Path</strong> — Fellowships, research grants, PI roles. Jordi's personally least-preferred route, but genuinely full of opportunity for those who want it.</div>
+
+                    <div class="summary-subheading">Why Entrepreneurship Is Not for Everyone</div>
+                    <p>Jordi was candid: founding a company is not a universally good idea. He listed what makes it work for him — impatience, love of rapid iteration, comfort with chaos, indifference to citation counts — and was equally clear that these traits don't suit everyone. He acknowledged that he himself has become less risk-tolerant over time and may move toward corporate life for stability.</p>
+                    <div class="summary-blockquote">"There's no perfect career path for anyone. It just depends on you and your moment in life."</div>
+
+                    <div class="summary-subheading">The Reality of Founding: Hassle Tolerance</div>
+                    <p>One of the most candid sections of the talk. A major reason Jordi chose to become an employee rather than a founder again (for now) is that founding consumed his entire life. He has personal goals beyond work, and watched many founder friends disappear into their startups. He included 'hassle tolerance' as a key skill — but framed it as a warning, not a badge of honour.</p>
+
+                    <div class="summary-subheading">The Decision Framework: Should You Start a Company?</div>
+                    <p>Jordi shared a simple but useful flow diagram for anyone thinking about entrepreneurship:</p>
+                    <div class="summary-arrow-item">Does entrepreneurship seem like a fit for you? If no — stop here. If yes, continue.</div>
+                    <div class="summary-arrow-item">Have you identified a specific problem or opportunity where you have an edge over ~90% of others?</div>
+                    <div class="summary-arrow-item">If yes: Build a proof of concept in your free time. Test it with users. Look for traction before quitting your job.</div>
+                    <div class="summary-arrow-item">If no, and you lack experience: Join an early-stage startup to learn fast, then re-evaluate.</div>
+                    <div class="summary-arrow-item">If you have skills but no clear idea: Join an incubator (like Entrepreneur First) to find co-founders and problem spaces.</div>
+                    <div class="summary-arrow-item">If you lack both: Invest in yourself first — through a PhD, a programme, industry experience — then return to the chart.</div>
+                    <div class="summary-blockquote">"Don't quit your job to start from scratch. Test it in your free time first. Then, if you have clarity, go all in."</div>
+
+                    <div class="summary-subheading">Key Skills for the Early-Stage World</div>
+                    <p>What Jordi looks for when interviewing for early-stage roles:</p>
+                    <div class="summary-arrow-item"><strong>Analytical thinking</strong> — a given for most MSP graduates</div>
+                    <div class="summary-arrow-item"><strong>Multitasking</strong> — small teams mean wearing many hats simultaneously</div>
+                    <div class="summary-arrow-item"><strong>Leadership and comfort with uncertainty</strong> — making decisions without full information, and not freezing</div>
+                    <div class="summary-arrow-item"><strong>Resilience and communication</strong></div>
+                    <div class="summary-arrow-item"><strong>Hassle tolerance</strong> — the unglamorous ability to keep going</div>
+                    <div class="summary-arrow-item"><strong>Networking</strong> — his single most important skill (see below)</div>
+                </div>
+
+                <!-- 04 NETWORKING -->
+                <div class="summary-section">
+                    <div class="summary-section-number">04</div>
+                    <h4>On Networking</h4>
+                    <p>Jordi returned to networking both at the start and the end of the talk, calling it the single most important thing he has taken away from the last decade. His point was simple: people are kinder than you expect, and they will give you 15–20 minutes if you share any connection — an alma mater, a past employer, even a football club.</p>
+                    <div class="summary-blockquote">"Don't be shy. Just ask for help. People will give it to you."</div>
+                    <p>He encouraged everyone — especially current students — to reach out to MSP alumni directly. Not to ask for jobs or formal advice, but simply to build genuine connections. The MSP network is small enough to feel personal and large enough to be genuinely global.</p>
+                </div>
+
+                <!-- 05 Q&A -->
+                <div class="summary-section">
+                    <div class="summary-section-number">05</div>
+                    <h4>Q&amp;A Highlights</h4>
+                    <div class="summary-qa">
+                        <div class="summary-qa-item">
+                            <div class="summary-qa-q"><span>Q</span> What does 'consolidating deep tech' mean?</div>
+                            <div class="summary-qa-a">Bridging the gap between TRL 1–3 (university lab validation) and TRL 3–7 (scale-up). Not creating science from scratch, but connecting existing innovations and translating them into products. A lot of value gets lost between academia and industry — often, all you need is to connect three or four published innovations and write a grant together with the relevant academics.</div>
+                        </div>
+                        <div class="summary-qa-item">
+                            <div class="summary-qa-q"><span>Q</span> Why did you leave your own startup to join a competitor?</div>
+                            <div class="summary-qa-a">Co-founder misalignment is one of the most common reasons startups fail — and Jordi was simply in that statistic. Once misalignment is clear, dragging it out only makes things worse. He moved fast, preserved the technology via patent, and reflected on it as the right call. The human element of a company is consistently underestimated.</div>
+                        </div>
+                        <div class="summary-qa-item">
+                            <div class="summary-qa-q"><span>Q</span> What's Entrepreneur First like, and is it worth it?</div>
+                            <div class="summary-qa-a">EF is a structured sprint: 8 weeks to find a co-founder, 3 months to pitch for pre-seed. Its biggest value is the network — a cohort of ambitious people at the same inflection point in their careers. Jordi also learned industry communication norms there (pyramid communication: lead with the conclusion, not the evidence), how to pitch, and how to do early market validation. He wouldn't do it again today — he already has the network — but for someone fresh out of academia, he rates it highly.</div>
+                        </div>
+                        <div class="summary-qa-item">
+                            <div class="summary-qa-q"><span>Q</span> Is a PhD necessary for a career in deep tech entrepreneurship?</div>
+                            <div class="summary-qa-a">No universal answer. Jordi did his PhD because he thought he wanted to be an academic — and it taught him a lot. For deep tech specifically, the patience, scientific rigour, and credibility that come with a PhD are real assets, both technically and in how investors and partners perceive you. A 3-year UK-style PhD is a manageable investment; a 5–6 year US PhD is only worth it with a clear commitment to academia or a very specific research path.</div>
+                        </div>
+                        <div class="summary-qa-item">
+                            <div class="summary-qa-q"><span>Q</span> When is the right time to start a company?</div>
+                            <div class="summary-qa-a">There is no perfect time. Jordi's recommendation: test it in your free time first. Reduce your gym days from four to three, spend one evening doing outreach and market research, build a minimal prototype, and see if there's traction. Committing fully to a startup as a founder is committing 5–10 years of your life. You should be reasonably sure it fits your long-term goals before making that leap.</div>
+                        </div>
+                        <div class="summary-qa-item">
+                            <div class="summary-qa-q"><span>Q</span> Do you need to have 80% of the solution before starting?</div>
+                            <div class="summary-qa-a">No — and this is one of the most harmful myths from academic training. In industry, especially at senior levels, big decisions are made with far less certainty than any academic would feel comfortable with. You need to understand the market and gather the right people. Action without complete knowledge is the norm, not the exception. The important shift is moving from individual expert to team builder.</div>
+                        </div>
+                        <div class="summary-qa-item">
+                            <div class="summary-qa-q"><span>Q</span> How do you define 'deep tech'?</div>
+                            <div class="summary-qa-a">Jordi's working definition: how long until market? If a technology takes 10–20 years to reach commercial scale, it's deep tech. That's also how investors distinguish: software/SaaS investors want 5–7 year returns; deep tech investors are willing to wait 10–20. An alternative framing: how many technical layers must be solved before reaching the end user — the more layers, the deeper the tech.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 06 CLOSING -->
+                <div class="summary-section">
+                    <div class="summary-section-number">06</div>
+                    <h4>Closing Thoughts</h4>
+                    <p>Jordi closed by returning to where he started: community. He recognised faces in the call he hadn't seen in nearly eight years, and named the MSP alumni network as one of his most valuable assets — not just professionally, but personally. He encouraged everyone to stay connected, reach out freely, and trust that the goodwill in the network is real.</p>
+                    <div class="summary-blockquote">"These faces here — I haven't seen some of you in eight years. Just connect. Reach out. People will give you their time."</div>
+                    <p>The session also closed with a preview of two upcoming MSP alumni initiatives: an alumni merchandise line (sweaters and more — graphic designers welcome) and a new alumni website featuring an interactive world map showing where MSP graduates have landed. Both are expected to launch in the coming weeks.</p>
+                </div>
+
+                <div class="summary-footer-note">Transcript recorded and summarised &nbsp;·&nbsp; MSP, Faculty of Science and Engineering, Maastricht University</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Burnout Summary Modal -->
+    <div class="summary-modal" id="burnoutSummaryModal" onclick="closeBurnoutSummaryModal(event)">
+        <div class="summary-modal-content" onclick="event.stopPropagation()">
+            <button class="summary-modal-close" onclick="closeBurnoutSummaryModal()">&times;</button>
+            <div class="summary-modal-header">
+                <div class="summary-series-tag">MSP Alumni Talk Series</div>
+                <h2>Understanding Chronic Stress and Burnout</h2>
+                <h3>Through Neuroscience and Clinical Practice — with Aliya Shah &amp; Thomas von Rein</h3>
+                <div class="summary-meta">March 26, 2026 &nbsp;·&nbsp; MSP, Maastricht University</div>
+            </div>
+            <div class="summary-modal-body">
+
+                <div class="summary-section">
+                    <div class="summary-section-number">01</div>
+                    <h4>Introduction</h4>
+                    <p>This session featured two MSP alumni who brought complementary expertise to a comprehensive discussion of chronic stress and burnout. Aliya Shah, a psychotherapist currently practicing in Nairobi, Kenya, and Thomas von Rein, a neuroscience researcher based in Cologne, Germany, collaborated to provide both clinical and scientific perspectives on stress regulation, burnout prevention, and recovery strategies.</p>
+                </div>
+
+                <div class="summary-section">
+                    <div class="summary-section-number">02</div>
+                    <h4>Theoretical Foundations</h4>
+                    <p>The speakers began with an extensive exploration of the nervous system's role in stress responses, centering their discussion on polyvagal theory. They explained how the autonomic nervous system operates through three distinct states: the ventral vagal state (social engagement and connection), the sympathetic state (mobilization for fight or flight), and the dorsal vagal state (shutdown or freeze response).</p>
+                    <p>Thomas detailed how chronic stress affects brain structure and function, particularly in regions governing emotion regulation, memory, and executive function. Repeated stress exposure can alter neural pathways, making the nervous system increasingly sensitive to perceived threats — a phenomenon that helps explain why burnout doesn't simply resolve with rest alone.</p>
+                    <p>Aliya complemented this by explaining how trauma-informed therapy recognises that the body stores stress in ways that purely cognitive interventions may not address. Effective stress management requires understanding these physiological foundations rather than treating stress as purely a mental or behavioural issue.</p>
+                </div>
+
+                <div class="summary-section">
+                    <div class="summary-section-number">03</div>
+                    <h4>Distinguishing Chronic Stress from Burnout</h4>
+                    <p>While acute stress serves adaptive functions, chronic stress occurs when the nervous system remains in a state of heightened activation without adequate recovery periods. Burnout was characterised as a distinct condition involving three core components:</p>
+                    <div class="summary-arrow-item"><strong>Emotional exhaustion</strong> — depletion of emotional resources and feeling emotionally overextended.</div>
+                    <div class="summary-arrow-item"><strong>Depersonalization</strong> — development of cynical attitudes and emotional detachment from work or relationships.</div>
+                    <div class="summary-arrow-item"><strong>Reduced sense of personal accomplishment</strong> — feelings of incompetence and lack of achievement.</div>
+                    <p>Burnout represents systemic dysregulation rather than simple fatigue, often requiring professional intervention and significant lifestyle restructuring rather than just improved "stress management techniques."</p>
+                </div>
+
+                <div class="summary-section">
+                    <div class="summary-section-number">04</div>
+                    <h4>Physiological Mechanisms &amp; the Vagus Nerve</h4>
+                    <p>The vagus nerve acts as a two-way communication highway between the brain and body, continuously transmitting information about internal states. High vagal tone correlates with better emotional regulation, stress resilience, and physical health.</p>
+                    <p>Chronic stress can suppress vagal function, leading to reduced heart rate variability, impaired digestion, compromised immune function, and difficulty downregulating after stressful events. Many clients experiencing burnout show signs of dysregulated vagal tone even when not consciously feeling stressed.</p>
+                    <p>Different interventions can strengthen vagal tone, including specific breathing patterns, cold exposure, social connection, and certain forms of movement — these aren't just "relaxation techniques" but actual neurophysiological interventions with measurable effects.</p>
+                </div>
+
+                <div class="summary-section">
+                    <div class="summary-section-number">05</div>
+                    <h4>Cross-Cultural Perspectives on Stress</h4>
+                    <p>Aliya shared insights from her clinical work in Kenya, highlighting how stress manifests and is addressed differently across cultural contexts. Western therapeutic frameworks sometimes need adaptation to account for different cultural understandings of mind-body connection, community support systems, and the role of spirituality in healing. While the physiological mechanisms of stress are universal, the interpretation of symptoms, willingness to seek help, and preferred intervention methods vary significantly.</p>
+                </div>
+
+                <div class="summary-section">
+                    <div class="summary-section-number">06</div>
+                    <h4>Practical Intervention Strategies</h4>
+                    <div class="summary-subheading">Breathwork &amp; Somatic Practices</div>
+                    <p>Extended exhalation relative to inhalation activates the parasympathetic nervous system, helping shift from sympathetic arousal to a calmer state. Body-based interventions including progressive muscle relaxation, body scanning, and movement practices help discharge stored stress. Trauma and chronic stress can create patterns of muscular tension that persist even after the stressor is removed, requiring somatic awareness and intervention.</p>
+
+                    <div class="summary-subheading">Social Connection &amp; Co-Regulation</div>
+                    <p>Being in the presence of a calm, regulated person can help dysregulated nervous systems find balance. Positive social interactions stimulate oxytocin release and vagal activation, providing direct physiological benefits beyond emotional support. However, forced social interaction when in a freeze state can increase stress — recognising one's nervous system state matters before choosing interventions.</p>
+
+                    <div class="summary-subheading">Lifestyle Factors</div>
+                    <p>Chronic stress disrupts sleep architecture, which then impairs the body's ability to recover from stress — creating a vicious cycle. Exercise was presented not primarily as stress relief but as a way to complete the stress response cycle, distinguishing between gentle movement for nervous system regulation and intense exercise that might further tax an already depleted system.</p>
+
+                    <div class="summary-subheading">Cognitive &amp; Emotional Approaches</div>
+                    <p>Emotions themselves typically last only 30–90 seconds as physiological events — it's our cognitive engagement with them that extends their duration. Affect labeling and emotional awareness can help regulate intensity. Patterns like perfectionism, difficulty setting boundaries, and internalised pressure to constantly perform often require deeper therapeutic work.</p>
+                </div>
+
+                <div class="summary-section">
+                    <div class="summary-section-number">07</div>
+                    <h4>Warning Signs &amp; When to Seek Help</h4>
+                    <div class="summary-arrow-item">Persistent physical symptoms (chronic pain, digestive issues, frequent illness).</div>
+                    <div class="summary-arrow-item">Inability to feel pleasure or interest in previously enjoyed activities.</div>
+                    <div class="summary-arrow-item">Significant changes in sleep, appetite, or substance use.</div>
+                    <div class="summary-arrow-item">Difficulty concentrating or making decisions.</div>
+                    <div class="summary-arrow-item">Withdrawal from relationships or social activities.</div>
+                    <div class="summary-arrow-item">Persistent thoughts of hopelessness or escape.</div>
+                    <p>Seeking support early is far more effective than waiting until burnout is severe. Therapy isn't a sign of failure but a recognition that chronic stress has physiological and neurological dimensions that may require specialised intervention.</p>
+                </div>
+
+                <div class="summary-section">
+                    <div class="summary-section-number">08</div>
+                    <h4>Closing Reflections</h4>
+                    <p>Recovery from chronic stress and burnout is possible but typically requires patience, systemic changes, and often professional support. The speakers cautioned against using brief interventions to "power through" rather than addressing underlying dysregulation, and encouraged participants to view stress management not as an individual failing but as a legitimate health concern deserving appropriate attention, community support, and the co-regulatory presence necessary for nervous system healing.</p>
+                </div>
+
+                <div class="summary-footer-note">Transcript recorded and summarised &nbsp;·&nbsp; MSP, Faculty of Science and Engineering, Maastricht University</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+        <img id="lightbox-img" src="" alt="">
+    </div>
+
+    <!-- Interest Modal -->
+    <div class="interest-overlay" id="interestModal" onclick="closeInterestModal(event)">
+        <div class="interest-card" onclick="event.stopPropagation()">
+            <div class="interest-card-header">
+                <h3>Interested in this talk?</h3>
+                <p>Let us know and we'll keep you in the loop.</p>
+                <button class="interest-close" onclick="closeInterestModal()">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <div class="interest-card-body">
+                <!-- Success message -->
+                <div class="interest-success" id="interestSuccess">
+                    <div class="interest-success-icon">
+                        <i data-lucide="check"></i>
+                    </div>
+                    <h4>You're on the list!</h4>
+                    <p>We'll reach out with details as the event gets closer.</p>
+                </div>
+
+                <!-- Form -->
+                <form id="interest-form" action="https://formspree.io/f/xnjboerz" method="POST">
+                    <input type="text" name="_gotcha" style="display:none">
+                    <input type="hidden" name="_subject" value="Event Interest: Alumni Talk — Aliya Shah & Thomas van Rein">
+                    <input type="hidden" name="role" id="interest-role-input" value="">
+
+                    <p style="font-size: 14px; color: var(--um-gray-600); margin-bottom: 16px;">I am a…</p>
+
+                    <div class="interest-role-selector">
+                        <button type="button" class="interest-role-btn" onclick="selectRole('alumni', event)">
+                            <div class="role-icon">🎓</div>
+                            <div class="role-label">Alumni</div>
+                            <div class="role-desc">MSP graduate</div>
+                        </button>
+                        <button type="button" class="interest-role-btn" onclick="selectRole('student', event)">
+                            <div class="role-icon">📚</div>
+                            <div class="role-label">Student</div>
+                            <div class="role-desc">Currently studying</div>
+                        </button>
+                    </div>
+
+                    <!-- Alumni fields -->
+                    <div class="interest-fields" id="alumni-fields">
+                        <div class="interest-field">
+                            <label>Name *</label>
+                            <input type="text" name="name" placeholder="Your full name" id="alumni-name">
+                        </div>
+                        <div class="interest-field">
+                            <label>Email *</label>
+                            <input type="email" name="email" placeholder="your@email.com" id="alumni-email">
+                        </div>
+                    </div>
+
+                    <!-- Student fields -->
+                    <div class="interest-fields" id="student-fields">
+                        <div class="interest-field">
+                            <label>Name *</label>
+                            <input type="text" name="student_name" placeholder="Your full name" id="student-name">
+                        </div>
+                        <div class="interest-field">
+                            <label>Student ID number *</label>
+                            <input type="text" name="student_id" placeholder="e.g. i6012345" id="student-id">
+                        </div>
+                    </div>
+
+                    <div class="interest-error" id="interestError">Something went wrong. Please try again.</div>
+
+                    <button type="submit" class="interest-submit-btn" id="interest-submit" style="display:none">
+                        <i data-lucide="send"></i>
+                        Submit
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mobile nav toggle
+        function toggleMobileNav(btn) {
+            const nav = document.querySelector('.header-nav');
+            const isOpen = nav.classList.contains('open');
+            btn.classList.toggle('open');
+            nav.classList.toggle('open');
+
+            if (!isOpen) {
+                const backdrop = document.createElement('div');
+                backdrop.className = 'nav-backdrop';
+                backdrop.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.3);z-index:999;opacity:0;transition:opacity 0.3s ease';
+                document.body.appendChild(backdrop);
+                document.body.style.overflow = 'hidden';
+                requestAnimationFrame(() => backdrop.style.opacity = '1');
+                backdrop.addEventListener('click', () => toggleMobileNav(btn));
+            } else {
+                const backdrop = document.querySelector('.nav-backdrop');
+                if (backdrop) {
+                    backdrop.style.opacity = '0';
+                    setTimeout(() => backdrop.remove(), 300);
+                }
+                document.body.style.overflow = '';
+            }
+        }
+
+        // Click an event row to open its detail card
+        document.querySelectorAll('.ev-row').forEach(function(row){
+            row.addEventListener('click', function(e){
+                if (e.target.closest('a, button')) return;
+                openEventModal(this);
+            });
+        });
+        function openEventModal(row){
+            var modal = document.getElementById('eventModal');
+            var img = row.querySelector('.ev-thumb img');
+            var imgWrap = document.getElementById('eventModalImg');
+            if (img && img.getAttribute('src')) {
+                imgWrap.style.backgroundImage = 'url("' + img.getAttribute('src') + '")';
+                imgWrap.style.display = 'block';
+            } else { imgWrap.style.display = 'none'; }
+            document.getElementById('eventModalBody').innerHTML = row.querySelector('.ev-body').innerHTML;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            lucide.createIcons();
+        }
+        function closeEventModal(e){
+            if (e && e.target !== e.currentTarget && !(e.target.classList && e.target.classList.contains('event-modal-close'))) return;
+            document.getElementById('eventModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeEventModal(); });
+
+        // Close mobile nav when a link is clicked
+        document.querySelectorAll('.header-nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                const btn = document.querySelector('.menu-toggle');
+                if (btn.classList.contains('open')) {
+                    toggleMobileNav(btn);
+                }
+            });
+        });
+
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+        lucide.createIcons();
+
+        function openLightbox(src) {
+            document.getElementById('lightbox-img').src = src;
+            document.getElementById('lightbox').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        function openSummaryModal() {
+            document.getElementById('summaryModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeSummaryModal(e) {
+            if (e && e.target !== document.getElementById('summaryModal')) return;
+            document.getElementById('summaryModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        function openBurnoutSummaryModal() {
+            document.getElementById('burnoutSummaryModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeBurnoutSummaryModal(e) {
+            if (e && e.target !== document.getElementById('burnoutSummaryModal')) return;
+            document.getElementById('burnoutSummaryModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') {
+                closeLightbox();
+                document.getElementById('summaryModal').classList.remove('active');
+                document.getElementById('burnoutSummaryModal').classList.remove('active');
+                closeInterestModal();
+                document.body.style.overflow = '';
+            }
+        });
+
+        // ── Interest Modal ──────────────────────────────────────────────
+        let selectedRole = null;
+
+        function openInterestModal() {
+            document.getElementById('interestModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            lucide.createIcons();
+        }
+
+        function closeInterestModal(e) {
+            if (e && e.target !== document.getElementById('interestModal')) return;
+            document.getElementById('interestModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function selectRole(role, e) {
+            selectedRole = role;
+            document.getElementById('interest-role-input').value = role;
+
+            // Update button styles
+            document.querySelectorAll('.interest-role-btn').forEach(btn => btn.classList.remove('selected'));
+            e.currentTarget.classList.add('selected');
+
+            // Show/hide field groups
+            const alumniFields = document.getElementById('alumni-fields');
+            const studentFields = document.getElementById('student-fields');
+            const submitBtn = document.getElementById('interest-submit');
+
+            alumniFields.classList.remove('visible');
+            studentFields.classList.remove('visible');
+
+            // Clear required attributes
+            document.querySelectorAll('#alumni-fields input').forEach(i => i.required = false);
+            document.querySelectorAll('#student-fields input').forEach(i => i.required = false);
+
+            if (role === 'alumni') {
+                alumniFields.classList.add('visible');
+                document.getElementById('alumni-name').required = true;
+                document.getElementById('alumni-email').required = true;
+            } else {
+                studentFields.classList.add('visible');
+                document.getElementById('student-name').required = true;
+                document.getElementById('student-id').required = true;
+            }
+
+            submitBtn.style.display = 'flex';
+            lucide.createIcons();
+        }
+
+        // Form submission
+        const interestForm = document.getElementById('interest-form');
+        if (interestForm) {
+            interestForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('interest-submit');
+                const errEl = document.getElementById('interestError');
+                const successEl = document.getElementById('interestSuccess');
+
+                btn.disabled = true;
+                btn.innerHTML = '<i data-lucide="loader"></i> Sending…';
+                lucide.createIcons();
+                errEl.classList.remove('visible');
+
+                try {
+                    const data = new FormData(interestForm);
+                    const res = await fetch(interestForm.action, {
+                        method: 'POST',
+                        body: data,
+                        headers: { 'Accept': 'application/json' }
+                    });
+
+                    if (res.ok) {
+                        interestForm.style.display = 'none';
+                        successEl.classList.add('visible');
+                        lucide.createIcons();
+                    } else {
+                        throw new Error('Server error');
+                    }
+                } catch {
+                    errEl.classList.add('visible');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i data-lucide="send"></i> Submit';
+                    lucide.createIcons();
+                }
+            });
+        }
+    </script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+    </script>
+</body>
+</html>
