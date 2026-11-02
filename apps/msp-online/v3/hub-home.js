@@ -110,7 +110,8 @@
         (staff ? '' : '<div class="sh-phonebar"><img src="msp-ui/msp-emblem-white.png" alt=""><div><b>MSP Digital Hub</b><small>Maastricht Science Programme</small></div></div>') +
         '<div class="sh-dateline"><span class="dnum">' + today.getDate() + '</span>' +
           '<span class="dtext"><b>' + fmt(today, { weekday: 'long' }) + '</b><small>' + fmt(today, { month: 'long', year: 'numeric' }) + '</small></span>' +
-          '<span class="rule" aria-hidden="true"></span><span class="wk">Week ' + isoWeek(today) + '</span></div>' +
+          '<span class="rule" aria-hidden="true"></span><span class="wk">Week ' + isoWeek(today) + '</span>' +
+          '<button type="button" class="sh-tourbtn" aria-label="Take the tour of this page">' + I('help') + '<span>Tour</span></button></div>' +
         '<div class="sh-ann" hidden></div>' +
         search +
         '<nav class="sh-cards" aria-label="' + (staff ? 'Staff tools' : 'Student tools') + '"></nav>' +
@@ -202,6 +203,12 @@
       var names = (ctx.tools || []).map(function (t) { return t.name; });
       MSPFeedback.open({ hub: staff ? 'staff' : 'students', tools: staff ? names.concat(['A student tool']) : names, returnFocus: e.currentTarget });
     });
+
+    // ── the guided tour: on the first visit, and again with the Tour button ──
+    var steps = staff ? STAFF_TOUR : STUDENT_TOUR;
+    $('.sh-tourbtn').addEventListener('click', function () { tour(root, steps, staff ? 'staff' : 'students'); });
+    var seen = null; try { seen = localStorage.getItem(TOUR_KEY + (staff ? 'staff' : 'students')); } catch (e) { seen = '1'; }
+    if (!seen && !location.hash) setTimeout(function () { if (document.body.classList.contains('home')) tour(root, steps, staff ? 'staff' : 'students'); }, 900);
 
     if (!staff) {
       // ── students: the FAQ search and the often-asked topics ──
@@ -318,6 +325,103 @@
       if ((e.key === 'k' || e.key === 'K') && (e.ctrlKey || e.metaKey)) { e.preventDefault(); input.focus(); }
       else if (e.key === '/' && !/input|textarea|select/i.test((document.activeElement || {}).tagName || '')) { e.preventDefault(); input.focus(); }
     });
+  }
+
+  // ── the guided tour (same pattern as the Course Planner's first-launch tutorial: a spotlight, a card,
+  //    Skip / Back / Next, remembered per browser so it shows only once; the Tour button replays it) ──
+  var TOUR_KEY = 'msp-hub-tour-v1-';
+  var STUDENT_TOUR = [
+    { title: 'Welcome to the MSP Digital Hub', text: 'All the MSP tools for students in one place. This short tour shows you around; it takes half a minute.' },
+    { target: '.sh-ask', title: 'Ask the FAQ first', text: 'Type any question, like "resit" or "waiver", and the answers from the offices open right away. Or click one of the topics students ask most.' },
+    { target: '.sh-card.tall', title: 'Plan your courses', text: 'The Course Planner builds a clash-free schedule and checks your credits. During registration it counts down to the deadline.' },
+    { target: '.sh-cards', title: 'All your tools', text: 'Click a card to open the tool. It becomes the menu bar at the top, so you can switch tools without losing your place. The MSP logo brings you back here.' },
+    { target: '.sh-dates', title: 'Key dates', text: 'The big dates of the year: registration, exam weeks, breaks. The bar above shows where we are in the year.' },
+    { target: '.sh-contact', title: 'Questions?', text: 'For questions about your studies, email Education Support. If something in one of these tools is wrong, tell us here.' },
+    { target: '.sh-tourbtn', title: 'That\'s it', text: 'You can take this tour again any time with the Tour button.' }
+  ];
+  var STAFF_TOUR = [
+    { title: 'Welcome to the MSP Digital Hub', text: 'The tools the MSP offices and academic staff use, in one place. A quick tour of this page.' },
+    { target: '.sh-search', title: 'Find anything', text: 'Search the tools and every deadline in the Academic Calendar. Press Ctrl K from anywhere on this page.' },
+    { target: '.sh-card.tall', title: 'This month\'s deadlines', text: 'Dark days have deadlines, the darkest several. Open the calendar for every deadline per office, also as a feed in your Outlook calendar.' },
+    { target: '.sh-cards', title: 'Your tools, with what is happening', text: 'The cards show live information, such as the tutorial groups that still need a tutor. Click one to open the tool; it becomes the menu bar at the top.' },
+    { target: '.sh-dates', title: 'Key dates', text: 'Only the big dates of the year: registration, open days, exam weeks, breaks.' },
+    { target: '.sh-stu', title: 'For students', text: 'The student tools, with the address to pass on when a student asks.' },
+    { target: '.sh-contact', title: 'Questions or comments?', text: 'Email the team that builds these tools, or write a comment on a tool. Both reach us directly.' },
+    { target: '.sh-tourbtn', title: 'That\'s it', text: 'Take this tour again any time with the Tour button.' }
+  ];
+
+  function tour(root, steps, side) {
+    if (document.querySelector('.sh-tour')) return;
+    var i = 0, prevFocus = document.activeElement;
+    var shield = el('<div class="sh-tour sh-tshield"></div>');
+    var spot = el('<div class="sh-tour sh-tspot" aria-hidden="true"></div>');
+    var card = el('<div class="sh-tour sh-tcard" role="dialog" aria-modal="true" aria-labelledby="sh-tcard-h">' +
+      '<div class="sh-tprog"></div><h3 id="sh-tcard-h"></h3><p></p>' +
+      '<div class="sh-tact"><button type="button" class="sh-tskip">Skip tour</button><button type="button" class="sh-tback">Back</button><button type="button" class="sh-tnext">Next</button></div></div>');
+    document.body.appendChild(shield); document.body.appendChild(spot); document.body.appendChild(card);
+    var scroller = root.closest('.v3-home') || window;
+
+    function target() { var s = steps[i].target; var t = s && root.querySelector(s); return t && t.getBoundingClientRect().width ? t : null; }
+    function place() {
+      var t = target(), W = window.innerWidth, H = window.innerHeight, cw = card.offsetWidth, ch = card.offsetHeight, x, y;
+      if (!t) {
+        spot.classList.add('none');
+        x = (W - cw) / 2; y = Math.max(16, (H - ch) / 2);
+      } else {
+        var r = t.getBoundingClientRect(), pad = 8;
+        spot.classList.remove('none');
+        spot.style.top = (r.top - pad) + 'px'; spot.style.left = (r.left - pad) + 'px';
+        spot.style.width = (r.width + 2 * pad) + 'px'; spot.style.height = (r.height + 2 * pad) + 'px';
+        if (r.bottom + pad + 14 + ch <= H - 12) { y = r.bottom + pad + 14; x = r.left; }
+        else if (r.top - pad - 14 - ch >= 12) { y = r.top - pad - 14 - ch; x = r.left; }
+        else if (r.right + pad + 14 + cw <= W - 12) { x = r.right + pad + 14; y = r.top; }
+        else if (r.left - pad - 14 - cw >= 12) { x = r.left - pad - 14 - cw; y = r.top; }
+        else { x = (W - cw) / 2; y = H - ch - 16; }
+      }
+      card.style.left = Math.max(12, Math.min(x, W - cw - 12)) + 'px';
+      card.style.top = Math.max(12, Math.min(y, H - ch - 12)) + 'px';
+    }
+    function show() {
+      var s = steps[i], last = i === steps.length - 1;
+      card.querySelector('.sh-tprog').textContent = 'Step ' + (i + 1) + ' of ' + steps.length;
+      card.querySelector('h3').textContent = s.title;
+      card.querySelector('p').textContent = s.text;
+      card.querySelector('.sh-tback').hidden = i === 0;
+      card.querySelector('.sh-tskip').hidden = last;
+      card.querySelector('.sh-tnext').textContent = last ? 'Done' : i === 0 ? 'Show me' : 'Next';
+      var t = target();
+      if (t) t.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      requestAnimationFrame(place);
+      card.querySelector('.sh-tnext').focus();
+    }
+    function end() {
+      try { localStorage.setItem(TOUR_KEY + side, '1'); } catch (e) {}
+      [shield, spot, card].forEach(function (n) { n.remove(); });
+      window.removeEventListener('resize', place); scroller.removeEventListener('scroll', place, true);
+      document.removeEventListener('keydown', key, true);
+      if (prevFocus && prevFocus.focus) prevFocus.focus();
+    }
+    function key(e) {
+      if (e.key === 'Escape') { e.preventDefault(); end(); return; }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); card.querySelector('.sh-tnext').click(); }
+      else if (e.key === 'ArrowLeft' && i > 0) { e.preventDefault(); i--; show(); }
+      else if (e.key === 'Tab') {   // keep the focus inside the card
+        var b = [].filter.call(card.querySelectorAll('button'), function (x) { return !x.hidden; });
+        var k = b.indexOf(document.activeElement);
+        e.preventDefault(); b[(k + (e.shiftKey ? b.length - 1 : 1)) % b.length].focus();
+      }
+    }
+    card.querySelector('.sh-tskip').addEventListener('click', function () { end(); });
+    card.querySelector('.sh-tback').addEventListener('click', function () { if (i > 0) { i--; show(); } });
+    card.querySelector('.sh-tnext').addEventListener('click', function () { if (i < steps.length - 1) { i++; show(); } else { end(); } });
+    window.addEventListener('resize', place); scroller.addEventListener('scroll', place, true);
+    document.addEventListener('keydown', key, true);
+    // follow layout changes too (fonts loading, live numbers arriving), so the spotlight stays on its target
+    var ro = global.ResizeObserver ? new ResizeObserver(function () { place(); }) : null;
+    if (ro) { ro.observe(root); ro.observe(document.documentElement); }
+    var endTour = end; end = function () { if (ro) ro.disconnect(); endTour(); };
+    show();
+    setTimeout(place, 300);
   }
 
   global.MSPHome = { mount: mount };

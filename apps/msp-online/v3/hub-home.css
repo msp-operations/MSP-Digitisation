@@ -228,3 +228,35 @@ body.hub-home .v3-home > :not(.shp){display:none!important}
   .sh-ask{height:48px}
   .sh-ask button{padding:9px 13px}
 }
+
+/* ── the guided tour (same pattern as the Course Planner's first-launch tutorial) ── */
+.sh-tourbtn{display:inline-flex;align-items:center;gap:5px;margin-left:10px;border:1px solid var(--line,#E3E8EF);background:#fff;border-radius:999px;padding:4px 10px 4px 8px;font:inherit;font-size:12px;font-weight:600;color:var(--muted,#5B6878);cursor:pointer}
+.sh-tourbtn svg{width:14px;height:14px}
+.sh-tourbtn:hover{color:#011B3C;border-color:#9FB4CC}
+.sh-tourbtn:focus-visible{outline:2px solid #6ED2EC;outline-offset:2px}
+.sh-tshield{position:fixed;inset:0;z-index:99990;background:transparent}
+.sh-tspot{position:fixed;z-index:99991;pointer-events:none;border:2px solid #6ED2EC;border-radius:16px;
+  box-shadow:0 0 0 9999px rgba(1,27,60,.72),0 0 0 5px rgba(110,210,236,.18),0 8px 30px rgba(0,0,0,.25);
+  transition:top .22s ease,left .22s ease,width .22s ease,height .22s ease}
+.sh-tspot.none{top:50%!important;left:50%!important;width:0!important;height:0!important;border-color:transparent}
+.sh-tcard{position:fixed;z-index:99992;width:min(360px,calc(100vw - 32px));padding:18px;background:#fff;border:1px solid #E3E8EF;border-radius:14px;
+  box-shadow:0 24px 60px -20px rgba(1,27,60,.5);font-family:var(--msp-font);color:#0F172A;transition:top .22s ease,left .22s ease}
+.sh-tprog{margin-bottom:7px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748B}
+.sh-tcard h3{margin:0 0 6px;font-family:var(--msp-font-display);font-size:16.5px;color:#011B3C}
+.sh-tcard p{margin:0;font-size:13px;line-height:1.6;color:#475569}
+.sh-tact{display:flex;align-items:center;gap:8px;margin-top:16px}
+.sh-tskip{padding:7px 4px;border:0;background:transparent;color:#64748B;font:inherit;font-size:12px;cursor:pointer}
+.sh-tskip:hover{color:#0F172A}
+.sh-tback,.sh-tnext{padding:8px 14px;border-radius:8px;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer}
+.sh-tback{margin-left:auto;border:1px solid #E3E8EF;background:#fff;color:#334155}
+.sh-tnext{border:0;background:#011B3C;color:#fff}
+.sh-tback[hidden] + .sh-tnext{margin-left:auto}
+.sh-tnext:hover{background:#0A3060}
+.sh-tcard button:focus-visible{outline:2px solid #6ED2EC;outline-offset:2px}
+@media (prefers-reduced-motion:reduce){ .sh-tspot,.sh-tcard{transition:none} }
+@media (max-width:480px){ .sh-tourbtn span{display:none} .sh-tourbtn{padding:5px} }
+
+/* students: the Education Support address is longer, so it gets more room and Copy may wrap below it */
+.is-students .sh-opts{grid-template-columns:2fr 1fr}
+.is-students .sh-mailrow{flex-wrap:wrap;row-gap:6px}
+@media (min-width:901px) and (max-width:1440px){ .is-students .sh-opt .mail{font-size:14px} }
