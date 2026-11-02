@@ -1,27 +1,33 @@
-/* The staff start page of the MSP Digital Hub (2 Nov 2026). Styles in staff-home.css.
+/* The start page of the MSP Digital Hub, for both sides (2 Nov 2026). Styles in hub-home.css.
 
-   MSPStaffHome.mount(element, {
-     tools,       the staff tools from tools.js (id, name, icon, ownNav)
-     students,    the student tools from tools.js
-     config,      V3.staffHome in tools.js: the teaching year (periods) and the key dates
-     studentHub,  the address of the student hub ('index.html')
+   MSPHome.mount(element, {
+     side,        'staff' or 'students'
+     tools,       the tools of this side from tools.js (id, name, icon, ownNav)
+     students,    staff side only: the student tools, shown as small cards
+     config,      V3.home in tools.js: the teaching year (periods) and the key dates per side
+     studentHub,  staff side only: the address of the student hub
      icon,        MSPShell.icon
-     open(id)     opens a staff tool in the hub
+     open(id),    opens a tool in the hub
+     search(q)    students only: opens the Student FAQ with this question
    })
 
    Live data, each with a quiet fallback when it cannot be loaded:
-   - the Academic Calendar's events (same site): this month's deadlines, the next one, and search;
-   - Tutor Registration (the MSP backend, public read): how many groups still need a tutor;
+   - the Academic Calendar's events (staff): this month's deadlines, the next one, and search;
+   - Tutor Registration (staff; the MSP backend, public read): how many groups still need a tutor;
+   - the Student FAQ (students): how many answers it holds;
    - announcements from the team console (MSPAnnounce in backend.js).
    Today's date, the week number, the year bar and "in N days" are worked out in the browser. */
 (function (global) {
   'use strict';
 
   var CAL_URL = 'https://msp-operations.github.io/Academic-Calendar/events.json';
+  var FAQ_URL = 'https://msp-faqs.nl/content.json';
   var FEEDBACK = 'msp-digital@maastrichtuniversity.nl';
+  var STUDY_DESK = 'msp-educationsupport@maastrichtuniversity.nl';   // Education Support: questions about your studies
   var DAY = 864e5;
   var STUDENT_NOTE = { 'faq': 'msp-faqs.nl', 'course-planner': 'Plan your courses', 'btr': 'msp-btr.nl', 'msp-alumni': 'msp-alumni.nl' };
   var STUDENT_ORDER = ['faq', 'course-planner', 'btr', 'msp-alumni'];
+  var POPULAR = ['Resits', 'Course registration', 'Thesis (BTR)', 'Going abroad'];
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function el(html) { var t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstChild; }
@@ -40,14 +46,16 @@
     if (a.getMonth() === b.getMonth()) return a.getDate() + ' &ndash; ' + fmt(b, { day: 'numeric', month: 'short' });
     return fmt(a, { day: 'numeric', month: 'short' }) + ' &ndash; ' + fmt(b, { day: 'numeric', month: 'short' });
   }
+  function days(a, today) { return Math.round((a - today) / DAY); }
   function relative(a, b, today) {
     if (a <= today && today <= (b || a)) return 'now';
-    var n = Math.round((a - today) / DAY);
+    var n = days(a, today);
     return n === 1 ? 'tomorrow' : n <= 31 ? 'in ' + n + ' days' : 'in ' + Math.round(n / 7) + ' weeks';
   }
 
   function mount(root, ctx) {
     if (!root) return;
+    var staff = ctx.side === 'staff';
     var today = startOfDay(new Date()), cfg = ctx.config || {}, I = ctx.icon;
     var byId = {}; (ctx.tools || []).forEach(function (t) { byId[t.id] = t; });
     var events = null;
@@ -63,44 +71,58 @@
       });
       if (today >= y0 && today <= periods[periods.length - 1].b) track += '<b class="here" style="left:' + pct(today).toFixed(2) + '%"></b>';
     }
-    var dates = (cfg.keyDates || []).map(function (k) { return { a: parse(k.start), b: k.end ? parse(k.end) : null, title: k.title, kind: k.kind || '' }; })
+    var allDates = ((cfg.keyDates || {})[staff ? 'staff' : 'students'] || []).map(function (k) { return { a: parse(k.start), b: k.end ? parse(k.end) : null, title: k.title, kind: k.kind || '' }; })
       .filter(function (k) { return (k.b || k.a) >= today; })
-      .sort(function (x, y) { return x.a - y.a; }).slice(0, 5);
-    var list = dates.map(function (k) {
+      .sort(function (x, y) { return x.a - y.a; });
+    var list = allDates.slice(0, 5).map(function (k) {
       return '<li class="' + esc(k.kind) + '"><strong>' + label(k.a, k.b) + '</strong><span>' + esc(k.title) + '</span><span class="in">' + relative(k.a, k.b, today) + '</span></li>';
     }).join('');
 
+    var brand = '<img src="msp-ui/msp-emblem-white.png" alt=""><div><b>Maastricht Science Programme</b><small>Faculty of Science and Engineering</small></div>';
+    var search = staff
+      ? '<div class="sh-search" role="search"><label>' + I('search') + '<input type="search" placeholder="Find a tool, a deadline or a form" aria-label="Find a tool, a deadline or a form" autocomplete="off"><kbd>Ctrl K</kbd></label><div class="sh-res" hidden></div></div>'
+      : '<form class="sh-ask" role="search"><label>' + I('search') + '<input type="search" name="q" placeholder="Ask a question: resit, registration, thesis..." aria-label="Search the Student FAQ" autocomplete="off"></label><button type="submit">Search</button></form>' +
+        '<div class="sh-pop"><span>Often asked:</span>' + POPULAR.map(function (p) { return '<button type="button">' + esc(p) + '</button>'; }).join('') + '</div>';
+    var lower = staff
+      ? '<section class="sh-stu" aria-label="Student tools"><div class="sh-sh"><h2>For students</h2><a href="' + esc(ctx.studentHub) + '">Open the student hub &rarr;</a></div><div class="sh-sgrid"></div></section>' +
+        '<section class="sh-contact"><h2>Questions or comments?</h2><div class="sh-opts">' +
+          '<div class="sh-opt"><small>Any question? Email the team</small><div class="sh-mailrow"><a class="mail" href="mailto:' + FEEDBACK + '">' + FEEDBACK + '</a><button type="button" class="copy" data-copy="' + FEEDBACK + '">Copy</button></div></div>' +
+          '<div class="sh-opt"><small>A comment on one of the tools?</small><button type="button" class="go">Write a comment &rarr;</button></div>' +
+        '</div></section>'
+      : '<section class="sh-contact"><h2>Questions?</h2><div class="sh-opts">' +
+          '<div class="sh-opt"><small>About your studies? Email Education Support</small><div class="sh-mailrow"><a class="mail" href="mailto:' + STUDY_DESK + '">' + STUDY_DESK + '</a><button type="button" class="copy" data-copy="' + STUDY_DESK + '">Copy</button></div></div>' +
+          '<div class="sh-opt"><small>Something wrong with one of these tools?</small><button type="button" class="go">Tell us &rarr;</button></div>' +
+        '</div></section>';
+
+    root.className = 'shp ' + (staff ? 'is-staff' : 'is-students');
     root.innerHTML =
       '<section class="sh-left">' +
         '<div class="sh-ph"></div><div class="sh-shade"></div>' +
-        '<div class="sh-brand"><img src="msp-ui/msp-emblem-white.png" alt=""><div><b>Maastricht Science Programme</b><small>Faculty of Science and Engineering</small></div></div>' +
+        '<div class="sh-brand">' + brand + '</div>' +
         '<div class="sh-mid">' +
           '<h1>MSP Digital Hub</h1>' +
           (track ? '<div class="sh-year" aria-label="The teaching year, periods 1 to 6, with today marked"><div class="sh-track">' + track + '</div></div>' : '') +
           (list ? '<div class="sh-dates"><h2>Key dates</h2><ol>' + list + '</ol></div>' : '') +
-          '<div class="sh-inst"><img src="msp-ui/um-wordmark.png" alt="Maastricht University"><span>Paul-Henri Spaaklaan 1, Maastricht &middot; <a href="../inbox/">Team console</a></span></div>' +
+          '<div class="sh-inst"><img src="msp-ui/um-wordmark.png" alt="Maastricht University"><span>Paul-Henri Spaaklaan 1, Maastricht' + (staff ? ' &middot; <a href="../inbox/">Team console</a>' : '') + '</span></div>' +
         '</div>' +
       '</section>' +
       '<section class="sh-right">' +
+        (staff ? '' : '<div class="sh-phonebar"><img src="msp-ui/msp-emblem-white.png" alt=""><div><b>MSP Digital Hub</b><small>Maastricht Science Programme</small></div></div>') +
         '<div class="sh-dateline"><span class="dnum">' + today.getDate() + '</span>' +
           '<span class="dtext"><b>' + fmt(today, { weekday: 'long' }) + '</b><small>' + fmt(today, { month: 'long', year: 'numeric' }) + '</small></span>' +
           '<span class="rule" aria-hidden="true"></span><span class="wk">Week ' + isoWeek(today) + '</span></div>' +
         '<div class="sh-ann" hidden></div>' +
-        '<div class="sh-search" role="search"><label>' + I('search') + '<input type="search" placeholder="Find a tool, a deadline or a form" aria-label="Find a tool, a deadline or a form" autocomplete="off"><kbd>Ctrl K</kbd></label><div class="sh-res" hidden></div></div>' +
-        '<nav class="sh-cards" aria-label="Staff tools"></nav>' +
-        '<section class="sh-stu" aria-label="Student tools"><div class="sh-sh"><h2>For students</h2><a href="' + esc(ctx.studentHub) + '">Open the student hub &rarr;</a></div><div class="sh-sgrid"></div></section>' +
-        '<section class="sh-contact"><h2>Questions or comments?</h2><div class="sh-opts">' +
-          '<div class="sh-opt"><small>Any question? Email the team</small><div class="sh-mailrow"><a class="mail" href="mailto:' + FEEDBACK + '">' + FEEDBACK + '</a><button type="button" class="copy">Copy</button></div></div>' +
-          '<div class="sh-opt"><small>A comment on one of the tools?</small><button type="button" class="go">Write a comment &rarr;</button></div>' +
-        '</div></section>' +
+        search +
+        '<nav class="sh-cards" aria-label="' + (staff ? 'Staff tools' : 'Student tools') + '"></nav>' +
+        lower +
       '</section>';
     root.hidden = false;
     var $ = function (s) { return root.querySelector(s); };
 
     // ── announcements (only shown when the team posted one) ──
-    if (global.MSPAnnounce) MSPAnnounce.mount($('.sh-ann'), 'staff');
+    if (global.MSPAnnounce) MSPAnnounce.mount($('.sh-ann'), staff ? 'staff' : 'students');
 
-    // ── the staff cards ──
+    // ── the cards ──
     var cards = $('.sh-cards');
     function card(id, cls, inner) {
       var t = byId[id]; if (!t) return null;
@@ -108,17 +130,44 @@
       a.addEventListener('click', function (e) { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) return; e.preventDefault(); go(a, t); });
       cards.appendChild(a); return a;
     }
-    var calCard = card('academic-calendar', 'tall', function (t) {
-      return '<div class="ch"><span class="ic">' + I(t.icon) + '</span><span class="tag" hidden></span></div><h3>' + esc(t.name) + '</h3>' +
-        '<p class="cal-line">Every operational deadline per office and period.</p><div class="sh-month"></div><div class="end"><span class="cta">Open the calendar &rarr;</span></div>';
-    });
-    card('project-periods', '', function (t) { return '<span class="mark">P3 &middot; P6</span><div class="end"><h3>' + esc(t.name) + '</h3><p>Offer a P3 or P6 project, or run the allocation.</p></div>'; });
-    var tutCard = card('tutoring', '', function (t) {
-      return '<div class="ch"><span class="ic">' + I(t.icon) + '</span></div><div class="end"><div class="big" hidden></div><h3>' + esc(t.name) + '</h3>' +
-        '<p class="tut-line">Claim tutorial groups; the office sees who teaches what.</p><div class="meter" hidden><i></i></div></div>';
-    });
-    card('btr-projects', 'dots', function (t) { return '<div class="ch"><span class="ic">' + I(t.icon) + '</span></div><div class="end"><h3>' + esc(t.name) + '</h3><p>Offer a Bachelor Thesis Research project.</p></div>'; });
-    card('plan-reviews', '', function (t) { return '<div class="ch"><span class="ic">' + I(t.icon) + '</span><span class="tag g">Preview</span></div><div class="end"><h3>' + esc(t.name) + '</h3><p>Approve or comment on the study plans students send.</p></div>'; });
+    var calCard = null, tutCard = null, faqCard = null;
+    if (staff) {
+      calCard = card('academic-calendar', 'tall', function (t) {
+        return '<div class="ch"><span class="ic">' + I(t.icon) + '</span><span class="tag" hidden></span></div><h3>' + esc(t.name) + '</h3>' +
+          '<p class="cal-line">Every operational deadline per office and period.</p><div class="sh-month"></div><div class="end"><span class="cta">Open the calendar &rarr;</span></div>';
+      });
+      card('project-periods', '', function (t) { return '<span class="mark">P3 &middot; P6</span><div class="end"><h3>' + esc(t.name) + '</h3><p>Offer a P3 or P6 project, or run the allocation.</p></div>'; });
+      tutCard = card('tutoring', '', function (t) {
+        return '<div class="ch"><span class="ic">' + I(t.icon) + '</span></div><div class="end"><div class="big" hidden></div><h3>' + esc(t.name) + '</h3>' +
+          '<p class="tut-line">Claim tutorial groups; the office sees who teaches what.</p><div class="meter" hidden><i></i></div></div>';
+      });
+      card('btr-projects', 'dots', function (t) { return '<div class="ch"><span class="ic">' + I(t.icon) + '</span></div><div class="end"><h3>' + esc(t.name) + '</h3><p>Offer a Bachelor Thesis Research project.</p></div>'; });
+      card('plan-reviews', '', function (t) { return '<div class="ch"><span class="ic">' + I(t.icon) + '</span><span class="tag g">Preview</span></div><div class="end"><h3>' + esc(t.name) + '</h3><p>Approve or comment on the study plans students send.</p></div>'; });
+    } else {
+      // Course Planner: counts down to the next course registration week (key dates with kind 'reg')
+      var reg = allDates.filter(function (k) { return k.kind === 'reg'; })[0];
+      var regDays = reg ? days(reg.a, today) : null, regSoon = reg && regDays <= 60;
+      var count = !regSoon ? '' : regDays <= 0
+        ? '<div class="sh-count"><b>Now</b><span>' + esc(reg.title) + '</span></div>'
+        : '<div class="sh-count"><b>' + regDays + (regDays === 1 ? ' day' : ' days') + '</b><span>until ' + esc(reg.title.charAt(0).toLowerCase() + reg.title.slice(1)) + ', ' + fmt(reg.a, { weekday: 'long', day: 'numeric', month: 'long' }) + '</span></div>';
+      card('course-planner', 'tall', function (t) {
+        return '<div class="ch"><span class="ic">' + I(t.icon) + '</span>' + (regSoon ? '<span class="tag">Registration ' + fmt(reg.a, { day: 'numeric', month: 'short' }) + '</span>' : '') + '</div>' +
+          '<h3>' + esc(t.name) + '</h3><p>Build a clash-free schedule and track your credits.</p>' + count +
+          '<ol class="sh-steps"><li>Choose your courses and labs</li><li>Check clashes and credits</li><li>Submit the course registration form</li></ol>' +
+          '<div class="end"><span class="cta">Plan your courses &rarr;</span></div>';
+      });
+      // Project Periods: when the next one starts
+      var nextPP = periods.filter(function (p) { return (p.id === 'P3' || p.id === 'P6') && p.a > today; })[0];
+      card('project-periods', '', function (t) {
+        return '<span class="mark">P3 &middot; P6</span><div class="end"><h3>' + esc(t.name) + '</h3><p>' +
+          (nextPP ? esc(nextPP.id) + ' starts ' + fmt(nextPP.a, { weekday: 'short', day: 'numeric', month: 'short' }) + '. ' : '') + 'The project catalogue and your preferences.</p></div>';
+      });
+      faqCard = card('faq', '', function (t) {
+        return '<div class="ch"><span class="ic">' + I(t.icon) + '</span></div><div class="end"><div class="big" hidden></div><h3>' + esc(t.name) + '</h3><p>Answers from every office, by topic.</p></div>';
+      });
+      card('btr', 'dots', function (t) { return '<div class="ch"><span class="ic">' + I(t.icon) + '</span></div><div class="end"><h3>' + esc(t.name) + '</h3><p>Guides, timelines and rubrics for your thesis.</p></div>'; });
+      card('msp-alumni', '', function (t) { return '<div class="ch"><span class="ic">' + I(t.icon) + '</span></div><div class="end"><h3>' + esc(t.name) + '</h3><p>Where MSP graduates went next.</p></div>'; });
+    }
 
     // the clicked card grows into the menu bar while the tool opens below it
     var reduce = global.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -142,36 +191,53 @@
       ctx.open(t.id);
     }
 
-    // the month in the calendar card: deadline days dark, today orange
+    // ── the lower part ──
+    var copy = $('.copy');
+    if (copy) copy.addEventListener('click', function () {
+      var b = this;
+      if (navigator.clipboard) navigator.clipboard.writeText(b.dataset.copy).then(function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); });
+    });
+    $('.go').addEventListener('click', function (e) {
+      if (!global.MSPFeedback) { location.href = 'mailto:' + FEEDBACK; return; }
+      var names = (ctx.tools || []).map(function (t) { return t.name; });
+      MSPFeedback.open({ hub: staff ? 'staff' : 'students', tools: staff ? names.concat(['A student tool']) : names, returnFocus: e.currentTarget });
+    });
+
+    if (!staff) {
+      // ── students: the FAQ search and the often-asked topics ──
+      var ask = $('.sh-ask');
+      ask.addEventListener('submit', function (e) { e.preventDefault(); ctx.search(ask.q.value.trim()); });
+      Array.prototype.forEach.call(root.querySelectorAll('.sh-pop button'), function (b) {
+        b.addEventListener('click', function () { ctx.search(b.textContent.replace(/\s*\(.*\)$/, '')); });
+      });
+      // ── live: how many answers the FAQ holds (only the first bytes of the file are needed) ──
+      if (faqCard) fetch(FAQ_URL, { headers: { Range: 'bytes=0-400' } }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (t) {
+        var m = /"count"\s*:\s*(\d+)/.exec(t); if (!m) return;
+        var big = faqCard.querySelector('.big'); big.innerHTML = m[1] + ' <small>answers</small>'; big.hidden = false;
+      }).catch(function () {});
+      return;
+    }
+
+    // ── staff: the month in the calendar card, deadline days dark, today orange ──
     function drawMonth(counts) {
-      var y = today.getFullYear(), m = today.getMonth(), first = new Date(y, m, 1), days = new Date(y, m + 1, 0).getDate();
+      var y = today.getFullYear(), m = today.getMonth(), first = new Date(y, m, 1), n = new Date(y, m + 1, 0).getDate();
       var cells = [], lead = (first.getDay() + 6) % 7, i;
       for (i = 0; i < lead; i++) cells.push('<i class="x"></i>');
-      for (i = 1; i <= days; i++) {
-        var n = (counts || {})[i] || 0;
-        cells.push('<i class="' + (i === today.getDate() ? 'today' : n ? (n >= 3 ? 'dl many' : 'dl') : '') + '">' + i + '</i>');
+      for (i = 1; i <= n; i++) {
+        var c = (counts || {})[i] || 0;
+        cells.push('<i class="' + (i === today.getDate() ? 'today' : c ? (c >= 3 ? 'dl many' : 'dl') : '') + '">' + i + '</i>');
       }
       while (cells.length % 7) cells.push('<i class="x"></i>');
       if (calCard) calCard.querySelector('.sh-month').innerHTML = '<div class="mh"><b>M</b><b>T</b><b>W</b><b>T</b><b>F</b><b>S</b><b>S</b></div><div class="mg">' + cells.join('') + '</div>';
     }
     drawMonth(null);
 
-    // ── the student tools ──
+    // ── staff: the student tools ──
     var sgrid = $('.sh-sgrid'), stu = {};
     (ctx.students || []).forEach(function (t) { stu[t.id] = t; });
     STUDENT_ORDER.forEach(function (id) {
       var t = stu[id]; if (!t) return;
       sgrid.appendChild(el('<a class="sh-sc" href="' + esc(ctx.studentHub + '#' + id) + '"><span class="si">' + I(t.icon) + '</span><span class="st2"><b>' + esc(t.name) + '</b><small>' + esc(STUDENT_NOTE[id] || t.hint || '') + '</small></span></a>'));
-    });
-
-    // ── questions or comments ──
-    $('.copy').addEventListener('click', function () {
-      var b = this;
-      if (navigator.clipboard) navigator.clipboard.writeText(FEEDBACK).then(function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); });
-    });
-    $('.go').addEventListener('click', function (e) {
-      if (!global.MSPFeedback) { location.href = 'mailto:' + FEEDBACK; return; }
-      MSPFeedback.open({ hub: 'staff', tools: (ctx.tools || []).map(function (t) { return t.name; }).concat(['A student tool']), returnFocus: e.currentTarget });
     });
 
     // ── live: the Academic Calendar ──
@@ -208,7 +274,7 @@
       }).catch(function () {});
     }
 
-    // ── search: the tools on both sides, the key dates and the calendar's deadlines ──
+    // ── staff: search across the tools on both sides and the calendar's deadlines ──
     var input = $('.sh-search input'), box = $('.sh-res'), hits = [], sel = 0;
     function index() {
       var items = [];
@@ -254,5 +320,5 @@
     });
   }
 
-  global.MSPStaffHome = { mount: mount };
+  global.MSPHome = { mount: mount };
 })(window);

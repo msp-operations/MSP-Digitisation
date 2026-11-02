@@ -9,7 +9,7 @@
 <link rel="icon" type="image/png" href="msp-ui/favicon.png">
 <link rel="preload" href="msp-ui/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="msp-ui/msp-ui.css">
-<link rel="stylesheet" href="staff-home.css">
+<link rel="stylesheet" href="hub-home.css">
 <style>
   /* Version 3: one page. Without a tool in the address (#faq) the navy panel fills the whole
      screen as the landing view: the MSP Digital Hub, with the tools as cards. Choosing a tool shrinks
@@ -245,8 +245,8 @@
       <nav class="hb-grid" id="hGrid" aria-label="All tools"></nav>
     </div>
     <footer class="hb-wrap hb-foot">Maastricht Science Programme · Faculty of Science and Engineering · Maastricht University</footer>
-    <!-- the staff side has its own start page (staff-home.js) -->
-    <div class="shp" id="staffHome" hidden></div>
+    <!-- the start page of both sides (hub-home.js) -->
+    <div class="shp" id="hubHome" hidden></div>
   </div>
 
   <!-- the menu as a top bar (when the visitor chooses it) -->
@@ -304,7 +304,7 @@
 <script src="tools.js"></script>
 <script src="msp-ui/msp-shell.js"></script>
 <script src="../backend.js"></script>
-<script src="staff-home.js"></script>
+<script src="hub-home.js"></script>
 <script>
 (function () {
   var V = window.V3, I = MSPShell.icon;
@@ -400,13 +400,19 @@
     var inbox = document.createElement('a'); inbox.href = '../inbox/'; inbox.textContent = 'Team console';
     var foot = document.querySelector('.hb-foot'); foot.appendChild(document.createTextNode(' · ')); foot.appendChild(inbox);
   }
-  // the staff side gets its own start page (2 Nov 2026): the building with key dates, live cards,
-  // the student tools and questions or comments; the student side keeps the card landing above
-  if (key === 'staff' && window.MSPStaffHome) {
-    document.body.classList.add('staff-home');
-    MSPStaffHome.mount($('staffHome'), {
-      tools: tools, students: V.suites.students.tools, config: V.staffHome || {}, studentHub: sideUrl('students'),
-      icon: I, open: function (id) { location.hash = id; }
+  // the start page of both sides (2 Nov 2026, hub-home.js): the building with key dates and live cards;
+  // the card landing above stays as the fallback when hub-home.js does not load
+  if (window.MSPHome) {
+    document.body.classList.add('hub-home');
+    MSPHome.mount($('hubHome'), {
+      side: key, tools: tools, students: key === 'staff' ? V.suites.students.tools : null, config: V.home || {},
+      studentHub: sideUrl('students'), icon: I,
+      open: function (id) { location.hash = id; },
+      search: function (q) {
+        var faq = tools.filter(function (t) { return t.id === 'faq'; })[0];
+        if (!faq) return;
+        if (q) openWithSearch(faq, q); else location.hash = faq.id;
+      }
     });
   }
   // the search card opens its tool with the question in the link (?q=), which the FAQ picks up
