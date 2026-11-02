@@ -1,0 +1,307 @@
+// MSP Academic Operations Calendar — build script
+// Reads data\year-*.yaml + data\events.yaml, writes site\events.json + feeds\*.ics
+// No dependencies. Run: node build.mjs
+//
+// Data format (constrained YAML subset, parsed here — keep files flat):
+//   - list items start with "- ", fields are "key: value", one per line, no nesting.
+//   - optional `until:` uses the same grammar as `when` and makes the event span
+//     that range (multi-day banner in the ics feeds, range label on the site).
+//   - events `when` grammar:  "2026-10-05"                       absolute date
+//                             "P1.end +10wd"                     anchor + offset
+//                             "{P}.exam.end +15wd" + repeat      one instance per listed period
+//     anchors: Pn.start Pn.end Pn.exam.start Pn.exam.end year.start year.end
+//     offsets: +Nd / -Nd calendar days, +Nw / -Nw weeks, +Nwd / -Nwd working days (skips Sat/Sun)
+
+import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { execSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
+
+const ROOT = dirname(fileURLToPath(import.meta.url));
+const DATA = join(ROOT, 'data');
+const SITE = ROOT; // site lives at repo root (GitHub Pages serves index.html from /)
+const FEEDS = join(ROOT, 'feeds');
+
+// ---------- tiny YAML-subset parser ----------
+function parseFlatYaml(text) {
+  const scalars = {};
+  const items = [];
+  let current = null;
+  for (let raw of text.split(/\r?\n/)) {
+    const line = raw.replace(/\t/g, '  ');
+    if (!line.trim() || line.trim().startsWith('#')) continue;
+    const listMatch = line.match(/^\s*-\s+(.*)$/);
+    if (listMatch) {
+      current = {};
+      items.push(current);
+      raw = listMatch[1];
+      const kv = raw.match(/^([\w-]+):\s*(.*)$/);
+      if (kv) current[kv[1]] = unquote(kv[2]);
+      continue;
+    }
+    const kv = line.match(/^(\s*)([\w-]+):\s*(.*)$/);
+    if (!kv) throw new Error(`Cannot parse line: "${raw}"`);
+    const [, indent, key, value] = kv;
+    if (indent.length > 0 && current) current[key] = unquote(value);
+    else { scalars[key] = unquote(value); current = null; }
+  }
+  return { scalars, items };
+}
+const unquote = (s) => {
+  const t = s.trim();
+  return (t.startsWith('"') && t.endsWith('"')) || (t.startsWith("'") && t.endsWith("'"))
+    ? t.slice(1, -1) : t;
+};
+
+// ---------- date helpers (all dates are UTC-noon Date objects; output YYYY-MM-DD) ----------
+const parseDate = (s) => {
+  const m = String(s).trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) return null;
+  return new Date(Date.UTC(+m[1], +m[2] - 1, +m[3], 12));
+};
+const fmtDate = (d) => d.toISOString().slice(0, 10);
+const addDays = (d, n) => new Date(d.getTime() + n * 86400000);
+function addWorkingDays(d, n) {
+  const step = n >= 0 ? 1 : -1;
+  let left = Math.abs(n), cur = d;
+  while (left > 0) {
+    cur = addDays(cur, step);
+    const dow = cur.getUTCDay();
+    if (dow !== 0 && dow !== 6) left--;
+  }
+  return cur;
+}
+
+// ---------- load year config ----------
+const yearFile = readdirSync(DATA).filter(f => /^year-.*\.ya?ml$/.test(f)).sort().pop();
+if (!yearFile) throw new Error('No data/year-*.yaml found');
+const yearData = parseFlatYaml(readFileSync(join(DATA, yearFile), 'utf8'));
+const YEAR = yearData.scalars.year || yearFile.replace(/^year-|\.ya?ml$/g, '');
+const periods = {};
+const holidays = [];
+for (const p of yearData.items) {
+  if (!p.id) continue;
+  if (p.kind === 'holiday') {
+    holidays.push({ id: p.id, label: p.label || p.id, start: p.start, end: p.end || p.start });
+    continue;
+  }
+  periods[p.id] = {
+    id: p.id,
+    start: parseDate(p.start), end: parseDate(p.end),
+    examStart: p.exam_start ? parseDate(p.exam_start) : null,
+    examEnd: p.exam_end ? parseDate(p.exam_end) : null,
+    status: p.status || 'confirmed',
+  };
+}
+
+// ---------- load DEI layer (optional) ----------
+const dei = { days: {}, months: {} };
+const deiFile = readdirSync(DATA).filter(f => /^dei-.*\.ya?ml$/.test(f)).sort().pop();
+if (deiFile) {
+  const dd = parseFlatYaml(readFileSync(join(DATA, deiFile), 'utf8'));
+  for (const it of dd.items) {
+    if (it.date && it.label) (dei.days[it.date] = dei.days[it.date] || []).push(it.label);
+    else if (it.month && it.label) (dei.months[it.month] = dei.months[it.month] || []).push(it.label);
+  }
+}
+
+// ---------- resolve `when` expressions ----------
+function resolveAnchor(token, periodId) {
+  const t = token.replace('{P}', periodId || '');
+  if (t === 'year.start') return periods.P1?.start ?? null;
+  if (t === 'year.end') return periods.P6?.end ?? periods.P5?.end ?? null;
+  const m = t.match(/^(P\d)\.(start|end|exam\.start|exam\.end)$/);
+  if (!m) return null;
+  const p = periods[m[1]];
+  if (!p) return null;
+  return { 'start': p.start, 'end': p.end, 'exam.start': p.examStart, 'exam.end': p.examEnd }[m[2]] ?? null;
+}
+function resolveWhen(when, periodId) {
+  const abs = parseDate(when);
+  if (abs) return abs;
+  const m = when.trim().match(/^(\S+)(?:\s+([+-]\d+)(wd|w|d))?$/);
+  if (!m) return null;
+  let d = resolveAnchor(m[1], periodId);
+  if (!d) return null;
+  if (m[2]) {
+    const n = parseInt(m[2], 10);
+    if (m[3] === 'wd') d = addWorkingDays(d, n);
+    else if (m[3] === 'w') d = addDays(d, n * 7);
+    else d = addDays(d, n);
+  }
+  return d;
+}
+
+// ---------- load events, expand instances ----------
+const eventsData = parseFlatYaml(readFileSync(join(DATA, 'events.yaml'), 'utf8'));
+const instances = [];
+const problems = [];
+for (const ev of eventsData.items) {
+  if (!ev.id || !ev.when) { problems.push(`Event missing id/when: ${JSON.stringify(ev)}`); continue; }
+  const reps = ev.repeat ? ev.repeat.split(',').map(s => s.trim()) : [null];
+  for (const p of reps) {
+    const date = resolveWhen(ev.when, p);
+    if (!date) { problems.push(`Cannot resolve "${ev.when}" (period ${p ?? '-'}) for ${ev.id}`); continue; }
+    let endDate = null;
+    if (ev.until) {
+      endDate = resolveWhen(ev.until, p);
+      if (!endDate) problems.push(`Cannot resolve until "${ev.until}" (period ${p ?? '-'}) for ${ev.id}`);
+      else if (endDate < date) { problems.push(`until precedes when for ${ev.id}`); endDate = null; }
+    }
+    const periodStatus = p && periods[p] ? periods[p].status : 'confirmed';
+    instances.push({
+      id: p ? `${ev.id}-${p.toLowerCase()}` : ev.id,
+      title: p ? `${ev.title} (${p})` : ev.title,
+      office: ev.office || 'general',
+      staff: (ev.staff === 'academic' || ev.staff === 'support') ? ev.staff : 'both',
+      date: fmtDate(date),
+      end: fmtDate(endDate || date),
+      audience: ev.audience || '',
+      notes: ev.notes || '',
+      link: ev.link || '',
+      submit: ev.submit === 'yes' || ev.submit === 'true',
+      status: (ev.status === 'unconfirmed' || periodStatus === 'unconfirmed') ? 'unconfirmed' : 'confirmed',
+      confirmedBy: ev.confirmed_by || '',
+      confirmedOn: ev.confirmed_on || '',
+      owner: ev.owner || '',
+    });
+  }
+}
+instances.sort((a, b) => a.date.localeCompare(b.date) || a.office.localeCompare(b.office));
+
+// ---------- write site/events.json + site/events.js (file:// fallback, no server needed) ----------
+mkdirSync(SITE, { recursive: true });
+const payload = {
+  year: YEAR,
+  generated: new Date().toISOString().slice(0, 10),
+  periods: Object.values(periods).map(p => ({
+    id: p.id, start: fmtDate(p.start), end: fmtDate(p.end),
+    exam_start: p.examStart ? fmtDate(p.examStart) : null,
+    exam_end: p.examEnd ? fmtDate(p.examEnd) : null,
+    status: p.status,
+  })),
+  holidays,
+  dei,
+  events: instances,
+};
+writeFileSync(join(SITE, 'events.json'), JSON.stringify(payload, null, 2));
+writeFileSync(join(SITE, 'events.js'), 'window.MSP_EVENTS = ' + JSON.stringify(payload) + ';\n');
+
+// ---------- write feeds/*.ics (confirmed events only) ----------
+// Feed hygiene (28 Sep 2026): RFC 5545 line folding, DTSTAMP = build time, SEQUENCE and
+// LAST-MODIFIED carried forward from the last committed master feed and bumped only for events
+// whose date, title or description changed (so subscribers' clients pick up corrections),
+// refresh hints, a calendar description with the contact line, a URL back to the event on the
+// site, and TRANSP:TRANSPARENT so imported copies do not block anyone's free/busy.
+mkdirSync(FEEDS, { recursive: true });
+const SITE_URL = 'https://msp-operations.github.io/Academic-Calendar/';
+const CONTACT = 'msp-exams@maastrichtuniversity.nl';
+const icsEscape = (s) => String(s).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
+const nowStamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z');
+const hashOf = (...parts) => createHash('sha1').update(parts.join('\u0001')).digest('hex').slice(0, 12);
+
+// RFC 5545 §3.1: content lines are folded at 75 octets; never split inside a UTF-8 sequence.
+function fold(line) {
+  const out = [];
+  let buf = Buffer.from(line, 'utf8');
+  let first = true;
+  while (buf.length > (first ? 75 : 74)) {
+    let cut = first ? 75 : 74;
+    while (cut > 0 && (buf[cut] & 0xC0) === 0x80) cut--;
+    out.push((first ? '' : ' ') + buf.subarray(0, cut).toString('utf8'));
+    buf = buf.subarray(cut);
+    first = false;
+  }
+  out.push((first ? '' : ' ') + buf.toString('utf8'));
+  return out;
+}
+
+// The last committed master feed is the memory for SEQUENCE / LAST-MODIFIED (git is the state).
+function loadPrevious() {
+  let txt = '';
+  try {
+    txt = execSync('git show HEAD:feeds/msp-all.ics', { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+  } catch { return {}; }
+  const unfolded = txt.replace(/\r?\n[ \t]/g, '');
+  const prev = {};
+  for (const block of unfolded.split('BEGIN:VEVENT').slice(1)) {
+    const get = (k) => { const m = block.match(new RegExp('^' + k + '(?:;[^:\\r\\n]*)?:(.*)$', 'm')); return m ? m[1].trim() : ''; };
+    const uid = get('UID');
+    if (!uid) continue;
+    prev[uid] = {
+      seq: parseInt(get('SEQUENCE') || '0', 10) || 0,
+      lastMod: get('LAST-MODIFIED'),
+      hash: hashOf(get('DTSTART'), get('DTEND'), get('SUMMARY'), get('DESCRIPTION')),
+    };
+  }
+  return prev;
+}
+const previous = loadPrevious();
+const feedChanges = { same: 0, bumped: 0, added: 0, bumpedIds: [] };
+const eventProps = new Map();
+function propsFor(uid, d, dEnd, summary, description) {
+  if (eventProps.has(uid)) return eventProps.get(uid);
+  const h = hashOf(d, dEnd, summary, description);
+  const p = previous[uid];
+  let r;
+  if (!p) { r = { seq: 0, lastMod: nowStamp }; feedChanges.added++; }
+  else if (p.hash === h) { r = { seq: p.seq, lastMod: p.lastMod || nowStamp }; feedChanges.same++; }
+  else { r = { seq: p.seq + 1, lastMod: nowStamp }; feedChanges.bumped++; feedChanges.bumpedIds.push(uid.split('-2026')[0]); }
+  eventProps.set(uid, r);
+  return r;
+}
+
+function writeIcs(name, calName, evs) {
+  const lines = [
+    'BEGIN:VCALENDAR', 'VERSION:2.0',
+    'PRODID:-//MSP Operations//Academic Calendar//EN',
+    `X-WR-CALNAME:${icsEscape(calName)}`,
+    `X-WR-CALDESC:${icsEscape(`MSP staff deadlines ${YEAR}. Spotted a wrong date, or know one that is missing? Tell us at ${CONTACT} and we fix it at the source. Web view: ${SITE_URL}`)}`,
+    'CALSCALE:GREGORIAN', 'METHOD:PUBLISH',
+    'REFRESH-INTERVAL;VALUE=DURATION:PT1H',
+    'X-PUBLISHED-TTL:PT1H',
+  ];
+  for (const e of evs) {
+    const d = e.date.replace(/-/g, '');
+    const dEnd = fmtDate(addDays(parseDate(e.end || e.date), 1)).replace(/-/g, '');
+    const uid = `${e.id}-${YEAR.replace(/\W/g, '')}@msp-operations`;
+    const summary = icsEscape(`[MSP ${e.office.toUpperCase()}] ${e.title}`);
+    const description = (e.notes || e.audience)
+      ? icsEscape([e.notes, e.audience && `For: ${e.audience}`].filter(Boolean).join(' | ')) : '';
+    const p = propsFor(uid, d, dEnd, summary, description);
+    lines.push(
+      'BEGIN:VEVENT',
+      `UID:${uid}`,
+      `DTSTAMP:${nowStamp}`,
+      `SEQUENCE:${p.seq}`,
+      `LAST-MODIFIED:${p.lastMod}`,
+      `DTSTART;VALUE=DATE:${d}`,
+      `DTEND;VALUE=DATE:${dEnd}`,
+      `SUMMARY:${summary}`,
+      ...(description ? [`DESCRIPTION:${description}`] : []),
+      `URL:${SITE_URL}?event=${encodeURIComponent(e.id)}`,
+      'TRANSP:TRANSPARENT',
+      'END:VEVENT',
+    );
+  }
+  lines.push('END:VCALENDAR');
+  writeFileSync(join(FEEDS, name), lines.flatMap(fold).join('\r\n') + '\r\n');
+}
+const confirmed = instances.filter(e => e.status === 'confirmed');
+writeIcs('msp-all.ics', `MSP Deadlines ${YEAR} (all offices)`, confirmed);
+writeIcs('msp-academic-staff.ics', `MSP academic staff deadlines ${YEAR}`, confirmed.filter(e => e.staff !== 'support'));
+writeIcs('msp-support-staff.ics', `MSP support staff deadlines ${YEAR}`, confirmed.filter(e => e.staff !== 'academic'));
+for (const office of [...new Set(confirmed.map(e => e.office))]) {
+  writeIcs(`msp-${office}.ics`, `MSP ${office.toUpperCase()} deadlines ${YEAR}`, confirmed.filter(e => e.office === office));
+}
+
+// ---------- report ----------
+console.log(`Year ${YEAR}: ${Object.keys(periods).length} periods, ${instances.length} event instances (${confirmed.length} confirmed -> ics).`);
+console.log(`Feeds vs last commit: ${feedChanges.same} unchanged, ${feedChanges.bumped} changed (SEQUENCE bumped), ${feedChanges.added} new.`);
+if (feedChanges.bumpedIds.length) console.log('  changed: ' + feedChanges.bumpedIds.join(', '));
+if (problems.length) {
+  console.log(`\n${problems.length} problem(s):`);
+  for (const p of problems) console.log('  ! ' + p);
+  process.exitCode = 1;
+}
