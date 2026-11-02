@@ -53,5 +53,38 @@ window.V3 = {
           blurb: 'Offer a Bachelor Thesis Research project to MSP students.', url: 'sites/btr-projects/', note: 'Pending change, not on the live site yet' }
       ]
     }
+  },
+
+  // The staff start page (staff-home.js). Update once a year, with the Academic Calendar:
+  // periods = data/year-2026-27.yaml of the Academic-Calendar repo; keyDates = only the big milestones
+  // (period starts, exam weeks, breaks, and the calendar's events for everyone). The page shows the next five.
+  // kind: 'exam' shows the date in orange.
+  staffHome: {
+    periods: [
+      { id: 'P1', start: '2026-08-31', end: '2026-10-16' },
+      { id: 'P2', start: '2026-10-26', end: '2026-12-11' },
+      { id: 'P3', start: '2027-01-04', end: '2027-01-22' },
+      { id: 'P4', start: '2027-01-25', end: '2027-03-19' },
+      { id: 'P5', start: '2027-03-29', end: '2027-05-21' },
+      { id: 'P6', start: '2027-05-24', end: '2027-06-11' }
+    ],
+    keyDates: [
+      { start: '2026-11-09',                    title: 'Course registration week' },
+      { start: '2026-11-14',                    title: 'Bachelor Open Day' },
+      { start: '2026-11-27',                    title: 'Graduation ceremony' },
+      { start: '2026-12-07', end: '2026-12-11', title: 'P2 exam week', kind: 'exam' },
+      { start: '2026-12-21', end: '2027-01-01', title: 'Christmas break' },
+      { start: '2027-01-04',                    title: 'P3 project period starts' },
+      { start: '2027-01-25',                    title: 'P4 starts' },
+      { start: '2027-02-08', end: '2027-02-12', title: 'Carnival week' },
+      { start: '2027-02-27',                    title: 'Bachelor Open Day' },
+      { start: '2027-03-15', end: '2027-03-19', title: 'P4 exam week', kind: 'exam' },
+      { start: '2027-03-29',                    title: 'P5 starts' },
+      { start: '2027-04-29',                    title: 'Academic advising opens (fall registration)' },
+      { start: '2027-05-17', end: '2027-05-21', title: 'P5 exam week', kind: 'exam' },
+      { start: '2027-05-24',                    title: 'P6 project period starts' },
+      { start: '2027-06-14', end: '2027-06-18', title: 'Resit week P5', kind: 'exam' },
+      { start: '2027-06-21',                    title: 'Summer break begins' }
+    ]
   }
 };
