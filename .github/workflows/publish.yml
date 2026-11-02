@@ -1,0 +1,77 @@
+# Publishes each changed apps/<tool>/ folder to that tool's own repository, which GitHub Pages
+# serves on the tool's address. The folder's history is the tool repository's history (it was
+# brought in with git subtree), so this is a normal fast-forward push, never a force-push.
+#
+# Off until the repository variable PUBLISH_ENABLED is 'true' and the secret PUBLISH_TOKEN holds a
+# token with contents write access to the tool repositories.
+
+name: Publish apps
+
+on:
+  push:
+    branches: [main]
+    paths: ['apps/**']
+  workflow_dispatch:
+    inputs:
+      app:
+        description: 'Folder under apps/ to publish, or "all"'
+        required: true
+        default: all
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: vars.PUBLISH_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { app: msp-online,        repo: MSP-Remodel-Preview }
+          - { app: faq,               repo: MSP-FAQ-s }
+          - { app: btr-dashboard,     repo: btr-dashboard }
+          - { app: tutoring,          repo: Tutoring }
+          - { app: academic-calendar, repo: Academic-Calendar }
+          - { app: project-periods,   repo: Project-Periods }
+          - { app: exams-handbook,    repo: MSP-Exams-Office }
+          - { app: msp-alumni,        repo: msp-alumni }
+          - { app: ce-alumni,         repo: ce-alumni-dashboard }
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Did this tool change?
+        id: changed
+        env:
+          APP: ${{ matrix.app }}
+          EVENT: ${{ github.event_name }}
+          WANTED: ${{ inputs.app }}
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+        run: |
+          go=0
+          if [ "$EVENT" = "workflow_dispatch" ]; then
+            if [ "$WANTED" = "all" ] || [ "$WANTED" = "$APP" ]; then go=1; fi
+          elif [ -z "$BEFORE" ] || ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            go=1
+          elif ! git diff --quiet "$BEFORE" "$AFTER" -- "apps/$APP"; then
+            go=1
+          fi
+          echo "go=$go" >> "$GITHUB_OUTPUT"
+
+      - name: Publish to ${{ matrix.repo }}
+        if: steps.changed.outputs.go == '1'
+        env:
+          APP: ${{ matrix.app }}
+          REPO: ${{ matrix.repo }}
+          TOKEN: ${{ secrets.PUBLISH_TOKEN }}
+        run: |
+          git subtree split --prefix="apps/$APP" -b publish
+          if ! git push "https://x-access-token:${TOKEN}@github.com/msp-operations/${REPO}.git" publish:main; then
+            echo "::error::${REPO} has commits that are not in apps/${APP}. Someone changed the tool repository directly. Pull them in first: git subtree pull --prefix=apps/${APP} https://github.com/msp-operations/${REPO}.git main"
+            exit 1
+          fi

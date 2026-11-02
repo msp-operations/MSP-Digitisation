@@ -1,0 +1,10 @@
+# Never in this public repository
+**/content.staff.json
+.env
+.env.*
+*.local.*
+
+# Tools and OS clutter
+node_modules/
+.DS_Store
+Thumbs.db
