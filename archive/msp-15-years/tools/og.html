@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: "Archivo"; src: url("../assets/fonts/archivo-latin-var.woff2") format("woff2"); font-weight: 100 900; }
+  * { margin: 0; box-sizing: border-box; }
+  body {
+    width: 1200px; height: 630px; background: #f5eedd; color: #101542;
+    font-family: "Archivo", Arial, sans-serif; overflow: hidden;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 26px;
+  }
+  .rule { position: absolute; left: 0; width: 100%; height: 9px;
+    background: linear-gradient(#101542 0 3px, transparent 3px 7px, #e8604c 7px 9px); }
+  .rule.top { top: 44px; }
+  .rule.bottom { bottom: 44px; }
+  .lockup { display: flex; align-items: center; gap: 30px; }
+  .lockup img { width: 120px; }
+  svg.fifteen { width: 210px; overflow: visible; }
+  h1 { font-weight: 800; font-size: 74px; letter-spacing: -0.01em; line-height: 1.02; text-align: center;
+       position: relative; padding-bottom: 22px; }
+  h1::after { content: ""; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+       width: 130px; height: 4px; background: #e8604c; }
+  .kicker { font-weight: 700; font-size: 25px; letter-spacing: .3em; color: #10154299; }
+  .chips { display: flex; gap: 14px; }
+  .chip { background: #101542; color: #f5eedd; font-weight: 700; font-size: 27px;
+    padding: 10px 26px; border-radius: 10px; }
+</style>
+</head>
+<body>
+  <div class="rule top"></div>
+  <div class="lockup">
+    <img src="../assets/img/msp-logo-navy-480.png" alt="">
+    <svg class="fifteen" viewBox="0 0 290 230">
+      <g font-family="'Archivo', Arial, sans-serif" font-weight="800" font-size="200" text-anchor="middle" fill="none">
+        <text x="160" y="198" stroke="#e8604c" stroke-width="2.5">15</text>
+        <text x="152" y="190" stroke="#f0b23e" stroke-width="2.5">15</text>
+        <text x="144" y="182" stroke="#101542" stroke-width="2.5">15</text>
+      </g>
+    </svg>
+  </div>
+  <h1>You're invited:<br>anniversary drinks</h1>
+  <div class="kicker">ALL MSP ALUMNI &amp; STAFF · FREE</div>
+  <div class="chips">
+    <span class="chip">Sat 10 October 2026</span>
+    <span class="chip">from 15:00</span>
+    <span class="chip">Tapijn, Maastricht</span>
+  </div>
+  <div class="rule bottom"></div>
+</body>
+</html>

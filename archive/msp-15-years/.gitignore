@@ -1,0 +1,15 @@
+# Personal data never enters this public repo. RSVP exports, guest lists and
+# spreadsheets of any kind live in the local project folder, outside the clone.
+*.xlsx
+*.csv
+*.pst
+*.msg
+
+# Source images (full-size originals); only stripped derivatives are committed.
+assets/img/**/*-src.*
+
+# Python
+__pycache__/
+
+# Render intermediates (screenshots) never get committed.
+tools/*.png

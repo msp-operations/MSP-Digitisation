@@ -1,0 +1,6 @@
+event.ics -text
+*.png -text
+*.jpg -text
+*.webp -text
+*.ico -text
+*.woff2 -text

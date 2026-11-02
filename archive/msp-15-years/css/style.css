@@ -1,0 +1,368 @@
+/* MSP 15 Years · the MSP15 anniversary identity: cream ground, ink/coral/amber
+   linework, varsity outline numerals, all Archivo. Palette from
+   Operations\Projects\MSP15 Anneversary\MSP15 Logo designs\Final palette designs. */
+
+@font-face {
+  font-family: "Archivo";
+  src: url("../assets/fonts/archivo-latin-var.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+:root {
+  --ink: #101542;
+  --coral: #e8604c;
+  --amber: #f0b23e;
+  --cream: #f5eedd;
+  --panel: #fdf8ec;
+  --ink-soft: rgba(16, 21, 66, 0.72);
+  --sans: "Archivo", Arial, sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-padding-top: 7rem; }
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 1.25rem;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+}
+@media (max-width: 767px) { body { font-size: 1.0625rem; } }
+
+img { max-width: 100%; height: auto; display: block; }
+[hidden] { display: none !important; }
+a { color: inherit; }
+::selection { background: var(--amber); color: var(--ink); }
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 4px; }
+
+.skip {
+  position: absolute; left: 1rem; top: -4rem; z-index: 20;
+  background: var(--ink); color: var(--cream);
+  padding: .5rem 1rem; border-radius: 99rem; text-decoration: none;
+  transition: top .2s;
+}
+.skip:focus { top: 1rem; }
+
+/* ---------- the double rule: ink over coral ---------- */
+.rule-pair {
+  display: block; flex: 1 1 auto; height: 9px; min-width: 1rem;
+  background: linear-gradient(var(--ink) 0 3px, transparent 3px 7px, var(--coral) 7px 9px);
+}
+.rule-pair--full { width: 100%; }
+
+/* ---------- header ---------- */
+.site-head { padding: 1.5rem clamp(1.25rem, 4vw, 2.5rem) 0; }
+.head-inner { display: flex; align-items: center; gap: 1.5rem; }
+.mark {
+  display: flex; align-items: baseline; gap: .6rem;
+  text-decoration: none; line-height: 1;
+}
+.mark-msp, .mark-years {
+  font-weight: 800; letter-spacing: .18em; font-size: 1.35rem;
+  color: var(--ink); text-transform: uppercase;
+}
+.mark-years { font-size: 1.05rem; letter-spacing: .3em; }
+.mark-15 { width: 3.2rem; height: auto; transform: translateY(.5rem); }
+
+.head-nav {
+  display: flex; justify-content: center; align-items: center;
+  gap: clamp(1rem, 3vw, 2.25rem);
+  padding: 1rem 1.25rem 0; flex-wrap: wrap;
+}
+.head-nav a { text-decoration: none; font-size: 1rem; font-weight: 700; }
+.head-nav a:not(.btn):hover { color: var(--coral); }
+
+/* ---------- type ---------- */
+.two-line {
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: .05em; font-weight: 800; color: var(--ink); letter-spacing: -0.01em;
+  position: relative; padding-bottom: 1.1rem;
+}
+.line-serif, .line-sans { line-height: 1.05; }
+.two-line::after {
+  content: ""; position: absolute; bottom: 0; left: 50%;
+  width: 5.5rem; height: 3px; background: var(--coral);
+  transform: translateX(-50%);
+}
+h1.two-line { font-size: clamp(2.25rem, 6.5vw, 4.25rem); }
+h2.two-line { font-size: clamp(1.75rem, 4.5vw, 2.9rem); margin-bottom: 2.5rem; }
+
+.kicker {
+  font-size: .95rem; font-weight: 700; letter-spacing: .3em;
+  text-transform: uppercase; color: var(--ink-soft);
+}
+
+/* ---------- hero ---------- */
+.hero {
+  max-width: 58rem; margin-inline: auto; text-align: center;
+  padding: clamp(2.5rem, 8vh, 6rem) clamp(1.25rem, 4vw, 2.5rem) 4rem;
+  display: flex; flex-direction: column; align-items: center; gap: 1.75rem;
+}
+/* the lockup: the outline 15 centred, the round logo faded behind it */
+.hero-lockup { position: relative; display: grid; place-items: center; }
+.hero-logo { position: absolute; width: clamp(200px, 31vw, 320px); opacity: .15; }
+.hero-15 { position: relative; width: clamp(165px, 25vw, 260px); height: auto; overflow: visible; }
+@media (max-width: 640px) {
+  .hero { gap: 1.1rem; padding-top: 1.75rem; padding-bottom: 2.5rem; }
+}
+.hero-pitch { max-width: 35rem; }
+.date-line { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: center; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: .75rem; justify-content: center; }
+
+/* ---------- chips & buttons ---------- */
+.chip {
+  display: inline-block; font-size: .875rem; font-weight: 700;
+  padding: .35rem .8rem; border-radius: .5rem; letter-spacing: .02em;
+}
+.chip-dark { background: var(--ink); color: var(--cream); }
+.card .chip-dark { margin-bottom: 1rem; }
+
+.btn {
+  display: inline-block; font-family: var(--sans); font-weight: 700; font-size: 1rem;
+  padding: .875rem 1.5rem; border-radius: 99rem; text-decoration: none;
+  border: 2px solid var(--ink); cursor: pointer; line-height: 1.3;
+}
+.btn-small { padding: .5rem 1.1rem; font-size: .9rem; }
+.btn-big { padding: 1.15rem 2.4rem; font-size: 1.2rem; }
+.btn-primary { background: var(--ink); color: var(--cream); }
+.btn-ghost { color: var(--ink); background: transparent; }
+.btn-dark { background: var(--ink); color: var(--cream); }
+@media (prefers-reduced-motion: no-preference) {
+  .btn { transition: transform .25s ease, background .2s, color .2s; }
+  .btn:hover { transform: scale(1.03); }
+}
+.btn-primary:hover, .btn-dark:hover { background: var(--coral); color: var(--ink); border-color: var(--ink); }
+.btn-ghost:hover { background: var(--ink); color: var(--cream); }
+
+/* ---------- sections & cards ---------- */
+.section {
+  max-width: 70rem; margin-inline: auto;
+  padding: 4rem clamp(1.25rem, 4vw, 2.5rem);
+}
+@media (max-width: 767px) { .section { padding-block: 2rem; } }
+.card {
+  background: var(--panel); color: var(--ink);
+  border: 2px solid var(--ink); border-radius: 1.75rem;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+}
+.card h2, .card h3 { line-height: 1.15; margin-bottom: .75rem; font-size: 1.6rem; font-weight: 800; }
+.card p + p { margin-top: 1rem; }
+
+/* accent cycle: ink / coral / amber, carried by borders and chips */
+.card--red { border-color: var(--coral); }
+.card--red .chip-dark { background: var(--coral); color: var(--ink); }
+.card--green { border-color: var(--amber); }
+.card--green .chip-dark { background: var(--amber); color: var(--ink); }
+.card--gold { background: var(--amber); border-color: var(--ink); }
+
+/* the RSVP card gets the loud treatment */
+#rsvp .card { background: var(--coral); border-color: var(--ink); }
+
+#occasion .card, #practical .card, #rsvp .card { max-width: 58rem; margin-inline: auto; }
+
+/* programme grid, with the orbit motif behind it */
+.section-arc {
+  position: relative;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 560'%3E%3Cg fill='none'%3E%3Cellipse cx='1120' cy='150' rx='380' ry='120' stroke='%23f0b23e' stroke-width='3' transform='rotate(-14 1120 150)'/%3E%3Ccircle cx='1420' cy='70' r='9' fill='%23e8604c'/%3E%3Cellipse cx='240' cy='470' rx='300' ry='100' stroke='%23101542' stroke-width='2.5' transform='rotate(-12 240 470)'/%3E%3Ccircle cx='-10' cy='430' r='8' fill='%23f0b23e'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: 50% 100%; background-size: 115% auto;
+  padding-bottom: 8rem;
+}
+/* orbit accents for other sections: same motif, lighter touch. The rule of the
+   house: lines may pass behind solid cards and photos, never behind bare text,
+   so these sit at mid-height where the section's cards are. */
+.arc-tr {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 300'%3E%3Cg fill='none'%3E%3Cellipse cx='660' cy='55' rx='360' ry='105' stroke='%23f0b23e' stroke-width='3' transform='rotate(-12 660 55)'/%3E%3Ccircle cx='330' cy='140' r='8' fill='%23e8604c'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: 100% 62%; background-size: min(52rem, 95%) auto;
+}
+.arc-bl {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 300'%3E%3Cg fill='none'%3E%3Cellipse cx='140' cy='245' rx='330' ry='95' stroke='%23e8604c' stroke-width='2.5' transform='rotate(10 140 245)'/%3E%3Ccircle cx='470' cy='160' r='8' fill='%23f0b23e'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: 0 88%; background-size: min(48rem, 90%) auto;
+}
+#share.arc-tr { background-position: 100% 100%; background-size: min(38rem, 75%) auto; }
+
+.prog-grid {
+  display: grid; gap: 1rem;
+  grid-template-columns: repeat(3, 1fr);
+}
+@media (max-width: 991px) { .prog-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px) { .prog-grid { grid-template-columns: 1fr; } }
+.prog-grid h3 { font-size: 1.35rem; }
+.prog-grid p { font-size: 1rem; }
+
+/* hats-in-the-air filmstrip */
+.hats-intro, .section-intro { text-align: center; margin-bottom: 1.5rem; }
+.hats-strip {
+  display: flex; gap: 1rem; overflow-x: auto;
+  scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch;
+  padding: .25rem .25rem 1rem;
+  scrollbar-color: var(--ink) var(--cream);
+}
+.hats-strip::-webkit-scrollbar { height: 8px; }
+.hats-strip::-webkit-scrollbar-thumb { background: var(--ink); border-radius: 99rem; }
+.hats-strip::-webkit-scrollbar-track { background: transparent; }
+.hat-card {
+  position: relative; flex: 0 0 clamp(270px, 60vw, 430px);
+  border: 2px solid var(--ink); border-radius: 1.5rem; overflow: hidden;
+  background: var(--panel); scroll-snap-align: center; margin: 0;
+}
+.hat-card img { width: 100%; height: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+
+/* photos */
+.photo-grid { display: grid; gap: 1rem; grid-template-columns: 1fr 1fr; }
+@media (max-width: 767px) { .photo-grid { grid-template-columns: 1fr; } }
+.photo-grid figure img {
+  border-radius: 1.5rem; width: 100%; object-fit: cover;
+  border: 2px solid var(--ink);
+  aspect-ratio: 4 / 3; height: auto;
+}
+.photo-grid--single figure img { aspect-ratio: auto; }
+.photo-grid figcaption { font-size: .95rem; margin-top: .6rem; color: var(--ink-soft); }
+.photos-note { margin-top: 1.5rem; text-align: center; color: var(--ink-soft); font-size: 1rem; }
+.ph-credit { display: block; font-size: .8rem; color: var(--ink-soft); margin-top: .15rem; }
+.figure-tapijn { max-width: 34rem; margin-inline: auto; }
+
+/* getting-there page */
+.photo-grid--single { grid-template-columns: 1fr; max-width: 58rem; margin-inline: auto; }
+.route-steps { margin: 1.25rem 0 0 1.35rem; }
+.route-steps li { padding: .4rem 0; font-size: 1.05rem; }
+.route-steps li::marker { font-weight: 800; color: var(--coral); }
+.route-note { margin-top: 1.25rem; font-size: 1rem; color: var(--ink-soft); }
+#walk .card, #arrival .card { max-width: 58rem; margin-inline: auto; }
+.ways-grid h3 { font-size: 1.35rem; }
+.ways-grid p { font-size: 1rem; }
+
+/* facts */
+.fact-list { list-style: none; }
+.fact-list li { padding: .55rem 0; border-bottom: 1px solid rgba(16, 21, 66, .18); font-size: 1.05rem; }
+.fact-list li:last-child { border-bottom: 0; }
+.fact-list a { color: inherit; font-weight: 700; }
+
+/* rsvp */
+.rsvp-actions { margin-top: 1.25rem; }
+.rsvp-note { font-size: .95rem; margin-top: 1.25rem; }
+
+/* calendar + share */
+.cal-actions, .share-actions {
+  display: flex; flex-wrap: wrap; gap: .75rem; justify-content: center; margin-top: .5rem;
+}
+#calendar { text-align: center; }
+.share-block { text-align: center; max-width: 42rem; margin-inline: auto; }
+.share-block p { margin-bottom: 1.5rem; }
+
+/* questions (replaced the FAQ accordions, 1 Sep) */
+.questions-card {
+  max-width: 42rem; margin-inline: auto; text-align: center;
+  display: grid; place-items: center; gap: 1.4rem;
+  padding: clamp(2rem, 5vw, 3rem);
+}
+.questions-line { max-width: 26rem; }
+.rule-pair--mini { flex: none; width: 5.5rem; min-width: 0; }
+
+/* ---------- section dot nav (desktop only) + floating register pill ---------- */
+.dot-nav { display: none; }
+@media (min-width: 992px) {
+  .dot-nav {
+    position: fixed; right: 1.4rem; top: 50%; transform: translateY(-50%);
+    z-index: 40; display: flex; flex-direction: column; gap: 1rem;
+  }
+}
+.dot-nav a {
+  position: relative; display: block; width: 13px; height: 13px;
+  border-radius: 50%; border: 2px solid var(--ink); background: transparent;
+}
+.dot-nav a:hover { background: var(--amber); }
+.dot-nav a.active { background: var(--coral); }
+.dot-nav a span {
+  position: absolute; right: 1.6rem; top: 50%; transform: translateY(-50%);
+  background: var(--ink); color: var(--cream);
+  font-size: .8rem; font-weight: 700; letter-spacing: .02em;
+  padding: .3rem .75rem; border-radius: 99rem; white-space: nowrap;
+  opacity: 0; pointer-events: none; transition: opacity .15s;
+}
+.dot-nav a:hover span, .dot-nav a:focus-visible span { opacity: 1; }
+
+.floating-register {
+  position: fixed; right: 1.25rem; bottom: 1.25rem; z-index: 40;
+  box-shadow: 0 4px 16px rgba(16, 21, 66, .28);
+}
+@media (min-width: 992px) { .floating-register { right: 4rem; } }
+
+/* ---------- footer ---------- */
+.site-foot {
+  margin-top: 4rem; padding: 0 clamp(1.25rem, 4vw, 2.5rem) 2.5rem;
+  display: flex; flex-direction: column; align-items: center; gap: 1.5rem; text-align: center;
+}
+.site-foot .rule-pair--full { margin-bottom: 2rem; }
+.foot-logos { display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; justify-content: center; }
+.foot-logos img { width: auto; }
+.foot-logos img:first-child { height: 96px; }
+.foot-logos img:last-child { height: 40px; }
+.foot-line { font-size: 1rem; color: var(--ink-soft); }
+.foot-line a { font-weight: 700; color: var(--ink); }
+.privacy { max-width: 42rem; font-size: .9rem; color: var(--ink-soft); }
+.privacy summary { cursor: pointer; font-weight: 700; color: var(--ink); }
+.privacy p { margin-top: .75rem; text-align: left; }
+.foot-copy {
+  font-size: .875rem; color: var(--ink); font-weight: 700; letter-spacing: .18em;
+  text-transform: uppercase;
+}
+
+/* ---------- splash: the 15 with the logo spinning behind it, rules sweeping in.
+   Gated on html.js, auto-dismissed by CSS animation (no JS needed to escape it),
+   skipped entirely under reduced motion. ---------- */
+.splash { display: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .js .splash {
+    display: grid; place-items: center;
+    position: fixed; inset: 0; z-index: 100;
+    background: var(--cream); overflow: hidden;
+    animation: splash-out .55s ease 2.2s forwards;
+  }
+  .js body:has(.splash) { overflow: hidden; }
+  .splash-lockup {
+    position: relative; display: grid; place-items: center;
+    animation: splash-pop .6s ease-out both;
+  }
+  .splash-logo {
+    position: absolute; width: clamp(240px, 38vw, 380px); opacity: .18;
+    animation: splash-spin 16s linear infinite;
+  }
+  .splash-15 { position: relative; width: clamp(190px, 30vw, 300px); height: auto; overflow: visible; }
+  .splash-rules {
+    position: absolute; left: 0; width: 100%; height: 9px;
+    background: linear-gradient(var(--ink) 0 3px, transparent 3px 7px, var(--coral) 7px 9px);
+  }
+  .splash-rules--a { top: 17%; animation: rules-in-l .9s ease-out both, rules-drift 5s ease-in-out .9s infinite alternate; }
+  .splash-rules--b { bottom: 17%; animation: rules-in-r .9s ease-out both, rules-drift 5s ease-in-out .9s infinite alternate-reverse; }
+  @keyframes splash-out { to { opacity: 0; visibility: hidden; } }
+  @keyframes splash-pop { from { opacity: 0; transform: scale(.9); } }
+  @keyframes splash-spin { to { transform: rotate(360deg); } }
+  @keyframes rules-in-l { from { transform: translateX(-100%); } }
+  @keyframes rules-in-r { from { transform: translateX(100%); } }
+  @keyframes rules-drift { from { translate: -1.5% 0; } to { translate: 1.5% 0; } }
+}
+
+/* ---------- reveals (gated on html.js so no-JS visitors see everything) ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .js .reveal {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity .6s ease, transform .6s ease;
+    transition-delay: var(--d, 0s);
+  }
+  .js .reveal.in { opacity: 1; transform: none; }
+}
+
+/* Weekend card carries two sub-headings after body copy, so h3 needs breathing room */
+#weekend h3 { margin-top: 1.6rem; }
+
+/* Two cards, so the shared three-column grid would leave a dead column */
+#alsoon .prog-grid { grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 640px) { #alsoon .prog-grid { grid-template-columns: 1fr; } }

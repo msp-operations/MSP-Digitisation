@@ -1,0 +1,17 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//MSP//MSP 15 Years//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:msp15-20261010@msp-operations.github.io
+DTSTAMP:20260831T130000Z
+DTSTART:20261010T130000Z
+DTEND:20261010T173000Z
+SUMMARY:MSP 15 Years · Anniversary Drinks
+DESCRIPTION:Fifteen years of Maastricht Science Programme. Alumni talks\, 
+ the quiz and a proper borrel. Details: https://msp15.nl/
+LOCATION:Tapijn\, Tapijnkazerne 20\, 6211 ME Maastricht
+URL:https://msp15.nl/
+END:VEVENT
+END:VCALENDAR
