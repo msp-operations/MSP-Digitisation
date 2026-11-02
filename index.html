@@ -34,7 +34,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="light dark">
+<meta name="color-scheme" content="light">
 <title>MSP Student FAQ</title>
 <meta name="description" content="Search the Maastricht Science Programme student FAQ.">
 <link rel="manifest" href="manifest.webmanifest">
@@ -84,6 +84,7 @@
      Only the tokens that must change are re-declared; everything else is
      inherited from :root. */
   html.dark{
+    color-scheme:dark;
     --ink:#e6ebf2; --muted:#93a1b5; --line:#26303f; --bg:#0f1620;
     --card:#182231; --surface:#182231; --link:#ff7a7a; --um:#e4001b; --markbg:#4a3d12;
     /* On dark cards the bright topic hue is the readable one, so the darkened
@@ -555,14 +556,12 @@ const announce=m=>{$('#live').textContent='';setTimeout(()=>$('#live').textConte
 
 /* ---------------------------------------------------------------------------
    2. THEME
-   Dark mode is a class on <html>. A stored choice wins; with no stored choice
-   the app follows the operating system and keeps following it live.
+   Dark mode is a class on <html>. Light by default (Martijn, 2 Nov 2026), also
+   when the operating system is dark; dark only after choosing it with the toggle.
    --------------------------------------------------------------------------- */
-function applyTheme(){const stored=localStorage.getItem('faqTheme');
-  const dark=stored?stored==='dark':matchMedia('(prefers-color-scheme:dark)').matches;
+function applyTheme(){const dark=localStorage.getItem('faqTheme')==='dark';
   document.documentElement.classList.toggle('dark',dark);
   const b=$('#themeBtn');if(b)b.innerHTML=svg(dark?'_sun':'_moon');}
-matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>{if(!localStorage.getItem('faqTheme'))applyTheme();});
 
 /* ---------------------------------------------------------------------------
    3. TOPIC COLOURS
