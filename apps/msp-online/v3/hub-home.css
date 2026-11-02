@@ -260,3 +260,38 @@ body.hub-home .v3-home > :not(.shp){display:none!important}
 .is-students .sh-opts{grid-template-columns:2fr 1fr}
 .is-students .sh-mailrow{flex-wrap:wrap;row-gap:6px}
 @media (min-width:901px) and (max-width:1440px){ .is-students .sh-opt .mail{font-size:14px} }
+
+/* ── the square look (2 Nov 2026): square corners, flat colours, no glow, no decoration ── */
+.shp .sh-card{border-radius:2px;background:#062B55;box-shadow:none;transition:background .15s}
+.shp .sh-card:hover{transform:none;background:#0B3A6E;box-shadow:none}
+.shp .sh-card.tall{background:#6ED2EC;box-shadow:none}
+.shp .sh-card.tall:hover{background:#86DAF0}
+.shp .sh-card.dots::after{display:none}
+.shp .sh-card .tag,.shp .sh-month,.shp .sh-month i,.shp .sh-count,.shp .sh-card .meter,.shp .sh-card .meter i{border-radius:2px}
+.shp .sh-steps li::before{border-radius:2px}
+.shp .sh-search label,.shp .sh-ask,.shp .sh-ask button,.shp .sh-pop button,.shp .sh-res,.shp .sh-res button{border-radius:2px}
+.shp .sh-res{box-shadow:0 10px 24px -12px rgba(1,27,60,.3)}
+.shp .sh-sc,.shp .sh-sc .si{border-radius:2px}
+.shp .sh-sc:hover{transform:none}
+.shp .sh-opts,.shp .sh-opt .copy,.shp .sh-opt .go,.shp .sh-tourbtn{border-radius:2px}
+.shp .sh-ann .mspan{border-radius:2px}
+.sh-tspot{border-radius:2px}
+.sh-tcard{border-radius:2px;box-shadow:0 16px 40px -18px rgba(1,27,60,.5)}
+.sh-tback,.sh-tnext{border-radius:2px}
+.sh-ghost{border-radius:2px!important}
+html .mspfb{border-radius:2px;box-shadow:0 20px 50px -20px rgba(1,27,60,.45)}
+html .mspfb .chips span,html .mspfb textarea,html .mspfb input[type=text],html .mspfb button{border-radius:2px}
+
+/* ── no icons (2 Nov 2026): a plain category word above the title, an arrow to say "open" ── */
+.shp .sh-card .kick{font-size:12.5px;font-weight:600;letter-spacing:.01em;color:rgba(255,255,255,.6)}
+.shp .sh-card.tall .kick{color:rgba(1,27,60,.68)}
+.shp .sh-card h3{font-size:18px;letter-spacing:-.015em}
+.shp .sh-card .end{padding-right:26px}
+.shp .sh-card .arr{position:absolute;right:18px;bottom:16px;font-size:16px;line-height:1;color:rgba(255,255,255,.45);transition:color .15s,transform .15s}
+.shp .sh-card:hover .arr{color:#fff;transform:translateX(2px)}
+.shp .sh-sc{padding:11px 14px;border-left:3px solid #6ED2EC}
+.shp .sh-tourbtn{padding:4px 11px}
+@media (min-width:901px) and (max-height:880px){ .shp .sh-card h3{font-size:16.5px} .shp .sh-card .arr{right:14px;bottom:13px} .shp .sh-sc{padding:7px 12px} }
+.shp .sh-card .ch{gap:10px}
+.shp .sh-card .ch .tag{white-space:nowrap;flex-shrink:0}
+.shp .sh-card .ch .kick{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}

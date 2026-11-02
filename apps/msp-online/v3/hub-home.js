@@ -28,6 +28,8 @@
   var STUDENT_NOTE = { 'faq': 'msp-faqs.nl', 'course-planner': 'Plan your courses', 'btr': 'msp-btr.nl', 'msp-alumni': 'msp-alumni.nl' };
   var STUDENT_ORDER = ['faq', 'course-planner', 'btr', 'msp-alumni'];
   var POPULAR = ['Resits', 'Course registration', 'Thesis (BTR)', 'Going abroad'];
+  var KICK = { 'academic-calendar': 'Deadlines', 'tutoring': 'Teaching', 'btr-projects': 'Theses', 'plan-reviews': 'Advising',
+               'course-planner': 'Studies', 'faq': 'Answers', 'btr': 'Your thesis', 'msp-alumni': 'After MSP' };
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function el(html) { var t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstChild; }
@@ -111,7 +113,7 @@
         '<div class="sh-dateline"><span class="dnum">' + today.getDate() + '</span>' +
           '<span class="dtext"><b>' + fmt(today, { weekday: 'long' }) + '</b><small>' + fmt(today, { month: 'long', year: 'numeric' }) + '</small></span>' +
           '<span class="rule" aria-hidden="true"></span><span class="wk">Week ' + isoWeek(today) + '</span>' +
-          '<button type="button" class="sh-tourbtn" aria-label="Take the tour of this page">' + I('help') + '<span>Tour</span></button></div>' +
+          '<button type="button" class="sh-tourbtn" aria-label="Take the tour of this page">Tour</button></div>' +
         '<div class="sh-ann" hidden></div>' +
         search +
         '<nav class="sh-cards" aria-label="' + (staff ? 'Staff tools' : 'Student tools') + '"></nav>' +
@@ -128,6 +130,10 @@
     function card(id, cls, inner) {
       var t = byId[id]; if (!t) return null;
       var a = el('<a class="sh-card ' + cls + '" href="#' + esc(id) + '" data-id="' + esc(id) + '">' + inner(t) + '</a>');
+      // no icons: a plain category word above the title, and an arrow at the bottom right (2 Nov 2026)
+      var ic = a.querySelector('.ic');
+      if (ic) { var k = document.createElement('span'); k.className = 'kick'; k.textContent = KICK[id] || ''; ic.parentNode.replaceChild(k, ic); }
+      if (cls.indexOf('tall') < 0) a.insertAdjacentHTML('beforeend', '<span class="arr" aria-hidden="true">&rarr;</span>');
       a.addEventListener('click', function (e) { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) return; e.preventDefault(); go(a, t); });
       cards.appendChild(a); return a;
     }
@@ -183,7 +189,7 @@
       document.body.appendChild(g);
       Array.prototype.forEach.call(g.children, function (c) { c.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 180, fill: 'forwards' }); });
       var anim = g.animate([
-        { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px', borderRadius: '16px', backgroundColor: from },
+        { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px', borderRadius: '2px', backgroundColor: from },
         { left: '0px', top: '0px', width: to.w + 'px', height: to.h + 'px', borderRadius: '0px', backgroundColor: '#011B3C' }
       ], { duration: 560, easing: 'cubic-bezier(.65,0,.35,1)', fill: 'forwards' });
       var done = false, finish = function () { if (done) return; done = true; g.remove(); };
@@ -244,7 +250,7 @@
     (ctx.students || []).forEach(function (t) { stu[t.id] = t; });
     STUDENT_ORDER.forEach(function (id) {
       var t = stu[id]; if (!t) return;
-      sgrid.appendChild(el('<a class="sh-sc" href="' + esc(ctx.studentHub + '#' + id) + '"><span class="si">' + I(t.icon) + '</span><span class="st2"><b>' + esc(t.name) + '</b><small>' + esc(STUDENT_NOTE[id] || t.hint || '') + '</small></span></a>'));
+      sgrid.appendChild(el('<a class="sh-sc" href="' + esc(ctx.studentHub + '#' + id) + '"><span class="st2"><b>' + esc(t.name) + '</b><small>' + esc(STUDENT_NOTE[id] || t.hint || '') + '</small></span></a>'));
     });
 
     // ── live: the Academic Calendar ──
