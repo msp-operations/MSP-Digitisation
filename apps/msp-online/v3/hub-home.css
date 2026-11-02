@@ -264,3 +264,22 @@ html .mspfb .chips span,html .mspfb textarea,html .mspfb input[type=text],html .
 .shp .sh-card .ch{gap:10px}
 .shp .sh-card .ch .tag{white-space:nowrap;flex-shrink:0}
 .shp .sh-card .ch .kick{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ── a bigger date (2 Nov 2026) ── */
+.shp .sh-dateline{gap:16px}
+.shp .sh-dateline .dnum{font-size:64px;letter-spacing:-.04em;line-height:.9}
+.shp .sh-dateline .dtext b{font-family:var(--msp-font-display);font-size:19px;font-weight:700;letter-spacing:-.01em;color:#011B3C}
+.shp .sh-dateline .dtext small{font-size:14.5px;margin-top:2px}
+.shp .sh-dateline .wk{font-size:13px}
+@media (min-width:901px) and (max-height:880px){
+  .shp .sh-dateline .dnum{font-size:48px}
+  .shp .sh-dateline .dtext b{font-size:16px} .shp .sh-dateline .dtext small{font-size:13px}
+}
+@media (min-width:901px) and (max-height:700px){ .shp .sh-dateline .dnum{font-size:40px} }
+@media (max-width:900px){ .shp .sh-dateline .dnum{font-size:48px} .shp .sh-dateline .dtext b{font-size:16px} }
+@media (min-width:901px) and (max-height:880px){
+  .shp .sh-dateline .dnum{font-size:44px}
+  .shp .sh-search,.shp .sh-ask{margin-top:10px} .shp .sh-cards{margin-top:10px}
+  .is-staff .sh-stu{margin-top:8px} .is-staff .sh-contact{margin-top:10px;padding-top:8px}
+  .is-staff .sh-card{padding:12px 14px}
+}
