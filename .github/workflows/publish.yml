@@ -30,7 +30,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { app: msp-online,        repo: MSP-Remodel-Preview }
+          - { app: msp-online,        repo: MSP-Digital }
           - { app: faq,               repo: MSP-FAQ-s }
           - { app: btr-dashboard,     repo: btr-dashboard }
           - { app: tutoring,          repo: Tutoring }

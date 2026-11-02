@@ -11,7 +11,7 @@ own repositories. See *Switching over* below.
 
 | Folder | What it is | Live at | Publishes to repo | Backend |
 |---|---|---|---|---|
-| `apps/msp-online/` | MSP Online: one front door for all tools, a student hub and a staff hub | msp-operations.github.io/MSP-Remodel-Preview (newest: `/v3/`) | MSP-Remodel-Preview | none yet (staff side behind a soft password) |
+| `apps/msp-online/` | MSP Digital Hub: one front door for all tools, a student hub and a staff hub (repo renamed from MSP-Remodel-Preview on 2 Nov 2026) | msp-operations.github.io/MSP-Digital (students: `/v3/`, staff: `/v3/staff.html`) | MSP-Digital | none yet |
 | `apps/faq/` | Student FAQ: search-first answers, offline copy, admissions journey | msp-faqs.nl | MSP-FAQ-s | none (static) |
 | `apps/btr-dashboard/` | Bachelor Thesis Research: timelines, guides, rubrics, supervisor pages, project catalogue | msp-btr.nl | btr-dashboard | Formspree (project submissions) |
 | `apps/tutoring/` | Tutor registration and the office dashboard | msp-tutoring.nl | Tutoring | Supabase (EU, Frankfurt) |
