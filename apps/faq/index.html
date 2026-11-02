@@ -698,6 +698,9 @@ async function load(){
   renderTopics();renderChips();renderQuick();buildPopular();renderRecent();renderStaffPanel();wireExtras();
   $('#heroSub').textContent='Search '+data.meta.count+' answers, or browse the topics below.';
   restoreStudent();router();
+  /* A search handed over in the link (the MSP Digital Hub's search box opens ?q=...). */
+  const handed=new URLSearchParams(location.search).get('q');
+  if(handed){const q=$('#q');q.value=handed;q.dispatchEvent(new Event('input'));}
 }
 /* One card per topic, in the order content.json lists them (set by TOPICS in
    tools/convert.mjs). The card carries its topic colour as an inline --c and
