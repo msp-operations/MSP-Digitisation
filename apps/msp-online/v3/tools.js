@@ -22,8 +22,11 @@ window.V3 = {
       tools: [
         { id: 'faq',             name: 'Student FAQ',     icon: 'help',     hint: 'Answers from the office', card: 'search', cta: 'Open the FAQ',
           blurb: 'Search-first answers to the questions students ask the office.', url: 'https://msp-faqs.nl/' },
+        // the planner team's web version with the advising backend (Arthur, Panos), shown as a preview from 2 Nov 2026;
+        // the Canvas file stays the version for registration until this one has the final data and UM sign-in
         { id: 'course-planner',  name: 'Course Planner',  icon: 'calendar', hint: 'Plan your courses', card: 'tall', cta: 'Plan your courses',
-          blurb: 'Build a clash-free schedule and track your progress.', url: 'sites/course-planner/index.html', ownNav: true },
+          blurb: 'Build a clash-free schedule and track your progress.', url: 'https://arthurgallaxy.github.io/msp-course-lab-selector-development/',
+          ownNav: true, note: 'Preview of the new planner: test accounts only' },
         { id: 'project-periods', name: 'Project Periods', icon: 'target',   hint: 'P3 and P6 projects', mark: 'P3 · P6',
           blurb: 'The P3 and P6 project catalogue and your preferences.', url: 'sites/project-periods/', note: 'Pending change, not on the live site yet' },
         { id: 'btr',             name: 'BTR Dashboard',   icon: 'book',     hint: 'Your bachelor thesis',
@@ -40,6 +43,10 @@ window.V3 = {
           blurb: 'Offer a P3 or P6 project, or run the allocation as the committee.', url: 'sites/project-periods/', note: 'Pending change, not on the live site yet' },
         { id: 'academic-calendar', name: 'Academic Calendar',  icon: 'clock',     hint: 'Deadlines per office', card: 'tall', cta: 'Open the calendar',
           blurb: 'Every operational deadline per office and period.', url: 'sites/academic-calendar/', note: 'Pending change, not on the live site yet', ownNav: true },
+        { id: 'plan-reviews',      name: 'Plan reviews',       icon: 'clipboard', hint: 'Advisors and study plans', card: 'tall', cta: 'Open, then sign in as advisor',
+          blurb: 'Advisors sign in under Account to see the study plans students send from the Course Planner, and approve or comment.',
+          url: 'https://arthurgallaxy.github.io/msp-course-lab-selector-development/', ownNav: true,
+          note: 'Preview of the new planner: test accounts only' },
         { id: 'tutoring',          name: 'Tutor Registration', icon: 'users',     hint: 'Tutorial groups',
           blurb: 'Claim the tutorial groups you want to teach; the office allocates from here.', url: 'https://msp-tutoring.nl/' },
         { id: 'btr-projects',      name: 'BTR Projects',       icon: 'briefcase', hint: 'Offer a thesis project',
