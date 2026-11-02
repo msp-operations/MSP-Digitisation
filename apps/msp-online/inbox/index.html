@@ -3,15 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Team inbox · MSP Digital Hub</title>
+<title>Team console · MSP Digital Hub</title>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#011B3C">
 <link rel="icon" type="image/png" href="../msp-ui/favicon.png">
 <link rel="stylesheet" href="../msp-ui/msp-ui.css">
 <style>
-  /* The team inbox: feedback sent from the two hubs ("Something not working?").
-     Only the people in hub_admin can read it (database rules in backend/hub-feedback.sql);
-     sign-in is a one-time link by email, no password. */
+  /* The team console of the MSP Digital Hub.
+     Inbox: feedback sent from the two hubs ("Something not working?").
+     Announcements: the banner at the top of the hubs.
+     Only the people in hub_admin can read or change anything (database rules in backend/*.sql);
+     sign-in is a one-time link by email, no password. The address stays /inbox/ because Supabase
+     only sends sign-in links to addresses on its redirect list. */
   body{margin:0;font-family:var(--msp-font);background:var(--msp-g0);color:var(--msp-g9);-webkit-font-smoothing:antialiased}
   .top{background:var(--msp-navy);color:#fff}
   .wrap{max-width:980px;margin:0 auto;padding:0 24px;box-sizing:border-box}
@@ -27,7 +30,7 @@
   h1{font-family:var(--msp-font-display);font-size:28px;letter-spacing:-.02em;margin:0 0 6px}
   .sub{color:var(--msp-g5);font-size:14px;margin:0 0 24px}
   .panel{background:#fff;border:1px solid var(--msp-g2);border-radius:16px;padding:24px;max-width:460px}
-  .panel label{display:block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--msp-g5);margin-bottom:8px}
+  .panel label,.form label.l{display:block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--msp-g5);margin-bottom:8px}
   .panel input{width:100%;box-sizing:border-box;height:44px;border:1.5px solid var(--msp-g2);border-radius:10px;padding:0 12px;font:inherit;font-size:15px}
   .panel input:focus{outline:2px solid var(--msp-sky);outline-offset:1px;border-color:var(--msp-navy)}
   .btn{border:0;border-radius:10px;background:var(--msp-navy);color:#fff;font:inherit;font-size:14px;font-weight:700;padding:11px 18px;cursor:pointer}
@@ -36,6 +39,17 @@
   .btn:focus-visible{outline:2px solid var(--msp-sky);outline-offset:2px}
   .msg{font-size:13.5px;margin:12px 0 0;line-height:1.5}
   .msg.err{color:var(--msp-err)} .msg.ok{color:var(--msp-ok)}
+
+  /* tabs */
+  .tabs{display:flex;gap:4px;border-bottom:1px solid var(--msp-g2);margin-bottom:20px}
+  .tabs button{border:0;background:none;font:inherit;font-size:14.5px;font-weight:600;color:var(--msp-g5);padding:10px 14px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px;display:flex;align-items:center;gap:8px}
+  .tabs button:hover{color:var(--msp-g9)}
+  .tabs button.on{color:var(--msp-navy);border-bottom-color:var(--msp-sky)}
+  .tabs button:focus-visible{outline:2px solid var(--msp-sky);outline-offset:2px}
+  .badge{font-size:11px;font-weight:700;background:var(--msp-e-bg);color:var(--msp-e);border-radius:999px;padding:1px 8px}
+  .badge:empty{display:none}
+
+  /* inbox */
   .bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px}
   .bar select{height:38px;border:1.5px solid var(--msp-g2);border-radius:9px;padding:0 10px;font:inherit;font-size:13.5px;background:#fff}
   .bar label{display:flex;align-items:center;gap:6px;font-size:13.5px;color:var(--msp-g7)}
@@ -46,23 +60,45 @@
   .tag{font-size:11px;font-weight:700;letter-spacing:.04em;padding:3px 9px;border-radius:999px;background:var(--msp-a-bg);color:var(--msp-a)}
   .tag.Problem{background:var(--msp-e-bg);color:var(--msp-e)} .tag.Suggestion{background:var(--msp-b-bg);color:var(--msp-b)} .tag.Other{background:var(--msp-g1);color:var(--msp-g7)}
   .tag.tool{background:var(--msp-navy);color:#fff}
+  .tag.live{background:var(--msp-ok-bg);color:var(--msp-ok)} .tag.scheduled{background:var(--msp-inf-bg);color:var(--msp-inf)}
+  .tag.ended,.tag.off{background:var(--msp-g1);color:var(--msp-g5)}
   .text{white-space:pre-wrap;font-size:14.5px;line-height:1.55;margin:0 0 10px}
   .acts{display:flex;gap:8px;flex-wrap:wrap}
   .acts button{border:1px solid var(--msp-g2);background:#fff;border-radius:8px;padding:6px 11px;font:inherit;font-size:12.5px;font-weight:600;color:var(--msp-g7);cursor:pointer}
   .acts button:hover{background:var(--msp-g1)} .acts .del:hover{background:var(--msp-err-bg);color:var(--msp-err);border-color:var(--msp-err-bd)}
   .empty{color:var(--msp-g5);font-size:14px;padding:30px 0}
+
+  /* announcements */
+  .form{background:#fff;border:1px solid var(--msp-g2);border-radius:16px;padding:22px;margin-bottom:24px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .form .full{grid-column:1/-1}
+  .form h2{grid-column:1/-1;font-family:var(--msp-font-display);font-size:18px;margin:0}
+  .form textarea,.form input,.form select{width:100%;box-sizing:border-box;border:1.5px solid var(--msp-g2);border-radius:10px;padding:9px 12px;font:inherit;font-size:14px;background:#fff;color:var(--msp-g9)}
+  .form textarea{min-height:76px;resize:vertical}
+  .form textarea:focus,.form input:focus,.form select:focus{outline:2px solid var(--msp-sky);outline-offset:1px;border-color:var(--msp-navy)}
+  .form .hint{font-size:12px;color:var(--msp-g5);margin-top:5px}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chips label{position:relative;margin:0}
+  .chips input{position:absolute;opacity:0;pointer-events:none;width:auto}
+  .chips span{display:inline-block;padding:7px 12px;border:1.5px solid var(--msp-g2);border-radius:999px;font-size:13px;font-weight:600;color:var(--msp-g7);cursor:pointer;background:#fff;text-transform:none;letter-spacing:0}
+  .chips input:checked+span{background:var(--msp-navy);border-color:var(--msp-navy);color:#fff}
+  .chips input:focus-visible+span{outline:2px solid var(--msp-sky);outline-offset:2px}
+  .preview{grid-column:1/-1;background:linear-gradient(180deg,#0A3060,#011B3C);border-radius:14px;padding:16px}
+  .preview .cap{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:8px}
+  .form .row{grid-column:1/-1;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .form .row .msg{margin:0}
+  @media(max-width:640px){.form{grid-template-columns:1fr}}
   [hidden]{display:none!important}
 </style>
 </head>
 <body>
 <header class="top"><div class="wrap">
-  <a class="brand" href="../v3/staff.html"><img src="../msp-ui/msp-emblem-white.png" alt=""><span><small>MSP Digital Hub</small><b>Team inbox</b></span></a>
+  <a class="brand" href="../v3/staff.html"><img src="../msp-ui/msp-emblem-white.png" alt=""><span><small>MSP Digital Hub</small><b>Team console</b></span></a>
   <div class="who" id="who" hidden><span id="whoEmail"></span><button type="button" id="signOut">Sign out</button></div>
 </div></header>
 
 <main class="wrap">
-  <h1>Team inbox</h1>
-  <p class="sub">What students and staff send with "Something not working?" on the two hubs.</p>
+  <h1>Team console</h1>
+  <p class="sub">For the people who build the MSP Digital Hub: what users send us, and what the hubs announce.</p>
 
   <section class="panel" id="signin" hidden>
     <form id="signinForm">
@@ -75,29 +111,89 @@
   </section>
 
   <section class="panel" id="notTeam" hidden>
-    <p class="msg err" style="margin-top:0">You are signed in as <b id="ntEmail"></b>, but this address is not on the team list for the inbox.</p>
+    <p class="msg err" style="margin-top:0">You are signed in as <b id="ntEmail"></b>, but this address is not on the team list.</p>
     <p class="msg">Ask Martijn to add it.</p>
   </section>
 
-  <section id="list" hidden>
-    <div class="bar">
-      <select id="fTool" aria-label="Filter by tool"><option value="">All tools</option></select>
-      <select id="fHub" aria-label="Filter by hub"><option value="">Both hubs</option><option value="students">Student hub</option><option value="staff">Staff hub</option></select>
-      <label><input type="checkbox" id="fOpen" checked> Open only</label>
-      <button class="btn ghost" type="button" id="csv">Export CSV</button>
-      <button class="btn ghost" type="button" id="reload">Refresh</button>
-      <span class="count" id="count"></span>
+  <section id="console" hidden>
+    <nav class="tabs" role="tablist" aria-label="Team console">
+      <button type="button" role="tab" data-tab="inbox" id="tabInbox">Inbox <span class="badge" id="openBadge"></span></button>
+      <button type="button" role="tab" data-tab="ann" id="tabAnn">Announcements</button>
+    </nav>
+
+    <!-- inbox -->
+    <div id="pInbox" role="tabpanel" aria-labelledby="tabInbox">
+      <div class="bar">
+        <select id="fTool" aria-label="Filter by tool"><option value="">All tools</option></select>
+        <select id="fHub" aria-label="Filter by hub"><option value="">Both hubs</option><option value="students">Student hub</option><option value="staff">Staff hub</option></select>
+        <label><input type="checkbox" id="fOpen" checked> Open only</label>
+        <button class="btn ghost" type="button" id="csv">Export CSV</button>
+        <button class="btn ghost" type="button" id="reload">Refresh</button>
+        <span class="count" id="count"></span>
+      </div>
+      <div id="items"></div>
     </div>
-    <div id="items"></div>
+
+    <!-- announcements -->
+    <div id="pAnn" role="tabpanel" aria-labelledby="tabAnn" hidden>
+      <form class="form" id="annForm" novalidate>
+        <h2 id="annTitle">New announcement</h2>
+        <div class="full">
+          <label class="l" for="aMsg">Message</label>
+          <textarea id="aMsg" maxlength="280" required placeholder="e.g. Spring course registration opens 16 Nov: the Course Planner has the new schedule."></textarea>
+          <div class="hint"><span id="aLeft">280</span> characters left. Plain text; no personal details.</div>
+        </div>
+        <div>
+          <span class="l" style="display:block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--msp-g5);margin-bottom:8px">Show on</span>
+          <div class="chips">
+            <label><input type="radio" name="aHub" value="students" checked><span>Student hub</span></label>
+            <label><input type="radio" name="aHub" value="staff"><span>Staff hub</span></label>
+            <label><input type="radio" name="aHub" value="both"><span>Both</span></label>
+          </div>
+        </div>
+        <div>
+          <span class="l" style="display:block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--msp-g5);margin-bottom:8px">Style</span>
+          <div class="chips">
+            <label><input type="radio" name="aTone" value="info" checked><span>Info</span></label>
+            <label><input type="radio" name="aTone" value="important"><span>Important</span></label>
+          </div>
+        </div>
+        <div>
+          <label class="l" for="aUrl">Link (optional)</label>
+          <input id="aUrl" type="url" placeholder="https://…">
+        </div>
+        <div>
+          <label class="l" for="aLinkText">Link text</label>
+          <input id="aLinkText" type="text" maxlength="40" placeholder="More">
+        </div>
+        <div>
+          <label class="l" for="aFrom">Show from</label>
+          <input id="aFrom" type="datetime-local">
+          <div class="hint">Empty = now.</div>
+        </div>
+        <div>
+          <label class="l" for="aUntil">Until (optional)</label>
+          <input id="aUntil" type="datetime-local">
+          <div class="hint">Empty = until you switch it off.</div>
+        </div>
+        <div class="preview"><div class="cap">Preview</div><div id="aPreview"></div></div>
+        <div class="row">
+          <button class="btn" type="submit" id="aSave">Publish</button>
+          <button class="btn ghost" type="button" id="aCancel" hidden>Cancel editing</button>
+          <p class="msg" id="aMsgOut" role="status"></p>
+        </div>
+      </form>
+      <div id="annItems"></div>
+    </div>
   </section>
 </main>
 
 <script src="../backend.js"></script>
 <script>
 (function () {
-  var B = MSPBackend.config, KEY = 'msp-inbox-session', session = null, rows = [];
+  var B = MSPBackend.config, KEY = 'msp-inbox-session', session = null, rows = [], anns = [], editing = null;
   var $ = function (id) { return document.getElementById(id); };
-  function show(id) { ['signin', 'notTeam', 'list'].forEach(function (x) { $(x).hidden = x !== id; }); }
+  function show(id) { ['signin', 'notTeam', 'console'].forEach(function (x) { $(x).hidden = x !== id; }); }
   function store(s) { session = s; try { if (s) localStorage.setItem(KEY, JSON.stringify(s)); else localStorage.removeItem(KEY); } catch (e) {} }
   function load() { try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { return null; } }
 
@@ -114,7 +210,10 @@
       method: opts.method || 'GET',
       headers: { apikey: B.key, Authorization: 'Bearer ' + token, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
       body: opts.body ? JSON.stringify(opts.body) : undefined
-    }).then(function (r) { return r.text().then(function (t) { if (!r.ok) throw new Error(t || ('HTTP ' + r.status)); return t ? JSON.parse(t) : null; }); });
+    }).then(function (r) { return r.text().then(function (t) {
+      if (!r.ok) { var m = t; try { m = JSON.parse(t).message || t; } catch (e) {} throw new Error(m || ('HTTP ' + r.status)); }
+      return t ? JSON.parse(t) : null;
+    }); });
   }
 
   // a valid access token, refreshed when it is about to expire
@@ -171,10 +270,24 @@
       });
     }).then(function (ok) {
       if (!ok) { $('ntEmail').textContent = session.email; show('notTeam'); return; }
-      show('list'); refresh();
+      show('console'); tab(sessionStorage.getItem('console-tab') || 'inbox'); refresh(); loadAnns();
     }).catch(function () { store(null); $('who').hidden = true; show('signin'); });
   }
 
+  // ── tabs ──
+  function tab(which) {
+    $('pInbox').hidden = which !== 'inbox'; $('pAnn').hidden = which !== 'ann';
+    $('tabInbox').classList.toggle('on', which === 'inbox'); $('tabAnn').classList.toggle('on', which === 'ann');
+    $('tabInbox').setAttribute('aria-selected', which === 'inbox'); $('tabAnn').setAttribute('aria-selected', which === 'ann');
+    try { sessionStorage.setItem('console-tab', which); } catch (e) {}
+  }
+  $('tabInbox').addEventListener('click', function () { tab('inbox'); });
+  $('tabAnn').addEventListener('click', function () { tab('ann'); });
+
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function when(iso) { return new Date(iso).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }); }
+
+  // ── inbox ──
   function refresh() {
     token().then(function (t) { return rest('hub_feedback?select=*&order=created_at.desc&limit=1000', null, t); })
       .then(function (data) {
@@ -186,7 +299,7 @@
         sel.value = tools.indexOf(keep) >= 0 ? keep : '';
         render();
       })
-      .catch(function (err) { $('items').innerHTML = ''; var p = document.createElement('p'); p.className = 'msg err'; p.textContent = 'Could not load the inbox: ' + err.message; $('items').appendChild(p); });
+      .catch(function (err) { $('items').innerHTML = ''; $('items').appendChild(el('p', 'msg err', 'Could not load the inbox: ' + err.message)); });
   }
 
   function visible() {
@@ -195,19 +308,18 @@
     });
   }
 
-  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
-
   function render() {
-    var list = visible(), box = $('items');
+    var list = visible(), box = $('items'), open = rows.filter(function (r) { return !r.handled; }).length;
     box.innerHTML = '';
-    $('count').textContent = list.length + ' shown · ' + rows.filter(function (r) { return !r.handled; }).length + ' open';
+    $('openBadge').textContent = open ? String(open) : '';
+    $('count').textContent = list.length + ' shown · ' + open + ' open';
     if (!list.length) { box.appendChild(el('p', 'empty', rows.length ? 'Nothing matches these filters.' : 'No feedback yet.')); return; }
     list.forEach(function (r) {
       var it = el('article', 'item' + (r.handled ? ' done' : ''));
       var meta = el('div', 'meta');
       meta.appendChild(el('span', 'tag tool', r.tool));
       meta.appendChild(el('span', 'tag ' + r.category, r.category));
-      meta.appendChild(el('span', null, new Date(r.created_at).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })));
+      meta.appendChild(el('span', null, when(r.created_at)));
       meta.appendChild(el('span', null, r.hub === 'staff' ? 'staff hub' : 'student hub'));
       if (r.name) meta.appendChild(el('span', null, 'from ' + r.name));
       it.appendChild(meta);
@@ -245,6 +357,108 @@
   ['fTool', 'fHub', 'fOpen'].forEach(function (id) { $(id).addEventListener('change', render); });
   $('reload').addEventListener('click', refresh);
 
+  // ── announcements ──
+  function radio(name) { return (document.querySelector('input[name=' + name + ']:checked') || {}).value; }
+  function setRadio(name, v) { var r = document.querySelector('input[name=' + name + '][value="' + v + '"]'); if (r) r.checked = true; }
+  function toLocal(iso) { if (!iso) return ''; var d = new Date(iso); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 16); }
+  function fromLocal(v) { return v ? new Date(v).toISOString() : null; }
+  function status(a) {
+    var now = Date.now();
+    if (!a.active) return ['off', 'Off'];
+    if (new Date(a.starts_at).getTime() > now) return ['scheduled', 'Scheduled'];
+    if (a.ends_at && new Date(a.ends_at).getTime() <= now) return ['ended', 'Ended'];
+    return ['live', 'Live now'];
+  }
+  function draft() {
+    return { id: 'preview', message: $('aMsg').value.trim(), tone: radio('aTone'), hub: radio('aHub'),
+             link_url: $('aUrl').value.trim() || null, link_text: $('aLinkText').value.trim() || null };
+  }
+  function preview() {
+    $('aLeft').textContent = 280 - $('aMsg').value.length;
+    var d = draft();
+    MSPAnnounce.render($('aPreview'), d.message ? [d] : [], { preview: true });
+    if (!d.message) { $('aPreview').hidden = false; $('aPreview').textContent = 'Type a message to see it here.'; $('aPreview').style.color = 'rgba(255,255,255,.55)'; $('aPreview').style.fontSize = '13px'; }
+    else { $('aPreview').style.color = ''; $('aPreview').style.fontSize = ''; }
+  }
+  ['aMsg', 'aUrl', 'aLinkText'].forEach(function (id) { $(id).addEventListener('input', preview); });
+  document.querySelectorAll('input[name=aTone],input[name=aHub]').forEach(function (r) { r.addEventListener('change', preview); });
+
+  function resetForm() {
+    editing = null; $('annForm').reset(); setRadio('aHub', 'students'); setRadio('aTone', 'info');
+    $('annTitle').textContent = 'New announcement'; $('aSave').textContent = 'Publish'; $('aCancel').hidden = true; preview();
+  }
+  $('aCancel').addEventListener('click', function () { resetForm(); $('aMsgOut').textContent = ''; });
+
+  function loadAnns() {
+    token().then(function (t) { return rest('hub_announcement?select=*&order=starts_at.desc&limit=200', null, t); })
+      .then(function (data) { anns = data || []; renderAnns(); })
+      .catch(function (err) { $('annItems').innerHTML = ''; $('annItems').appendChild(el('p', 'msg err', 'Could not load the announcements: ' + err.message)); });
+  }
+
+  function renderAnns() {
+    var box = $('annItems'); box.innerHTML = '';
+    if (!anns.length) { box.appendChild(el('p', 'empty', 'No announcements yet.')); return; }
+    anns.forEach(function (a) {
+      var st = status(a), it = el('article', 'item' + (st[0] === 'ended' || st[0] === 'off' ? ' done' : ''));
+      var meta = el('div', 'meta');
+      meta.appendChild(el('span', 'tag ' + st[0], st[1]));
+      meta.appendChild(el('span', 'tag tool', a.hub === 'both' ? 'Both hubs' : a.hub === 'staff' ? 'Staff hub' : 'Student hub'));
+      if (a.tone === 'important') meta.appendChild(el('span', 'tag Problem', 'Important'));
+      meta.appendChild(el('span', null, 'from ' + when(a.starts_at) + (a.ends_at ? ' until ' + when(a.ends_at) : '')));
+      if (a.created_by) meta.appendChild(el('span', null, 'by ' + a.created_by.split('@')[0]));
+      it.appendChild(meta);
+      var p = el('p', 'text', a.message);
+      if (a.link_url) { p.appendChild(document.createTextNode(' ')); var l = el('a', null, (a.link_text || 'More') + ' →'); l.href = a.link_url; l.target = '_blank'; l.rel = 'noopener'; p.appendChild(l); }
+      it.appendChild(p);
+      var acts = el('div', 'acts');
+      var eb = el('button', null, 'Edit'); eb.type = 'button';
+      eb.addEventListener('click', function () {
+        editing = a; $('aMsg').value = a.message; setRadio('aHub', a.hub); setRadio('aTone', a.tone);
+        $('aUrl').value = a.link_url || ''; $('aLinkText').value = a.link_text || '';
+        $('aFrom').value = toLocal(a.starts_at); $('aUntil').value = toLocal(a.ends_at);
+        $('annTitle').textContent = 'Edit announcement'; $('aSave').textContent = 'Save changes'; $('aCancel').hidden = false;
+        preview(); $('aMsg').focus(); window.scrollTo({ top: $('annForm').offsetTop - 20, behavior: 'smooth' });
+      });
+      var tb = el('button', null, a.active ? 'Switch off' : 'Switch on'); tb.type = 'button';
+      tb.addEventListener('click', function () { saveAnn(a.id, { active: !a.active }); });
+      var db = el('button', 'del', 'Delete'); db.type = 'button';
+      db.addEventListener('click', function () {
+        if (!confirm('Delete this announcement for good?')) return;
+        token().then(function (t) { return rest('hub_announcement?id=eq.' + encodeURIComponent(a.id), { method: 'DELETE' }, t); })
+          .then(loadAnns, function (err) { alert('Could not delete: ' + err.message); });
+      });
+      acts.appendChild(eb); acts.appendChild(tb); acts.appendChild(db);
+      it.appendChild(acts);
+      box.appendChild(it);
+    });
+  }
+
+  function saveAnn(id, patch) {
+    return token().then(function (t) {
+      return id ? rest('hub_announcement?id=eq.' + encodeURIComponent(id), { method: 'PATCH', body: patch }, t)
+                : rest('hub_announcement', { method: 'POST', body: patch }, t);
+    }).then(loadAnns, function (err) { alert('Could not save: ' + err.message); throw err; });
+  }
+
+  $('annForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var out = $('aMsgOut'), d = draft();
+    out.className = 'msg';
+    if (!d.message) { out.className = 'msg err'; out.textContent = 'Write the message first.'; $('aMsg').focus(); return; }
+    if (d.link_url && !/^https:\/\//.test(d.link_url)) { out.className = 'msg err'; out.textContent = 'The link has to start with https://'; $('aUrl').focus(); return; }
+    var from = fromLocal($('aFrom').value), until = fromLocal($('aUntil').value);
+    if (until && new Date(until) <= new Date(from || Date.now())) { out.className = 'msg err'; out.textContent = '"Until" has to be after "Show from".'; return; }
+    var body = { message: d.message, hub: d.hub, tone: d.tone, link_url: d.link_url, link_text: d.link_url ? d.link_text : null, ends_at: until };
+    if (from) body.starts_at = from; else if (!editing) body.starts_at = new Date().toISOString();
+    $('aSave').disabled = true;
+    saveAnn(editing && editing.id, body).then(function () {
+      $('aSave').disabled = false; out.className = 'msg ok';
+      out.textContent = editing ? 'Saved.' : 'Published. It shows on the hub from the start time.';
+      resetForm();
+    }, function () { $('aSave').disabled = false; });
+  });
+
+  resetForm();
   start();
 })();
 </script>

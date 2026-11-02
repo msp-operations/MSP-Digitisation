@@ -4,7 +4,13 @@
 
    MSPFeedback.open({ hub: 'students' | 'staff', tools: ['Student FAQ', ...] })
      opens the "Something not working?" form: tool, kind, message, optional name. If sending fails
-     it offers the feedback email address instead, so nothing is lost. */
+     it offers the feedback email address instead, so nothing is lost.
+
+   MSPAnnounce.mount(element, 'students' | 'staff')
+     shows the announcements the team switched on in the team console (backend/hub-announcements.sql).
+     The database only hands out the ones inside their dates; a visitor can hide one (remembered per
+     browser). If the backend is unreachable nothing is shown. MSPAnnounce.render(element, list) draws
+     a given list (the console uses it for its preview). */
 (function (global) {
   'use strict';
 
@@ -119,6 +125,71 @@
     var first = d.querySelector('input[name=tool]'); if (first) first.focus();
   }
 
+  // ── announcements ──
+  var ANN_CSS = [
+    '.mspan-list{display:flex;flex-direction:column;gap:10px}',
+    '.mspan{display:flex;align-items:flex-start;gap:12px;padding:13px 14px 13px 16px;border-radius:14px;color:#fff;font-size:14px;line-height:1.5;',
+    '  background:rgba(110,210,236,.13);border:1px solid rgba(110,210,236,.45)}',
+    '.mspan.important{background:rgba(232,119,34,.16);border-color:rgba(232,119,34,.6)}',
+    '.mspan .i{flex-shrink:0;width:20px;height:20px;margin-top:1px;color:#6ED2EC}',
+    '.mspan.important .i{color:#F59E4B}',
+    '.mspan .t{flex:1;min-width:0}',
+    '.mspan .t a{color:#6ED2EC;font-weight:700;margin-left:6px;white-space:nowrap}',
+    '.mspan.important .t a{color:#FBBF77}',
+    '.mspan .t a:hover{color:#fff}',
+    '.mspan .x{flex-shrink:0;width:28px;height:28px;margin:-3px -4px -3px 0;border:0;border-radius:8px;background:transparent;color:rgba(255,255,255,.6);cursor:pointer;font-size:18px;line-height:1}',
+    '.mspan .x:hover,.mspan .x:focus-visible{background:rgba(255,255,255,.12);color:#fff;outline:none}'
+  ].join('\n');
+  var ICON_INFO = '<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+  var ICON_IMPORTANT = '<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+
+  function ensureCss(id, css) {
+    if (document.getElementById(id)) return;
+    var st = document.createElement('style'); st.id = id; st.textContent = css; document.head.appendChild(st);
+  }
+  function hidden() { try { return JSON.parse(localStorage.getItem('mspan-hidden') || '[]'); } catch (e) { return []; } }
+  function hide(id) { try { var h = hidden(); h.push(id); localStorage.setItem('mspan-hidden', JSON.stringify(h.slice(-50))); } catch (e) {} }
+
+  function render(box, list, opts) {
+    opts = opts || {};
+    ensureCss('mspan-css', ANN_CSS);
+    box.innerHTML = '';
+    var skip = opts.preview ? [] : hidden();
+    var show = (list || []).filter(function (a) { return a && a.message && skip.indexOf(a.id) < 0; }).slice(0, 3);
+    if (!show.length) { box.hidden = true; return; }
+    box.hidden = false;
+    var wrap = document.createElement('div'); wrap.className = 'mspan-list';
+    show.forEach(function (a) {
+      var el = document.createElement('div');
+      el.className = 'mspan' + (a.tone === 'important' ? ' important' : '');
+      el.setAttribute('role', 'status');
+      el.innerHTML = (a.tone === 'important' ? ICON_IMPORTANT : ICON_INFO) + '<div class="t"></div>';
+      var t = el.querySelector('.t'); t.textContent = a.message;
+      if (a.link_url && /^https:\/\//.test(a.link_url)) {
+        var l = document.createElement('a'); l.href = a.link_url; l.textContent = (a.link_text || 'More') + ' →';
+        if (!/^https:\/\/msp-operations\.github\.io\//.test(a.link_url)) { l.target = '_blank'; l.rel = 'noopener'; }
+        t.appendChild(l);
+      }
+      var x = document.createElement('button'); x.type = 'button'; x.className = 'x'; x.setAttribute('aria-label', 'Hide this message'); x.textContent = '×';
+      x.addEventListener('click', function () { if (!opts.preview && a.id) hide(a.id); el.remove(); if (!wrap.children.length) box.hidden = true; });
+      el.appendChild(x);
+      wrap.appendChild(el);
+    });
+    box.appendChild(wrap);
+  }
+
+  function mount(box, hub) {
+    if (!box) return;
+    box.hidden = true;
+    var which = hub === 'staff' ? 'staff' : 'students';
+    var ctl = global.AbortController ? new AbortController() : null;
+    if (ctl) setTimeout(function () { ctl.abort(); }, 5000);
+    fetch(BACKEND.url + '/rest/v1/hub_announcement?select=id,hub,tone,message,link_url,link_text&hub=in.(' + which + ',both)&order=starts_at.desc&limit=5', {
+      headers: { apikey: BACKEND.key, Authorization: 'Bearer ' + BACKEND.key }, signal: ctl ? ctl.signal : undefined
+    }).then(function (r) { return r.ok ? r.json() : []; }).then(function (list) { render(box, list); }).catch(function () {});
+  }
+
   global.MSPBackend = { config: BACKEND, rpc: rpc };
   global.MSPFeedback = { open: open };
+  global.MSPAnnounce = { mount: mount, render: render };
 })(window);

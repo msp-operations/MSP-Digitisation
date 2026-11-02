@@ -94,6 +94,7 @@
   .h-switch{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.8);text-decoration:none;padding:9px 16px;border:1px solid rgba(255,255,255,.2);border-radius:999px;transition:all .2s;white-space:nowrap}
   .h-switch:hover,.h-switch:focus-visible{background:#fff;color:var(--msp-navy);border-color:#fff;outline:none}
   .h-switch svg{width:14px;height:14px}
+  .hb-notice{margin-top:8px}
   .hb-hero{padding-top:30px}
   .hb-hero h1{font-family:var(--msp-font-display);font-weight:700;font-size:56px;line-height:1.04;letter-spacing:-.03em;margin:0;color:#fff}
   .hb-hero p{margin:14px 0 0;max-width:760px;font-size:15px;line-height:1.6;color:rgba(255,255,255,.65)}
@@ -238,6 +239,7 @@
       <a class="h-switch" id="homeSwitch" href="#"></a>
     </header>
     <div class="hb-wrap">
+      <div class="hb-notice" id="hNotice" hidden></div>
       <section class="hb-hero"><h1 id="hName"></h1><p id="hLine"></p></section>
       <nav class="hb-grid" id="hGrid" aria-label="All tools"></nav>
     </div>
@@ -387,9 +389,11 @@
     MSPFeedback.open({ hub: key, tools: tools.map(function (t) { return t.name; }), returnFocus: e.currentTarget });
   });
   $('hGrid').appendChild(contact);
-  // the staff hub links to the team inbox (only the hub team can sign in there)
+  // announcements the team switched on in the team console
+  MSPAnnounce.mount($('hNotice'), key);
+  // the staff hub links to the team console (only the hub team can sign in there)
   if (key === 'staff') {
-    var inbox = document.createElement('a'); inbox.href = '../inbox/'; inbox.textContent = 'Team inbox';
+    var inbox = document.createElement('a'); inbox.href = '../inbox/'; inbox.textContent = 'Team console';
     var foot = document.querySelector('.hb-foot'); foot.appendChild(document.createTextNode(' · ')); foot.appendChild(inbox);
   }
   // the search card opens its tool with the question in the link (?q=), which the FAQ picks up

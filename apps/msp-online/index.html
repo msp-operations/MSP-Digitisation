@@ -34,6 +34,7 @@
   .foot{padding-top:40px;padding-bottom:28px;font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.02em}
 
   /* heading */
+  .notice{margin-top:8px}
   .hero{padding-top:30px}
   .hero h1{font-family:var(--msp-font-display);font-weight:700;font-size:56px;line-height:1.04;letter-spacing:-.03em;margin:0}
   .hero p{margin:14px 0 0;max-width:760px;font-size:15px;line-height:1.6;color:rgba(255,255,255,.65)}
@@ -133,6 +134,7 @@
 </header>
 
 <main class="wrap">
+  <div class="notice" id="notice" hidden></div>
   <section class="hero">
     <h1>MSP Digital Hub</h1>
     <p id="line"></p>
@@ -222,9 +224,11 @@
   });
   grid.appendChild(c);
 
-  // the staff hub links to the team inbox (only the hub team can sign in there)
+  // announcements the team switched on in the team console
+  MSPAnnounce.mount(document.getElementById('notice'), HUBKEY);
+  // the staff hub links to the team console (only the hub team can sign in there)
   if (HUBKEY === 'staff') {
-    var inbox = document.createElement('a'); inbox.href = 'inbox/'; inbox.textContent = 'Team inbox';
+    var inbox = document.createElement('a'); inbox.href = 'inbox/'; inbox.textContent = 'Team console';
     var foot = document.querySelector('.foot'); foot.appendChild(document.createTextNode(' · ')); foot.appendChild(inbox);
   }
 })();
