@@ -7,7 +7,8 @@ One Supabase project for all MSP tools, in the MSP organisation, EU region (Fran
   a signed-in user with the right role.
 - **Migrations live here**, one folder per schema. Nothing changes in the database without a
   migration file in this folder.
-- **Today:** only Tutoring is connected (its setup and SQL are in `apps/tutoring/app/supabase/`; its
+- **Hub feedback (2 Nov 2026):** `hub-feedback.sql` (copy of `apps/msp-online/backend/hub-feedback.sql`): table hub_feedback, submit_hub_feedback(), team list hub_admin, read via `apps/msp-online/inbox/`. Live.
+- **Today:** Tutoring is connected (its setup and SQL are in `apps/tutoring/app/supabase/`; its
   keepalive workflow stops the free project from pausing). Project Periods has a schema ready
   (`apps/project-periods/`) but runs in preview mode.
 - **Next:** course planner data (frame schedules, catalogue: no personal data), so the scheduling
