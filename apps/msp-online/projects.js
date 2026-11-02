@@ -19,7 +19,8 @@
    CE Alumni is deliberately not on either hub (Martijn, 6 Oct 2026).
 */
 window.MSP_HUBS = {
-  students: { title: 'For Students', line: 'Answers from the office, your course plan, projects, your thesis and where graduates went.', other: 'staff', otherLabel: 'Staff tools', file: 'index.html' },
+  // The student hub links to no other hub (2 Nov 2026), so students never see the staff side; staff open staff.html.
+  students: { title: 'For Students', line: 'Answers from the office, your course plan, projects, your thesis and where graduates went.', file: 'index.html' },
   staff:    { title: 'For Staff', line: 'The tools behind the programme, for support and academic staff.', other: 'students', otherLabel: 'Student tools', file: 'staff.html' }
 };
 

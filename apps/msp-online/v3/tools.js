@@ -10,12 +10,14 @@
    mark  = a big word shown on the card instead of the icon (e.g. 'P3 · P6')
    cta   = the link text at the bottom of a 'search' or 'tall' card
    The order here is the order of the cards (left to right, top to bottom) and of the menu.
+   other / otherLabel = the hub this one links to. The student hub links to none (2 Nov 2026), so students never
+   see the staff side; staff open it at staff.html.
    Edit this file to add, remove or reorder tools. Version 2 (the restyle) is separate. */
 window.V3 = {
   name: 'MSP Digital Hub',   // Martijn, 2 Nov 2026 (was the placeholder 'MSP Online')
   suites: {
     students: {
-      label: 'Students', one: 'student', title: 'For Students', other: 'staff', otherLabel: 'Staff tools',
+      label: 'Students', one: 'student', title: 'For Students',
       line: 'Answers from the office, your course plan, projects, your thesis and where graduates went.',
       tools: [
         { id: 'faq',             name: 'Student FAQ',     icon: 'help',     hint: 'Answers from the office', card: 'search', cta: 'Open the FAQ',
