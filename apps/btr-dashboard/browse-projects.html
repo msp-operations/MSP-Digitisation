@@ -1,0 +1,348 @@
+<!--
+  ============================================================================
+  browse-projects.html — STUDENT-FACING PROJECT CATALOG
+  ============================================================================
+  This page shows every BTR project students can browse. The actual project
+  data lives in `projects-data.js` — to add or edit a project you only edit
+  that file, NOT this one. See README.md in the repo for the full guide.
+
+  HOW THIS PAGE IS PUT TOGETHER:
+    1. <header> at the top — logos and navigation
+    2. <section class="hero"> — page title
+    3. <div class="disclaimer"> — yellow warning that the catalog is not
+       exhaustive and students should still email faculty directly
+    4. <main> — splits into:
+         <aside class="filters"> — sidebar with search + checkboxes
+         <div id="grid">         — grid of project cards
+    5. <div class="modal"> — popup window that opens when you click a card
+    6. <script src="projects-data.js"> — loads the project list
+    7. <script> at the bottom — builds filters, renders cards, handles modal
+
+  Only edit this file if you want to change the layout / styling.
+  ============================================================================
+-->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Browse BTR Projects — Maastricht Science Programme</title>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KJ51G48F42"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-KJ51G48F42');
+    </script>
+
+<meta name="description" content="Browse Bachelor Thesis Research projects offered by Maastricht Science Programme supervisors and partner institutions. Filter by discipline, type, and topic.">
+<link rel="icon" type="image/png" href="msp-logo.png">
+<link rel="apple-touch-icon" href="msp-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#001C3D;
+    --accent:#00A2DB;
+    --ink:#0f1a2b;
+    --muted:#5b6472;
+    --line:#e3e6ec;
+    --bg:#ffffff;
+    --bg-soft:#f7f8fa;
+    --max:1200px;
+    --radius:8px;
+    --serif:'Fraunces',Georgia,'Times New Roman',serif;
+    --sans:'Inter Tight',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--sans);color:var(--ink);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:var(--navy)}
+
+  .topbar{border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50;backdrop-filter:saturate(180%) blur(8px);background:rgba(255,255,255,.92)}
+  .topbar-inner{max-width:var(--max);margin:0 auto;padding:18px 28px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+  .logos{display:flex;align-items:center;gap:22px}
+  .logos img{display:block;height:44px;width:auto}
+  .logos .divider{width:1px;height:34px;background:var(--line)}
+  .topbar nav{font-size:13.5px;color:var(--muted);display:flex;gap:26px}
+  .topbar nav a{color:var(--muted);font-weight:500;text-decoration:none}
+  .topbar nav a:hover{color:var(--navy)}
+  .topbar nav a.active{color:var(--navy)}
+
+  .hero{background:linear-gradient(180deg,#001C3D 0%, #002a55 100%);color:#fff;border-bottom:3px solid var(--accent);position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;background-image:radial-gradient(circle at 85% 20%, rgba(0,162,219,.18), transparent 55%);pointer-events:none}
+  .hero-inner{max-width:var(--max);margin:0 auto;padding:60px 28px 56px;position:relative}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;text-transform:uppercase;letter-spacing:.16em;font-size:11.5px;font-weight:600;color:var(--accent);margin-bottom:14px}
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(0,162,219,.18)}
+  .hero h1{font-family:var(--serif);font-weight:500;font-size:46px;line-height:1.08;margin:0 0 12px;letter-spacing:-.02em}
+  .hero p{max-width:680px;font-size:16px;color:#cfd6e1;margin:0}
+
+  .disclaimer{max-width:var(--max);margin:28px auto 0;padding:0 28px}
+  .disclaimer-inner{background:#fff8e6;border:1px solid #f5dca6;border-left:4px solid #d99b00;border-radius:var(--radius);padding:16px 20px;font-size:14px;color:#5a4400;display:flex;gap:14px;align-items:flex-start}
+  .disclaimer-inner svg{flex-shrink:0;width:22px;height:22px;color:#d99b00;margin-top:1px}
+  .disclaimer-inner strong{color:#3a2d00}
+
+  main{max-width:var(--max);margin:0 auto;padding:36px 28px 80px;display:grid;grid-template-columns:260px 1fr;gap:36px}
+  @media (max-width:900px){main{grid-template-columns:1fr;padding:28px 22px 60px;gap:24px}}
+
+  aside.filters{position:sticky;top:96px;align-self:start;font-size:14px}
+  @media (max-width:900px){aside.filters{position:static}}
+  .filter-group{margin-bottom:26px}
+  .filter-group h3{font-family:var(--serif);font-weight:500;font-size:15px;color:var(--navy);margin:0 0 12px;letter-spacing:.01em;text-transform:uppercase;font-size:11.5px;letter-spacing:.12em;font-weight:700;color:var(--muted);font-family:var(--sans)}
+  .filter-group label{display:flex;align-items:center;gap:9px;padding:6px 0;cursor:pointer;color:#374151;font-size:13.5px}
+  .filter-group label:hover{color:var(--navy)}
+  .filter-group input[type=checkbox]{accent-color:var(--accent);width:15px;height:15px}
+  .filter-group input[type=text]{width:100%;font:inherit;font-size:14px;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:10px 12px}
+  .filter-group input[type=text]:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,162,219,.16)}
+  .clear-btn{display:inline-block;font-size:12.5px;color:var(--accent);background:none;border:0;padding:0;cursor:pointer;font-weight:600;margin-top:4px}
+  .clear-btn:hover{text-decoration:underline}
+
+  .results-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:12px}
+  .results-count{font-family:var(--serif);font-size:22px;color:var(--navy);font-weight:500}
+  .results-count em{font-style:normal;color:var(--accent)}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:18px}
+  .card{border:1px solid var(--line);border-radius:12px;background:#fff;padding:20px 22px;cursor:pointer;transition:all .18s;display:flex;flex-direction:column;gap:10px;text-align:left;font:inherit;color:inherit}
+  .card:hover{border-color:#cdd3dc;transform:translateY(-2px);box-shadow:0 14px 36px -22px rgba(0,28,61,.3)}
+  .card h3{font-family:var(--serif);font-size:18px;color:var(--navy);font-weight:500;margin:0;line-height:1.3;letter-spacing:-.01em}
+  .card .sup{font-size:13px;color:var(--muted);font-weight:500}
+  .card .desc{font-size:13.5px;color:#4b5563;margin:0;line-height:1.55;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .card .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:8px}
+  .tag{font-size:11px;padding:3px 9px;border-radius:99px;background:#f0f8fc;color:var(--accent);font-weight:600;letter-spacing:.02em}
+  .tag.type{background:#fef3e6;color:#b06800}
+  .tag.loc{background:#f3f4f6;color:#4b5563;font-weight:500}
+
+  .empty{text-align:center;padding:60px 20px;color:var(--muted);font-size:14px}
+  .empty strong{display:block;color:var(--navy);font-family:var(--serif);font-size:20px;font-weight:500;margin-bottom:6px}
+
+  /* modal */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,28,61,.55);backdrop-filter:blur(3px);z-index:100;opacity:0;pointer-events:none;transition:opacity .2s}
+  .modal-overlay.active{opacity:1;pointer-events:auto}
+  .modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-48%);width:min(720px,calc(100vw - 32px));max-height:86vh;background:#fff;border-radius:14px;z-index:101;opacity:0;pointer-events:none;transition:all .2s;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 30px 80px -20px rgba(0,28,61,.5)}
+  .modal.active{opacity:1;pointer-events:auto;transform:translate(-50%,-50%)}
+  .modal-head{padding:24px 28px 18px;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+  .modal-head h2{font-family:var(--serif);font-size:24px;font-weight:500;color:var(--navy);margin:0 0 6px;letter-spacing:-.01em;line-height:1.2}
+  .modal-head .sup{font-size:13.5px;color:var(--muted)}
+  .modal-close{background:none;border:0;font-size:26px;color:var(--muted);cursor:pointer;line-height:1;padding:0 4px}
+  .modal-close:hover{color:var(--navy)}
+  .modal-body{padding:22px 28px 28px;overflow-y:auto}
+  .modal-body .tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+  .modal-body h4{font-family:var(--sans);font-size:11.5px;text-transform:uppercase;letter-spacing:.12em;font-weight:700;color:var(--muted);margin:18px 0 8px}
+  .modal-body p{margin:0 0 10px;font-size:14.5px;color:#374151;line-height:1.6}
+  .modal-body ul{margin:0 0 10px;padding-left:20px;font-size:14px;color:#374151}
+  .modal-body li{margin-bottom:4px}
+  .modal-body .contact-row{display:flex;flex-direction:column;gap:6px;background:#f7f8fa;border:1px solid var(--line);border-radius:8px;padding:14px 16px;font-size:14px;margin-top:18px}
+  .modal-body .contact-row strong{color:var(--navy);font-weight:600}
+  .modal-body .contact-row a{color:var(--accent);text-decoration:none}
+  .modal-body .contact-row a:hover{text-decoration:underline}
+
+  footer{background:var(--navy);color:#cfd6e1;border-top:3px solid var(--accent)}
+  .footer-inner{max-width:var(--max);margin:0 auto;padding:38px 28px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+  .footer-inner img{height:38px;width:auto;filter:brightness(0) invert(1);opacity:.95}
+  .footer-inner .contact{font-size:14px}
+  .footer-inner .contact a{color:#fff;text-decoration:underline}
+  .footer-inner .copy{font-size:12px;color:#8a93a3}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR: logos on the left link back to landing page; nav on the right -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" class="logos" aria-label="Home">
+      <img src="maastricht-university-logo.png" alt="Maastricht University">
+      <span class="divider"></span>
+      <img src="msp-logo.png" alt="Maastricht Science Programme">
+    </a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="submit-project.html">For Supervisors</a>
+      <a href="browse-projects.html" class="active">For Students</a>
+      <a href="mailto:msp-btr@maastrichtuniversity.nl">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow"><span class="dot"></span> Browse BTR Projects</div>
+    <h1>Find your bachelor thesis research.</h1>
+    <p>Projects offered by MSP supervisors and partner institutions. Filter by discipline, type of work and topic.</p>
+  </div>
+</section>
+
+<!-- DISCLAIMER: required by Panos — make clear the catalog is NOT exhaustive -->
+<div class="disclaimer">
+  <div class="disclaimer-inner">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v5"/><path d="M12 16h.01"/></svg>
+    <div><strong>Important:</strong> This catalog only contains projects that supervisors have voluntarily submitted. It is <strong>not</strong> the full set of opportunities. You are still expected to email faculty independently with your own ideas and to explore other research groups within and outside Maastricht University.</div>
+  </div>
+</div>
+
+<!--
+  MAIN LAYOUT: 2 columns
+    - Left column (aside): filter sidebar
+    - Right column: results count + grid of project cards
+-->
+<main>
+  <aside class="filters">
+    <div class="filter-group">
+      <h3>Search</h3>
+      <input id="search" type="text" placeholder="Title, supervisor, keyword…">
+    </div>
+    <div class="filter-group">
+      <h3>Discipline</h3>
+      <div id="disc-filters"></div>
+    </div>
+    <div class="filter-group">
+      <h3>Project type</h3>
+      <div id="type-filters"></div>
+    </div>
+    <button class="clear-btn" id="clear">Clear all filters</button>
+  </aside>
+
+  <div>
+    <div class="results-header">
+      <div class="results-count"><em id="count">0</em> projects</div>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div class="empty" id="empty" style="display:none">
+      <strong>No projects match your filters</strong>
+      Try removing a filter or clearing the search.
+    </div>
+  </div>
+</main>
+
+<div class="modal-overlay" id="overlay" onclick="closeModal()"></div>
+<div class="modal" id="modal" role="dialog" aria-modal="true">
+  <div class="modal-head">
+    <div>
+      <h2 id="m-title"></h2>
+      <div class="sup" id="m-sup"></div>
+    </div>
+    <button class="modal-close" onclick="closeModal()" aria-label="Close">×</button>
+  </div>
+  <div class="modal-body" id="m-body"></div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <img src="msp-logo.png" alt="Maastricht Science Programme">
+    <div class="contact">For any questions, contact <a href="mailto:msp-btr@maastrichtuniversity.nl">msp-btr@maastrichtuniversity.nl</a></div>
+    <div class="copy">© Maastricht Science Programme</div>
+  </div>
+</footer>
+
+<!--
+  Loads the project list from projects-data.js. To add a new project,
+  edit that file and follow the instructions in README.md.
+-->
+<script src="projects-data.js"></script>
+<script>
+  // ----- ALLOWED FILTER VALUES ---------------------------------------------
+  // These two arrays control which checkboxes appear in the sidebar.
+  // If you ever add a new discipline / type, also add it here AND update
+  // every relevant entry in projects-data.js. They must match exactly.
+  const DISCIPLINES = ["Bioinformatics","Biomedical Sciences","Biotechnology","Chemistry","Computer Science","Ecology & Fieldwork","Materials Science","Neuroscience","Physics","Sustainability","Other"];
+  const TYPES = ["Lab","Data Analysis","Simulation","Modelling"];
+  const projects = window.BTR_PROJECTS || [];
+
+  const state = { search:"", disciplines:new Set(), types:new Set() };
+
+  function buildCheckboxes(containerId, list, stateSet){
+    const c = document.getElementById(containerId);
+    list.forEach(name => {
+      const id = containerId + "-" + name.replace(/\W+/g,"_");
+      const lab = document.createElement("label");
+      lab.innerHTML = `<input type="checkbox" id="${id}" value="${name}"> ${name}`;
+      c.appendChild(lab);
+      lab.querySelector("input").addEventListener("change", e => {
+        if (e.target.checked) stateSet.add(name); else stateSet.delete(name);
+        render();
+      });
+    });
+  }
+  buildCheckboxes("disc-filters", DISCIPLINES, state.disciplines);
+  buildCheckboxes("type-filters", TYPES, state.types);
+
+  document.getElementById("search").addEventListener("input", e => { state.search = e.target.value.toLowerCase(); render(); });
+  document.getElementById("clear").addEventListener("click", () => {
+    state.search = ""; state.disciplines.clear(); state.types.clear();
+    document.querySelectorAll(".filter-group input[type=checkbox]").forEach(c => c.checked = false);
+    document.getElementById("search").value = "";
+    render();
+  });
+
+  function matches(p){
+    if (state.disciplines.size && !p.disciplines.some(d => state.disciplines.has(d))) return false;
+    if (state.types.size && !(p.types || []).some(t => state.types.has(t))) return false;
+    if (state.search){
+      const hay = (p.title + " " + p.supervisor + " " + (p.description||"") + " " + (p.institution||"") + " " + (p.disciplines||[]).join(" ") + " " + (p.methods||"")).toLowerCase();
+      if (!hay.includes(state.search)) return false;
+    }
+    return true;
+  }
+
+  function render(){
+    const grid = document.getElementById("grid");
+    grid.innerHTML = "";
+    const filtered = projects.filter(matches);
+    document.getElementById("count").textContent = filtered.length;
+    document.getElementById("empty").style.display = filtered.length ? "none" : "block";
+    filtered.forEach((p,i) => {
+      const idx = projects.indexOf(p);
+      const card = document.createElement("button");
+      card.className = "card";
+      card.onclick = () => openModal(idx);
+      const discTags = (p.disciplines||[]).map(d => `<span class="tag">${d}</span>`).join("");
+      const typeTags = (p.types||[]).map(t => `<span class="tag type">${t}</span>`).join("");
+      card.innerHTML = `
+        <h3>${p.title}</h3>
+        <div class="sup">${p.supervisor}</div>
+        <p class="desc">${p.description||""}</p>
+        <div class="tags">${discTags}${typeTags}<span class="tag loc">${p.location||""}</span></div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function openModal(idx){
+    const p = projects[idx];
+    document.getElementById("m-title").textContent = p.title;
+    document.getElementById("m-sup").textContent = p.supervisor + " · " + (p.institution||"");
+    const tags = [
+      ...(p.disciplines||[]).map(d => `<span class="tag">${d}</span>`),
+      ...(p.types||[]).map(t => `<span class="tag type">${t}</span>`),
+      `<span class="tag loc">${p.location||""}</span>`
+    ].join("");
+    let html = `<div class="tags">${tags}</div>`;
+    if (p.description){ html += `<h4>Overview</h4><p>${p.description}</p>`; }
+    if (p.background){ html += `<h4>Background</h4><p>${p.background}</p>`; }
+    if (p.objectives && p.objectives.length){ html += `<h4>Objectives</h4><ul>${p.objectives.map(d=>`<li>${d}</li>`).join("")}</ul>`; }
+    if (p.details && p.details.length){ html += `<h4>Details</h4><ul>${p.details.map(d=>`<li>${d}</li>`).join("")}</ul>`; }
+    if (p.methods){ html += `<h4>Methods</h4><p>${p.methods}</p>`; }
+    if (p.recommended){ html += `<h4>Recommended background</h4><p>${p.recommended}</p>`; }
+    if (p.note){ html += `<h4>Note</h4><p>${p.note}</p>`; }
+    if (p.references && p.references.length){ html += `<h4>References</h4><ul>${p.references.map(d=>`<li>${d}</li>`).join("")}</ul>`; }
+    html += `<div class="contact-row"><div><strong>Contact:</strong> ${p.supervisor}</div>`;
+    if (p.email) html += `<div><strong>Email:</strong> <a href="mailto:${p.email}">${p.email}</a></div>`;
+    if (p.location) html += `<div><strong>Location:</strong> ${p.location}</div>`;
+    if (p.dateAdded) html += `<div style="color:var(--muted);font-size:12.5px;margin-top:4px">Added ${p.dateAdded}</div>`;
+    html += `</div>`;
+    document.getElementById("m-body").innerHTML = html;
+    document.getElementById("overlay").classList.add("active");
+    document.getElementById("modal").classList.add("active");
+    document.body.style.overflow = "hidden";
+  }
+  function closeModal(){
+    document.getElementById("overlay").classList.remove("active");
+    document.getElementById("modal").classList.remove("active");
+    document.body.style.overflow = "";
+  }
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+
+  render();
+</script>
+</body>
+</html>

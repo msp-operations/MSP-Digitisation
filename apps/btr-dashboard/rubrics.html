@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BTR Assessment Rubrics - Maastricht Science Programme</title>
+    <link rel="icon" type="image/png" href="msp-logo.png">
+    <meta name="description" content="BTR assessment rubrics for all components: research proposal, written thesis, video presentation, and oral defence. Detailed grading criteria and standards.">
+
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-KJ51G48F42"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-KJ51G48F42');
+</script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+<body class="page-content page-rubrics">
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo">
+                <img src="msp-logo.png" alt="MSP Logo">
+                <div>
+                    <span class="logo-text">Maastricht Science Programme</span>
+                    <span class="logo-subtitle">Bachelor Thesis Research</span>
+                </div>
+            </a>
+            <nav class="nav-menu">
+                <a href="index.html">Home</a>
+                <a href="before-you-start.html">Before You Start</a>
+                <a href="writing-the-proposal.html">Proposal</a>
+                <a href="writing-the-thesis.html">Thesis</a>
+                <a href="btr-video.html">Video</a>
+                <a href="faq.html">FAQ</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Hero -->
+    <section class="page-hero">
+        <h1>Assessment Rubrics</h1>
+        <p>Comprehensive grading criteria for all BTR components</p>
+    </section>
+
+    <!-- Main Content -->
+    <div class="content-wrapper">
+        <!-- Intro Card -->
+        <div class="intro-card">
+            <p>Each BTR component is assessed using detailed rubrics. Click on any card below to view the complete grading criteria, point distributions, and assessment standards.</p>
+        </div>
+
+        <!-- Rubrics Grid -->
+        <div class="rubrics-grid">
+            <!-- Proposal Card -->
+            <div class="rubric-card proposal" onclick="openModal('proposal')">
+                <div class="card-header">
+                    <span class="card-icon">&#128221;</span>
+                    <h3>Research Proposal</h3>
+                    <p class="card-subtitle">Initial research plan</p>
+                </div>
+                <div class="card-body">
+                    <div class="card-stat">
+                        <span class="card-stat-label">Total Points</span>
+                        <span class="card-stat-value">27 points</span>
+                    </div>
+                    <div class="card-stat">
+                        <span class="card-stat-label">Grade Weight</span>
+                        <span class="card-stat-value">15%</span>
+                    </div>
+                    <div class="card-stat">
+                        <span class="card-stat-label">Assessors</span>
+                        <span class="card-stat-value">RS + IA</span>
+                    </div>
+                    <div class="card-divider"></div>
+                    <div class="card-stat">
+                        <span class="card-stat-label">Max Word Count</span>
+                        <span class="card-stat-value">2,000 words</span>
+                    </div>
+                    <span class="view-details">View full rubric</span>
+                </div>
+            </div>
+
+            <!-- Midterm Card -->
+            <div class="rubric-card midterm" onclick="openModal('midterm')">
+                <div class="card-header">
+                    <span class="card-icon">&#128300;</span>
+                    <h3>Midterm Practical</h3>
+                    <p class="card-subtitle">Mid-project assessment</p>
+                </div>
+                <div class="card-body">
+                    <div class="card-stat">
+                        <span class="card-stat-label">Total Points</span>
+                        <span class="card-stat-value">32 points</span>
+                    </div>
+                    <div class="card-stat">
+                        <span class="card-stat-label">Grade Weight</span>
+                        <span class="card-stat-value">15%</span>
+                    </div>
+                    <div class="card-stat">
+                        <span class="card-stat-label">Assessors</span>
+                        <span class="card-stat-value">RS only</span>
+                    </div>
+                    <div class="card-divider"></div>
+                    <div class="card-stat">
+                        <span class="card-stat-label">Assessment Date</span>
+                        <span class="card-stat-value">Mid-cohort</span>
+                    </div>
+                    <span class="view-details">View full rubric</span>
+                </div>
+            </div>
+
+            <!-- Final Practical Card -->
+            <div class="rubric-card final-practical" onclick="openModal('final-practical')">
+                <div class="card-header">
+                    <span class="card-icon">&#127919;</span>
+                    <h3>Final Practical Work</h3>
+                    <p class="card-subtitle">Complete practical assessment</p>
+                </div>
+                <div class="card-body">
+                    <div class="card-stat">
+                        <span class="card-stat-label">Total Points</span>
+                        <span class="card-stat-value">32 points</span>
+                    </div>
+                    <div class="card-stat">
+                        <span class="card-stat-label">Grade Weight</span>
+                        <span class="card-stat-value">35%</span>
+                    </div>
+                    <div class="card-stat">
+                        <span class="card-stat-label">Assessors</span>
+                        <span class="card-stat-value">RS only</span>
+                    </div>
+                    <div class="card-divider"></div>
+                    <div class="card-stat">
+                        <span class="card-stat-label">Includes</span>
+                        <span class="card-stat-value">Defence Presentation</span>
+                    </div>
+                    <span class="view-details">View full rubric</span>
+                </div>
+            </div>
+
+            <!-- Final Thesis Card -->
+            <div class="rubric-card final-thesis" onclick="openModal('final-thesis')">
+                <div class="card-header">
+                    <span class="card-icon">&#128218;</span>
+                    <h3>Final Thesis</h3>
+                    <p class="card-subtitle">Written research document</p>
+                </div>
+                <div class="card-body">
+                    <div class="card-stat">
+                        <span class="card-stat-label">Total Points</span>
+                        <span class="card-stat-value">26 points</span>
+                    </div>
+                    <div class="card-stat">
+                        <span class="card-stat-label">Grade Weight</span>
+                        <span class="card-stat-value">25%</span>
+                    </div>
+                    <div class="card-stat">
+                        <span class="card-stat-label">Assessors</span>
+                        <span class="card-stat-value">RS + IA</span>
+                    </div>
+                    <div class="card-divider"></div>
+                    <div class="card-stat">
+                        <span class="card-stat-label">Max File Size</span>
+                        <span class="card-stat-value">25 MB</span>
+                    </div>
+                    <span class="view-details">View full rubric</span>
+                </div>
+            </div>
+
+            <!-- Video Card -->
+            <div class="rubric-card video" onclick="openModal('video')">
+                <div class="card-header">
+                    <span class="card-icon">&#127909;</span>
+                    <h3>BTR Video</h3>
+                    <p class="card-subtitle">Science communication</p>
+                </div>
+                <div class="card-body">
+                    <div class="card-stat">
+                        <span class="card-stat-label">Total Points</span>
+                        <span class="card-stat-value">26 points</span>
+                    </div>
+                    <div class="card-stat">
+                        <span class="card-stat-label">Grade Weight</span>
+                        <span class="card-stat-value">10%</span>
+                    </div>
+                    <div class="card-stat">
+                        <span class="card-stat-label">Assessors</span>
+                        <span class="card-stat-value">IA + 2nd Assessor</span>
+                    </div>
+                    <div class="card-divider"></div>
+                    <div class="card-stat">
+                        <span class="card-stat-label">Video Length</span>
+                        <span class="card-stat-value">5-7 minutes</span>
+                    </div>
+                    <span class="view-details">View full rubric</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Proposal -->
+    <div class="rubric-modal" id="modal-proposal" style="--modal-color-start: #00BCD4; --modal-color-end: #00ACC1;">
+        <div class="modal-content">
+            <div class="modal-header-section">
+                <button class="close-modal" onclick="closeModal('proposal')">&times;</button>
+                <h2>Research Proposal Rubric</h2>
+                <p class="modal-subtitle">Assessed by Research Supervisor and Internal Advisor</p>
+            </div>
+            <div class="modal-body">
+                <div class="rubric-section">
+                    <h3>Assessment Overview</h3>
+                    <div class="info-box">
+                        <p><strong>Total Points:</strong> 27 | <strong>Grade Weight:</strong> 15% | <strong>Max Word Count:</strong> 2,000 words</p>
+                    </div>
+
+                    <h4>1. Project Background and Literature Review (5 points)</h4>
+                    <div class="grade-level">
+                        <strong>Exceeds Expectations (5):</strong> Project background is explained and put in context of the literature proficiently. Understanding is advanced with higher-level connections. Literature is extensive and curated. Work is at Master student level. {10/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Above Average (4):</strong> Project background is well explained and contextualized. Minimal misunderstanding, easily fixable. Literature support is good with room for small improvements. Very good quality work above bachelor standards. {8/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Sufficient (3):</strong> Project background explained to some degree with context. Some scientific misunderstanding and minor mistakes. Literature adequate but has room for improvement. Sufficient for bachelor expectations. {6/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Below Expectations (2):</strong> Setup for literature review is in place with some project context, but depth is missing. Some significant misunderstanding and/or mistakes. Literature could easily be improved. Below standard for bachelor level. {4/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Insufficient (1):</strong> Minimal attempt at putting project in context, often misguided with several errors and misconceptions. Little to no literature support. {2/10}
+                    </div>
+
+                    <h4>2. Research Question and Aims (3 points)</h4>
+                    <div class="grade-level">
+                        <strong>Exceeds Expectations (3):</strong> Research questions and aims fully outlined with only minor imprecisions at best. Well-profiled that exceeds expectations for bachelor level. {10/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Above Average (2.5):</strong> Research question and aims outlined in key aspects. Clear room for improvement but no major issues. {8/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Sufficient (2):</strong> Research questions and aims provided, but some confusion or vagueness in approach that can be improved. {6/10}
+                    </div>
+
+                    <h4>3. Methodological Approach (3 points)</h4>
+                    <div class="grade-level">
+                        <strong>Exceeds Expectations (3):</strong> Methodological approach fully outlined in all parts with only minor imprecisions. Limitations fully accounted for, methods appear neatly understood.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Above Average (2.5):</strong> Methodological approach outlined in key aspects. Some imprecision or dubious statements need clarification, or limitations not fully accounted for.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Sufficient (2):</strong> Methodological approach provided to some degree, but several details missing and/or some misunderstanding/understatements/limitations.
+                    </div>
+
+                    <h4>4. Time Planning (2 points)</h4>
+                    <div class="grade-level">
+                        <strong>Complete (2):</strong> Timeline provided with clarity and understanding. Content and pace realistic within BTR framework, setbacks accounted for when relevant.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Incomplete (1):</strong> Timeline outlined but needs improvement. Some aspects dubious or not accounted for, and/or some concepts unrealistic within BTR framework.
+                    </div>
+
+                    <h4>5. Outcome, Significance and Impact (3 points)</h4>
+                    <div class="grade-level">
+                        <strong>Exceeds Expectations (3):</strong> Outcome, significance and impact discussed at high level with compelling clarity and narrative. Above expectations, no further improvement needed.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Above Average (2.5):</strong> Outcome and impacts discussed clearly. Some room for improvement or aspects could be more compelling.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Good (2):</strong> Attempt to discuss outcome, significance and impact, but rather confused. Several points not accounted for, clear room for deeper understanding.
+                    </div>
+
+                    <h4>6. Discussion of Ethical Issues (2 points)</h4>
+                    <div class="grade-level">
+                        <strong>Complete (2):</strong> Ethical issues associated with work fully discussed, relevant aspects expected for bachelor level accounted for.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Incomplete (1):</strong> Discussion of ethical issues present but vague in some aspects, disregarding some relevant points.
+                    </div>
+
+                    <h4>7. References (2 points)</h4>
+                    <div class="grade-level">
+                        <strong>Complete (2):</strong> Relevant references from reputable sources, properly formatted, within expectations for bachelor level. All statements requiring literature support have one.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Incomplete (1):</strong> Sufficient references but not all equally relevant and/or some key sources missing and/or formatting inconsistencies. Some statements go unsupported.
+                    </div>
+
+                    <h4>8. Overall Proposal Details (3 points)</h4>
+                    <div class="grade-level">
+                        <strong>Exceeds Expectations (3):</strong> Proposal has excellent flow with great narrative care, compelling and well-structured from start to finish. Exceeds expectations for final-year bachelor.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Above Average (2.5):</strong> Proposal reads nicely and coherently, clear in merit, but additional refinement would improve some aspects.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Good (2):</strong> Effort in putting proposal together but result is confusing with several points in doubt. Would clearly benefit from revision.
+                    </div>
+
+                    <h4>9. Overall Proposal Layout (2 points)</h4>
+                    <div class="grade-level">
+                        <strong>Complete (2):</strong> Layout (section subdivision, titles, subtitles, formatting) designed and curated with content. No major improvements needed.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Needs Improvement (1):</strong> Proposal has clear structure with visual subdivisions, but clear room for improvements to avoid unprofessional/draft effect.
+                    </div>
+
+                    <h4>10. Overall Proposal Spelling/Grammar (2 points)</h4>
+                    <div class="grade-level">
+                        <strong>Complete (2):</strong> In all parts, proposal flows smoothly with no real mistakes. Clearly checked, revised and edited before submission.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Needs Improvement (1):</strong> Overall reads fine but some dubious points highlighting lack of revision and editing.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Midterm -->
+    <div class="rubric-modal" id="modal-midterm" style="--modal-color-start: #FF6200; --modal-color-end: #E55A00;">
+        <div class="modal-content">
+            <div class="modal-header-section">
+                <button class="close-modal" onclick="closeModal('midterm')">&times;</button>
+                <h2>Midterm Practical Work Rubric</h2>
+                <p class="modal-subtitle">Assessed by Research Supervisor only</p>
+            </div>
+            <div class="modal-body">
+                <div class="rubric-section">
+                    <h3>Assessment Overview</h3>
+                    <div class="info-box">
+                        <p><strong>Total Points:</strong> 32 | <strong>Grade Weight:</strong> 15% | <strong>Assessment:</strong> Mid-cohort</p>
+                    </div>
+
+                    <h4>1. Practical Skills (5 points)</h4>
+                    <div class="grade-level">
+                        <strong>Exceeds Expectations (5):</strong> Exceptional practical skills with consistent and proficient application of techniques and methodologies including experimental design. Work demonstrates creativity, precision, and thoroughness with clear understanding. At Master student level. {10/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Above Average (4):</strong> Above-average practical skills with proper application of techniques. General grasp on experimental design. Generally competent despite room for improvement. Above bachelor standards. {8/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Sufficient (3):</strong> Adequate practical skills with some guided attempt on experimental design. Some inconsistencies or minor errors. Work may lack creativity, precision, or thoroughness in certain aspects. Sufficient for bachelor expectations. {6/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Below Expectations (2):</strong> Below-average practical skills. Struggles to consistently apply appropriate techniques and methodologies, cannot achieve experimental design. Significant difficulties applying skills to address research questions. Below bachelor standard. {4/10}
+                    </div>
+
+                    <h4>2. Independence (5 points)</h4>
+                    <div class="grade-level">
+                        <strong>Exceeds Expectations (5):</strong> Exceptionally independent, barely needs feedback or guidance and integrates anything told at once. Works at Master student level. {10/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Above Average (4):</strong> Can be trusted alone with work for majority of time, needs minimal guidance and minimal iterations of feedback. Above bachelor standards. {8/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Sufficient (3):</strong> Satisfactory capability for independent working with reasonable efficiency, but often needs feedback and clarification. Meets bachelor expectations. {6/10}
+                    </div>
+
+                    <h4>3. Initiative (5 points)</h4>
+                    <div class="grade-level">
+                        <strong>Exceeds Expectations (5):</strong> Takes proactive steps beyond minimum requirements, showing strong drive for independent exploration. High self-motivation, resourcefulness, and willingness to take risks. Exceeds bachelor expectations. {10/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Above Average (4):</strong> Shows proactive approach attempting beyond minimum requirements. Seeks opportunities for further investigation, demonstrates willingness to take initiative. Above bachelor standard. {8/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Sufficient (3):</strong> Fulfills basic requirements and completes tasks as assigned. May not take additional steps but willing to be guided with suggestions. Meets bachelor standard. {6/10}
+                    </div>
+
+                    <h4>4. Time Management (3 points)</h4>
+                    <div class="grade-level">
+                        <strong>Exceeds Expectations (3):</strong> Consistently plans and allocates time effectively ensuring timely completion. Adheres to deadlines, prioritizes effectively, maintains consistent work pace even without external inputs.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Above Average (2.5):</strong> Generally plans and allocates time well, leading to timely completion. Meets deadlines with good organizational abilities. Responsive to input on prioritization.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Sufficient (2):</strong> Generally plans and allocates time adequately ensuring completion within acceptable timeframes. Not always independent on deadlines and prioritization, but satisfactory in end goal.
+                    </div>
+
+                    <h4>5. Problem Solving (3 points)</h4>
+                    <div class="grade-level">
+                        <strong>Exceeds Expectations (3):</strong> Consistently exhibits high level of analytical thinking and critical reasoning in addressing research challenges. Identifies and evaluates alternatives, effectively selecting most appropriate approaches. Remarkable ability to tackle challenges with innovative ideas.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Above Average (2.5):</strong> Displays good level of analytical thinking and critical reasoning. Shows good understanding of problems and employs effective strategies. Considers alternative solutions and integrates advice from one situation to another.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Sufficient (2):</strong> Shows basic understanding of problems and applies appropriate problem-solving strategies. Makes reasonable decisions and with prompting can approach alternative solutions.
+                    </div>
+
+                    <h4>6. Awareness of Aims (3 points)</h4>
+                    <div class="grade-level">
+                        <strong>Exceeds Expectations (3):</strong> Demonstrates excellent understanding of research objectives, goals, and significance. Consistently aligns research activities with study aims, ensuring strong connection to desired outcomes.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Above Average (2.5):</strong> Understands research objectives and goals, can articulate overall purpose. Generally aligns research activities with study aims. Understanding may lack some depth or clarity but makes reasonable connections.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Sufficient (2):</strong> Has satisfactory understanding of research objectives and general idea of purpose. While understanding may be limited or lack precision, demonstrates basic connection between activities and broader goals.
+                    </div>
+
+                    <h4>7. Recording (e.g., Lab Notebook) (2 points)</h4>
+                    <div class="grade-level">
+                        <strong>Fulfilled (2):</strong> Recording is complete, accurate, and well-organized, effectively documenting all relevant information, data, and observations. Student always has material needed at hand.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Needs Improvement (1):</strong> Recording lacks completeness, accuracy, or organization with missing or insufficient information hampering understanding and replication. Feedback provided to mitigate pitfalls.
+                    </div>
+
+                    <h4>8. Carefulness with Resources (2 points)</h4>
+                    <div class="grade-level">
+                        <strong>Fulfilled (2):</strong> Demonstrates careful and responsible use of resources, effectively managing and utilizing research materials, equipment, and data with consideration for availability, cost, and sustainability.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Needs Improvement (1):</strong> Use of resources shows shortcomings with instances of inefficiency, wastage, or inadequate consideration of availability, cost, or sustainability.
+                    </div>
+
+                    <h4>9. Communication (2 points)</h4>
+                    <div class="grade-level">
+                        <strong>Fulfilled (2):</strong> Has comprehensive skills in relaying information and updates to supervisor, maintaining regular and clear communication channels, effectively addressing questions or concerns.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Needs Improvement (1):</strong> Communication has shortcomings with occasional delays or incomplete updates, requiring prompting for maintaining consistent and effective open channels.
+                    </div>
+
+                    <h4>10. Teamwork Skills (2 points)</h4>
+                    <div class="grade-level">
+                        <strong>Fulfilled (2):</strong> Actively collaborates with others (supervisor, lab mates, technicians), contributing effectively to team goals, participating in discussions, and sharing responsibilities.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Needs Improvement (1):</strong> Cooperates with others but room for improvement exists. Feedback has been provided.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Final Practical -->
+    <div class="rubric-modal" id="modal-final-practical" style="--modal-color-start: #F39425; --modal-color-end: #E88720;">
+        <div class="modal-content">
+            <div class="modal-header-section">
+                <button class="close-modal" onclick="closeModal('final-practical')">&times;</button>
+                <h2>Final Practical Work Rubric</h2>
+                <p class="modal-subtitle">Assessed by Research Supervisor only</p>
+            </div>
+            <div class="modal-body">
+                <div class="rubric-section">
+                    <h3>Assessment Overview</h3>
+                    <div class="info-box">
+                        <p><strong>Total Points:</strong> 32 | <strong>Grade Weight:</strong> 35% | <strong>Includes:</strong> Defence Presentation</p>
+                    </div>
+
+                    <h4>1. Practical Skills (5 points)</h4>
+                    <div class="grade-level">
+                        <strong>Exceeds Expectations (5):</strong> Exceptional practical skills in research. Techniques and methodologies applied consistently and proficiently including experimental design. At bachelor level, well-profiled that exceeds expectations. {10/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Above Average (4):</strong> Above-average practical skills with proper application of techniques and general grasp on experimental design. Generally competent even with room for improvement. Above bachelor standards. {8/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Sufficient (3):</strong> Adequate practical skills with some guided attempt on experimental design despite inconsistencies or minor errors. Sufficient for bachelor expectations. {6/10}
+                    </div>
+
+                    <h4>2. Ability to Work Independently (5 points)</h4>
+                    <div class="grade-level">
+                        <strong>Exceeds Expectations (5):</strong> Exceptionally independent, barely needs feedback or guidance and integrates anything told at once. Works at Master student level. {10/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Above Average (4):</strong> Can be trusted alone with work for majority of time, needs minimal guidance and minimal iterations of feedback. Above bachelor standards. {8/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Sufficient (3):</strong> Satisfactory capability for independent working with reasonable efficiency, but often needs feedback and clarification. Ability to manage tasks and make progress independently meets bachelor expectations. {6/10}
+                    </div>
+
+                    <h4>3. Precision and Quality of Work (3 points)</h4>
+                    <div class="grade-level">
+                        <strong>Exceeds Expectations (3):</strong> Works meticulously with every aspect exhibiting precision and attention to detail. Exhibits strong theoretical framework and utilizes robust research methodologies. At bachelor level, exceeds expectations.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Above Average (2.5):</strong> Research conducted with care and attention to detail resulting in reliable and valid findings. Displays solid theoretical foundation and employs appropriate methods. Minor areas for improvement, but overall above average.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Sufficient (2):</strong> Research conducted with acceptable level of attention to detail, resulting in reasonably reliable findings. Some mishaps in theoretical framework and research methods appropriate with minor (sometimes recurrent) mistakes. Sufficient for bachelor expectations.
+                    </div>
+
+                    <h4>4. Time Management and Planning (3 points)</h4>
+                    <div class="grade-level">
+                        <strong>Exceeds Expectations (3):</strong> Consistently plans and allocates time effectively ensuring timely completion. Adheres to deadlines, prioritizes effectively, allocates appropriate time for each aspect, maintains consistent work pace even without external inputs.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Above Average (2.5):</strong> Generally plans and allocates time well leading to timely completion. Meets deadlines with good organizational abilities. Responsive to input on prioritization and time allocation.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Sufficient (2):</strong> Generally plans and allocates time adequately ensuring completion within acceptable timeframes. Not always independent on deadlines and prioritization, but satisfactory in end goal.
+                    </div>
+
+                    <h4>5. Problem Solving (3 points)</h4>
+                    <div class="grade-level">
+                        <strong>Exceeds Expectations (3):</strong> Consistently exhibits high level of analytical thinking and critical reasoning. Identifies and evaluates alternative solutions, effectively selecting most appropriate approaches. Remarkable ability to tackle challenges with innovative ideas.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Above Average (2.5):</strong> Displays good level of analytical thinking and critical reasoning. Shows good understanding of problems and employs effective strategies. Considers alternative solutions and integrates advice from one situation to another.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Sufficient (2):</strong> Shows basic understanding of problems and applies appropriate problem-solving strategies. Makes reasonable decisions and with prompting can approach alternative solutions.
+                    </div>
+
+                    <h4>6. Safety and Work Ethic (2 points)</h4>
+                    <div class="grade-level">
+                        <strong>Fulfilled (2):</strong> Demonstrates strong commitment to safety and work ethics, implementing appropriate measures to ensure resources/individuals are accounted for and adhering to ethical/safety guidelines and regulations. Expected carefulness for bachelor level.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Needs Improvement (1):</strong> Shows some deficiencies in addressing safety and work ethics, requiring additional attention to ensure resources/individuals are accounted for and adherence to ethical principles/safety guidelines. Some pitfalls with room for improvement.
+                    </div>
+
+                    <h4>7. Detailed Recording of Work and Results (2 points)</h4>
+                    <div class="grade-level">
+                        <strong>Fulfilled (2):</strong> Recording is complete, accurate, and well-organized, effectively documenting all relevant information, data, and observations. Student always has material needed at hand.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Needs Improvement (1):</strong> Recording lacks completeness, accuracy, or organization with missing or insufficient information hampering understanding and replication. Feedback provided to mitigate pitfalls.
+                    </div>
+
+                    <h4>8. Teamwork Skills and Communication (2 points)</h4>
+                    <div class="grade-level">
+                        <strong>Fulfilled (2):</strong> Actively collaborates with others (supervisor, lab mates, technicians), contributing effectively to team goals, participating in discussions, and sharing responsibilities. Maintains regular and clear communication channels, effectively addressing questions or concerns.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Needs Improvement (1):</strong> Cooperates with others but room for improvement exists. Communication has shortcomings with occasional delays or incomplete updates, requiring prompting for maintaining consistent and effective open channels.
+                    </div>
+
+                    <h4>9. Project Closure and Data Transfer (2 points)</h4>
+                    <div class="grade-level">
+                        <strong>Fulfilled (2):</strong> Project wrapped up properly: laboratory/practical environment clean, computer sets organized, data tidy and transferred.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Needs Improvement (1):</strong> Mishaps in closure: data missing, issues with cleanliness, etc.
+                    </div>
+
+                    <h4>10. Overall Quality of Defence Presentation (5 points)</h4>
+                    <div class="grade-level">
+                        <strong>Exceeds Expectations (5):</strong> Exceptional overall quality with clear and engaging delivery, effective use of visual aids, excellent organization, and comprehensive understanding and articulation. Works at Master student level. {10/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Above Average (4):</strong> Above-average overall quality with well-structured content, effective communication, appropriate use of visual aids, and solid understanding and presentation. Above bachelor standards. {8/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Sufficient (3):</strong> Coherent and organized delivery, adequate use of visual aids, and satisfactory understanding and presentation. Clear room for improvement. Sufficient for bachelor expectations. {6/10}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Final Thesis -->
+    <div class="rubric-modal" id="modal-final-thesis" style="--modal-color-start: #AE0B12; --modal-color-end: #9A0A10;">
+        <div class="modal-content">
+            <div class="modal-header-section">
+                <button class="close-modal" onclick="closeModal('final-thesis')">&times;</button>
+                <h2>Final Thesis Rubric</h2>
+                <p class="modal-subtitle">Assessed by Research Supervisor and Internal Advisor</p>
+            </div>
+            <div class="modal-body">
+                <div class="rubric-section">
+                    <h3>Assessment Overview</h3>
+                    <div class="info-box">
+                        <p><strong>Total Points:</strong> 26 | <strong>Grade Weight:</strong> 25% | <strong>Max File Size:</strong> 25 MB</p>
+                    </div>
+
+                    <h4>1. Overall Scientific Content (5 points)</h4>
+                    <div class="grade-level">
+                        <strong>Exceeds Expectations (5):</strong> Groundwork proficiently outlined, narrative and scientific content complete and thorough. Above expected level, comparable to master/postgraduate thesis. {10/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Above Expectations (4):</strong> Work behind thesis clear, literature support and narrative demonstrate understanding and background. Minor points for improvements and refinement. Very good quality work above bachelor average. {8/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Sufficient (3):</strong> Project background for thesis properly setup and executed as scientific document to some degree. Some scientific misunderstanding and minor mistakes. Literature support adequate but has room for improvement. Sufficient for bachelor expectations. {6/10}
+                    </div>
+
+                    <h4>2. Integration of Research Proposal and Aims (3 points)</h4>
+                    <div class="grade-level">
+                        <strong>Exceeds Expectations (3):</strong> Proposed work clear and seamlessly integrated as connection of introduction leading to results. Aim of thesis stated in impactful way. At bachelor level, exceeds expectations. {10/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Above Expectations (2.5):</strong> Proposal of thesis properly integrated and rearranged in introduction. Some confusing statements, but overall aim is clear. {8/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Sufficient (2):</strong> Some attempt in integrating proposal and providing aim to work, but effect is rather clunky. Some confusion or vagueness in approach that can be improved. {6/10}
+                    </div>
+
+                    <h4>3. Analysis of the Results (3 points)</h4>
+                    <div class="grade-level">
+                        <strong>Exceeds Expectations (3):</strong> Results collated and arranged proficiently with coherent flow and consistent approach following from introduction and leading smoothly into discussion. Any required process (statistical analysis, tabulation, summary) executed flawlessly. {10/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Above Expectations (2.5):</strong> Results arranged with purpose, clear flow and consistent approach. Required processes for analysis (statistics, tabulation, plotting, fitting, summary, outlines) performed. Minor flaws for any descriptors above. {8/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Sufficient (2):</strong> Results accounted for, arranged and analysed as relevant (statistics, tabulation, plotting, fitting, summary, outlines) but several points would stand for improvement for flow, arrangement, analysis to reach best fit with thesis scope. {6/10}
+                    </div>
+
+                    <h4>4. Discussion and Interpretation of Results (2 points)</h4>
+                    <div class="grade-level">
+                        <strong>Complete (2):</strong> All results presented, their significance and impact proficiently discussed and put in context of bigger picture. Student has high level of understanding of work and interprets it correctly and coherently.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Incomplete (1):</strong> Discussion of results presented but some key flaws make it not complete or coherent (lack of flow and bigger picture, chaotic explanation, missing bits). Clear points for improvement.
+                    </div>
+
+                    <h4>5. Scientific Argumentation (3 points)</h4>
+                    <div class="grade-level">
+                        <strong>Exceeds Expectations (3):</strong> Every point approached in rigorous scientific manner within subject area context, with appropriate tone and clear flow. Student has proficient understanding of work, very proficient for bachelor level.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Above Average (2.5):</strong> Overall thesis approached in rigorous scientific manner, student has understanding of work above bachelor expectations. Only minor flaws in specific context (relation to subject area, tone, flow).
+                    </div>
+                    <div class="grade-level">
+                        <strong>Good (2):</strong> Overall thesis approached in scientific manner, student has understanding of work aligned with expected bachelor level. Clear points of improvement in more than one aspect (relation to subject area, tone, flow).
+                    </div>
+
+                    <h4>6. Presentation of Graphical Material (2 points)</h4>
+                    <div class="grade-level">
+                        <strong>Complete (2):</strong> In any relevant instance, thesis presents graphics, schematics, tables, images and illustrations with clear consistent effort. Outcome adds to thesis and highlights critical thinking on when and how to use graphical support.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Incomplete (1):</strong> Attempt in showcasing work when relevant, but might be inconsistent (lack of depiction when it would add to thesis) or not fully refined (rushed graphics of poor quality, lack of axes, lack of proper formatting of tables).
+                    </div>
+
+                    <h4>7. General Layout and Presentation (2 points)</h4>
+                    <div class="grade-level">
+                        <strong>Complete (2):</strong> Layout of thesis (section subdivision, titles, subtitles, formatting) designed and curated together with content. No major improvements to be made.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Incomplete (1):</strong> Thesis has clear structure with visual subdivisions of all sections, but clear room for improvements to avoid unprofessional/draft effect and proper use of medium.
+                    </div>
+
+                    <h4>8. Spelling and Grammar (2 points)</h4>
+                    <div class="grade-level">
+                        <strong>Complete (2):</strong> In all parts, thesis flows smoothly with no real mistakes. Clearly checked, revised and edited before submission.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Needs Improvement (1):</strong> Overall thesis reads fine but some dubious points highlighting lack of revision and editing.
+                    </div>
+
+                    <h4>9. Personal Critical Reflection (2 points)</h4>
+                    <div class="grade-level">
+                        <strong>Complete (2):</strong> Personal reflection addresses overall process of 4 months of bachelor thesis, taking into account all aspects in personal manner. Student has clearly reflected on thesis journey and has constructive view of process ahead of graduation.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Needs Improvement (1):</strong> Partial attempt on personal reflection, but clearly partial or rushed. Student focuses on one aspect (e.g., practical work) without really attempting to look at full 4 months of work, its processes and outcomes.
+                    </div>
+
+                    <h4>10. References (2 points)</h4>
+                    <div class="grade-level">
+                        <strong>Complete (2):</strong> Relevant references from reputable sources, properly formatted, within expectation for bachelor level work. All statements that need literature support have one.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Needs Improvement (1):</strong> Sufficient level of references, but not all sources equally relevant to scope and/or some key sources missing and/or formatting inconsistencies. In more than one instance statements go unsupported.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Video -->
+    <div class="rubric-modal" id="modal-video" style="--modal-color-start: #7C3AED; --modal-color-end: #6D28D9;">
+        <div class="modal-content">
+            <div class="modal-header-section">
+                <button class="close-modal" onclick="closeModal('video')">&times;</button>
+                <h2>BTR Video Assessment Rubric</h2>
+                <p class="modal-subtitle">Assessed by Internal Advisor and Second Assessor</p>
+            </div>
+            <div class="modal-body">
+                <div class="rubric-section">
+                    <h3>Assessment Overview</h3>
+                    <div class="info-box">
+                        <p><strong>Total Points:</strong> 26 | <strong>Grade Weight:</strong> 10% | <strong>Length:</strong> 5-7 minutes</p>
+                    </div>
+
+                    <h4>1. Clear Opening and Concluding Statements (2 points)</h4>
+                    <div class="grade-level">
+                        <strong>Complete (2):</strong> Video includes clear and well-structured opening statement where student introduces themselves, provides engaging introduction to topic, purpose, and main points, and concludes with concise summary or call-to-action, allowing audience to fully grasp video's content and purpose.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Incomplete (1):</strong> Video has some shortcomings in either student's introduction, opening statement, or concluding statement. May lack clear introduction of student, unclear or missing introduction to topic and main points, or incomplete or insufficient summary/call-to-action.
+                    </div>
+
+                    <h4>2. Work and Its Background Clearly Described (3 points)</h4>
+                    <div class="grade-level">
+                        <strong>Exceeds Expectations (3):</strong> Exceptional and engaging description of work and background, effectively introducing topic and field to general audience with no prior context. Includes state-of-the-art considerations and presents clear narrative highlighting relevance and potential impact. Surpasses expected level. {10/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Above Average (2.5):</strong> Solid and well-developed description of work and background, effectively introducing topic and field to general audience with no prior context. Includes relevant state-of-the-art considerations and conveys significance and potential impact. Above average expected level with room for small improvements. {8/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Sufficient (2):</strong> Some description of work and background, attempting to introduce topic and field to general audience with no prior context. Includes basic state-of-the-art considerations and provides basic understanding of significance and potential impact. Meets minimum requirements with some confusion or vagueness. {6/10}
+                    </div>
+
+                    <h4>3. Scientific Importance of the Work Well Discussed (3 points)</h4>
+                    <div class="grade-level">
+                        <strong>Exceeds Expectations (3):</strong> Exceptional and thorough discussion of scientific importance, clearly explaining relevance, novelty, and potential impact accessible to general audience. At bachelor level, so well-profiled that exceeds expectations. {10/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Above Average (2.5):</strong> Solid and well-developed discussion of scientific importance, effectively explaining relevance, novelty, and potential impact accessible to general audience. Room for small improvements but no major issues. {8/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Sufficient (2):</strong> Basic discussion of scientific importance, partially addressing relevance, novelty, and potential impact accessible to general audience. Somewhat addresses scientific significance and advances. Some confusion or vagueness that can be improved. {6/10}
+                    </div>
+
+                    <h4>4. Societal Importance of the Work Well Discussed (3 points)</h4>
+                    <div class="grade-level">
+                        <strong>Exceeds Expectations (3):</strong> Exceptional and comprehensive discussion of societal importance, how research addresses real-world challenges, benefits society, or contributes to broader societal goals. At bachelor level, well-profiled that exceeds expectations. {10/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Above Average (2.5):</strong> Solid and well-developed discussion of societal importance, effectively explaining how research addresses real-world challenges, benefits society, or contributes to broader societal goals. Room for improvement but no major issues. {8/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Sufficient (2):</strong> Satisfactory discussion of societal importance, explaining how research addresses real-world challenges, benefits society, or contributes to broader societal goals. Some confusion or vagueness that can be improved. {6/10}
+                    </div>
+
+                    <h4>5. Discussion of Ethical Issues (2 points)</h4>
+                    <div class="grade-level">
+                        <strong>Complete (2):</strong> Fully and coherently discussed. Provides comprehensive and thorough discussion of ethical issues associated with topic, addressing relevant considerations, potential consequences, and ethical frameworks, demonstrating strong understanding and analysis.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Incomplete (1):</strong> Brushed upon, could have been better stated. Partially discusses ethical issues associated with topic, but gaps or lack of depth in exploration of relevant considerations, potential consequences, or ethical frameworks, requiring further development or clarification.
+                    </div>
+
+                    <h4>6. Video Suitable for Non-Scientists (3 points)</h4>
+                    <div class="grade-level">
+                        <strong>Exceeds Expectations (3):</strong> Exceptionally well-suited for non-scientists, presenting complex concepts in clear and engaging manner. Effectively avoids jargon, uses relatable examples, and employs visual aids or analogies to ensure accessibility and understanding. Incredibly well-suited and creative. {10/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Above Average (2.5):</strong> Well-suited for non-scientists, effectively presenting complex concepts in clear and accessible manner. Minimizes jargon, provides explanations in plain language, and utilizes visual aids or relatable examples to enhance comprehension. Very suitable and appropriate with just minor notes. {8/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Sufficient (2):</strong> Adequately suited for non-scientists, presenting complex concepts in manner that is generally understandable. Avoids excessive jargon and provides explanations somewhat accessible to general audience. Suitable but clear room for improvement. {6/10}
+                    </div>
+
+                    <h4>7. Correct Amount of Details (Not Too Packed Nor Vague) (2 points)</h4>
+                    <div class="grade-level">
+                        <strong>Complete (2):</strong> Coherent and well-paced. Video effectively balances amount of details, providing comprehensive information that is neither overwhelming nor oversimplified, ensuring clarity and understanding for general audience.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Incomplete (1):</strong> In some instances approach is too vague or too detailed. Video partially addresses appropriate amount of details, either lacking sufficient information or presenting it in way that is too packed or vague, requiring further development or clarification.
+                    </div>
+
+                    <h4>8. Presentation of the Video (Sounds, Look) (3 points)</h4>
+                    <div class="grade-level">
+                        <strong>Exceeds Expectations (3):</strong> Exceptional presentation with student delivering clear and engaging performance. Speaking style is confident, articulate, and well-paced, accompanied by appropriate body language and visual aids. Overall production (sound and visual aspects) is polished and professional, surpassing expected level. {10/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Above Average (2.5):</strong> Solid presentation with student delivering clear and engaging performance. Speaking style is effective, displaying good articulation, pacing, and use of suitable body language and visual aids. Overall production (sound and visual aspects) meets or exceeds average expected level with just minor notes. {8/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Sufficient (2):</strong> Satisfactory presentation with student delivering decent performance. Speaking style is generally clear and understandable with only minor issues. Overall production (sound and visual aspects) meets basic requirements for clarity and coherence with clear room for improvement. {6/10}
+                    </div>
+
+                    <h4>9. Style of the Video Appropriate to Message (2 points)</h4>
+                    <div class="grade-level">
+                        <strong>Complete (2):</strong> Fully appropriate. Style of video is well-aligned with message, effectively conveying content through appropriate visual and narrative elements, enhancing overall understanding and engagement.
+                    </div>
+                    <div class="grade-level">
+                        <strong>Needs Improvement (1):</strong> Somewhat appropriate but with room for improvement. Style partially matches message, but areas where improvements can be made to better align with and enhance understanding.
+                    </div>
+
+                    <h4>10. Graphics of the Video (3 points)</h4>
+                    <div class="grade-level">
+                        <strong>Exceeds Expectations (3):</strong> Exceptional graphic design demonstrating visually captivating and professional presentation. Visuals (animations, images, on-screen text) are visually appealing, effectively complementing content and enhancing overall understanding and engagement, surpassing expected level. {10/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Above Average (2.5):</strong> Solid graphic design with visually appealing and well-executed elements. Visuals (animations, images, on-screen text) are thoughtfully incorporated and enhance overall understanding and engagement, meeting or exceeding average expected level. {8/10}
+                    </div>
+                    <div class="grade-level">
+                        <strong>Sufficient (2):</strong> Satisfactory graphic design with somewhat functional visuals. Visuals (animations, images, on-screen text) are decent support to content and contribute to overall understanding and engagement with clear room for improvement. {6/10}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p><strong>Questions about the BTR?</strong> Contact the BTR Office: msp-btr@maastrichtuniversity.nl</p>
+            <p style="margin-top: 20px;">
+                <a href="index.html">Home</a> |
+                <a href="timeline-february.html">Timeline</a> |
+                <a href="faq.html">FAQ</a> |
+                <a href="mailto:msp-btr@maastrichtuniversity.nl">Contact</a>
+            </p>
+            <p style="margin-top: 15px; font-size: 12px; opacity: 0.8;">
+                &copy; Maastricht University - Faculty of Science and Engineering
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        function openModal(type) {
+            document.getElementById('modal-' + type).classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(type) {
+            document.getElementById('modal-' + type).classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside
+        document.querySelectorAll('.rubric-modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.rubric-modal').forEach(modal => {
+                    modal.classList.remove('active');
+                });
+                document.body.style.overflow = 'auto';
+            }
+        });
+    </script>
+<script src="nav.js"></script>
+</body>
+</html>
