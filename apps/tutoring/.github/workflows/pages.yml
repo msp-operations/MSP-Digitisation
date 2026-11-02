@@ -1,0 +1,57 @@
+name: Deploy to GitHub Pages
+
+# Publishes the site to GitHub Pages. The configure-pages step with
+# enablement:true turns Pages on via the API on first run, so no manual
+# Settings toggle is needed (the workflow's GITHUB_TOKEN has pages:write).
+on:
+  push:
+    branches: [main]
+    # The keep-alive workflow commits a timestamp file. That is not a site
+    # change, so it must not trigger a redeploy.
+    paths-ignore: ['.keepalive']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure Pages (auto-enable)
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - name: Assemble site (root redirect + app)
+        run: |
+          mkdir -p _site
+          cp index.html _site/index.html
+          cp -r app _site/app
+          # The custom domain must ship inside the artifact. With Actions-based
+          # Pages, GitHub does not commit a CNAME for you the way it does for a
+          # branch deploy, and a deployment without one clears the custom-domain
+          # setting. Without this line msp-tutoring.nl unsets itself on a push.
+          cp CNAME _site/CNAME
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
