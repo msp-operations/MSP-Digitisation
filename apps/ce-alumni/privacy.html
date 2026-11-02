@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy | CE Alumni Network</title>
+    <link rel="icon" type="image/png" href="assets/logos/ce-logo.png">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <style>
+        :root {
+            --um-dark-blue: #001C3D;
+            --um-light-blue: #00A2DB;
+            --ce-green-primary: #10B981;
+            --ce-green-light: #34D399;
+            --ce-green-dark: #059669;
+            --um-white: #FFFFFF;
+            --um-gray-50: #f8fafc;
+            --um-gray-100: #f1f5f9;
+            --um-gray-200: #e2e8f0;
+            --um-gray-500: #64748b;
+            --um-gray-600: #475569;
+            
+            --font-heading: var(--font-display);
+            --font-body: var(--font-body);
+            
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --radius-md: 12px;
+            --radius-lg: 20px;
+        }
+        
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: var(--font-body); font-size: 16px; line-height: 1.7; color: var(--um-dark-blue); background: var(--um-gray-50); }
+        h1, h2, h3, h4 { font-family: var(--font-heading); line-height: 1.2; letter-spacing: -0.02em; }
+        a { color: var(--ce-green-primary); text-decoration: none; }
+        a:hover { color: var(--ce-green-dark); }
+        
+        /* Header */
+        header {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--um-gray-200);
+            padding: 0 50px;
+            height: 72px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+        }
+        .logo { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+        .logo-img { height: 44px; }
+        .logo-text h1 { font-size: 15px; font-weight: 700; color: var(--um-dark-blue); margin: 0; }
+        .logo-text p { font-size: 11px; color: var(--um-gray-500); margin: 0; }
+        .header-nav { display: flex; gap: 6px; }
+        .header-nav a { font-size: 14px; font-weight: 500; padding: 10px 18px; border-radius: 8px; color: var(--um-gray-600); }
+        .header-nav a:hover { background: var(--um-gray-100); color: var(--um-dark-blue); }
+        .header-nav .btn-cta { background: linear-gradient(135deg, var(--ce-green-primary), var(--ce-green-dark)); color: white; margin-left: 12px; }
+        .header-nav .btn-cta:hover { background: linear-gradient(135deg, var(--ce-green-dark), #047857); }
+        
+        /* Content */
+        .content-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 120px 50px 80px;
+        }
+        .content-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: 50px 60px;
+        }
+        h1 { font-size: 36px; font-weight: 700; color: var(--um-dark-blue); margin-bottom: 10px; }
+        .subtitle { color: var(--um-gray-500); font-size: 15px; margin-bottom: 40px; padding-bottom: 30px; border-bottom: 1px solid var(--um-gray-200); }
+        
+        h2 { font-size: 20px; font-weight: 700; color: var(--um-dark-blue); margin: 40px 0 15px; }
+        h2:first-of-type { margin-top: 0; }
+        h3 { font-size: 16px; font-weight: 600; color: var(--um-gray-600); margin: 25px 0 10px; }
+        p { margin-bottom: 15px; }
+        ul, ol { margin: 15px 0 15px 25px; }
+        li { margin-bottom: 8px; }
+        
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+        th, td { text-align: left; padding: 12px 15px; border: 1px solid var(--um-gray-200); }
+        th { background: var(--um-gray-50); font-weight: 600; }
+        
+        .highlight {
+            background: rgba(16, 185, 129, 0.08);
+            border-left: 3px solid var(--ce-green-primary);
+            padding: 15px 20px;
+            margin: 20px 0;
+            font-size: 15px;
+        }
+        .contact-box {
+            background: linear-gradient(135deg, var(--um-dark-blue), #002a5c);
+            color: white;
+            padding: 25px 30px;
+            border-radius: var(--radius-md);
+            margin: 30px 0;
+        }
+        .contact-box h3 { color: white; margin-top: 0; }
+        .contact-box a { color: var(--ce-green-light); }
+        
+        .address-block {
+            background: var(--um-gray-50);
+            padding: 20px;
+            border-radius: var(--radius-md);
+            margin: 15px 0;
+            font-size: 15px;
+            line-height: 1.8;
+        }
+        
+        /* Footer */
+        footer {
+            background: linear-gradient(165deg, var(--um-dark-blue), #00101f);
+            color: white;
+            padding: 40px 50px;
+            text-align: center;
+        }
+        .footer-links { display: flex; justify-content: center; gap: 30px; margin-bottom: 20px; flex-wrap: wrap; }
+        .footer-links a { color: rgba(255,255,255,0.7); font-size: 14px; }
+        .footer-links a:hover { color: var(--ce-green-light); }
+        .footer-copyright { color: rgba(255,255,255,0.5); font-size: 13px; }
+        
+        @media (max-width: 768px) {
+            header { padding: 0 20px; }
+            .header-nav { display: none; }
+            .content-wrapper { padding: 100px 20px 60px; }
+            .content-card { padding: 30px; }
+            h1 { font-size: 28px; }
+            .footer-links { gap: 20px; }
+        }
+    </style>
+    <link rel="stylesheet" href="ce-restyle.css">
+</head>
+<body>
+    <header id="header">
+        <a href="index.html" class="logo">
+            <img src="assets/logos/ce-logo.png" alt="CE Logo" class="logo-img">
+            <div class="logo-text">
+                <h1>CE Alumni Network</h1>
+                <p>Faculty of Science and Engineering</p>
+            </div>
+        </a>
+        <nav class="header-nav">
+            <a href="index.html">Home</a>
+            <a href="community.html">Community</a>
+            <a href="considering-ce.html" class="btn-cta">Considering CE?</a>
+        </nav>
+    </header>
+
+    <div class="content-wrapper">
+        <div class="content-card">
+            <h1>CE Alumni Network Privacy Policy</h1>
+            <p class="subtitle">Last updated: January 2025</p>
+            
+            <h2>Introduction</h2>
+            <p>Your privacy is important to the Circular Engineering programme (CE) at Maastricht University. This privacy policy explains how we collect, use, and protect your personal data through the CE Alumni Network website and related activities.</p>
+            <p>The CE Alumni Network operates under the umbrella of Maastricht University's alumni engagement activities. For UM's general privacy practices, please refer to the <a href="https://www.maastrichtuniversity.nl/privacy" target="_blank">UM General Privacy Statement</a>.</p>
+            
+            <h2>Data Controller</h2>
+            <div class="address-block">
+                <strong>Maastricht University</strong><br>
+                Faculty of Science and Engineering<br>
+                Circular Engineering<br>
+                P.O. Box 616<br>
+                6200 MD Maastricht<br>
+                The Netherlands
+            </div>
+            <p>For privacy-related inquiries: <a href="mailto:privacy@maastrichtuniversity.nl">privacy@maastrichtuniversity.nl</a></p>
+            <p>Data Protection Officer: <a href="mailto:fg@maastrichtuniversity.nl">fg@maastrichtuniversity.nl</a></p>
+            
+            <h2>What Personal Data We Process</h2>
+            
+            <h3>Data we receive from UM student records:</h3>
+            <ul>
+                <li>Name and contact details (email, phone, address)</li>
+                <li>Date of birth and nationality</li>
+                <li>Educational information (programme, concentration, graduation date)</li>
+            </ul>
+            
+            <h3>Data you provide directly:</h3>
+            <ul>
+                <li>Current location</li>
+                <li>Career information (employer, job title)</li>
+                <li>Post-CE education (Master's programme, university)</li>
+                <li>Communication preferences</li>
+                <li>LinkedIn profile (optional)</li>
+            </ul>
+            
+            <h3>Data from public sources:</h3>
+            <p>As part of maintaining accurate alumni records, we may review publicly available professional information on LinkedIn to verify educational paths and track career outcomes. We always give you the option to opt out of this.</p>
+            
+            <h3>Data displayed on the public website:</h3>
+            <p>The CE Alumni Network website displays <strong>aggregated, anonymized statistics only</strong>, including:</p>
+            <ul>
+                <li>Number of alumni by graduation year and concentration</li>
+                <li>Geographic distribution (countries, not individuals)</li>
+                <li>Types of Master's programmes pursued (categories, not individuals)</li>
+                <li>Career sectors (aggregated)</li>
+            </ul>
+            
+            <div class="highlight">
+                <strong>Individual alumni information is never displayed publicly without explicit consent.</strong>
+            </div>
+            
+            <h2>Purposes of Processing</h2>
+            <p>We process alumni data for the following purposes:</p>
+            <ol>
+                <li><strong>Alumni engagement:</strong> Maintaining contact, sending newsletters, inviting to events</li>
+                <li><strong>Statistical analysis:</strong> Understanding alumni outcomes to improve CE and inform prospective students</li>
+                <li><strong>Regional development:</strong> Providing anonymized data on graduate retention for stakeholders</li>
+                <li><strong>Recruitment support:</strong> Sharing aggregate success stories with prospective students</li>
+                <li><strong>Network facilitation:</strong> Enabling alumni-to-alumni connections (with consent)</li>
+            </ol>
+            
+            <h2>Legal Basis</h2>
+            <p>We process your personal data based on:</p>
+            <ul>
+                <li><strong>Legitimate interest</strong> (Article 6(1)(f) GDPR): Alumni engagement and institutional research are legitimate interests of Maastricht University. We have conducted a balancing test to ensure your rights are protected.</li>
+                <li><strong>Consent</strong> (Article 6(1)(a) GDPR): For optional activities such as featuring your story publicly, participating in mentorship programmes, or joining WhatsApp groups.</li>
+            </ul>
+            <p>You may object to processing based on legitimate interest at any time (see Your Rights below).</p>
+            
+            <h2>Data Retention</h2>
+            <p>Alumni data is retained indefinitely for longitudinal research and community maintenance, unless you request deletion. This is because alumni relationships are genuinely lifelong, and the value of tracking outcomes increases over time.</p>
+            <p>If you request deletion, we will remove your personal data except where retention is required by law (e.g., degree verification records).</p>
+            
+            <h2>Data Sharing</h2>
+            <p>We do not sell your personal data. We may share data with:</p>
+            <ul>
+                <li><strong>Maastricht University central services:</strong> Alumni Office, Marketing & Communications</li>
+                <li><strong>Research partners:</strong> Only anonymized/aggregated data for academic research</li>
+                <li><strong>Technical service providers:</strong> Website hosting, email services (EU-based)</li>
+            </ul>
+            <p>We do not share individual contact details with third parties without your explicit consent.</p>
+            
+            <h2>International Data Transfers</h2>
+            <p>Your data is stored within the European Union. If any processing requires transfer outside the EU, we ensure appropriate safeguards are in place.</p>
+            
+            <h2>Cookies and Analytics</h2>
+            <p>This website uses:</p>
+            <ul>
+                <li><strong>Essential cookies:</strong> Required for website functionality</li>
+                <li><strong>Privacy-friendly analytics:</strong> No personal data collected</li>
+            </ul>
+            <p>We do not use tracking cookies or share data with advertising networks.</p>
+            
+            <h2>Your Rights</h2>
+            <p>Under GDPR, you have the right to:</p>
+            <table>
+                <tr><th>Right</th><th>Description</th></tr>
+                <tr><td><strong>Access</strong></td><td>Request a copy of your personal data</td></tr>
+                <tr><td><strong>Rectification</strong></td><td>Correct inaccurate or incomplete data</td></tr>
+                <tr><td><strong>Erasure</strong></td><td>Request deletion of your data (with some exceptions)</td></tr>
+                <tr><td><strong>Restriction</strong></td><td>Limit how we process your data</td></tr>
+                <tr><td><strong>Portability</strong></td><td>Receive your data in a structured format</td></tr>
+                <tr><td><strong>Object</strong></td><td>Object to processing based on legitimate interest</td></tr>
+                <tr><td><strong>Withdraw consent</strong></td><td>Withdraw previously given consent at any time</td></tr>
+            </table>
+            
+            <div class="contact-box">
+                <h3>How to Exercise Your Rights</h3>
+                <p>Email: <a href="mailto:fse-alumni@maastrichtuniversity.nl">fse-alumni@maastrichtuniversity.nl</a></p>
+                <p>We will respond within 30 days.</p>
+            </div>
+            
+            <h2>Data Security</h2>
+            <p>We implement appropriate technical and organizational measures to protect your data:</p>
+            <ul>
+                <li>Access restricted to authorized FSE staff only</li>
+                <li>Secure, encrypted connections (HTTPS)</li>
+                <li>EU-based hosting</li>
+            </ul>
+            
+            <h2>Changes to This Policy</h2>
+            <p>We may update this policy periodically. Significant changes will be communicated via email to registered alumni.</p>
+            
+            <h2>Complaints</h2>
+            <p>If you believe your privacy rights have been violated, you may:</p>
+            <ol>
+                <li>Contact us at <a href="mailto:fse-alumni@maastrichtuniversity.nl">fse-alumni@maastrichtuniversity.nl</a></li>
+                <li>Contact the UM Data Protection Officer at <a href="mailto:fg@maastrichtuniversity.nl">fg@maastrichtuniversity.nl</a></li>
+                <li>File a complaint with the <a href="https://autoriteitpersoonsgegevens.nl" target="_blank">Dutch Data Protection Authority (Autoriteit Persoonsgegevens)</a></li>
+            </ol>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="community.html">Community</a>
+            <a href="considering-ce.html">Considering CE?</a>
+            <a href="privacy.html">Privacy Policy</a>
+        </div>
+        <p class="footer-copyright">(c) 2025 Circular Engineering  -  Faculty of Science and Engineering  -  Maastricht University</p>
+    </footer>
+    
+    <script>lucide.createIcons();</script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+/* ============================================
+   CE ALUMNI — REDESIGN LAYER
+   Brings considering-ce, community and privacy in line with the
+   redesigned homepage: serif display type, the navy header bar,
+   flat surfaces, CE sand ground.
+
+   Linked AFTER each page's inline <style> block, so it wins on
+   document order without needing !important everywhere. Rules that
+   would still lose to a more specific page rule are scoped through
+   header#header or carry !important deliberately.
+   ============================================ */
+
+:root {
+  --font-display: 'Instrument Serif', Georgia, serif;
+  --font-heading: var(--font-display);
+  --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --paper: #F5F0E8;
+  --hair: rgba(0, 28, 61, 0.09);
+}
+
+body {
+  background: var(--paper);
+  font-family: var(--font-body);
+}
+
+/* Instrument Serif ships in one weight; a rule asking for 600 or 700 gets a
+   synthesised faux-bold that looks smeared. Pin every heading to 400. */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 400 !important;
+  letter-spacing: -0.02em;
+}
+
+/* Functional text stays on the sans face, matching the homepage rule that
+   only display-size text is serif. */
+.logo-text h1,
+.logo-text p,
+button, input, select, textarea,
+.btn, .btn-cta, .cta-btn {
+  font-family: var(--font-body) !important;
+}
+.logo-text h1 { font-weight: 600 !important; }
+
+/* ---- Header: the homepage bar, on every page ---- */
+header#header {
+  position: sticky;
+  left: auto;
+  right: auto;
+  height: auto;
+  padding: 14px 32px;
+  gap: 24px;
+  background: rgba(0, 28, 61, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  z-index: 50;
+}
+
+header#header .logo { gap: 12px; }
+header#header .logo-img { height: 30px; }
+header#header .logo-text h1 { font-size: 14px; color: #fff; letter-spacing: -0.01em; }
+/* The homepage carries one line here, not a name plus a strapline. */
+header#header .logo-text p { display: none; }
+
+header#header .header-nav a {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.72);
+  padding: 8px 12px;
+  border-radius: 7px;
+}
+header#header .header-nav a:hover,
+header#header .header-nav a.active {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.09);
+}
+header#header .header-nav .btn-cta {
+  background: #10B981;
+  color: #fff;
+  font-weight: 600;
+  padding: 9px 16px;
+  margin-left: 8px;
+  border-radius: 7px;
+  box-shadow: none;
+  transform: none;
+}
+header#header .header-nav .btn-cta:hover {
+  background: #0FA873;
+  color: #fff;
+  box-shadow: none;
+  transform: none;
+}
+header#header .menu-toggle span { background: #fff; }
+
+/* ---- Drop the decorative hero layers ---- */
+#starCanvas,
+#particleCanvas,
+.particle-canvas,
+.hero-mesh,
+.hero-pattern,
+.hero-fullpage .hero-grid {
+  display: none !important;
+}

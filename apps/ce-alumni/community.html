@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community | CE Alumni Network</title>
+    <link rel="icon" type="image/png" href="assets/logos/ce-logo.png">
+    <meta name="description" content="Join the Circular Engineering alumni community. Update your information and stay connected with fellow CE graduates.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <!-- CE Alumni Data -->
+    <script src="data.js"></script>
+    
+    <style>
+        /* ============================================
+           CSS VARIABLES - CIRCULAR ENGINEERING THEME
+        ============================================ */
+        :root {
+            --um-dark-blue: #001C3D;
+            --um-darker-blue: #00101f;
+            --um-light-blue: #00A2DB;
+            
+            --ce-green-primary: #10B981;
+            --ce-green-dark: #059669;
+            --ce-green-light: #34D399;
+            --ce-green-glow: rgba(16, 185, 129, 0.3);
+            --ce-teal: #14B8A6;
+            
+            --ce-sand: #F5F0E8;
+            --ce-warm-white: #FDFCFA;
+            
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-800: #1f2937;
+            
+            --font-heading: var(--font-display);
+            --font-body: var(--font-body);
+            
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.06);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.08), 0 16px 48px rgba(0,0,0,0.08);
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-xl: 28px;
+            --radius-full: 9999px;
+            
+            --transition-fast: 0.15s ease;
+            --transition-smooth: 0.3s ease;
+        }
+        
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+        body {
+            font-family: var(--font-body);
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--um-dark-blue);
+            background: var(--ce-warm-white);
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+        a { color: var(--ce-green-primary); text-decoration: none; transition: color var(--transition-fast); }
+        a:hover { color: var(--ce-green-dark); }
+        
+        /* ============================================
+           HEADER
+        ============================================ */
+        header {
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,28,61,0.06);
+            padding: 0 50px;
+            height: 72px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all var(--transition-smooth);
+        }
+        
+        header.scrolled {
+            background: var(--um-dark-blue);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        
+        .logo-img {
+            height: 44px;
+            width: auto;
+            object-fit: contain;
+        }
+        
+        .logo-text h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--um-dark-blue);
+            transition: color var(--transition-smooth);
+        }
+        
+        .logo-text p {
+            font-size: 12px;
+            color: var(--gray-500);
+            font-weight: 500;
+            transition: color var(--transition-smooth);
+        }
+        
+        header.scrolled .logo-text h1 { color: white; }
+        header.scrolled .logo-text p { color: rgba(255,255,255,0.7); }
+        
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .header-nav a {
+            padding: 10px 18px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--gray-600);
+            border-radius: var(--radius-full);
+            transition: all var(--transition-fast);
+        }
+        
+        .header-nav a:hover {
+            color: var(--um-dark-blue);
+            background: var(--gray-100);
+        }
+        
+        .header-nav a.active {
+            background: var(--ce-green-primary);
+            color: white;
+        }
+        
+        .header-nav .btn-cta {
+            background: linear-gradient(135deg, var(--ce-green-primary), var(--ce-green-dark));
+            color: white;
+            font-weight: 600;
+        }
+        
+        header.scrolled .header-nav a { color: rgba(255,255,255,0.8); }
+        header.scrolled .header-nav a:hover { color: white; background: rgba(255,255,255,0.1); }
+        header.scrolled .header-nav a.active { background: var(--ce-green-primary); color: white; }
+        
+        /* ============================================
+           HERO SECTION
+        ============================================ */
+        .hero {
+            background: linear-gradient(165deg, var(--um-dark-blue) 0%, #002952 100%);
+            padding: 140px 50px 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 600px;
+            height: 600px;
+            border: 1px solid rgba(16, 185, 129, 0.1);
+            border-radius: 50%;
+        }
+        
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 400px;
+            height: 400px;
+            border: 1px solid rgba(16, 185, 129, 0.08);
+            border-radius: 50%;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 8px 20px;
+            border-radius: var(--radius-full);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--ce-green-light);
+            margin-bottom: 24px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .hero-badge i { width: 16px; height: 16px; }
+        
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 16px;
+        }
+        
+        .hero p {
+            font-size: 18px;
+            color: rgba(255,255,255,0.7);
+            line-height: 1.7;
+        }
+        
+        /* ============================================
+           MAIN CONTENT
+        ============================================ */
+        .main-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 80px 50px;
+        }
+        
+        /* ============================================
+           UPDATE INFO SECTION
+        ============================================ */
+        .update-section {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 50px;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 60px;
+        }
+        
+        .update-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .update-header h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--um-dark-blue);
+            margin-bottom: 12px;
+        }
+        
+        .update-header p {
+            font-size: 16px;
+            color: var(--gray-500);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .update-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+        
+        .update-info h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--um-dark-blue);
+            margin-bottom: 20px;
+        }
+        
+        .info-list {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+        
+        .info-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            color: var(--gray-600);
+            font-size: 15px;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        
+        .info-list li:last-child { border-bottom: none; }
+        
+        .info-list li i {
+            width: 20px;
+            height: 20px;
+            color: var(--ce-green-primary);
+            flex-shrink: 0;
+        }
+        
+        .update-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 32px;
+            background: linear-gradient(135deg, var(--ce-green-primary), var(--ce-green-dark));
+            color: white;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 16px;
+            transition: all var(--transition-smooth);
+            box-shadow: 0 8px 25px var(--ce-green-glow);
+        }
+        
+        .update-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px var(--ce-green-glow);
+            color: white;
+        }
+        
+        .update-btn i { width: 20px; height: 20px; }
+        
+        /* Why card */
+        .why-card {
+            background: var(--ce-sand);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+        }
+        
+        .why-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--um-dark-blue);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .why-card h3 i {
+            width: 22px;
+            height: 22px;
+            color: var(--ce-green-primary);
+        }
+        
+        .why-list {
+            list-style: none;
+        }
+        
+        .why-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 0;
+            font-size: 14px;
+            color: var(--gray-600);
+            line-height: 1.5;
+        }
+        
+        .why-list li i {
+            width: 18px;
+            height: 18px;
+            color: var(--ce-green-primary);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        
+        /* ============================================
+           CONNECT SECTION
+        ============================================ */
+        .connect-section {
+            margin-bottom: 60px;
+        }
+        
+        .connect-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .connect-header h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--um-dark-blue);
+            margin-bottom: 12px;
+        }
+        
+        .connect-header p {
+            font-size: 16px;
+            color: var(--gray-500);
+        }
+        
+        .connect-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+        
+        .connect-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-smooth);
+            border: 1px solid var(--gray-200);
+        }
+        
+        .connect-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .connect-card.linkedin { border-top: 4px solid #0A66C2; }
+        .connect-card.email { border-top: 4px solid var(--ce-green-primary); }
+        
+        .connect-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .connect-card.linkedin .connect-icon {
+            background: rgba(10, 102, 194, 0.1);
+        }
+        
+        .connect-card.linkedin .connect-icon i {
+            width: 26px;
+            height: 26px;
+            color: #0A66C2;
+        }
+        
+        .connect-card.email .connect-icon {
+            background: rgba(16, 185, 129, 0.1);
+        }
+        
+        .connect-card.email .connect-icon i {
+            width: 26px;
+            height: 26px;
+            color: var(--ce-green-primary);
+        }
+        
+        .connect-card h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--um-dark-blue);
+            margin-bottom: 8px;
+        }
+        
+        .connect-card p {
+            font-size: 14px;
+            color: var(--gray-500);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .connect-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .connect-link i { width: 18px; height: 18px; }
+        
+        .connect-card.linkedin .connect-link { color: #0A66C2; }
+        .connect-card.email .connect-link { color: var(--ce-green-primary); }
+        
+        /* ============================================
+           DATA PRIVACY SECTION
+        ============================================ */
+        .privacy-section {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 50px;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .privacy-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .privacy-header h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--um-dark-blue);
+            margin-bottom: 12px;
+        }
+        
+        .privacy-header p {
+            font-size: 16px;
+            color: var(--gray-500);
+        }
+        
+        .privacy-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .privacy-card {
+            padding: 24px;
+            border-radius: var(--radius-md);
+        }
+        
+        .privacy-card.do {
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        
+        .privacy-card.dont {
+            background: rgba(239, 68, 68, 0.05);
+            border: 1px solid rgba(239, 68, 68, 0.15);
+        }
+        
+        .privacy-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .privacy-card.do h3 { color: var(--ce-green-dark); }
+        .privacy-card.dont h3 { color: #DC2626; }
+        
+        .privacy-card h3 i { width: 20px; height: 20px; }
+        
+        .privacy-list {
+            list-style: none;
+        }
+        
+        .privacy-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 0;
+            font-size: 14px;
+            color: var(--gray-600);
+        }
+        
+        .privacy-list li i {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        
+        .privacy-card.do .privacy-list li i { color: var(--ce-green-primary); }
+        .privacy-card.dont .privacy-list li i { color: #EF4444; }
+        
+        .privacy-cta {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid var(--gray-200);
+        }
+        
+        .privacy-cta p {
+            font-size: 14px;
+            color: var(--gray-500);
+            margin-bottom: 16px;
+        }
+        
+        .privacy-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: var(--ce-green-primary);
+        }
+        
+        .privacy-link i { width: 18px; height: 18px; }
+        
+        /* ============================================
+           FOOTER
+        ============================================ */
+        footer {
+            background: var(--um-darker-blue);
+            color: white;
+            padding: 60px 50px 40px;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 60px;
+        }
+        
+        .footer-brand {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .footer-logo {
+            height: 50px;
+            width: auto;
+            object-fit: contain;
+            align-self: flex-start;
+        }
+        
+        .footer-brand h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        
+        .footer-brand p {
+            font-size: 14px;
+            color: rgba(255,255,255,0.6);
+            line-height: 1.7;
+            max-width: 300px;
+        }
+        
+        .footer-links h4 {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 20px;
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .footer-links a {
+            display: block;
+            color: rgba(255,255,255,0.7);
+            font-size: 14px;
+            padding: 6px 0;
+        }
+        
+        .footer-links a:hover { color: var(--ce-green-light); }
+        
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 40px auto 0;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-bottom p {
+            font-size: 13px;
+            color: rgba(255,255,255,0.4);
+        }
+        
+        .footer-bottom a {
+            color: rgba(255,255,255,0.4);
+            font-size: 13px;
+        }
+        
+        .footer-bottom a:hover { color: white; }
+        
+        /* ============================================
+           RESPONSIVE
+        ============================================ */
+        @media (max-width: 768px) {
+            header { padding: 0 20px; }
+            .header-nav { display: none; }
+            .hero { padding: 120px 20px 60px; }
+            .hero h1 { font-size: 32px; }
+            .main-content { padding: 60px 20px; }
+            .update-section, .privacy-section { padding: 30px; }
+            .update-grid, .connect-grid, .privacy-grid { grid-template-columns: 1fr; }
+            .footer-content { grid-template-columns: 1fr; gap: 40px; }
+            .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+        }
+    </style>
+    <link rel="stylesheet" href="ce-restyle.css">
+</head>
+<body>
+    <!-- Header -->
+    <header id="header">
+        <a href="index.html" class="logo">
+            <img src="assets/logos/ce-logo.png" alt="CE Logo" class="logo-img">
+            <div class="logo-text">
+                <h1>CE Alumni Network</h1>
+                <p>Faculty of Science and Engineering</p>
+            </div>
+        </a>
+        <nav class="header-nav">
+            <a href="index.html">Home</a>
+            <a href="community.html" class="active">Community</a>
+            <a href="considering-ce.html" class="btn-cta">Considering CE?</a>
+        </nav>
+    </header>
+    
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <i data-lucide="users"></i>
+                Join the Loop
+            </div>
+            <h1>Stay Connected</h1>
+            <p>Help us track where CE alumni are making an impact. Update your information and connect with fellow circular engineers around the world.</p>
+        </div>
+    </section>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Update Info Section -->
+        <section class="update-section">
+            <div class="update-header">
+                <h2>Update Your Information</h2>
+                <p>It takes 30 seconds and helps us build a stronger community</p>
+            </div>
+            
+            <div class="update-grid">
+                <div class="update-info">
+                    <h3>What we need from you:</h3>
+                    <ul class="info-list">
+                        <li><i data-lucide="user"></i> Your name</li>
+                        <li><i data-lucide="map-pin"></i> Current city and country</li>
+                        <li><i data-lucide="graduation-cap"></i> Master's university (if applicable)</li>
+                        <li><i data-lucide="book-open"></i> Master's programme</li>
+                        <li><i data-lucide="briefcase"></i> Current role or what you're doing now</li>
+                    </ul>
+                    
+                    <a href="mailto:fse-alumni@maastrichtuniversity.nl?subject=CE Alumni Info Update&body=Hi FSE Alumni Team,%0D%0A%0D%0AHere's my updated info:%0D%0A%0D%0AName:%0D%0AGraduation Year:%0D%0ACE Concentration:%0D%0ACurrent City/Country:%0D%0AMaster's University:%0D%0AMaster's Programme:%0D%0ACurrent Role/What I'm doing now:%0D%0A%0D%0AThanks!" class="update-btn">
+                        <i data-lucide="send"></i>
+                        Send My Info
+                    </a>
+                </div>
+                
+                <div class="why-card">
+                    <h3><i data-lucide="help-circle"></i> Why does this matter?</h3>
+                    <ul class="why-list">
+                        <li>
+                            <i data-lucide="check"></i>
+                            <span>Helps us show prospective students where CE graduates end up</span>
+                        </li>
+                        <li>
+                            <i data-lucide="check"></i>
+                            <span>Supports accreditation and programme development</span>
+                        </li>
+                        <li>
+                            <i data-lucide="check"></i>
+                            <span>Enables us to connect alumni in similar fields or locations</span>
+                        </li>
+                        <li>
+                            <i data-lucide="check"></i>
+                            <span>Demonstrates CE's contribution to the regional knowledge economy</span>
+                        </li>
+                        <li>
+                            <i data-lucide="check"></i>
+                            <span>Helps plan future alumni events and networking opportunities</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Connect Section -->
+        <section class="connect-section">
+            <div class="connect-header">
+                <h2>Other Ways to Connect</h2>
+                <p>Stay in touch with the CE community</p>
+            </div>
+            
+            <div class="connect-grid">
+                <div class="connect-card linkedin">
+                    <div class="connect-icon">
+                        <i data-lucide="linkedin"></i>
+                    </div>
+                    <h3>FSE Alumni Network</h3>
+                    <p>Join the Faculty of Science and Engineering alumni group on LinkedIn. Share achievements, career updates, and connect with graduates from all FSE programmes.</p>
+                    <a href="https://www.linkedin.com/groups/14782233/" target="_blank" class="connect-link">
+                        Join on LinkedIn <i data-lucide="external-link"></i>
+                    </a>
+                </div>
+                
+                <div class="connect-card email">
+                    <div class="connect-icon">
+                        <i data-lucide="mail"></i>
+                    </div>
+                    <h3>Get in Touch</h3>
+                    <p>Have questions about the CE Alumni Network? Want to share your story or get involved? We'd love to hear from you.</p>
+                    <a href="mailto:fse-alumni@maastrichtuniversity.nl" class="connect-link">
+                        fse-alumni@maastrichtuniversity.nl <i data-lucide="arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Privacy Section -->
+        <section class="privacy-section">
+            <div class="privacy-header">
+                <h2>Your Data, Your Control</h2>
+                <p>Here's exactly what we do - and don't do - with your information</p>
+            </div>
+            
+            <div class="privacy-grid">
+                <div class="privacy-card do">
+                    <h3><i data-lucide="check-circle"></i> What We Do</h3>
+                    <ul class="privacy-list">
+                        <li><i data-lucide="check"></i> Create anonymous, aggregated statistics (e.g., "10 alumni in Maastricht")</li>
+                        <li><i data-lucide="check"></i> Track Master's destinations for programme development</li>
+                        <li><i data-lucide="check"></i> Connect you with other alumni if you both agree</li>
+                        <li><i data-lucide="check"></i> Always ask before featuring you publicly</li>
+                    </ul>
+                </div>
+                
+                <div class="privacy-card dont">
+                    <h3><i data-lucide="shield"></i> What We Never Do</h3>
+                    <ul class="privacy-list">
+                        <li><i data-lucide="x"></i> Share your personal information with third parties</li>
+                        <li><i data-lucide="x"></i> Display your name publicly without explicit consent</li>
+                        <li><i data-lucide="x"></i> Sell or monetize your data in any way</li>
+                        <li><i data-lucide="x"></i> Make it difficult to opt out</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="privacy-cta">
+                <p>Questions about how we handle your data? Just ask.</p>
+                <a href="mailto:fse-alumni@maastrichtuniversity.nl?subject=Privacy Question" class="privacy-link">
+                    <i data-lucide="mail"></i>
+                    Contact Us
+                </a>
+            </div>
+        </section>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <img src="assets/logos/ce-logo.png" alt="CE Logo" class="footer-logo">
+                <h3>CE Alumni Network</h3>
+                <p>Tracking the journeys of Circular Engineering graduates as they build sustainable solutions across the globe.</p>
+            </div>
+            
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <a href="index.html">Home</a>
+                <a href="community.html">Community</a>
+                <a href="considering-ce.html">Considering CE?</a>
+            </div>
+            
+            <div class="footer-links">
+                <h4>Faculty</h4>
+                <a href="https://www.maastrichtuniversity.nl/about-um/faculties/science-and-engineering" target="_blank">FSE Homepage</a>
+                <a href="https://www.maastrichtuniversity.nl/education/bachelor/circular-engineering" target="_blank">CE Programme</a>
+                <a href="https://www.maastrichtuniversity.nl/alumni" target="_blank">UM Alumni</a>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 Maastricht University  -  Faculty of Science and Engineering</p>
+            <a href="mailto:fse-alumni@maastrichtuniversity.nl">fse-alumni@maastrichtuniversity.nl</a>
+        </div>
+    </footer>
+    
+    <script>
+        lucide.createIcons();
+        
+        // Header scroll effect
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+    </script>
+</body>
+</html>
