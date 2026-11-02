@@ -1,0 +1,1117 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//MSP Operations//Academic Calendar//EN
+X-WR-CALNAME:MSP ESD deadlines 2026-27
+X-WR-CALDESC:MSP staff deadlines 2026-27. Spotted a wrong date\, or know on
+ e that is missing? Tell us at msp-exams@maastrichtuniversity.nl and we fix
+  it at the source. Web view: https://msp-operations.github.io/Academic-Cal
+ endar/
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+REFRESH-INTERVAL;VALUE=DURATION:PT1H
+X-PUBLISHED-TTL:PT1H
+BEGIN:VEVENT
+UID:ext-edu-s1-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20260719
+DTEND;VALUE=DATE:20260720
+SUMMARY:[MSP ESD] External education registration deadline (S1\, P1\, P1-P2
+ )
+DESCRIPTION:For: students\, BoE
+URL:https://msp-operations.github.io/Academic-Calendar/?event=ext-edu-s1
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:examiner-bko-ask-fall-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20260803
+DTEND;VALUE=DATE:20260804
+SUMMARY:[MSP ESD] Ask faculty BKO/UTQ contacts for registration updates (Fa
+ ll)
+DESCRIPTION:For: IPO (Eva)\, faculty BKO/UTQ contact persons
+URL:https://msp-operations.github.io/Academic-Calendar/?event=examiner-bko-
+ ask-fall
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:intro-esd-presentation-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20260810
+DTEND;VALUE=DATE:20260811
+SUMMARY:[MSP ESD] ESD presentation for Introduction Days refreshed
+DESCRIPTION:For: ESD\, Linzi\, Heather
+URL:https://msp-operations.github.io/Academic-Calendar/?event=intro-esd-pre
+ sentation
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:intro-qa-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20260813
+DTEND;VALUE=DATE:20260814
+SUMMARY:[MSP ESD] Introduction Days live Q&A (Teams)
+DESCRIPTION:For: incoming students\, ESD\, buddies
+URL:https://msp-operations.github.io/Academic-Calendar/?event=intro-qa
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:examiner-gerco-check-fall-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20260819
+DTEND;VALUE=DATE:20260820
+SUMMARY:[MSP ESD] Examiner list final check with Gerco (Fall semester)
+DESCRIPTION:For: IPO (Eva)\, Gerco
+URL:https://msp-operations.github.io/Academic-Calendar/?event=examiner-gerc
+ o-check-fall
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:course-manuals-download-p1-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20260831
+DTEND;VALUE=DATE:20260901
+SUMMARY:[MSP ESD] Course manuals downloaded from Canvas + published (Advisi
+ ng page) (P1)
+DESCRIPTION:For: IPO (Eva)\, students
+URL:https://msp-operations.github.io/Academic-Calendar/?event=course-manual
+ s-download-p1
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:catalogue-kickoff-spring-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20260907
+DTEND;VALUE=DATE:20260908
+SUMMARY:[MSP ESD] Catalogue Spring 26/27 update - kick-off
+DESCRIPTION:For: IPO (Eva)\, Gerco
+URL:https://msp-operations.github.io/Academic-Calendar/?event=catalogue-kic
+ koff-spring
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:ext-edu-p2-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20260913
+DTEND;VALUE=DATE:20260914
+SUMMARY:[MSP ESD] External education registration deadline (P2)
+DESCRIPTION:For: students\, BoE
+URL:https://msp-operations.github.io/Academic-Calendar/?event=ext-edu-p2
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:iwio-import-p1-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20260925
+DTEND;VALUE=DATE:20260926
+SUMMARY:[MSP ESD] IWIO: SAP data imported + errors cleared (P1)
+DESCRIPTION:For: IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=iwio-import-p
+ 1
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:admissions-studielink-opens-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261001
+DTEND;VALUE=DATE:20261002
+SUMMARY:[MSP ESD] Admissions - Studielink opens for AY27-28 + portal texts 
+ live
+DESCRIPTION:For: Admissions team (Saskia\, Gian)\, SSC
+URL:https://msp-operations.github.io/Academic-Calendar/?event=admissions-st
+ udielink-opens
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:iwio-setup-p1-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261002
+DTEND;VALUE=DATE:20261003
+SUMMARY:[MSP ESD] IWIO: questionnaire link + open/close dates installed (P1
+ )
+DESCRIPTION:For: IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=iwio-setup-p1
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:exam-overview-check-p1-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261005
+DTEND;VALUE=DATE:20261006
+SUMMARY:[MSP ESD] Check exam/resit overview + prefill accreditation registe
+ rs (P1)
+DESCRIPTION:For: IPO (Eva)\, exams office
+URL:https://msp-operations.github.io/Academic-Calendar/?event=exam-overview
+ -check-p1
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:iwio-send-p1-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261005
+DTEND;VALUE=DATE:20261006
+SUMMARY:[MSP ESD] IWIO opens: invitations sent (3 reminders follow) (P1)
+DESCRIPTION:For: students\, coordinators\, IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=iwio-send-p1
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:forms-erik-fall-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261023
+DTEND;VALUE=DATE:20261024
+SUMMARY:[MSP ESD] Intranet forms sweep with Erik Verheij (Fall round)
+DESCRIPTION:For: IPO (Eva)\, Erik Verheij
+URL:https://msp-operations.github.io/Academic-Calendar/?event=forms-erik-fa
+ ll
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:course-manuals-download-p2-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261026
+DTEND;VALUE=DATE:20261027
+SUMMARY:[MSP ESD] Course manuals downloaded from Canvas + published (Advisi
+ ng page) (P2)
+DESCRIPTION:For: IPO (Eva)\, students
+URL:https://msp-operations.github.io/Academic-Calendar/?event=course-manual
+ s-download-p2
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:catalogue-spring-publish-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261030
+DTEND;VALUE=DATE:20261031
+SUMMARY:[MSP ESD] Spring catalogue updates published (Canvas + intranet)
+DESCRIPTION:For: coordinators\, students\, Gerco\, Chris P.\, Severine\, Ka
+ tja\, Saskia\, Linzi\, UCM/UCV
+URL:https://msp-operations.github.io/Academic-Calendar/?event=catalogue-spr
+ ing-publish
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:catalogue-overviews-spring-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261030
+DTEND;VALUE=DATE:20261031
+SUMMARY:[MSP ESD] All catalogue overviews updated (Spring 26/27)
+DESCRIPTION:For: IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=catalogue-ove
+ rviews-spring
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:ext-edu-p3-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261108
+DTEND;VALUE=DATE:20261109
+SUMMARY:[MSP ESD] External education registration deadline (P3)
+DESCRIPTION:For: students\, BoE
+URL:https://msp-operations.github.io/Academic-Calendar/?event=ext-edu-p3
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:accreditation-ask-p1-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261109
+DTEND;VALUE=DATE:20261110
+SUMMARY:[MSP ESD] Ask coordinators for accreditation material (P1)
+DESCRIPTION:For: IPO (Eva)\, course coordinators of the period + resits
+URL:https://msp-operations.github.io/Academic-Calendar/?event=accreditation
+ -ask-p1
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:iwio-close-p1-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261113
+DTEND;VALUE=DATE:20261114
+SUMMARY:[MSP ESD] IWIO closed + coordinators and EPC informed (P1)
+DESCRIPTION:For: coordinators\, EPC\, IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=iwio-close-p1
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:accreditation-deadline-p1-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261120
+DTEND;VALUE=DATE:20261121
+SUMMARY:[MSP ESD] Accreditation material hand-in deadline (P1)
+DESCRIPTION:For: course coordinators\, IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=accreditation
+ -deadline-p1
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:iwio-import-p2-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261120
+DTEND;VALUE=DATE:20261121
+SUMMARY:[MSP ESD] IWIO: SAP data imported + errors cleared (P2)
+DESCRIPTION:For: IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=iwio-import-p
+ 2
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:accreditation-dub30-p1-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261123
+DTEND;VALUE=DATE:20261126
+SUMMARY:[MSP ESD] Eva at DUB30 for archive intake (Mon-Wed) (P1)
+DESCRIPTION:For: IPO (Eva)\, late coordinators
+URL:https://msp-operations.github.io/Academic-Calendar/?event=accreditation
+ -dub30-p1
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:iwio-setup-p2-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261127
+DTEND;VALUE=DATE:20261128
+SUMMARY:[MSP ESD] IWIO: questionnaire link + open/close dates installed (P2
+ )
+DESCRIPTION:For: IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=iwio-setup-p2
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:exam-overview-check-p2-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261130
+DTEND;VALUE=DATE:20261201
+SUMMARY:[MSP ESD] Check exam/resit overview + prefill accreditation registe
+ rs (P2)
+DESCRIPTION:For: IPO (Eva)\, exams office
+URL:https://msp-operations.github.io/Academic-Calendar/?event=exam-overview
+ -check-p2
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:iwio-send-p2-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261130
+DTEND;VALUE=DATE:20261201
+SUMMARY:[MSP ESD] IWIO opens: invitations sent (3 reminders follow) (P2)
+DESCRIPTION:For: students\, coordinators\, IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=iwio-send-p2
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:ext-edu-s2-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261206
+DTEND;VALUE=DATE:20261207
+SUMMARY:[MSP ESD] External education registration deadline (S2\, P4\, P4-P5
+ )
+DESCRIPTION:For: students\, BoE
+URL:https://msp-operations.github.io/Academic-Calendar/?event=ext-edu-s2
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:archive-drive-winter-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261214
+DTEND;VALUE=DATE:20261215
+SUMMARY:[MSP ESD] Archive drive + accreditation overviews set up for Spring
+DESCRIPTION:For: IPO (Eva)\, Ton Derikx\, coordinators
+URL:https://msp-operations.github.io/Academic-Calendar/?event=archive-drive
+ -winter
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:catalogue-kickoff-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270104
+DTEND;VALUE=DATE:20270105
+SUMMARY:[MSP ESD] Catalogue AY27-28 kickoff - workbooks copied + Gerco lett
+ er meeting
+DESCRIPTION:For: IPO (Eva)\, Gerco
+URL:https://msp-operations.github.io/Academic-Calendar/?event=catalogue-kic
+ koff
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:examiner-bko-ask-spring-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270104
+DTEND;VALUE=DATE:20270105
+SUMMARY:[MSP ESD] Ask faculty BKO/UTQ contacts for registration updates (Sp
+ ring)
+DESCRIPTION:For: IPO (Eva)\, faculty BKO/UTQ contact persons
+URL:https://msp-operations.github.io/Academic-Calendar/?event=examiner-bko-
+ ask-spring
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:bsa-infosheet-jan-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270111
+DTEND;VALUE=DATE:20270112
+SUMMARY:[MSP ESD] BSA Infosheet refreshed + Canvas announcement (halfway ro
+ und)
+DESCRIPTION:For: BoE (Katja)\, Gerco\, IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=bsa-infosheet
+ -jan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:bsa-halfway-prep-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270111
+DTEND;VALUE=DATE:20270112
+SUMMARY:[MSP ESD] BSA halfway letter - student lists + datafile prep
+DESCRIPTION:For: IPO (Eva)\, BoE\, Pavel
+URL:https://msp-operations.github.io/Academic-Calendar/?event=bsa-halfway-p
+ rep
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:accreditation-ask-p2-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270118
+DTEND;VALUE=DATE:20270119
+SUMMARY:[MSP ESD] Ask coordinators for accreditation material (P2 + P1 resi
+ ts)
+DESCRIPTION:For: IPO (Eva)\, course coordinators
+URL:https://msp-operations.github.io/Academic-Calendar/?event=accreditation
+ -ask-p2
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:bsa-halfway-gerco-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270118
+DTEND;VALUE=DATE:20270119
+SUMMARY:[MSP ESD] BSA halfway letter - final version from Gerco
+DESCRIPTION:For: Gerco\, IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=bsa-halfway-g
+ erco
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:catalogue-letters-out-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270118
+DTEND;VALUE=DATE:20270119
+SUMMARY:[MSP ESD] Catalogue update letters to all course coordinators
+DESCRIPTION:For: course coordinators\, education coordinators\, IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=catalogue-let
+ ters-out
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:iwio-close-p2-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270122
+DTEND;VALUE=DATE:20270123
+SUMMARY:[MSP ESD] IWIO closed + coordinators and EPC informed (P2)
+DESCRIPTION:For: coordinators\, EPC\, IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=iwio-close-p2
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:course-manuals-download-p4-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270125
+DTEND;VALUE=DATE:20270126
+SUMMARY:[MSP ESD] Course manuals downloaded from Canvas + published (Advisi
+ ng page) (P4)
+DESCRIPTION:For: IPO (Eva)\, students
+URL:https://msp-operations.github.io/Academic-Calendar/?event=course-manual
+ s-download-p4
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:accreditation-deadline-p2-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270129
+DTEND;VALUE=DATE:20270130
+SUMMARY:[MSP ESD] Accreditation material hand-in deadline (P2 + P1 resits)
+DESCRIPTION:For: course coordinators\, IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=accreditation
+ -deadline-p2
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:accreditation-dub30-p2-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270201
+DTEND;VALUE=DATE:20270204
+SUMMARY:[MSP ESD] Eva at DUB30 for archive intake (P2 round)
+DESCRIPTION:For: IPO (Eva)\, late coordinators
+URL:https://msp-operations.github.io/Academic-Calendar/?event=accreditation
+ -dub30-p2
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:bsa-halfway-send-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270201
+DTEND;VALUE=DATE:20270202
+SUMMARY:[MSP ESD] BSA halfway letters sent (mail merge)
+DESCRIPTION:For: first-year students\, IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=bsa-halfway-s
+ end
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:bsa-halfway-archive-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270219
+DTEND;VALUE=DATE:20270220
+SUMMARY:[MSP ESD] BSA halfway letters archived (Corsa D20A + Outlook)
+DESCRIPTION:For: IPO (Eva)\, Ton Derikx\, Katja
+URL:https://msp-operations.github.io/Academic-Calendar/?event=bsa-halfway-a
+ rchive
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:ext-edu-p5-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270221
+DTEND;VALUE=DATE:20270222
+SUMMARY:[MSP ESD] External education registration deadline (P5)
+DESCRIPTION:For: students\, BoE
+URL:https://msp-operations.github.io/Academic-Calendar/?event=ext-edu-p5
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:bsa-halfway-followup-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270222
+DTEND;VALUE=DATE:20270223
+SUMMARY:[MSP ESD] BSA halfway follow-up - exemption list + credit report to
+  Pavel/BoE
+DESCRIPTION:For: IPO (Eva)\, BoE (Katja)\, Pavel
+URL:https://msp-operations.github.io/Academic-Calendar/?event=bsa-halfway-f
+ ollowup
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:catalogue-coordinator-updates-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270226
+DTEND;VALUE=DATE:20270227
+SUMMARY:[MSP ESD] Course catalogue - coordinator updates due
+DESCRIPTION:For: course coordinators
+URL:https://msp-operations.github.io/Academic-Calendar/?event=catalogue-coo
+ rdinator-updates
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:iwio-import-p4-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270226
+DTEND;VALUE=DATE:20270227
+SUMMARY:[MSP ESD] IWIO: SAP data imported + errors cleared (P4)
+DESCRIPTION:For: IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=iwio-import-p
+ 4
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:iwio-setup-p4-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270305
+DTEND;VALUE=DATE:20270306
+SUMMARY:[MSP ESD] IWIO: questionnaire link + open/close dates installed (P4
+ )
+DESCRIPTION:For: IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=iwio-setup-p4
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:exam-overview-check-p4-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270308
+DTEND;VALUE=DATE:20270309
+SUMMARY:[MSP ESD] Check exam/resit overview + prefill accreditation registe
+ rs (P4)
+DESCRIPTION:For: IPO (Eva)\, exams office
+URL:https://msp-operations.github.io/Academic-Calendar/?event=exam-overview
+ -check-p4
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:iwio-send-p4-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270308
+DTEND;VALUE=DATE:20270309
+SUMMARY:[MSP ESD] IWIO opens: invitations sent (3 reminders follow) (P4)
+DESCRIPTION:For: students\, coordinators\, IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=iwio-send-p4
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:catalogue-sap-modules-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270315
+DTEND;VALUE=DATE:20270316
+SUMMARY:[MSP ESD] New modules created in SAP + Mendix visibility check
+DESCRIPTION:For: IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=catalogue-sap
+ -modules
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:course-manuals-download-p5-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270329
+DTEND;VALUE=DATE:20270330
+SUMMARY:[MSP ESD] Course manuals downloaded from Canvas + published (Advisi
+ ng page) (P5)
+DESCRIPTION:For: IPO (Eva)\, students
+URL:https://msp-operations.github.io/Academic-Calendar/?event=course-manual
+ s-download-p5
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:catalogue-publication-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270401
+DTEND;VALUE=DATE:20270402
+SUMMARY:[MSP ESD] Course catalogue publication (hard deadline)
+DESCRIPTION:For: coordinators\, BoE\, Scheduling\, Exams\, Academic Advisin
+ g
+URL:https://msp-operations.github.io/Academic-Calendar/?event=catalogue-pub
+ lication
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:admissions-deadline-noneu-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270401
+DTEND;VALUE=DATE:20270402
+SUMMARY:[MSP ESD] Admissions - application deadline non-EU/EEA
+DESCRIPTION:For: Admissions team\, applicants
+URL:https://msp-operations.github.io/Academic-Calendar/?event=admissions-de
+ adline-noneu
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:catalogue-intranet-publish-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270402
+DTEND;VALUE=DATE:20270403
+SUMMARY:[MSP ESD] Final catalogue on intranet + additional-assignment forms
+  updated
+DESCRIPTION:For: IPO (Eva)\, Erik Verheij
+URL:https://msp-operations.github.io/Academic-Calendar/?event=catalogue-int
+ ranet-publish
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:accreditation-ask-p4-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270412
+DTEND;VALUE=DATE:20270413
+SUMMARY:[MSP ESD] Ask coordinators for accreditation material (P4 + P2 resi
+ ts)
+DESCRIPTION:For: IPO (Eva)\, course coordinators of the period + resits
+URL:https://msp-operations.github.io/Academic-Calendar/?event=accreditation
+ -ask-p4
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:forms-erik-spring-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270412
+DTEND;VALUE=DATE:20270413
+SUMMARY:[MSP ESD] Intranet forms sweep with Erik Verheij (Spring round)
+DESCRIPTION:For: IPO (Eva)\, Erik Verheij
+URL:https://msp-operations.github.io/Academic-Calendar/?event=forms-erik-sp
+ ring
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:iwio-close-p4-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270416
+DTEND;VALUE=DATE:20270417
+SUMMARY:[MSP ESD] IWIO closed + coordinators and EPC informed (P4)
+DESCRIPTION:For: coordinators\, EPC\, IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=iwio-close-p4
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:ext-edu-p6-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270418
+DTEND;VALUE=DATE:20270419
+SUMMARY:[MSP ESD] External education registration deadline (P6)
+DESCRIPTION:For: students\, BoE
+URL:https://msp-operations.github.io/Academic-Calendar/?event=ext-edu-p6
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:accreditation-deadline-p4-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270423
+DTEND;VALUE=DATE:20270424
+SUMMARY:[MSP ESD] Accreditation material hand-in deadline (P4 + P2 resits)
+DESCRIPTION:For: course coordinators\, IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=accreditation
+ -deadline-p4
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:iwio-import-p5-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270423
+DTEND;VALUE=DATE:20270424
+SUMMARY:[MSP ESD] IWIO: SAP data imported + errors cleared (P5)
+DESCRIPTION:For: IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=iwio-import-p
+ 5
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:accreditation-dub30-p4-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270426
+DTEND;VALUE=DATE:20270429
+SUMMARY:[MSP ESD] Eva at DUB30 for archive intake (Mon-Wed) (P4)
+DESCRIPTION:For: IPO (Eva)\, late coordinators
+URL:https://msp-operations.github.io/Academic-Calendar/?event=accreditation
+ -dub30-p4
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:bsa-year-prep-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270426
+DTEND;VALUE=DATE:20270427
+SUMMARY:[MSP ESD] BSA year letter - updated student list + datafile prep
+DESCRIPTION:For: IPO (Eva)\, BoE\, Pavel
+URL:https://msp-operations.github.io/Academic-Calendar/?event=bsa-year-prep
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:catalogue-overviews-fall-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270430
+DTEND;VALUE=DATE:20270501
+SUMMARY:[MSP ESD] All catalogue overviews updated (Fall 27/28)
+DESCRIPTION:For: IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=catalogue-ove
+ rviews-fall
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:iwio-setup-p5-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270430
+DTEND;VALUE=DATE:20270501
+SUMMARY:[MSP ESD] IWIO: questionnaire link + open/close dates installed (P5
+ )
+DESCRIPTION:For: IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=iwio-setup-p5
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:sap-mendix-pass-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270501
+DTEND;VALUE=DATE:20270502
+SUMMARY:[MSP ESD] SAP + Mendix new-year pass + intranet forms updated
+DESCRIPTION:For: ESD\, Web Admin\, Scheduling
+URL:https://msp-operations.github.io/Academic-Calendar/?event=sap-mendix-pa
+ ss
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:admissions-deadline-eu-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270501
+DTEND;VALUE=DATE:20270502
+SUMMARY:[MSP ESD] Admissions - application deadline EU/EEA
+DESCRIPTION:For: Admissions team\, applicants
+URL:https://msp-operations.github.io/Academic-Calendar/?event=admissions-de
+ adline-eu
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:bsa-year-gerco-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270503
+DTEND;VALUE=DATE:20270504
+SUMMARY:[MSP ESD] BSA year letter - final version from Gerco
+DESCRIPTION:For: Gerco\, IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=bsa-year-gerc
+ o
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:iwio-send-p5-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270503
+DTEND;VALUE=DATE:20270504
+SUMMARY:[MSP ESD] IWIO opens: invitations sent (3 reminders follow) (P5)
+DESCRIPTION:For: students\, coordinators\, IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=iwio-send-p5
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:exam-overview-check-p5-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270510
+DTEND;VALUE=DATE:20270511
+SUMMARY:[MSP ESD] Check exam/resit overview + prefill accreditation registe
+ rs (P5)
+DESCRIPTION:For: IPO (Eva)\, exams office
+URL:https://msp-operations.github.io/Academic-Calendar/?event=exam-overview
+ -check-p5
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:bsa-year-send-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270518
+DTEND;VALUE=DATE:20270519
+SUMMARY:[MSP ESD] BSA year letters sent (mail merge)
+DESCRIPTION:For: first-year students\, IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=bsa-year-send
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:bsa-infosheet-may-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270524
+DTEND;VALUE=DATE:20270525
+SUMMARY:[MSP ESD] BSA Infosheet refreshed + Canvas announcement (year round
+ )
+DESCRIPTION:For: BoE (Katja)\, Gerco\, IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=bsa-infosheet
+ -may
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:bsa-year-archive-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270524
+DTEND;VALUE=DATE:20270525
+SUMMARY:[MSP ESD] BSA year letters archived (Corsa D20A + Outlook)
+DESCRIPTION:For: IPO (Eva)\, Ton Derikx\, Katja
+URL:https://msp-operations.github.io/Academic-Calendar/?event=bsa-year-arch
+ ive
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:admissions-selection-complete-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270528
+DTEND;VALUE=DATE:20270529
+SUMMARY:[MSP ESD] Admissions - selection incl. interviews complete (17:00 C
+ ET)
+DESCRIPTION:For: Admissions team\, interviewers
+URL:https://msp-operations.github.io/Academic-Calendar/?event=admissions-se
+ lection-complete
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:bsa-year-followup-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270604
+DTEND;VALUE=DATE:20270605
+SUMMARY:[MSP ESD] BSA year follow-up - exemption list + credit report to Pa
+ vel/BoE
+DESCRIPTION:For: IPO (Eva)\, BoE (Katja)\, Pavel
+URL:https://msp-operations.github.io/Academic-Calendar/?event=bsa-year-foll
+ owup
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:iwio-close-p5-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270611
+DTEND;VALUE=DATE:20270612
+SUMMARY:[MSP ESD] IWIO closed + coordinators and EPC informed (P5)
+DESCRIPTION:For: coordinators\, EPC\, IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=iwio-close-p5
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:accreditation-ask-p5-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270614
+DTEND;VALUE=DATE:20270615
+SUMMARY:[MSP ESD] Ask coordinators for accreditation material (P5 + P4 resi
+ ts)
+DESCRIPTION:For: IPO (Eva)\, course coordinators of the period + resits
+URL:https://msp-operations.github.io/Academic-Calendar/?event=accreditation
+ -ask-p5
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:accreditation-deadline-p5-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270625
+DTEND;VALUE=DATE:20270626
+SUMMARY:[MSP ESD] Accreditation material hand-in deadline (P5 + P4 resits)
+DESCRIPTION:For: course coordinators\, IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=accreditation
+ -deadline-p5
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:accreditation-dub30-p5-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270628
+DTEND;VALUE=DATE:20270701
+SUMMARY:[MSP ESD] Eva at DUB30 for archive intake (Mon-Wed) (P5)
+DESCRIPTION:For: IPO (Eva)\, late coordinators
+URL:https://msp-operations.github.io/Academic-Calendar/?event=accreditation
+ -dub30-p5
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:admissions-portal-content-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270701
+DTEND;VALUE=DATE:20270702
+SUMMARY:[MSP ESD] Admissions - portal task-description content deadline
+DESCRIPTION:For: Admissions team\, SSC
+URL:https://msp-operations.github.io/Academic-Calendar/?event=admissions-po
+ rtal-content
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:accreditation-ask-resits-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270712
+DTEND;VALUE=DATE:20270713
+SUMMARY:[MSP ESD] Ask coordinators for accreditation material (P5 resit rou
+ nd)
+DESCRIPTION:For: IPO (Eva)\, resit coordinators
+URL:https://msp-operations.github.io/Academic-Calendar/?event=accreditation
+ -ask-resits
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:admissions-ssc-handover-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270715
+DTEND;VALUE=DATE:20270716
+SUMMARY:[MSP ESD] Admissions - everything to SSC (webpage + task descriptio
+ ns\, hard deadline)
+DESCRIPTION:For: Admissions team\, SSC
+URL:https://msp-operations.github.io/Academic-Calendar/?event=admissions-ss
+ c-handover
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:accreditation-deadline-resits-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270723
+DTEND;VALUE=DATE:20270724
+SUMMARY:[MSP ESD] Accreditation material hand-in deadline (P5 resit round)
+DESCRIPTION:For: resit coordinators\, IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=accreditation
+ -deadline-resits
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:archive-drive-summer-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270723
+DTEND;VALUE=DATE:20270724
+SUMMARY:[MSP ESD] Archive drive + accreditation overviews set up for Fall A
+ Y27-28
+DESCRIPTION:For: IPO (Eva)\, Ton Derikx\, coordinators
+URL:https://msp-operations.github.io/Academic-Calendar/?event=archive-drive
+ -summer
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:grading-overview-print-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270723
+DTEND;VALUE=DATE:20270724
+SUMMARY:[MSP ESD] Grading Deadlines Overview updated for new AY + printed (
+ B0.005)
+DESCRIPTION:For: IPO (Eva)\, exams office
+URL:https://msp-operations.github.io/Academic-Calendar/?event=grading-overv
+ iew-print
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:accreditation-dub30-resits-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270726
+DTEND;VALUE=DATE:20270729
+SUMMARY:[MSP ESD] Eva at DUB30 for archive intake (P5 resit round)
+DESCRIPTION:For: IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=accreditation
+ -dub30-resits
+TRANSP:TRANSPARENT
+END:VEVENT
+END:VCALENDAR

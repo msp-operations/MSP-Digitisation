@@ -1,0 +1,54 @@
+Type,Row,TimeSlot,Code,Title,Coordinator,CoReq,PreReq,Day,ModuleGroup,Notes
+METADATA,,,,Period,MSP Period 2,,,,,Maastricht Science Programme
+METADATA,,,,Academic Year,2026-2027,,,,,
+METADATA,,,,Semester,Fall Semester,,,,,
+METADATA,,,,Start Date,26 October 2026,,,,,
+METADATA,,,,End Date,10 December 2026,,,,,
+LEGEND,,,◊,has co-requisite,,,,,,
+LEGEND,,,▲,has pre-requisite,,,,,,
+LEGEND,,,*,Location/cohort marker,,,,,,Takes place at Chemelot CHILLS Labs - travel at own expense (PRA3005); or joint with UCM (CHE2006)
+LEGEND,,,**,Location marker,,,,,,Takes place at Campus Venlo
+TIMESLOT,1,AE,,Row 1,,,,,,Monday am - Wednesday pm
+TIMESLOT,2,BF,,Row 2,,,,,,Monday pm - Thursday am
+TIMESLOT,3,CF,,Row 3,,,,,,Tuesday am - Thursday pm
+TIMESLOT,4,DG,,Row 4,,,,,,Tuesday pm - Friday am
+TIMESLOT,5,EG,,Row 5,,,,,,Wednesday am - Friday pm
+COURSE,1,AE,BIO1101,CORE: Introduction to Biology,David Cortens,◊,,,,
+COURSE,1,AE,BIO3007,Tropical Biology,Roy Erkens,,▲,,,
+COURSE,1,AE,CHE2011,Organic Chemistry,Hanne Diliën,◊,▲,,,
+COURSE,1,AE,INT3007,Systems Biology,Martina Summer-Kutmon,,▲,,,
+COURSE,1,AE,PHY3008,Cosmology,Lorenzo Reverberi,,▲,,,
+COURSE,2,BF,INT3012,Science Education: Model-Based Inquiry,May Lee,◊,▲,,,
+COURSE,2,BF,INT2007,Science in Action,Jessica Mesman,,,,,
+COURSE,2,BF,MAT2009,Multivariable Calculus,Mariet Hofstee,,▲,,,
+COURSE,2,BF,PHY3004,Elementary Particle Physics,Marcel Merk & Jacco de Vries,,▲,,,
+COURSE,2,BF,NEU2004,Neural Circuits and Dynamics,Luke Edwards,,,,,
+COURSE,3,CF,BIO3001,Molecular Biology,Kathia Jimenez Monroy,◊,▲,,,
+COURSE,3,CF,INT1101,CORE: Introduction to Liberal Arts & Sciences,"Hanne Diliën, Rocio Arreguin Campos",◊,,,,
+COURSE,3,CF,INT3005,Biobased Materials and Technology,Yvonne van der Meer & Katie Saralidze,,▲,,,
+COURSE,3,CF,PHY2010,Galactic Astronomy,Chad Ellington,,,,,
+COURSE,4,DG,INT3009,Chemical Ecology,John Sloggett,,▲,,,
+COURSE,4,DG,CHE2006,Biochemistry,Leon Schurgers & Niko Deckers,,▲,,,*with UCM
+COURSE,4,DG,CHE3013,Advanced Organic Chemistry,Matt Baker,◊,▲,,,
+COURSE,4,DG,PHY2003,Vibrations and Waves,Jessica Steinlechner,,▲,,,
+COURSE,5,EG,BIO2008,Great Transformations in Vertebrate Evolution,Leon Claessens,◊,,,,
+COURSE,5,EG,CHE3007,Chemical Kinetics,Slava Vieru,,▲,,,
+COURSE,5,EG,MAT1006,Applied Statistics,Matthijs Hermeling,,,,,
+COURSE,5,EG,NEU3003,Brain-Body Interactions,Michelle Moerel,,▲,,,
+PRACTICAL,,,PRA1102,Introduction to Scientific Research II,Suzan du Pree,◊,▲,Wed,,
+PRACTICAL,,,PRA1003,Basic Physics Laboratory,Chris Pawley,,,Wed,,
+PRACTICAL,,,PRA2010,Synthetic Biology,Erik Steen Redeker,,▲,Tue/Thu,,
+PRACTICAL,,,PRA2013,Practical Zoology,John Sloggett,,▲,Wed/Thu,,
+PRACTICAL,,,PRA2018,Capita Selecta in Modern Sciences,Panos Christakoglou,,,Mon/Tue,,
+PRACTICAL,,,PRA2025,Vertebrate Functional Morphology,Leon Claessens & Jesse Hennekam,◊,,Thu,,
+PRACTICAL,,,PRA2033,Organic Chemistry Laboratory,Hanne Diliën,◊,▲,Tue/Thu,,
+PRACTICAL,,,PRA3002,Advanced Physics Laboratory,Chris Pawley,,▲,Tue,,
+PRACTICAL,,,PRA3003,Molecular Biology,Kathia Jimenez Monroy,◊,▲,Mon/Wed,,
+PRACTICAL,,,PRA3005,Polymer Processing,Eveline Maassen,,▲,Mon,,* takes place @ Chemelot CHILLS Labs. Travel at own expense
+PRACTICAL,,,PRA3006,Programming in the Life Sciences,Egon Willighagen & Rianne Fijten,,▲,Fri,,
+PRACTICAL,,,PRA3023,Plant Physiology and Microbiomes,Aleksander Umanets,,▲,Fri,,** takes place @ Campus Venlo
+PRACTICAL,,,PRA3026,Science Teaching Skills,May Lee,◊,▲,Wed,,
+PRACTICAL,,,PRA3027,Advanced Functional Morphology,Leon Claessens & Jesse Hennekam,,▲,Thurs,,Note: day listed as 'Thurs' (inconsistent with 'Thu' used elsewhere)
+PRACTICAL,,,PRA3029,Advanced Organic Chemistry Laboratory,Matt Baker,◊,▲,Mon,,
+PRACTICAL,,,PRA3031,Statistical Modelling,Joao da Cruz Vargas,,,Tue/Fri,,
+NOTE,,,,Practical selection rule,,,,,,Practical cannot overlap with chosen courses (cannot be in the same column as your chosen courses). Grey indicates the practical is unavailable on that day.

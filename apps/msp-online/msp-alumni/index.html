@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MSP Alumni Network</title>
+<meta name="description" content="Every MSP graduate since 2011, mapped: the countries they live in, the universities they continued at, and the work they do now." />
+<meta name="theme-color" content="#011B3C" />
+<link rel="icon" type="image/png" href="assets/logos/maastricht-science-programme-logo.png" />
+
+<!-- Map geometry: d3-geo + Natural Earth TopoJSON (pinned, hash-verified) -->
+<script src="https://unpkg.com/d3@7.9.0/dist/d3.min.js" integrity="sha384-CjloA8y00+1SDAUkjs099PVfnY2KmDC2BZnws9kh8D/lX1s46w6EPhpXdqMfjK6i" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/topojson-client@3.1.0/dist/topojson-client.min.js" integrity="sha384-Ukv1p/xTma6P4/2bY5KzWBw+ydSpXmhCMtyciIQVDJ1RmOxtCYNMF1uXT9T63H67" crossorigin="anonymous"></script>
+
+<link rel="stylesheet" href="assets/msp-ui/msp-ui.css" />
+<link rel="stylesheet" href="msp-redesign.css" />
+</head>
+<body>
+<main class="msp-main wide">
+
+
+<section class="msp-hero">
+  <div class="hero-grid">
+    <div class="hero-copy">
+      <div class="msp-hero-kicker">Maastricht Science Programme · since 2011</div>
+      <h1>Where <em>fifteen years</em> of scientists went next.</h1>
+      <p>Every MSP graduate since the first cohort, mapped: the countries they live in, the universities they continued at, and the work they do now. Updated <span data-stat="lastUpdated">July 2026</span>.</p>
+      <div class="btn-row">
+        <a class="msp-btn msp-btn-or" href="destinations.html">Explore the map</a>
+        <a class="msp-btn btn-ghost" href="stories.html">Read alumni stories</a>
+      </div>
+    </div>
+    <figure class="map-fig">
+      <svg id="map" viewBox="0 0 760 400" role="img" aria-label="World map of MSP alumni locations"></svg>
+      <figcaption class="map-legend">
+        <span><span class="key key-orange"></span><span id="legend-nl">533 in the Netherlands</span></span>
+        <span><span class="key key-blue"></span><span id="legend-rest">697 elsewhere, in 58 countries</span></span>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="msp-stats">
+        <div class="msp-stat">
+          <div class="msp-stat-val">15</div>
+          <div class="msp-stat-label">Years of alumni</div>
+          <div class="msp-stat-sub">Graduating since 2014</div>
+        </div>
+        <div class="msp-stat">
+          <div class="msp-stat-val" data-stat="nationalities">78</div>
+          <div class="msp-stat-label">Nationalities</div>
+          <div class="msp-stat-sub">Across six continents</div>
+        </div>
+        <div class="msp-stat">
+          <div class="msp-stat-val" data-stat="countriesLivingIn">59</div>
+          <div class="msp-stat-label">Countries</div>
+          <div class="msp-stat-sub">Where alumni live today</div>
+        </div>
+        <div class="msp-stat">
+          <div class="msp-stat-val" data-stat="universitiesAttended">262</div>
+          <div class="msp-stat-label">Universities</div>
+          <div class="msp-stat-sub">Master's destinations</div>
+        </div>
+</section>
+
+<section class="section wrap" id="stories">
+  <div class="sec-head">
+    <div>
+      <div class="eyebrow eyebrow-orange">Alumni stories</div>
+      <h2>Four paths out of the same programme.</h2>
+    </div>
+    <a class="sec-link" href="stories.html">All stories →</a>
+  </div>
+  <div class="stories">
+        <a class="story" href="stories.html">
+          <span class="chip">Marine biology</span>
+          <p class="story-quote">"MSP gave me the freedom to shape my academic path around my passions."</p>
+          <span class="story-by">
+            <span class="story-name">Francesca Diaz Cabal</span>
+            <span class="story-role">Gray whale researcher · Mexico</span>
+          </span>
+        </a>
+        <a class="story" href="stories.html">
+          <span class="chip">Nuclear physics</span>
+          <p class="story-quote">"It nurtured curiosity, encouraged independent thinking, and reignited my enjoyment of learning."</p>
+          <span class="story-by">
+            <span class="story-name">Vitesh</span>
+            <span class="story-role">Nuclear researcher · Singapore</span>
+          </span>
+        </a>
+        <a class="story" href="stories.html">
+          <span class="chip">Sustainability</span>
+          <p class="story-quote">"I wanted to become a bridge between scientific research and real-world business applications."</p>
+          <span class="story-by">
+            <span class="story-name">Daria Legostaeva</span>
+            <span class="story-role">Environmental engineer · Netherlands</span>
+          </span>
+        </a>
+        <a class="story" href="stories.html">
+          <span class="chip">Conservation</span>
+          <p class="story-quote">"I wanted to do something that would help create change now."</p>
+          <span class="story-by">
+            <span class="story-name">Yannick</span>
+            <span class="story-role">Wildlife crime consultant · Fauna Flux</span>
+          </span>
+        </a>
+  </div>
+</section>
+
+<section class="section wrap" id="world">
+  <div class="lead">
+    <div class="eyebrow eyebrow-orange">Where they live</div>
+    <h2><span data-stat="countriesLivingIn">59</span> countries, one network.</h2>
+    <p id="world-lead">Most alumni stay in the Netherlands, Germany, the UK or Belgium. The rest are spread across the other countries on the map — from Singapore to Sint Maarten.</p>
+    <p class="coverage" id="map-coverage"></p>
+  </div>
+  <div class="country-grid" id="country-list"></div>
+  <div class="note"><span id="country-note"></span> <a href="destinations.html">See the full map →</a></div>
+</section>
+
+<section class="section wrap">
+  <div class="panel">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow eyebrow-blue">Master's destinations</div>
+        <h2><span data-stat="universitiesAttended">262</span> universities, ten most common.</h2>
+      </div>
+      <div class="panel-note">Counts are alumni enrolled, not applications. Includes ETH Zurich, Imperial, Cambridge and Karolinska.</div>
+    </div>
+    <div id="uni-list"></div>
+  </div>
+</section>
+
+<section class="section wrap">
+  <div class="split">
+    <div>
+      <div class="eyebrow eyebrow-orange">What they study next</div>
+      <h2>Life sciences lead, but nothing is off the table.</h2>
+      <p id="field-note"></p>
+    </div>
+    <div id="field-list"></div>
+  </div>
+</section>
+
+<section class="band" id="growth">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow eyebrow-blue">A growing community</div>
+        <h2 id="growth-title">From 25 graduates to 240 a year.</h2>
+      </div>
+      <div class="band-note" id="growth-note"></div>
+    </div>
+    <div class="chart" id="growth-chart"></div>
+    <div class="chart-legend">
+      <span><span class="swatch swatch-solid"></span>Graduates per year</span>
+      <span><span class="swatch swatch-hatch"></span><span id="legend-partial"></span></span>
+    </div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="cta-grid">
+    <div class="cta-card">
+      <h3>Considering MSP?</h3>
+      <p>See what graduates actually do next: sectors, PhD rates, and the universities that accept MSP degrees.</p>
+      <a class="msp-btn msp-btn-navy" href="considering-msp.html">For prospective students →</a>
+    </div>
+    <div class="cta-card">
+      <h3>Already an alum?</h3>
+      <p>Update your details so the map stays accurate, or tell us your story for the next feature.</p>
+      <a class="msp-btn msp-btn-gh" href="mailto:msp-alumni@maastrichtuniversity.nl?subject=Alumni%20update">Get in touch →</a>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer class="msp-footer">
+  <div class="foot-links">
+    <a href="https://www.instagram.com/msp_alumni/">Instagram</a>
+    <a href="https://www.linkedin.com/groups/12893377/">LinkedIn (MSP)</a>
+    <a href="https://www.linkedin.com/groups/4689010/">LinkedIn (FSE)</a>
+    <a href="https://www.maastrichtuniversity.nl">Maastricht University</a>
+    <a href="privacy.html">Privacy policy</a>
+  </div>
+  <div>&copy; 2026 MSP Alumni Network. Maastricht University, Faculty of Science and Engineering.</div>
+  <div class="foot-note"><span id="data-note"></span></div>
+</footer>
+
+<div class="map-tip" id="map-tip"></div>
+
+<script src="data.js"></script>
+<script src="data-bind.js"></script>
+<script src="home-render.js"></script>
+
+<script>
+// ---- Hero world map: Natural Earth geometry + proportional dots ----
+// COUNTS is built from MSP_DATA.countriesLiving by home-render.js, so the map
+// tracks data.js and never needs a separate manual update.
+var COUNTS = window.MSP_MAP_COUNTS || {};
+var LABEL = { "United States of America": "United States", "Czechia": "Czech Republic" };
+
+(function () {
+  var svg = d3.select("#map"), W = 760, H = 400, tip = d3.select("#map-tip");
+  d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json").then(function (topology) {
+    var countries = topojson.feature(topology, topology.objects.countries).features
+      .filter(function (f) { return f.properties.name !== "Antarctica"; });
+    var projection = d3.geoNaturalEarth1()
+      .fitSize([W, H - 18], { type: "FeatureCollection", features: countries });
+    var path = d3.geoPath(projection);
+    // Dot scale tops out at the largest country in the data, so it follows data.js.
+    var peak = Math.max.apply(null, Object.keys(COUNTS).map(function (k) { return COUNTS[k]; }).concat([1]));
+    var r = d3.scaleSqrt().domain([1, peak]).range([2.2, 14]);
+
+    svg.append("g").selectAll("path").data(countries).join("path")
+      .attr("d", path)
+      .attr("fill", function (d) { return COUNTS[d.properties.name] ? "rgba(0,162,219,0.16)" : "rgba(255,255,255,0.055)"; })
+      .attr("stroke", "rgba(255,255,255,0.14)")
+      .attr("stroke-width", 0.5);
+
+    var points = countries.filter(function (d) { return COUNTS[d.properties.name]; })
+      .map(function (d) {
+        return {
+          name: LABEL[d.properties.name] || d.properties.name,
+          count: COUNTS[d.properties.name],
+          xy: projection(d3.geoCentroid(d))
+        };
+      })
+      .filter(function (d) { return d.xy; })
+      .sort(function (a, b) { return b.count - a.count; });
+
+    svg.append("g").selectAll("circle").data(points).join("circle")
+      .attr("cx", function (d) { return d.xy[0]; })
+      .attr("cy", function (d) { return d.xy[1]; })
+      .attr("fill", function (d) { return d.count >= 400 ? "#E84E10" : "#00A2DB"; })
+      .attr("fill-opacity", 0.82)
+      .attr("stroke", function (d) { return d.count >= 400 ? "rgba(232,78,16,0.35)" : "rgba(0,162,219,0.3)"; })
+      .attr("stroke-width", 2.5)
+      .attr("r", 0)
+      .on("pointerenter", function (e, d) {
+        tip.style("opacity", 1).style("left", e.clientX + "px").style("top", e.clientY + "px")
+          .text(d.name + " · " + d.count);
+      })
+      .on("pointerleave", function () { tip.style("opacity", 0); })
+      .transition().delay(function (d, i) { return 120 + i * 22; }).duration(520).ease(d3.easeCubicOut)
+      .attr("r", function (d) { return r(d.count); });
+  });
+})();
+</script>
+<!-- Shared MSP frame: the sidebar is built from the config in site-nav.js -->
+<script src="assets/msp-ui/msp-shell.js"></script>
+<script src="site-nav.js"></script>
+</body>
+</html>

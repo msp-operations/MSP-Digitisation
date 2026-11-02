@@ -1,0 +1,735 @@
+<!doctype html>
+<!--
+  register.html - the tutor-facing registration flow.
+  Shows live availability, lets a tutor pick one or more tutorial groups,
+  warns about time clashes, and claims them atomically via Supabase.
+  VISUAL note: the hero is the live availability board + Mon-Fri timetable.
+-->
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Register to tutor - Maastricht Science Programme</title>
+<link rel="icon" type="image/png" href="assets/img/msp-logo.png">
+<link rel="stylesheet" href="assets/msp-ui/msp-ui.css">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<!-- Want to change wording or dates? See EDITING-INSTRUCTIONS (repo) / the PDF
+     in the Tutoring folder. The blue script at the bottom is the app's logic -
+     leave that alone unless you know JavaScript. -->
+
+<main class="msp-main wide">
+<!-- THE HERO IS THE DATA: a flat live-availability board (no gradient glow). -->
+<section class="board msp-hero" aria-label="Live availability">
+  <div class="board-inner">
+    <div class="board-head">
+      <div>
+        <div class="board-eyebrow">Maastricht Science Programme · Tutoring</div>
+        <h1>Tutorial groups open right now</h1>
+        <p class="sub">Claim the group(s) you want to tutor. First come, first served - once a group is taken it disappears for everyone, instantly.</p>
+        <p class="board-dates" id="board-dates"></p>
+      </div>
+      <img class="board-emblem" src="assets/img/msp-logo.png" alt="">
+    </div>
+    <div class="board-stats" id="board-stats" aria-live="polite"></div>
+  </div>
+</section>
+
+  <div id="notice-area"></div>
+  <div id="claim-banner"></div>
+
+  <div class="controls">
+    <div class="tabs" id="period-tabs" role="tablist" aria-label="Teaching period"></div>
+    <div class="viewtoggle" id="view-toggle" role="group" aria-label="Choose layout">
+      <button type="button" data-v="timetable" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 4v16M16 4v16"/></svg>
+        Timetable
+      </button>
+      <button type="button" data-v="list">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+        Course list
+      </button>
+    </div>
+  </div>
+
+  <div class="disc-filter" id="disc-filter" role="group" aria-label="Filter by subject"></div>
+
+  <div class="toolbar">
+    <input id="search" type="text" aria-label="Search courses" placeholder="Search course code, name or group (e.g. CHE1101, Physics, A3)...">
+    <label><input type="checkbox" id="only-open"> Only show courses with open groups</label>
+  </div>
+
+  <div id="timetable"><div class="spinner" role="status" aria-label="Loading availability"></div></div>
+  <div id="catalogue" style="display:none"></div>
+</main>
+
+<!-- sticky selection bar -->
+<div class="cart" id="cart" style="display:none">
+  <div class="cart-inner">
+    <div>
+      <div class="cap">Your selection</div>
+      <div class="seltags" id="seltags"></div>
+    </div>
+    <button class="btn btn-primary" id="continue-btn">Continue to your details
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- details modal -->
+<div class="modal-overlay" id="overlay"></div>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="head">
+    <h3 id="modal-title">Your details</h3>
+    <button class="close" id="modal-close" aria-label="Close">×</button>
+  </div>
+  <div class="body" id="modal-body"></div>
+</div>
+
+<footer class="msp-footer">
+  <div class="footer-inner">
+    <a href="privacy.html">Privacy statement</a>
+    <div class="copy">© Maastricht University</div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/config.js"></script>
+<script src="assets/demo-data.js"></script>
+<script src="assets/supabase.js"></script>
+<script src="assets/ui.js"></script>
+<script src="assets/disciplines.js"></script>
+<script src="assets/feedback.js"></script>
+<script>
+(function () {
+  const disc = (code, small) => (window.MSPDISC ? MSPDISC.chip(code, small) : "");
+  let catalogue = [];
+  let settings = { registration_open: true, banner_message: null };
+  const selected = new Map();          // groupId -> { code, title, label, group }
+  const openCourses = new Set();       // course ids expanded by the user
+  const discFilter = new Set();        // active discipline keys (BIO/CHE/...); empty = all
+  let period = "P1";
+  let search = "";
+  let onlyOpen = false;
+  let view = "timetable";              // "timetable" | "list"
+
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => (s == null ? "" : String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"));
+
+  // ---------- time helpers ----------
+  const day3 = (d) => (d || "").toString().trim().toLowerCase().slice(0, 3);
+  const toMin = (t) => { if (!t) return null; const [h, m] = t.split(":").map(Number); return h * 60 + m; };
+  const g_day = (d) => ({ mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri", sat: "Sat", sun: "Sun" }[day3(d)] || d);
+  function sessions(g) {
+    const out = [];
+    if (g.day1 && g.start1 && g.end1) out.push({ d: day3(g.day1), s: toMin(g.start1), e: toMin(g.end1) });
+    if (g.day2 && g.start2 && g.end2) out.push({ d: day3(g.day2), s: toMin(g.start2), e: toMin(g.end2) });
+    return out;
+  }
+  function sessStr(g) {
+    const out = [];
+    if (g.day1 && g.start1 && g.end1) out.push({ d: day3(g.day1), start: g.start1, end: g.end1 });
+    if (g.day2 && g.start2 && g.end2) out.push({ d: day3(g.day2), start: g.start2, end: g.end2 });
+    return out;
+  }
+  function clash(a, b) {
+    for (const x of sessions(a)) for (const y of sessions(b))
+      if (x.d === y.d && x.s < y.e && y.s < x.e) return true;
+    return false;
+  }
+  function clashesWithSelection(g) {
+    for (const { group } of selected.values()) {
+      if (group.id === g.id) continue;
+      if (clash(g, group)) return true;
+    }
+    return false;
+  }
+  const fmtTimes = (g) => {
+    const part = (d, s, e) => (d && s && e) ? `${g_day(d)} ${s}-${e}` : "";
+    return [part(g.day1, g.start1, g.end1), part(g.day2, g.start2, g.end2)].filter(Boolean).join(" · ");
+  };
+  function findGroup(gid) { for (const c of catalogue) for (const g of c.groups) if (g.id === gid) return { c, g }; return null; }
+
+  function matchesSearch(c) {
+    if (!search) return true;
+    const hay = (c.code + " " + c.title + " " + c.groups.map((g) => g.label).join(" ")).toLowerCase();
+    return hay.includes(search);
+  }
+  const discKey = (c) => (window.MSPDISC ? MSPDISC.key(c.code) : (c.code || "").slice(0, 3).toUpperCase());
+  const matchesDisc = (c) => discFilter.size === 0 || discFilter.has(discKey(c));
+
+  // ---------- subject filter chips ----------
+  function renderDiscFilter() {
+    const host = $("disc-filter");
+    if (!host) return;
+    const inPeriod = catalogue.filter((c) => c.period === period);
+    const map = new Map();   // key -> open-group count
+    inPeriod.forEach((c) => {
+      const k = discKey(c);
+      const openN = c.groups.filter((g) => g.is_open && g.claimed < g.capacity).length;
+      map.set(k, (map.get(k) || 0) + openN);
+    });
+    // drop any active filter for a subject not in this period (avoids an empty board)
+    [...discFilter].forEach((k) => { if (!map.has(k)) discFilter.delete(k); });
+    const keys = [...map.keys()];
+    if (keys.length <= 1) { host.innerHTML = ""; return; }
+    const label = (k) => (window.MSPDISC ? MSPDISC.get(k).label : k);
+    keys.sort((a, b) => label(a).localeCompare(label(b)));
+    let html = `<button type="button" class="df-chip df-all${discFilter.size === 0 ? " active" : ""}" data-k="__all" aria-pressed="${discFilter.size === 0}">All subjects</button>`;
+    keys.forEach((k) => {
+      const active = discFilter.has(k);
+      const chip = window.MSPDISC ? MSPDISC.chip(k) : "";
+      html += `<button type="button" class="df-chip${active ? " active" : ""}" data-k="${k}" aria-pressed="${active}">${chip}<span>${esc(label(k))}</span><span class="df-count">${map.get(k)}</span></button>`;
+    });
+    host.innerHTML = html;
+    host.querySelectorAll(".df-chip").forEach((b) => b.addEventListener("click", () => {
+      const k = b.dataset.k;
+      if (k === "__all") discFilter.clear();
+      else if (discFilter.has(k)) discFilter.delete(k);
+      else discFilter.add(k);
+      renderAll();
+    }));
+  }
+
+  // ---------- master render ----------
+  function renderAll() { renderDiscFilter(); renderBoardStats(); renderTimetable(); renderCatalogue(); applyView(); }
+
+  function applyView() {
+    $("timetable").style.display = view === "timetable" ? "" : "none";
+    $("catalogue").style.display = view === "list" ? "" : "none";
+    $("view-toggle").querySelectorAll("button").forEach((b) => b.classList.toggle("active", b.dataset.v === view));
+  }
+
+  function renderTabs() {
+    const periods = [...new Set(catalogue.map((c) => c.period))].sort();
+    if (!periods.includes(period)) period = periods[0] || "P1";
+    $("period-tabs").innerHTML = periods.map((p) =>
+      `<button role="tab" aria-selected="${p === period}" class="${p === period ? "active" : ""}" data-p="${p}">Period ${p.replace(/^P/, "")}</button>`
+    ).join("");
+    $("period-tabs").querySelectorAll("button").forEach((b) =>
+      b.addEventListener("click", () => { period = b.dataset.p; renderTabs(); renderAll(); })
+    );
+  }
+
+  // ---------- live board stats ----------
+  // PERIOD DATES shown under the hero title. SAFE TO EDIT: change the text in
+  // the quotes when teaching dates change. Keep the P1: / P2: labels as they are.
+  const PERIOD_DATES = { P1: "31 August - 16 October 2026", P2: "26 October - 10 December 2026" };
+  function renderBoardStats() {
+    const gs = catalogue.filter((c) => c.period === period).flatMap((c) => c.groups);
+    const open = gs.filter((g) => g.is_open && g.claimed < g.capacity).length;
+    const filled = gs.length - open;
+    const courses = catalogue.filter((c) => c.period === period).length;
+    const pNum = period.replace(/^P/, "");
+    const dates = PERIOD_DATES[period];
+    $("board-dates").textContent = dates ? `Period ${pNum} · ${dates}` : "";
+    const tile = (val, key, label, focal) =>
+      `<div class="bstat${focal ? " focal" : ""}"><div class="n">${focal ? '<span class="live-dot"></span>' : ""}<span class="num" data-to="${val}" data-k="${key}">${val}</span></div><div class="l">${label}</div></div>`;
+    $("board-stats").innerHTML =
+      tile(open, "open", "Open right now", true) +
+      tile(filled, "filled", "Filled") +
+      tile(courses, "courses", "Courses · P" + pNum) +
+      tile(gs.length, "total", "Groups total");
+    $("board-stats").querySelectorAll(".num").forEach((el) => {
+      if (window.MSPUI) MSPUI.countUp(el, el.dataset.to, "reg-" + el.dataset.k);
+      else el.textContent = el.dataset.to;
+    });
+  }
+
+  // ---------- TIMETABLE (Mon-Fri × time slots) ----------
+  // Interchangeable groups (same course + identical weekly schedule) are
+  // collapsed into ONE chip with a count, so a cell shows a handful of chips
+  // instead of twenty. Clicking a multi-group chip opens a small picker.
+  const DAY_ORDER = [["mon", "Monday"], ["tue", "Tuesday"], ["wed", "Wednesday"], ["thu", "Thursday"], ["fri", "Friday"]];
+  const DAYIDX = { mon: 0, tue: 1, wed: 2, thu: 3, fri: 4 };
+  function scheduleLabel(g) {
+    return sessStr(g).slice()
+      .sort((a, b) => (DAYIDX[a.d] - DAYIDX[b.d]) || (toMin(a.start) - toMin(b.start)))
+      .map((s) => g_day(s.d) + " " + s.start).join(" · ");
+  }
+  let ttBuckets = [];
+  function renderTimetable() {
+    closeChooser();
+    const host = $("timetable");
+    const courses = catalogue.filter((c) => c.period === period && matchesSearch(c) && matchesDisc(c));
+    const slotMap = new Map();
+    const cells = {};                   // "d|start" -> { buckets:{sig:bucket}, filled:int }
+    courses.forEach((c) => c.groups.forEach((g) => {
+      const isOpen = g.is_open && g.claimed < g.capacity;
+      const label = scheduleLabel(g);
+      sessStr(g).forEach((s) => {
+        const prev = slotMap.get(s.start);
+        if (prev == null || toMin(s.end) > toMin(prev)) slotMap.set(s.start, s.end);
+        const ck = s.d + "|" + s.start;
+        const cell = cells[ck] || (cells[ck] = { buckets: {}, filled: 0 });
+        if (!isOpen) { cell.filled++; return; }
+        const bk = c.code + "|" + label;
+        const b = cell.buckets[bk] || (cell.buckets[bk] = { code: c.code, title: c.title, schedule: label, items: [] });
+        b.items.push({ c, g });
+      });
+    }));
+    const slots = [...slotMap.entries()].sort((a, b) => toMin(a[0]) - toMin(b[0]));
+    if (!slots.length) { host.innerHTML = `<div class="empty-state">No tutorial groups match your search for this period.</div>`; return; }
+
+    ttBuckets = [];
+    let html = '<div class="tt-scroll"><div class="timetable">';
+    html += '<div class="tt-corner"></div>' + DAY_ORDER.map((d) => `<div class="tt-day">${d[1].slice(0, 3)}</div>`).join("");
+    slots.forEach(([start, end]) => {
+      html += `<div class="tt-slot">${start}<small>${end}</small></div>`;
+      DAY_ORDER.forEach(([dc]) => {
+        const cell = cells[dc + "|" + start];
+        if (!cell || (!Object.keys(cell.buckets).length && !cell.filled)) { html += '<div class="tt-cell empty"></div>'; return; }
+        let inner = Object.values(cell.buckets).map((b) => {
+          const selN = b.items.filter((x) => selected.has(x.g.id)).length;
+          const bi = ttBuckets.push(b) - 1;
+          const badge = b.items.length > 1 ? `<span class="tt-count">${b.items.length}</span>` : "";
+          const selTag = selN ? `<span class="tc-sel">${selN} selected</span>` : "";
+          return `<button type="button" class="tt-chip${selN ? " selected" : ""}" data-bi="${bi}" aria-pressed="${selN > 0}" title="${esc(b.code + " " + b.title + " - " + b.schedule)}"><span class="tc-top">${disc(b.code, true)}<span class="tc-code">${esc(b.code)}</span>${badge}</span><span class="tc-lab">${esc(b.title)}</span>${selTag}</button>`;
+        }).join("");
+        if (cell.filled) inner += `<span class="taken">${cell.filled} filled</span>`;
+        html += `<div class="tt-cell">${inner}</div>`;
+      });
+    });
+    html += "</div></div>";
+    html += `<div class="tt-legend"><span><i style="background:var(--blue-tint);border:1px solid var(--blue)"></i> Open - click to choose</span><span><i style="background:var(--accent)"></i> Your selection</span><span>Number = groups open at that time</span><span>Each group meets twice a week at the times shown; codes like A1+B1 are just group names</span></div>`;
+    host.innerHTML = html;
+    host.querySelectorAll(".tt-chip").forEach((btn) => {
+      const b = ttBuckets[+btn.dataset.bi];
+      btn.addEventListener("click", () => {
+        if (b.items.length === 1) toggle(b.items[0].c, b.items[0].g);
+        else openChooser(b, btn);
+      });
+    });
+  }
+
+  // ---------- timetable group picker ----------
+  let chooserEl = null;
+  function pickGroup(g, c) {
+    if (selected.has(g.id)) selected.delete(g.id);
+    else selected.set(g.id, { code: c.code, title: c.title, label: g.label, group: g });
+  }
+  function updateChip(anchor, b) {
+    const selN = b.items.filter((x) => selected.has(x.g.id)).length;
+    anchor.classList.toggle("selected", selN > 0);
+    anchor.setAttribute("aria-pressed", String(selN > 0));
+    let tag = anchor.querySelector(".tc-sel");
+    if (selN) { if (!tag) { tag = document.createElement("span"); tag.className = "tc-sel"; anchor.appendChild(tag); } tag.textContent = selN + " selected"; }
+    else if (tag) tag.remove();
+  }
+  function renderChoices(b, anchor) {
+    chooserEl.innerHTML = `<div class="tt-chooser-h">${esc(b.code)} · ${esc(b.schedule)}</div>` +
+      `<div class="tt-chooser-note">These groups all meet at this time - pick any open one. The code (e.g. A1+B1) is just the group's name.</div>` +
+      b.items.map(({ g }) => {
+        const sel = selected.has(g.id);
+        return `<button type="button" class="tt-choice${sel ? " selected" : ""}" data-gid="${g.id}">${esc(g.label)}<span>${sel ? "✓ selected" : "Open"}</span></button>`;
+      }).join("");
+    chooserEl.querySelectorAll(".tt-choice").forEach((btn) => btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const f = findGroup(btn.dataset.gid);
+      if (f) pickGroup(f.g, f.c);
+      updateChip(anchor, b); renderChoices(b, anchor); renderBoardStats(); renderCatalogue(); renderCart();
+    }));
+  }
+  function openChooser(b, anchor) {
+    closeChooser();
+    const r = anchor.getBoundingClientRect();
+    chooserEl = document.createElement("div");
+    chooserEl.className = "tt-chooser";
+    chooserEl.style.top = (r.bottom + window.scrollY + 6) + "px";
+    chooserEl.style.left = Math.min(r.left + window.scrollX, window.scrollX + document.documentElement.clientWidth - 260) + "px";
+    document.body.appendChild(chooserEl);
+    renderChoices(b, anchor);
+    setTimeout(() => { document.addEventListener("click", onDocClick, true); document.addEventListener("keydown", onEsc); }, 0);
+  }
+  function onDocClick(e) { if (chooserEl && !chooserEl.contains(e.target) && !e.target.closest(".tt-chip")) closeChooser(); }
+  function onEsc(e) { if (e.key === "Escape") closeChooser(); }
+  function closeChooser() {
+    if (chooserEl) { chooserEl.remove(); chooserEl = null; }
+    document.removeEventListener("click", onDocClick, true);
+    document.removeEventListener("keydown", onEsc);
+  }
+
+  // ---------- COURSE LIST ----------
+  function renderCatalogue() {
+    const host = $("catalogue");
+    const courses = catalogue.filter((c) => c.period === period && matchesSearch(c) && matchesDisc(c));
+    host.innerHTML = "";
+    let shown = 0;
+    courses.forEach((c) => {
+      const total = c.groups.length;
+      const openGroups = c.groups.filter((g) => g.is_open && g.claimed < g.capacity).length;
+      if (onlyOpen && openGroups === 0) return;
+      shown++;
+      const filled = total - openGroups;
+      const pct = total ? Math.round((filled / total) * 100) : 0;
+      const isOpen = openCourses.has(c.id) || !!search;
+      const block = document.createElement("div");
+      block.className = "course" + (isOpen ? " open" : "");
+      block.innerHTML = `
+        <button class="course-head" type="button" aria-expanded="${isOpen}">
+          ${disc(c.code)}
+          <span class="course-code">${c.code}</span>
+          <span class="course-title">${esc(c.title)}</span>${levelChip(c)}
+          <span class="course-progress">
+            <span class="course-meta">${openGroups} of ${total} open</span>
+            <span class="bar"><i style="width:${pct}%"></i></span>
+          </span>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        ${aboutHtml(c)}
+        <div class="groups"></div>`;
+      const head = block.querySelector(".course-head");
+      head.addEventListener("click", () => {
+        const willOpen = !openCourses.has(c.id);
+        if (willOpen) openCourses.add(c.id); else openCourses.delete(c.id);
+        block.classList.toggle("open", willOpen);
+        head.setAttribute("aria-expanded", String(willOpen));
+      });
+      const grid = block.querySelector(".groups");
+      c.groups.forEach((g) => grid.appendChild(renderGroup(c, g)));
+      host.appendChild(block);
+    });
+    if (!shown) host.innerHTML = `<div class="empty-state">No courses match your filters.</div>`;
+  }
+
+  function aboutHtml(c) {
+    const d = c.details || {};
+    const row = (label, val) => val ? `<div class="about-row"><strong>${label}:</strong> ${esc(val)}</div>` : "";
+    const list = (title, arr) => (arr && arr.length)
+      ? `<div class="about-sec"><h5>${title}</h5><ul>${arr.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>` : "";
+    const para = (title, val) => val ? `<div class="about-sec"><h5>${title}</h5><p>${esc(val)}</p></div>` : "";
+    const bits = [];
+    if (c.coordinator) {
+      const mail = c.coordinator_email ? ` · <a href="mailto:${esc(c.coordinator_email)}">${esc(c.coordinator_email)}</a>` : "";
+      bits.push(`<div class="about-row"><strong>Coordinator:</strong> ${esc(c.coordinator)}${mail}</div>`);
+    }
+    bits.push(row("Prerequisites", c.prerequisites));
+    bits.push(row("Co-requisites", d.corequisites));
+    bits.push(row("Recommended", d.recommended));
+    if (d.note) bits.push(`<div class="about-row"><em>${esc(d.note)}</em></div>`);
+    if (c.description) bits.push(`<p class="about-desc">${esc(c.description)}</p>`);
+    bits.push(list("Objectives", d.objectives));
+    bits.push(para("Instructional format", d.instructional_format));
+    bits.push(list("Assessment", d.assessment));
+    bits.push(para("Literature", d.literature));
+    if (d.genai) bits.push(row("Generative AI", d.genai));
+    const html = bits.filter(Boolean).join("");
+    return html ? `<div class="course-about">${html}</div>` : "";
+  }
+  function levelChip(c) {
+    const lv = c.details && c.details.level;
+    return lv ? `<span class="lvl-chip">${esc(lv.replace("-level", ""))}</span>` : "";
+  }
+
+  function renderGroup(c, g) {
+    const full = !g.is_open || g.claimed >= g.capacity;
+    const isSel = selected.has(g.id);
+    const conflict = isSel && clashesWithSelection(g);
+    const el = document.createElement("button");
+    el.type = "button";
+    el.className = "group" + (full ? " full" : "") + (isSel ? " selected" : "");
+    el.setAttribute("aria-pressed", String(isSel));
+    if (full) el.setAttribute("aria-disabled", "true");
+    let status, cls;
+    if (full) { status = "Filled"; cls = "s-full"; }
+    else if (conflict) { status = "Time clash with another pick"; cls = "s-conflict"; }
+    else { status = (g.capacity > 1 ? `${g.capacity - g.claimed} of ${g.capacity} open` : "Open"); cls = "s-open"; }
+    el.innerHTML = `
+      <div class="glabel">${esc(g.label)}
+        <span class="check">${isSel ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>' : ""}</span>
+      </div>
+      <div class="gtimes">${fmtTimes(g) || "&nbsp;"}</div>
+      <div class="gstatus ${cls}"><span class="dotstat"></span>${status}</div>`;
+    if (!full) el.addEventListener("click", () => toggle(c, g));
+    return el;
+  }
+
+  function toggle(c, g) {
+    if (selected.has(g.id)) selected.delete(g.id);
+    else selected.set(g.id, { code: c.code, title: c.title, label: g.label, group: g });
+    renderAll();
+    renderCart();
+  }
+
+  function renderCart() {
+    const cart = $("cart");
+    if (!selected.size) { cart.style.display = "none"; return; }
+    cart.style.display = "block";
+    $("seltags").innerHTML = [...selected.entries()].map(([id, s]) =>
+      `<span class="seltag">${esc(s.code)} ${esc(s.label)}<button data-id="${id}" aria-label="Remove ${esc(s.code)} ${esc(s.label)}">×</button></span>`
+    ).join("");
+    $("seltags").querySelectorAll("button").forEach((b) =>
+      b.addEventListener("click", () => { selected.delete(b.dataset.id); renderAll(); renderCart(); })
+    );
+  }
+
+  // ---------- details modal + claim ----------
+  function anyClash() {
+    const arr = [...selected.values()].map((s) => s.group);
+    for (let i = 0; i < arr.length; i++) for (let j = i + 1; j < arr.length; j++)
+      if (clash(arr[i], arr[j])) return true;
+    return false;
+  }
+
+  function openModal() {
+    if (!settings.registration_open) { notify("err", "Registration is currently closed."); return; }
+    const list = [...selected.values()].map((s) => `<li>${esc(s.code)} ${esc(s.label)} - ${esc(s.title)}</li>`).join("");
+    const warn = anyClash()
+      ? `<div class="notice err" style="margin-top:4px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg><div>Some of your selected groups overlap in time. You can still continue, but please double-check you can attend all of them.</div></div>`
+      : "";
+    $("modal-body").innerHTML = `
+      <p style="margin-top:0;font-size:14px;color:var(--muted)">You are registering to tutor:</p>
+      <ul style="margin:0 0 8px;padding-left:20px;font-size:14px">${list}</ul>
+      ${warn}
+      <div id="form-err"></div>
+      <div class="field"><label for="f-name">Full name <span class="req">*</span></label><input id="f-name" type="text" autocomplete="name"></div>
+      <div class="field"><label for="f-email">Email</label><input id="f-email" type="email" autocomplete="email" placeholder="name@maastrichtuniversity.nl"></div>
+      <div class="row2">
+        <div class="field"><label for="f-type">I am a...</label>
+          <select id="f-type">
+            <option value="">Select...</option>
+            <option>PhD candidate</option>
+            <option>MSP alumnus / alumna</option>
+            <option>Staff member</option>
+            <option>Master's student</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field"><label for="f-aff">Department / affiliation</label><input id="f-aff" type="text" placeholder="e.g. FSE - Chemistry"></div>
+      </div>
+      <div class="field"><label for="f-note">Anything we should know? (optional)</label><textarea id="f-note" placeholder="Availability or experience notes"></textarea><div class="hint">Please don't include sensitive personal information (e.g. about health).</div></div>
+      <label style="display:flex;gap:9px;align-items:flex-start;font-weight:500;font-size:13px;color:var(--navy);margin:6px 0 14px;cursor:pointer">
+        <input type="checkbox" id="f-consent" style="width:16px;height:16px;margin-top:2px;accent-color:var(--accent);flex-shrink:0">
+        <span>I agree that the MSP office may store these details and contact me about these tutorials, as set out in the <a href="privacy.html" target="_blank" rel="noopener">privacy statement</a>. <span class="req">*</span></span>
+      </label>
+      <button class="btn btn-primary" id="submit-claim" style="width:100%">Confirm registration</button>
+      <p class="hint" style="text-align:center;margin-top:12px">You can ask us to delete your data at any time - see the privacy statement.</p>`;
+    $("submit-claim").addEventListener("click", submitClaim);
+    showModal(true);
+    setTimeout(() => $("f-name").focus(), 50);
+  }
+
+  async function submitClaim() {
+    const name = $("f-name").value.trim();
+    const ferr = $("form-err");
+    ferr.innerHTML = "";
+    if (!name) { ferr.innerHTML = errBox("Please enter your full name."); $("f-name").focus(); return; }
+    if (!$("f-consent").checked) { ferr.innerHTML = errBox("Please tick the consent box to continue."); $("f-consent").focus(); return; }
+    const btn = $("submit-claim");
+    btn.disabled = true; btn.textContent = "Confirming...";
+    const info = {
+      name, email: $("f-email").value.trim(), phone: null,
+      type: $("f-type").value, affiliation: $("f-aff").value.trim(), motivation: $("f-note").value.trim(),
+    };
+    try {
+      const items = [...selected.values()].map((s) => ({ code: s.code, title: s.title, label: s.label, times: fmtTimes(s.group) }));
+      await MSP.claim([...selected.keys()], info);
+      const rec = saveClaimRecord(info.name, items);
+      successScreen(info.name, rec);
+      selected.clear();
+      await reload();
+      renderCart();
+    } catch (e) {
+      const msgFn = MSP.CLAIM_MESSAGES[e.code];
+      const msg = msgFn ? msgFn(e.detail) : (e.message || "Something went wrong. Please try again.");
+      ferr.innerHTML = errBox(msg);
+      if (e.code === "GROUP_FULL" || e.code === "GROUP_CLOSED" || e.code === "GROUP_NOT_FOUND") {
+        for (const [id, s] of selected.entries())
+          if (s.label === e.detail) selected.delete(id);
+        await reload(); renderCart();
+        if (!selected.size) showModal(false);
+      }
+      btn.disabled = false; btn.textContent = "Confirm registration";
+    }
+  }
+
+  function successScreen(name, rec) {
+    const contact = (window.MSP_CONFIG && MSP_CONFIG.CONTACT_EMAIL) || "";
+    const h5 = "font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:700;margin:0 0 7px";
+    $("modal-title").textContent = "You're registered";
+    $("modal-body").innerHTML = `
+      <div class="success-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+      <div class="notice ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        <div>Thank you, ${esc(name) || "tutor"}. Your group(s) are now locked to you.</div></div>
+      <div style="margin:6px 2px 4px">
+        <h5 style="${h5}">Your groups</h5>
+        <ul style="margin:0 0 10px;padding-left:18px;font-size:13.5px;color:#33405a;line-height:1.65">${claimListHTML(rec)}</ul>
+        <div style="display:flex;gap:8px">
+          <button type="button" class="btn btn-ghost" data-copy-summary style="flex:1">Copy summary</button>
+          <a class="btn btn-ghost" data-mail-summary href="#" style="flex:1">Email me a copy</a>
+        </div>
+      </div>
+      <div style="margin:12px 2px 4px">
+        <h5 style="${h5}">What happens next</h5>
+        <ul style="margin:0;padding-left:18px;font-size:13.5px;color:#33405a;line-height:1.65">
+          <li>This summary also stays at the top of this page (on this device), so you can come back to it.</li>
+          <li>The MSP office now has your details and will be in touch about the practicalities.</li>
+          <li>The detailed timetable is released about 2.5 weeks before teaching starts; the draft may still shift.</li>
+        </ul>
+      </div>
+      ${contact ? `<p class="hint" style="text-align:center;margin-top:14px">Questions about tutoring? <a href="mailto:${esc(contact)}">${esc(contact)}</a></p>` : ""}
+      <button class="btn btn-ghost" id="done-btn" style="width:100%;margin-top:6px">Back to the list</button>`;
+    wireSummaryActions($("modal-body"), rec);
+    $("done-btn").addEventListener("click", () => { showModal(false); $("modal-title").textContent = "Your details"; });
+    if (window.MSPUI) MSPUI.confetti();
+  }
+
+  // ---------- persistent claim confirmation ----------
+  // Answers the first live feedback (2 Sep 2026): after confirming, tutors
+  // could no longer see which groups they had claimed. The claim is stored in
+  // this browser only (localStorage) and shown as a banner until dismissed.
+  const CLAIM_KEY = "msp_claim_confirmation";
+
+  function saveClaimRecord(name, items) {
+    const rec = { name: name || "", when: new Date().toISOString(), items };
+    try {
+      const prev = JSON.parse(localStorage.getItem(CLAIM_KEY) || "null");
+      if (prev && Array.isArray(prev.items)) {
+        const latest = new Set(items.map((i) => i.code + "|" + i.label));
+        rec.items = prev.items.filter((i) => !latest.has(i.code + "|" + i.label)).concat(items);
+      }
+    } catch (e) { /* unreadable stored copy: start fresh */ }
+    try { localStorage.setItem(CLAIM_KEY, JSON.stringify(rec)); } catch (e) { /* storage blocked: banner still shows this visit */ }
+    renderClaimBanner(rec);
+    return rec;
+  }
+
+  function claimWhen(rec) {
+    const d = new Date(rec.when);
+    return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) +
+      ", " + d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+  }
+
+  function claimSummaryText(rec) {
+    const contact = (window.MSP_CONFIG && MSP_CONFIG.CONTACT_EMAIL) || "";
+    return [
+      "MSP Tutor Registration - your groups",
+      (rec.name ? rec.name + ", registered " : "Registered ") + claimWhen(rec) + ":",
+      "",
+      ...rec.items.map((i) => "- " + i.code + " " + i.label + " - " + i.title + (i.times ? " (" + i.times + ")" : "")),
+      "",
+      contact ? "Questions: " + contact : "",
+    ].join("\n").trim();
+  }
+
+  const claimListHTML = (rec) => rec.items.map((i) =>
+    `<li><strong>${esc(i.code)} ${esc(i.label)}</strong> - ${esc(i.title)}${i.times ? ` <span style="color:var(--muted)">(${esc(i.times)})</span>` : ""}</li>`).join("");
+
+  function wireSummaryActions(root, rec) {
+    const copyBtn = root.querySelector("[data-copy-summary]");
+    if (copyBtn) copyBtn.addEventListener("click", async () => {
+      const original = copyBtn.textContent;
+      try { await navigator.clipboard.writeText(claimSummaryText(rec)); copyBtn.textContent = "Copied"; }
+      catch (e) { copyBtn.textContent = "Copying blocked by browser"; }
+      setTimeout(() => { copyBtn.textContent = original; }, 2500);
+    });
+    const mail = root.querySelector("[data-mail-summary]");
+    if (mail) mail.href = "mailto:?subject=" + encodeURIComponent("MSP tutoring registration - my groups")
+      + "&body=" + encodeURIComponent(claimSummaryText(rec));
+  }
+
+  function renderClaimBanner(rec) {
+    const host = $("claim-banner");
+    if (!host) return;
+    if (!rec || !Array.isArray(rec.items) || !rec.items.length) { host.innerHTML = ""; return; }
+    const linkBtn = "background:none;border:0;padding:0;color:var(--blue-ink);font:inherit;font-size:13px;cursor:pointer;text-decoration:underline";
+    host.innerHTML = `
+      <div class="notice ok" style="align-items:flex-start">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        <div style="flex:1">
+          <strong>Your registration (${esc(claimWhen(rec))})</strong>
+          <ul style="margin:6px 0 8px;padding-left:18px">${claimListHTML(rec)}</ul>
+          <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:13px">
+            <button type="button" data-copy-summary style="${linkBtn}">Copy summary</button>
+            <a data-mail-summary href="#" style="font-size:13px">Email me a copy</a>
+            <button type="button" data-hide-banner style="${linkBtn};color:var(--muted)">Hide</button>
+          </div>
+        </div>
+      </div>`;
+    wireSummaryActions(host, rec);
+    host.querySelector("[data-hide-banner]").addEventListener("click", () => {
+      try { localStorage.removeItem(CLAIM_KEY); } catch (e) { /* nothing stored */ }
+      host.innerHTML = "";
+    });
+  }
+
+  function restoreClaimBanner() {
+    try { renderClaimBanner(JSON.parse(localStorage.getItem(CLAIM_KEY) || "null")); } catch (e) { /* no usable stored claim */ }
+  }
+
+  // ---------- misc ----------
+  const errBox = (m) => `<div class="notice err" style="margin:0 0 14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v5"/><path d="M12 16h.01"/></svg><div>${m}</div></div>`;
+  function notify(kind, msg) {
+    $("notice-area").innerHTML = `<div class="notice ${kind}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v5"/><path d="M12 16h.01"/></svg><div>${msg}</div></div>`;
+  }
+  function showModal(on) {
+    $("overlay").classList.toggle("active", on);
+    $("modal").classList.toggle("active", on);
+    document.body.style.overflow = on ? "hidden" : "";
+  }
+  $("overlay").addEventListener("click", () => showModal(false));
+  $("modal-close").addEventListener("click", () => showModal(false));
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") showModal(false); });
+  $("continue-btn").addEventListener("click", openModal);
+  $("search").addEventListener("input", (e) => { search = e.target.value.trim().toLowerCase(); renderAll(); });
+  $("only-open").addEventListener("change", (e) => { onlyOpen = e.target.checked; renderAll(); });
+  $("view-toggle").querySelectorAll("button").forEach((b) =>
+    b.addEventListener("click", () => { view = b.dataset.v; renderAll(); }));
+
+  // ---------- load + realtime ----------
+  function skeletonHTML() {
+    let cells = "";
+    for (let i = 0; i < 42; i++) cells += '<div class="sk-cell"></div>';
+    return `<div class="skeleton" role="status" aria-label="Loading availability">${cells}</div>`;
+  }
+
+  async function reload() {
+    catalogue = await MSP.getCatalogue();
+    settings = await MSP.getSettings();
+    const allGroups = catalogue.flatMap((c) => c.groups);
+    let bumped = [];
+    for (const [id, s] of selected.entries()) {
+      const g = allGroups.find((x) => x.id === id);
+      if (!g || !g.is_open || g.claimed >= g.capacity) { selected.delete(id); bumped.push(s.code + " " + s.label); }
+    }
+    if (bumped.length) notify("err", `${bumped.join(", ")} was just taken by someone else and removed from your selection.`);
+    renderTabs();
+    renderAll();
+  }
+
+  async function init() {
+    restoreClaimBanner();
+    $("timetable").innerHTML = skeletonHTML();
+    if (MSP.mode === "preview") {
+      notify("info", "<strong>Preview mode.</strong> The catalogue is real but live sign-ups are off until Supabase is connected (see <code>app/assets/config.js</code>).");
+    }
+    await reload();
+    if (settings.banner_message) notify("info", settings.banner_message);
+    if (!settings.registration_open) notify("err", "Registration is currently closed by the MSP office.");
+    MSP.subscribe(async () => { await reload(); renderCart(); });
+  }
+
+  init().catch((e) => {
+    console.error(e);
+    notify("err", "Could not load the catalogue: " + (e.message || e));
+    $("timetable").innerHTML = ""; $("catalogue").innerHTML = "";
+  });
+})();
+</script>
+<!-- The shared MSP frame (sidebar, canvas, type) - see assets/msp-ui/ -->
+<script src="assets/msp-ui/msp-shell.js"></script>
+<script>
+  MSPShell.init({
+    title: 'MSP Tutor Registration',
+    nav: [
+      { label: 'Home',              hint: 'Open positions',         href: 'index.html',    icon: 'home' },
+      { label: 'Register to tutor', hint: 'Claim a tutorial group', href: 'register.html', icon: 'edit' },
+      { divider: true },
+      { label: 'Office login',      hint: 'Dashboard',              href: 'admin.html',    icon: 'lock' }
+    ]
+  });
+</script>
+</body>
+</html>

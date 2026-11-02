@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Community | MSP Alumni Network</title>
+<meta name="description" content="Update your details, join the country WhatsApp groups, and stay connected with MSP alumni worldwide." />
+<meta name="theme-color" content="#011B3C" />
+<link rel="icon" type="image/png" href="assets/logos/maastricht-science-programme-logo.png" />
+<link rel="stylesheet" href="assets/msp-ui/msp-ui.css" />
+<link rel="stylesheet" href="msp-redesign.css" />
+</head>
+<body>
+<main class="msp-main wide">
+
+<section class="msp-hero">
+  <div class="hero-grid" style="grid-template-columns: minmax(0, 1fr);">
+    <div class="hero-copy">
+      <div class="msp-hero-kicker">MSP alumni worldwide</div>
+      <h1>Join the <em>community.</em></h1>
+      <p>Stay connected with fellow graduates across 59 countries. Get updates, win merch, and help us build something great together.</p>
+      <div class="btn-row">
+        <a class="msp-btn msp-btn-or" href="#update">Update your info</a>
+        <a class="msp-btn btn-ghost" href="#channels">Find your channel</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section wrap">
+  <div class="split">
+    <div>
+      <div class="eyebrow eyebrow-orange">Thanks for being here</div>
+      <h2>The database only works if we can reach you.</h2>
+      <p>The alumni office at MSP has been working hard to build a database so we can follow the inspiring journeys of our graduates around the world. The challenge? A lot of the emails we have are outdated, which means surveys and updates don't reach everyone. That's where you come in — by sharing some basic info, you help us plan better activities, organize events, and keep the community connected.</p>
+    </div>
+    <div class="grid cols-2" style="gap: 14px;">
+      <div class="reason">
+        <h4>Alumni stories on Instagram</h4>
+        <p>We share stories about alumni around the world — what they’re up to now and their journeys since MSP.</p>
+      </div>
+      <div class="reason">
+        <h4>Quizzes &amp; giveaways</h4>
+        <p>Win free MSP merch through quiz questions and giveaways on Instagram. Hoodies, zippers, and more!</p>
+      </div>
+      <div class="reason">
+        <h4>Newsletter updates</h4>
+        <p>For those without Instagram, we compile alumni stories and MSP updates in a newsletter.</p>
+      </div>
+      <div class="reason">
+        <h4>Share achievements</h4>
+        <p>Our LinkedIn groups are the place to share academic achievements, publications, and career wins.</p>
+      </div>
+      <div class="reason">
+        <h4>Meetups &amp; gatherings</h4>
+        <p>By knowing where alumni are, we can organize lunches, dinners, or informal gatherings in cities worldwide.</p>
+      </div>
+      <div class="reason">
+        <h4>Events &amp; conference</h4>
+        <p>The alumni conference is coming back, plus we’re celebrating MSP’s 15th birthday at the end of the year!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section wrap" id="update">
+  <div class="lead">
+    <div class="eyebrow eyebrow-blue">Update your info</div>
+    <h2>Fill in as much or as little as you like.</h2>
+    <p>Already in the network, or just graduated? Every field is optional except your name and graduation year — each one helps us keep the map accurate, plan events, and connect the right people.</p>
+  </div>
+
+  <form class="form-card" id="alumni-form" action="#preview-form-disabled" method="POST">
+    <input type="text" name="_gotcha" style="display: none" />
+    <input type="hidden" name="_subject" value="MSP Alumni Profile Update" />
+
+    <fieldset class="fieldset" style="padding-top: 0;">
+      <legend>You</legend>
+      <div class="field-grid">
+        <label class="f">Name
+          <input class="f" type="text" name="name" placeholder="e.g. Jana Novak" required="required" />
+        </label>
+        <label class="f">Graduation year
+          <select class="f" name="graduation_year" required="required">
+            <option value="">Select year</option>
+            <option value="Before 2014">Before 2014</option>
+            <option value="2014">2014</option>
+            <option value="2015">2015</option>
+            <option value="2016">2016</option>
+            <option value="2017">2017</option>
+            <option value="2018">2018</option>
+            <option value="2019">2019</option>
+            <option value="2020">2020</option>
+            <option value="2021">2021</option>
+            <option value="2022">2022</option>
+            <option value="2023">2023</option>
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+            <option value="2026">2026</option>
+          </select>
+        </label>
+        <label class="f">Email
+          <input class="f" type="email" name="updated_email" placeholder="your@email.com" />
+        </label>
+        <label class="f">Phone (optional)
+          <input class="f" type="tel" name="updated_phone" placeholder="+31 6 12 34 56 78" />
+        </label>
+      </div>
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend>Where you are</legend>
+      <p class="hint">Where you live right now — this is what keeps the world map honest.</p>
+      <div class="field-grid">
+        <label class="f">Country
+          <input class="f" type="text" name="location_country" placeholder="e.g. Germany" />
+        </label>
+        <label class="f">City
+          <input class="f" type="text" name="location_city" placeholder="e.g. Berlin" />
+        </label>
+      </div>
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend>Work</legend>
+      <p class="hint">Full-time or part-time job.</p>
+      <div class="field-grid">
+        <label class="f">Employer
+          <input class="f" type="text" name="work_employer" placeholder="e.g. WHO, Philips, startupname" />
+        </label>
+        <label class="f">Job title
+          <input class="f" type="text" name="work_title" placeholder="e.g. Research Analyst" />
+        </label>
+      </div>
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend>Master's</legend>
+      <p class="hint">Current or completed MSc.</p>
+      <div class="field-grid">
+        <label class="f">University
+          <input class="f" type="text" name="masters_university" placeholder="e.g. Utrecht University" />
+        </label>
+        <label class="f">Programme
+          <input class="f" type="text" name="masters_programme" placeholder="e.g. MSc Neuroscience" />
+        </label>
+      </div>
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend>PhD</legend>
+      <p class="hint">Doctorate or research position.</p>
+      <div class="field-grid">
+        <label class="f">Institution
+          <input class="f" type="text" name="phd_university" placeholder="e.g. ETH Zürich" />
+        </label>
+        <label class="f">Topic
+          <input class="f" type="text" name="phd_topic" placeholder="e.g. Computational neuroscience" />
+        </label>
+      </div>
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend>Internship</legend>
+      <p class="hint">Current or recent placement.</p>
+      <div class="field-grid">
+        <label class="f">Organisation
+          <input class="f" type="text" name="internship_org" placeholder="e.g. RIVM, CERN" />
+        </label>
+        <label class="f">Role
+          <input class="f" type="text" name="internship_role" placeholder="e.g. Data science intern" />
+        </label>
+      </div>
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend>Something else</legend>
+      <div class="field-grid" style="grid-template-columns: minmax(0, 1fr);">
+        <label class="f">Gap year or time between chapters
+          <textarea class="f" name="gapyear_details" placeholder="e.g. Travelling Southeast Asia, volunteering in Costa Rica..."></textarea>
+        </label>
+        <label class="f">Anything else worth sharing
+          <textarea class="f" name="other_details" placeholder="Projects, freelance, looking for opportunities, founding something..."></textarea>
+        </label>
+        <label class="f">Requests for us
+          <input class="f" type="text" name="anything_else" placeholder="Events you'd like, alumni to connect with, achievements to feature..." />
+        </label>
+      </div>
+    </fieldset>
+
+    <div class="form-actions">
+      <button class="msp-btn msp-btn-navy" type="submit" id="submit-btn">Send update →</button>
+      <span class="form-msg" id="form-msg" role="status"></span>
+    </div>
+    <p class="form-privacy">We use this to keep the alumni database current — nothing is published without asking you first. Questions? <a href="mailto:msp-alumni@maastrichtuniversity.nl">msp-alumni@maastrichtuniversity.nl</a></p>
+  </form>
+</section>
+
+
+<section class="section wrap" id="your-data">
+  <div class="lead">
+    <div class="eyebrow eyebrow-blue">Your data, your control</div>
+    <h2>Here's exactly what we do, and don't do, with your information.</h2>
+  </div>
+  <div class="grid cols-2" style="gap: 32px; align-items: start;">
+    <div class="channel">
+      <span class="chip">What we do</span>
+      <ul class="data-list">
+        <li>Use your info to send you relevant updates and newsletters</li>
+        <li>Create anonymous, aggregated statistics for the website, for example how many alumni live in each country</li>
+        <li>Organise events in cities where alumni are located</li>
+        <li>Connect you with other alumni if you both agree</li>
+        <li>Always ask before featuring you publicly</li>
+      </ul>
+    </div>
+    <div class="channel">
+      <span class="chip">What we never do</span>
+      <ul class="data-list data-list-never">
+        <li>Share your personal information with third parties</li>
+        <li>Display your name or details publicly without explicit consent</li>
+        <li>Sell or monetise your data in any way</li>
+        <li>Spam you, we send three or four emails per year at most</li>
+        <li>Make it difficult to opt out, just email us any time</li>
+      </ul>
+    </div>
+  </div>
+  <p class="data-note">Want the full details? Our <a href="privacy.html">privacy policy</a> explains everything in plain language.</p>
+</section>
+<section class="section wrap" id="channels">
+  <div class="lead">
+    <div class="eyebrow eyebrow-orange">Where the community lives</div>
+    <h2>Choose how you want to be part of it.</h2>
+  </div>
+  <div class="grid cols-3">
+    <div class="channel">
+      <span class="chip chip-orange">Instagram</span>
+      <h3>@msp_alumni</h3>
+      <p>Follow us for alumni spotlights, quiz questions, merch giveaways, and behind-the-scenes MSP content. This is where the fun happens!</p>
+      <span class="channel-handle">Alumni stories, quizzes &amp; giveaways</span>
+      <a class="msp-btn msp-btn-sm msp-btn-navy" href="https://www.instagram.com/msp_alumni/" target="_blank" rel="noopener" style="align-self: flex-start;">Follow on Instagram →</a>
+    </div>
+    <div class="channel">
+      <span class="chip chip-blue">WhatsApp</span>
+      <h3>Country groups</h3>
+      <p>Join country-based WhatsApp groups to connect with alumni near you. Share updates, ask questions, and stay in the loop with what's happening in the MSP community.</p>
+      <div class="channel-stats">
+        <div>
+          <div class="channel-stat-num">400+</div>
+          <div class="channel-stat-label">Members</div>
+        </div>
+        <div>
+          <div class="channel-stat-num">18</div>
+          <div class="channel-stat-label">Country groups</div>
+        </div>
+      </div>
+      <div class="flag-row">
+          <span class="flag-chip">🇳🇱 Netherlands</span>
+          <span class="flag-chip">🇩🇪 Germany</span>
+          <span class="flag-chip">🇬🇧 UK</span>
+          <span class="flag-chip">🇧🇪 Belgium</span>
+          <span class="flag-chip">🇸🇪 Sweden</span>
+          <span class="flag-chip">🇨🇭 Switzerland</span>
+          <span class="flag-chip">🇫🇷 France</span>
+          <span class="flag-chip">🇪🇸 Spain</span>
+          <span class="flag-chip">🇮🇹 Italy</span>
+          <span class="flag-chip more">+9 more</span>
+      </div>
+      <a class="msp-btn msp-btn-sm msp-btn-navy" href="mailto:msp-alumni@maastrichtuniversity.nl?subject=I'd like to join a WhatsApp group&body=Hi MSP Alumni Team,%0D%0A%0D%0AI'd like to join a WhatsApp group!%0D%0A%0D%0AMy country:" style="align-self: flex-start;">Request to join →</a>
+    </div>
+    <div class="channel">
+      <span class="chip">LinkedIn</span>
+      <h3>Two groups</h3>
+      <p>Connect professionally with fellow MSP alumni. Share your achievements, publications, career milestones, and academic news with the community.</p>
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <a class="msp-btn msp-btn-sm msp-btn-gh" href="https://www.linkedin.com/groups/12893377/" target="_blank" rel="noopener">MSP graduates group →</a>
+        <a class="msp-btn msp-btn-sm msp-btn-gh" href="https://www.linkedin.com/groups/4689010/" target="_blank" rel="noopener">FSE alumni group →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="grid cols-2" style="align-items: center; gap: 28px;">
+      <div>
+        <div class="eyebrow eyebrow-blue">Doing a PhD?</div>
+        <h2>We're building a showcase of MSP's research community.</h2>
+      </div>
+      <div>
+        <p style="font-size: 13.5px; line-height: 1.7; color: rgba(255,255,255,0.72); margin: 0 0 16px;">Whether you're currently pursuing a doctorate or have already completed one, your journey inspires future students. Drop us an email with your institution, research field, and any details you'd like to share. We'll feature MSP PhD alumni once we've gathered enough stories to do the community justice.</p>
+        <a class="msp-btn msp-btn-or" href="mailto:msp-alumni@maastrichtuniversity.nl?subject=MSP%20PhD%20Alumni%20Feature">Get in touch →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer class="msp-footer">
+  <div class="foot-links">
+    <a href="https://www.instagram.com/msp_alumni/">Instagram</a>
+    <a href="https://www.linkedin.com/groups/12893377/">LinkedIn (MSP)</a>
+    <a href="https://www.linkedin.com/groups/4689010/">LinkedIn (FSE)</a>
+    <a href="https://www.maastrichtuniversity.nl">Maastricht University</a>
+    <a href="privacy.html">Privacy policy</a>
+  </div>
+  <div>&copy; 2026 MSP Alumni Network. Maastricht University, Faculty of Science and Engineering.</div>
+  <div class="foot-note"><span data-text-template="Data current as of {lastUpdated}.">Data current as of July 2026.</span></div>
+</footer>
+<script>
+  // Formspree submission — same endpoint as the original community page
+  var form = document.getElementById('alumni-form');
+  var msg = document.getElementById('form-msg');
+  var btn = document.getElementById('submit-btn');
+  form.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    msg.className = 'form-msg';
+    msg.textContent = 'Sending…';
+    btn.disabled = true;
+    fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } })
+      .then(function (res) {
+        if (!res.ok) throw new Error('bad response');
+        form.reset();
+        msg.className = 'form-msg ok';
+        msg.textContent = 'Got it — thank you! We\'ll update your record in the database.';
+      })
+      .catch(function () {
+        msg.className = 'form-msg err';
+        msg.innerHTML = 'Something went wrong. Please email us at <a href="mailto:msp-alumni@maastrichtuniversity.nl">msp-alumni@maastrichtuniversity.nl</a>.';
+      })
+      .then(function () { btn.disabled = false; });
+  });
+</script>
+<script src="data.js"></script>
+<script src="data-bind.js"></script>
+<!-- Shared MSP frame: the sidebar is built from the config in site-nav.js -->
+<script src="assets/msp-ui/msp-shell.js"></script>
+<script src="site-nav.js"></script>
+</body>
+</html>

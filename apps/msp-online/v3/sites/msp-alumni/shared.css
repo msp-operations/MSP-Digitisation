@@ -1,0 +1,421 @@
+/* ============================================
+   MSP ALUMNI NETWORK — SHARED STYLES
+   Common variables, reset, typography, and base
+   header/logo structure used across all pages.
+   ============================================ */
+
+/* ---- CSS Variables (UM Branding) ---- */
+:root {
+    --um-dark-blue: #001C3D;
+    --um-darker-blue: #00101f;
+    --um-light-blue: #00A2DB;
+    --um-light-blue-glow: rgba(0, 162, 219, 0.4);
+    --um-orange: #E84E10;
+    --um-orange-glow: rgba(232, 78, 16, 0.4);
+    --um-white: #FFFFFF;
+    --um-off-white: #fafbfc;
+    --um-gray-50: #f8fafc;
+    /* Redesign tokens, matching the homepage */
+    --paper: #F6F5F1;
+    --hair: rgba(0, 28, 61, 0.09);
+    --um-gray-100: #f1f5f9;
+    --um-gray-200: #e2e8f0;
+    --um-gray-300: #cbd5e1;
+    --um-gray-400: #94a3b8;
+    --um-gray-500: #64748b;
+    --um-gray-600: #475569;
+    --um-gray-700: #334155;
+    --um-gray-800: #1e293b;
+
+    --font-display: 'Instrument Serif', Georgia, serif;
+    --font-heading: var(--font-display);
+    --font-body: 'Plus Jakarta Sans', sans-serif;
+
+    /* Flattened: the redesign uses hairlines and one soft lift, not stacked glows */
+    --shadow-sm: 0 1px 2px rgba(0, 28, 61, 0.04);
+    --shadow-md: 0 2px 6px rgba(0, 28, 61, 0.05);
+    --shadow-lg: 0 6px 20px rgba(0, 28, 61, 0.07);
+    --shadow-xl: 0 14px 40px rgba(0, 28, 61, 0.08);
+    --shadow-glow-blue: 0 6px 20px rgba(0, 28, 61, 0.07);
+    --shadow-glow-orange: 0 6px 20px rgba(0, 28, 61, 0.07);
+
+    --radius-sm: 7px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --radius-xl: 16px;
+
+    --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-spring: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ---- Reset ---- */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ---- Base Typography ---- */
+body {
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--um-dark-blue);
+    background: var(--um-white);
+    overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+}
+
+a {
+    color: var(--um-light-blue);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+a:hover {
+    color: var(--um-orange);
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* ---- Base Logo ---- */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-decoration: none;
+}
+
+.logo-img {
+    height: 44px;
+    width: auto;
+    transition: transform var(--transition-smooth);
+}
+
+.logo:hover .logo-img {
+    transform: scale(1.02);
+}
+
+.logo-text h1 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--um-dark-blue);
+    margin: 0;
+    line-height: 1.2;
+}
+
+.logo-text p {
+    font-size: 11px;
+    color: var(--um-gray-500);
+    margin: 0;
+    font-weight: 500;
+}
+
+/* ---- Base Header Layout ---- */
+header {
+    padding: 0 50px;
+    height: 72px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    transition: all var(--transition-smooth);
+}
+
+/* ---- Base Nav ---- */
+.header-nav {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.header-nav a {
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 18px;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+}
+
+.header-nav .btn-cta {
+    background: linear-gradient(135deg, var(--um-orange) 0%, #d94008 100%);
+    color: white;
+    margin-left: 12px;
+    box-shadow: 0 2px 8px rgba(232, 78, 16, 0.25);
+    border: none;
+}
+
+.header-nav .btn-cta:hover {
+    background: linear-gradient(135deg, #ff5a1f 0%, var(--um-orange) 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(232, 78, 16, 0.35);
+    color: white;
+}
+
+/* ---- Mobile Hamburger Menu ---- */
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    z-index: 1002;
+    position: relative;
+}
+
+.menu-toggle span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--um-dark-blue);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+.menu-toggle span + span {
+    margin-top: 6px;
+}
+
+/* When header is on a dark background page, make bars white */
+header.scrolled .menu-toggle span,
+.dark-header .menu-toggle span {
+    background: white;
+}
+
+/* Animate to X when open */
+.menu-toggle.open span:nth-child(1) {
+    transform: rotate(45deg) translate(4px, 6px);
+}
+
+.menu-toggle.open span:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-toggle.open span:nth-child(3) {
+    transform: rotate(-45deg) translate(4px, -6px);
+}
+
+/* Mobile overlay always uses dark bars in X state */
+.menu-toggle.open span {
+    background: var(--um-dark-blue);
+}
+
+@media (max-width: 900px) {
+    .menu-toggle {
+        display: block;
+    }
+
+    .header-nav {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        z-index: 1001;
+        padding: 80px 40px 40px;
+    }
+
+    .header-nav.open {
+        display: flex;
+    }
+
+    .header-nav a {
+        font-size: 20px;
+        font-weight: 600;
+        padding: 14px 32px;
+        color: var(--um-dark-blue);
+        border-radius: var(--radius-md);
+        width: 100%;
+        max-width: 320px;
+        text-align: center;
+    }
+
+    .header-nav a:hover {
+        background: var(--um-gray-100);
+        color: var(--um-dark-blue);
+    }
+
+    .header-nav a.active {
+        color: var(--um-light-blue);
+    }
+
+    .header-nav .btn-cta {
+        margin-left: 0;
+        margin-top: 12px;
+    }
+
+    /* country.html uses .back-link instead of nav */
+    .back-link {
+        font-size: 13px !important;
+    }
+}
+
+/* ============================================
+   REDESIGN LAYER
+   Brings the sub-pages in line with the homepage:
+   serif display type, the navy header bar, flat
+   surfaces instead of glows and starfields.
+
+   Note on specificity: each page's inline <style>
+   block is parsed after this file, so plain element
+   and class selectors here lose. Rules below are
+   deliberately scoped through header#header or
+   carry !important where a page would otherwise win.
+   ============================================ */
+
+body {
+    background: var(--paper);
+}
+
+/* Instrument Serif ships in a single weight. A rule asking for 600 or 700
+   gets a synthesised faux-bold, which looks smeared, so every heading is
+   pinned to 400. The logo lockup stays on the sans face. */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 400 !important;
+    letter-spacing: -0.02em;
+}
+
+.logo-text h1,
+.logo-text p {
+    font-family: var(--font-body);
+    font-weight: 600 !important;
+}
+
+/* ---- Header: the homepage bar, on every page ---- */
+header#header {
+    position: sticky;
+    left: auto;
+    right: auto;
+    height: auto;
+    padding: 14px 32px;
+    gap: 24px;
+    background: #011B3C;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+    z-index: 50;
+}
+
+header#header .logo {
+    gap: 12px;
+}
+
+header#header .logo-img {
+    height: 30px;
+    filter: brightness(0) invert(1);
+}
+
+header#header .logo-text h1 {
+    font-size: 14px;
+    color: #fff;
+    letter-spacing: -0.01em;
+}
+
+/* The homepage carries one line here, not a name plus a strapline */
+header#header .logo-text p {
+    display: none;
+}
+
+header#header .header-nav a {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.72);
+    padding: 8px 12px;
+    border-radius: 7px;
+}
+
+header#header .header-nav a:hover,
+header#header .header-nav a.active {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.09);
+}
+
+header#header .header-nav .btn-cta {
+    background: var(--um-orange);
+    color: #fff;
+    font-weight: 600;
+    padding: 9px 16px;
+    margin-left: 8px;
+    border-radius: 7px;
+    box-shadow: none;
+    transform: none;
+}
+
+header#header .header-nav .btn-cta:hover {
+    background: #ff5f24;
+    color: #fff;
+    box-shadow: none;
+    transform: none;
+}
+
+header#header .menu-toggle span {
+    background: #fff;
+}
+
+/* ---- Drop the decorative hero layers ----
+   Starfields, particle constellations, dot grids and mesh overlays.
+   The soft radial .hero-glow elements stay: the homepage hero uses the
+   same treatment. */
+#starCanvas,
+#particleCanvas,
+.particle-canvas,
+.hero-mesh,
+.hero-pattern,
+.hero-fullpage .hero-grid {
+    display: none !important;
+}
+
+/* ---- Keep UI text on the sans face ----
+   --font-heading used to be Space Grotesk, a sans, so pages reached for it
+   on buttons and small labels as well as headings. Now that it resolves to
+   Instrument Serif, those uses have to come back: on the homepage only
+   display-size text is serif, everything functional is Plus Jakarta Sans. */
+.career-count,
+.city-name,
+.city-rank,
+.cta-btn,
+.ev-title,
+.field-name,
+.hero-btn,
+.phd-detail-title,
+.sector-name,
+.testimonial-year-badge,
+.uni-name,
+.fact-value,
+.careers-display-title,
+.popup-city,
+.uni-count-badge,
+button,
+input,
+select,
+textarea {
+    font-family: var(--font-body) !important;
+}

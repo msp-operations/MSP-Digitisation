@@ -1,0 +1,361 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//MSP Operations//Academic Calendar//EN
+X-WR-CALNAME:MSP BTR deadlines 2026-27
+X-WR-CALDESC:MSP staff deadlines 2026-27. Spotted a wrong date\, or know on
+ e that is missing? Tell us at msp-exams@maastrichtuniversity.nl and we fix
+  it at the source. Web view: https://msp-operations.github.io/Academic-Cal
+ endar/
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+REFRESH-INTERVAL;VALUE=DURATION:PT1H
+X-PUBLISHED-TTL:PT1H
+BEGIN:VEVENT
+UID:btr-rts-sept-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20260717
+DTEND;VALUE=DATE:20260718
+SUMMARY:[MSP BTR] BTR Request-to-Start deadline (Sept cohort)
+DESCRIPTION:For: students\, Academic Advisors\, coordinators
+URL:https://msp-operations.github.io/Academic-Calendar/?event=btr-rts-sept
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:btr-start-sept-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20260831
+DTEND;VALUE=DATE:20260901
+SUMMARY:[MSP BTR] BTR September cohort starts
+DESCRIPTION:For: students\, supervisors\, IAs\, coordinators
+URL:https://msp-operations.github.io/Academic-Calendar/?event=btr-start-sep
+ t
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:corsa-migration-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20260923
+DTEND;VALUE=DATE:20260924
+SUMMARY:[MSP BTR] CORSA cloud migration window (23-28 Sep\; backup 7-12 Oct
+ )
+DESCRIPTION:For: BTR office\, ESD\, Exams (Corsa users)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=corsa-migrati
+ on
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:btr-proposal-sept-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20260928
+DTEND;VALUE=DATE:20260929
+SUMMARY:[MSP BTR] BTR proposal submission deadline (Sept cohort)
+DESCRIPTION:For: students\, RS\, IA
+URL:https://msp-operations.github.io/Academic-Calendar/?event=btr-proposal-
+ sept
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:btr-proposal-grades-due-sept-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261016
+DTEND;VALUE=DATE:20261017
+SUMMARY:[MSP BTR] BTR proposal grades due in Collent (Sept cohort)
+DESCRIPTION:For: RS\, IA
+URL:https://msp-operations.github.io/Academic-Calendar/?event=btr-proposal-
+ grades-due-sept
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:btr-proposal-grades-pub-sept-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:0
+LAST-MODIFIED:20260928T091313Z
+DTSTART;VALUE=DATE:20261019
+DTEND;VALUE=DATE:20261020
+SUMMARY:[MSP BTR] BTR proposal grades published (Sept cohort)
+DESCRIPTION:For: students\, RS\, IA
+URL:https://msp-operations.github.io/Academic-Calendar/?event=btr-proposal-
+ grades-pub-sept
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:btr-midterm-grades-due-sept-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:0
+LAST-MODIFIED:20260928T091313Z
+DTSTART;VALUE=DATE:20261106
+DTEND;VALUE=DATE:20261107
+SUMMARY:[MSP BTR] BTR midterm practical grade due (Sept cohort)
+DESCRIPTION:For: RS
+URL:https://msp-operations.github.io/Academic-Calendar/?event=btr-midterm-g
+ rades-due-sept
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:btr-midterm-grades-pub-sept-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:0
+LAST-MODIFIED:20260928T091313Z
+DTSTART;VALUE=DATE:20261109
+DTEND;VALUE=DATE:20261110
+SUMMARY:[MSP BTR] BTR midterm grades published (Sept cohort)
+DESCRIPTION:For: students\, RS
+URL:https://msp-operations.github.io/Academic-Calendar/?event=btr-midterm-g
+ rades-pub-sept
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:btr-thesis-sept-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261207
+DTEND;VALUE=DATE:20261208
+SUMMARY:[MSP BTR] BTR thesis submission deadline (Sept cohort)
+DESCRIPTION:For: students\, RS\, IA
+URL:https://msp-operations.github.io/Academic-Calendar/?event=btr-thesis-se
+ pt
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:btr-video-sept-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261211
+DTEND;VALUE=DATE:20261212
+SUMMARY:[MSP BTR] BTR video submission deadline (Sept cohort)
+DESCRIPTION:For: students\, IA\, peer reviewers
+URL:https://msp-operations.github.io/Academic-Calendar/?event=btr-video-sep
+ t
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:btr-rts-feb-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261211
+DTEND;VALUE=DATE:20261212
+SUMMARY:[MSP BTR] BTR Request-to-Start deadline (Feb cohort)
+DESCRIPTION:For: students\, Academic Advisors\, coordinators
+URL:https://msp-operations.github.io/Academic-Calendar/?event=btr-rts-feb
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:norm-hours-finance-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261231
+DTEND;VALUE=DATE:20270101
+SUMMARY:[MSP BTR] Norm-hours list (BTR supervision) to finance
+DESCRIPTION:For: BTR administrator\, finance
+URL:https://msp-operations.github.io/Academic-Calendar/?event=norm-hours-fi
+ nance
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:btr-final-grades-due-sept-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270115
+DTEND;VALUE=DATE:20270116
+SUMMARY:[MSP BTR] BTR final grades due in Collent (Sept cohort)
+DESCRIPTION:For: RS\, IA
+URL:https://msp-operations.github.io/Academic-Calendar/?event=btr-final-gra
+ des-due-sept
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:btr-final-grades-pub-sept-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:0
+LAST-MODIFIED:20260928T091313Z
+DTSTART;VALUE=DATE:20270118
+DTEND;VALUE=DATE:20270119
+SUMMARY:[MSP BTR] BTR final grades published (Sept cohort)
+DESCRIPTION:For: students\, supervisors\, BoE
+URL:https://msp-operations.github.io/Academic-Calendar/?event=btr-final-gra
+ des-pub-sept
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:transcript-update-btr-sept-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270125
+DTEND;VALUE=DATE:20270126
+SUMMARY:[MSP BTR] Running transcript update (BTR September cohort)
+DESCRIPTION:For: BTR office (Martijn Jeurissen)\, ESD\, students
+URL:https://msp-operations.github.io/Academic-Calendar/?event=transcript-up
+ date-btr-sept
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:btr-start-feb-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270125
+DTEND;VALUE=DATE:20270126
+SUMMARY:[MSP BTR] BTR February cohort starts
+DESCRIPTION:For: students\, supervisors\, IAs\, coordinators
+URL:https://msp-operations.github.io/Academic-Calendar/?event=btr-start-feb
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:btr-graduation-sept-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270131
+DTEND;VALUE=DATE:20270201
+SUMMARY:[MSP BTR] BTR September cohort graduation date
+DESCRIPTION:For: students\, BoE\, ESD
+URL:https://msp-operations.github.io/Academic-Calendar/?event=btr-graduatio
+ n-sept
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:btr-proposal-feb-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270301
+DTEND;VALUE=DATE:20270302
+SUMMARY:[MSP BTR] BTR proposal submission deadline (Feb cohort)
+DESCRIPTION:For: students\, RS\, IA
+URL:https://msp-operations.github.io/Academic-Calendar/?event=btr-proposal-
+ feb
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:btr-proposal-grades-due-feb-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270319
+DTEND;VALUE=DATE:20270320
+SUMMARY:[MSP BTR] BTR proposal grades due in Collent (Feb cohort)
+DESCRIPTION:For: RS\, IA
+URL:https://msp-operations.github.io/Academic-Calendar/?event=btr-proposal-
+ grades-due-feb
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:btr-proposal-grades-pub-feb-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270322
+DTEND;VALUE=DATE:20270323
+SUMMARY:[MSP BTR] BTR proposal grades published (Feb cohort)
+DESCRIPTION:For: students\, RS\, IA
+URL:https://msp-operations.github.io/Academic-Calendar/?event=btr-proposal-
+ grades-pub-feb
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:btr-midterm-grades-due-feb-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270409
+DTEND;VALUE=DATE:20270410
+SUMMARY:[MSP BTR] BTR midterm practical grade due (Feb cohort)
+DESCRIPTION:For: RS
+URL:https://msp-operations.github.io/Academic-Calendar/?event=btr-midterm-g
+ rades-due-feb
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:btr-midterm-grades-pub-feb-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270412
+DTEND;VALUE=DATE:20270413
+SUMMARY:[MSP BTR] BTR midterm grades published (Feb cohort)
+DESCRIPTION:For: students\, RS
+URL:https://msp-operations.github.io/Academic-Calendar/?event=btr-midterm-g
+ rades-pub-feb
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:btr-thesis-feb-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270518
+DTEND;VALUE=DATE:20270519
+SUMMARY:[MSP BTR] BTR thesis submission deadline (Feb cohort)
+DESCRIPTION:For: students\, RS\, IA
+URL:https://msp-operations.github.io/Academic-Calendar/?event=btr-thesis-fe
+ b
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:btr-video-feb-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270521
+DTEND;VALUE=DATE:20270522
+SUMMARY:[MSP BTR] BTR video submission deadline (Feb cohort)
+DESCRIPTION:For: students\, IA\, peer reviewers
+URL:https://msp-operations.github.io/Academic-Calendar/?event=btr-video-feb
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:btr-final-grades-due-feb-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270604
+DTEND;VALUE=DATE:20270605
+SUMMARY:[MSP BTR] BTR final grades due in Collent (Feb cohort)
+DESCRIPTION:For: RS\, IA
+URL:https://msp-operations.github.io/Academic-Calendar/?event=btr-final-gra
+ des-due-feb
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:btr-final-grades-pub-feb-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270607
+DTEND;VALUE=DATE:20270608
+SUMMARY:[MSP BTR] BTR final grades published (Feb cohort)
+DESCRIPTION:For: students\, supervisors\, BoE
+URL:https://msp-operations.github.io/Academic-Calendar/?event=btr-final-gra
+ des-pub-feb
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:btr-graduation-feb-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:0
+LAST-MODIFIED:20260928T091313Z
+DTSTART;VALUE=DATE:20270630
+DTEND;VALUE=DATE:20270701
+SUMMARY:[MSP BTR] BTR February cohort graduation date
+DESCRIPTION:For: students\, BoE\, ESD
+URL:https://msp-operations.github.io/Academic-Calendar/?event=btr-graduatio
+ n-feb
+TRANSP:TRANSPARENT
+END:VEVENT
+END:VCALENDAR

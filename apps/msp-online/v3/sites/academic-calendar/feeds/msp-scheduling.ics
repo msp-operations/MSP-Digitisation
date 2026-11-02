@@ -1,0 +1,378 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//MSP Operations//Academic Calendar//EN
+X-WR-CALNAME:MSP SCHEDULING deadlines 2026-27
+X-WR-CALDESC:MSP staff deadlines 2026-27. Spotted a wrong date\, or know on
+ e that is missing? Tell us at msp-exams@maastrichtuniversity.nl and we fix
+  it at the source. Web view: https://msp-operations.github.io/Academic-Cal
+ endar/
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+REFRESH-INTERVAL;VALUE=DURATION:PT1H
+X-PUBLISHED-TTL:PT1H
+BEGIN:VEVENT
+UID:switch-p1-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20260731
+DTEND;VALUE=DATE:20260801
+SUMMARY:[MSP SCHEDULING] Course switch deadline
+DESCRIPTION:For: course coordinators\, students\, Academic Advising\, ESD
+URL:https://msp-operations.github.io/Academic-Calendar/?event=switch-p1
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:sched-draft-p1-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20260804
+DTEND;VALUE=DATE:20260805
+SUMMARY:[MSP SCHEDULING] P1 schedules in draft in MyTimetable (coordinators
+  check now)
+DESCRIPTION:For: course coordinators\, tutors
+URL:https://msp-operations.github.io/Academic-Calendar/?event=sched-draft-p
+ 1
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:timetable-pub-p1-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20260813
+DTEND;VALUE=DATE:20260814
+SUMMARY:[MSP SCHEDULING] Timetable published
+DESCRIPTION:For: students\, coordinators\, tutors
+URL:https://msp-operations.github.io/Academic-Calendar/?event=timetable-pub
+ -p1
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:sched-planning-forms-p2-reminder-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20260820
+DTEND;VALUE=DATE:20260821
+SUMMARY:[MSP SCHEDULING] P2 course/skill planning form reminder goes out
+DESCRIPTION:For: Scheduling (Severine)\, course coordinators
+URL:https://msp-operations.github.io/Academic-Calendar/?event=sched-plannin
+ g-forms-p2-reminder
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:withdraw-p1-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20260904
+DTEND;VALUE=DATE:20260905
+SUMMARY:[MSP SCHEDULING] Course withdraw deadline
+DESCRIPTION:For: course coordinators\, students\, Academic Advising\, ESD
+URL:https://msp-operations.github.io/Academic-Calendar/?event=withdraw-p1
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:sched-planning-forms-p2-due-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20260918
+DTEND;VALUE=DATE:20260919
+SUMMARY:[MSP SCHEDULING] Course/skill planning forms P2 return deadline
+DESCRIPTION:For: course coordinators
+URL:https://msp-operations.github.io/Academic-Calendar/?event=sched-plannin
+ g-forms-p2-due
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:sched-draft-p2-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20260922
+DTEND;VALUE=DATE:20260923
+SUMMARY:[MSP SCHEDULING] P2 schedules in draft in MyTimetable (coordinators
+  check now)
+DESCRIPTION:For: course coordinators\, tutors
+URL:https://msp-operations.github.io/Academic-Calendar/?event=sched-draft-p
+ 2
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:switch-p2-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20260929
+DTEND;VALUE=DATE:20260930
+SUMMARY:[MSP SCHEDULING] Course switch deadline
+DESCRIPTION:For: course coordinators\, students\, Academic Advising\, ESD
+URL:https://msp-operations.github.io/Academic-Calendar/?event=switch-p2
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:timetable-pub-p2-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261008
+DTEND;VALUE=DATE:20261009
+SUMMARY:[MSP SCHEDULING] Timetable published
+DESCRIPTION:For: students\, coordinators\, tutors
+URL:https://msp-operations.github.io/Academic-Calendar/?event=timetable-pub
+ -p2
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:canvas-scheduling-uploads-fall-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261026
+DTEND;VALUE=DATE:20261027
+SUMMARY:[MSP SCHEDULING] Scheduling docs refreshed on Canvas (Spring regist
+ ration set)
+DESCRIPTION:For: Scheduling (Severine)\, IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=canvas-schedu
+ ling-uploads-fall
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:withdraw-p2-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261030
+DTEND;VALUE=DATE:20261031
+SUMMARY:[MSP SCHEDULING] Course withdraw deadline
+DESCRIPTION:For: course coordinators\, students\, Academic Advising\, ESD
+URL:https://msp-operations.github.io/Academic-Calendar/?event=withdraw-p2
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:course-reg-form-opens-spring-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261030
+DTEND;VALUE=DATE:20261031
+SUMMARY:[MSP SCHEDULING] Course registration form Spring goes live (08:30)
+DESCRIPTION:For: Scheduling (Severine)\, IRO\, students
+URL:https://msp-operations.github.io/Academic-Calendar/?event=course-reg-fo
+ rm-opens-spring
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:sched-planning-forms-spring-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261120
+DTEND;VALUE=DATE:20261121
+SUMMARY:[MSP SCHEDULING] Course/skills planning forms out to coordinators (
+ P4/P5) + student numbers
+DESCRIPTION:For: course coordinators\, Scheduling (Severine)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=sched-plannin
+ g-forms-spring
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:waiver-deadline-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261201
+DTEND;VALUE=DATE:20261202
+SUMMARY:[MSP SCHEDULING] Waiver deadline for Spring registration
+DESCRIPTION:For: students\, coordinators\, ESD
+URL:https://msp-operations.github.io/Academic-Calendar/?event=waiver-deadli
+ ne
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:sched-planning-forms-p4-due-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261214
+DTEND;VALUE=DATE:20261215
+SUMMARY:[MSP SCHEDULING] Course/skill planning forms P4 return deadline
+DESCRIPTION:For: course coordinators
+URL:https://msp-operations.github.io/Academic-Calendar/?event=sched-plannin
+ g-forms-p4-due
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:sched-draft-p4-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270104
+DTEND;VALUE=DATE:20270105
+SUMMARY:[MSP SCHEDULING] P4 schedules in draft in MyTimetable (coordinators
+  check now)
+DESCRIPTION:For: course coordinators\, tutors
+URL:https://msp-operations.github.io/Academic-Calendar/?event=sched-draft-p
+ 4
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:switch-p4-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270108
+DTEND;VALUE=DATE:20270109
+SUMMARY:[MSP SCHEDULING] Course switch deadline
+DESCRIPTION:For: course coordinators\, students\, Academic Advising\, ESD
+URL:https://msp-operations.github.io/Academic-Calendar/?event=switch-p4
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:timetable-pub-p4-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270114
+DTEND;VALUE=DATE:20270115
+SUMMARY:[MSP SCHEDULING] Timetable published
+DESCRIPTION:For: students\, coordinators\, tutors
+URL:https://msp-operations.github.io/Academic-Calendar/?event=timetable-pub
+ -p4
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:withdraw-p4-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270129
+DTEND;VALUE=DATE:20270130
+SUMMARY:[MSP SCHEDULING] Course withdraw deadline
+DESCRIPTION:For: course coordinators\, students\, Academic Advising\, ESD
+URL:https://msp-operations.github.io/Academic-Calendar/?event=withdraw-p4
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:sched-planning-forms-p5-due-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270212
+DTEND;VALUE=DATE:20270213
+SUMMARY:[MSP SCHEDULING] Course/skill planning forms P5 return deadline
+DESCRIPTION:For: course coordinators
+URL:https://msp-operations.github.io/Academic-Calendar/?event=sched-plannin
+ g-forms-p5-due
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:switch-p5-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270305
+DTEND;VALUE=DATE:20270306
+SUMMARY:[MSP SCHEDULING] Course switch deadline
+DESCRIPTION:For: course coordinators\, students\, Academic Advising\, ESD
+URL:https://msp-operations.github.io/Academic-Calendar/?event=switch-p5
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:timetable-pub-p5-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270318
+DTEND;VALUE=DATE:20270319
+SUMMARY:[MSP SCHEDULING] Timetable published
+DESCRIPTION:For: students\, coordinators\, tutors
+URL:https://msp-operations.github.io/Academic-Calendar/?event=timetable-pub
+ -p5
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:withdraw-p5-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270402
+DTEND;VALUE=DATE:20270403
+SUMMARY:[MSP SCHEDULING] Course withdraw deadline
+DESCRIPTION:For: course coordinators\, students\, Academic Advising\, ESD
+URL:https://msp-operations.github.io/Academic-Calendar/?event=withdraw-p5
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:canvas-scheduling-uploads-spring-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270423
+DTEND;VALUE=DATE:20270424
+SUMMARY:[MSP SCHEDULING] Scheduling docs refreshed on Canvas (Fall registra
+ tion set)
+DESCRIPTION:For: Scheduling (Severine)\, IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=canvas-schedu
+ ling-uploads-spring
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:course-reg-form-opens-fall-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270429
+DTEND;VALUE=DATE:20270430
+SUMMARY:[MSP SCHEDULING] Course registration form Fall goes live (07:00)
+DESCRIPTION:For: Scheduling (Severine)\, IRO\, students
+URL:https://msp-operations.github.io/Academic-Calendar/?event=course-reg-fo
+ rm-opens-fall
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:course-reg-fall-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270518
+DTEND;VALUE=DATE:20270519
+SUMMARY:[MSP SCHEDULING] Course registration deadline (Fall 2027 selections
+ )
+DESCRIPTION:For: students\, Academic Advising\, ESD
+URL:https://msp-operations.github.io/Academic-Calendar/?event=course-reg-fa
+ ll
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:sched-planning-forms-fall-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270528
+DTEND;VALUE=DATE:20270529
+SUMMARY:[MSP SCHEDULING] Course/skill planning forms out to coordinators (A
+ Y27-28 P1/P2)
+DESCRIPTION:For: course coordinators\, Scheduling (Severine)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=sched-plannin
+ g-forms-fall
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:sched-planning-forms-fall-due-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270702
+DTEND;VALUE=DATE:20270703
+SUMMARY:[MSP SCHEDULING] Course/skill planning forms P1 AY27-28 return dead
+ line
+DESCRIPTION:For: course coordinators
+URL:https://msp-operations.github.io/Academic-Calendar/?event=sched-plannin
+ g-forms-fall-due
+TRANSP:TRANSPARENT
+END:VEVENT
+END:VCALENDAR

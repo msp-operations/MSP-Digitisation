@@ -1,0 +1,145 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//MSP Operations//Academic Calendar//EN
+X-WR-CALNAME:MSP BOE deadlines 2026-27
+X-WR-CALDESC:MSP staff deadlines 2026-27. Spotted a wrong date\, or know on
+ e that is missing? Tell us at msp-exams@maastrichtuniversity.nl and we fix
+  it at the source. Web view: https://msp-operations.github.io/Academic-Cal
+ endar/
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+REFRESH-INTERVAL;VALUE=DURATION:PT1H
+X-PUBLISHED-TTL:PT1H
+BEGIN:VEVENT
+UID:examiner-to-katja-fall-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20260820
+DTEND;VALUE=DATE:20260821
+SUMMARY:[MSP BOE] Examiner list to Katja (BoE) for Fall appointment letters
+DESCRIPTION:For: IPO (Eva)\, BoE secretary
+URL:https://msp-operations.github.io/Academic-Calendar/?event=examiner-to-k
+ atja-fall
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:bsa-infosheet-yearstart-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20260824
+DTEND;VALUE=DATE:20260825
+SUMMARY:[MSP BOE] BSA Infosheet updated version live on intranet
+DESCRIPTION:For: BoE (Katja)\, Gerco\, IPO
+URL:https://msp-operations.github.io/Academic-Calendar/?event=bsa-infosheet
+ -yearstart
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:boe-grad-audit-notify-oct-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261001
+DTEND;VALUE=DATE:20261002
+SUMMARY:[MSP BOE] Graduation audit - first notification to BTR starters
+DESCRIPTION:For: BoE secretary\, BTR students 140-220 ECTS
+URL:https://msp-operations.github.io/Academic-Calendar/?event=boe-grad-audi
+ t-notify-oct
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:eer-annual-report-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20261001
+DTEND;VALUE=DATE:20261002
+SUMMARY:[MSP BOE] BoE annual report incl. EER change proposals due (start o
+ f October)
+DESCRIPTION:For: BoE\, EPC\, programme management
+URL:https://msp-operations.github.io/Academic-Calendar/?event=eer-annual-re
+ port
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:examiner-to-katja-spring-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270122
+DTEND;VALUE=DATE:20270123
+SUMMARY:[MSP BOE] Examiner list to Katja (BoE) for Spring appointment lette
+ rs
+DESCRIPTION:For: IPO (Eva)\, BoE secretary
+URL:https://msp-operations.github.io/Academic-Calendar/?event=examiner-to-k
+ atja-spring
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:eer-revision-to-boe-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270215
+DTEND;VALUE=DATE:20270216
+SUMMARY:[MSP BOE] Revised EER to BoE + EPC for advice
+DESCRIPTION:For: Management\, BoE\, EPC
+URL:https://msp-operations.github.io/Academic-Calendar/?event=eer-revision-
+ to-boe
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:boe-grad-audit-notify-mar-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:2
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270301
+DTEND;VALUE=DATE:20270302
+SUMMARY:[MSP BOE] Graduation audit - first notification to BTR starters
+DESCRIPTION:For: BoE secretary
+URL:https://msp-operations.github.io/Academic-Calendar/?event=boe-grad-audi
+ t-notify-mar
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:bsa-pbsa-datafile-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270712
+DTEND;VALUE=DATE:20270713
+SUMMARY:[MSP BOE] pBSA letter - datafile + letter arrive from Katja
+DESCRIPTION:For: BoE (Katja)\, IPO (Eva)
+URL:https://msp-operations.github.io/Academic-Calendar/?event=bsa-pbsa-data
+ file
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:bsa-pbsa-send-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270716
+DTEND;VALUE=DATE:20270717
+SUMMARY:[MSP BOE] pBSA letters sent + SAP status registered (9005 Positive 
+ BSA)
+DESCRIPTION:For: first-year students\, IPO (Eva)\, BoE
+URL:https://msp-operations.github.io/Academic-Calendar/?event=bsa-pbsa-send
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:bsa-pbsa-archive-202627@msp-operations
+DTSTAMP:20261008T125619Z
+SEQUENCE:1
+LAST-MODIFIED:20261008T125619Z
+DTSTART;VALUE=DATE:20270730
+DTEND;VALUE=DATE:20270731
+SUMMARY:[MSP BOE] pBSA letters archived (Corsa D20A + Outlook)
+DESCRIPTION:For: IPO (Eva)\, Ton Derikx\, Katja
+URL:https://msp-operations.github.io/Academic-Calendar/?event=bsa-pbsa-arch
+ ive
+TRANSP:TRANSPARENT
+END:VEVENT
+END:VCALENDAR

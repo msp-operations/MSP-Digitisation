@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BTR FAQ - Frequently Asked Questions</title>
+    <link rel="icon" type="image/png" href="msp-logo.png">
+    <meta name="description" content="Frequently asked questions about the Bachelor Thesis Research at Maastricht Science Programme. Answers on eligibility, the Request to Start, proposal, practical work, thesis, video, grades, graduation, going abroad and extensions.">
+
+    <!-- Fonts (self-hosted, see fonts/FONTS.md) -->
+    <link rel="stylesheet" href="fonts/fonts.css">
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- FAQ visual design + interactive enhancements (scoped to this page) -->
+    <style>
+        /* ---- Canvas & container ---- */
+        .page-faq { background: linear-gradient(180deg, #f4f7fb 0%, #e9eef6 100%); }
+        .page-faq .main-content {
+            max-width: 1000px; margin: 0 auto 72px; padding: 0 22px;
+            background: transparent; box-shadow: none; border-radius: 0;
+        }
+
+        /* ---- Header: white like the rest of the site, so the logo stays visible ---- */
+        .page-faq .header {
+            background: var(--white); color: var(--navy);
+            box-shadow: 0 1px 0 #e6ebf2, 0 2px 12px rgba(16, 42, 75, 0.05);
+        }
+        .page-faq .logo { color: var(--navy); }
+        .page-faq .logo-text, .page-faq .logo-subtitle { display: block; }
+        .page-faq .nav-menu a { color: var(--navy); opacity: 1; }
+        .page-faq .nav-menu a:hover { color: var(--cyan-dark); opacity: 1; }
+
+        /* ---- Hero header ---- */
+        .page-faq .page-header { text-align: center; margin: 52px 0 30px; }
+        .page-faq .page-header h1 {
+            font-size: 42px; letter-spacing: -0.025em; line-height: 1.08;
+            margin-bottom: 0; position: relative; display: inline-block;
+        }
+        .page-faq .page-header h1::after {
+            content: ""; position: absolute; left: 50%; bottom: -12px; transform: translateX(-50%);
+            width: 60px; height: 4px; border-radius: 3px;
+            background: linear-gradient(90deg, var(--orange), var(--cyan));
+        }
+        .page-faq .page-header p {
+            font-size: 17px; color: #5a6b7e; line-height: 1.6;
+            max-width: 620px; margin: 26px auto 0;
+        }
+
+        /* ---- Search ---- */
+        .faq-search { position: relative; }
+        .page-faq .search-box.faq-search {
+            max-width: 660px; margin: 0 auto 16px; padding: 0;
+            background: var(--white); border: 1px solid #e3e9f1; border-left: 1px solid #e3e9f1;
+            border-radius: 14px; box-shadow: 0 12px 30px rgba(16, 42, 75, 0.07);
+            transition: box-shadow var(--transition), border-color var(--transition);
+        }
+        .page-faq .search-box.faq-search:focus-within {
+            border-color: var(--cyan);
+            box-shadow: 0 0 0 4px rgba(0, 188, 212, 0.15), 0 12px 30px rgba(16, 42, 75, 0.08);
+        }
+        .page-faq .search-box.faq-search input {
+            width: 100%; border: none; background: transparent;
+            padding: 15px 48px; font-size: 16px; border-radius: 14px;
+        }
+        .page-faq .search-box.faq-search input:focus { outline: none; }
+        .faq-search .search-icon {
+            position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
+            width: 20px; height: 20px; stroke: #9aa7b8; fill: none; stroke-width: 2;
+            stroke-linecap: round; stroke-linejoin: round; pointer-events: none;
+        }
+        .faq-search .clear-btn {
+            position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+            border: none; background: #eef2f7; color: #5a6b7e;
+            width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
+            display: none; align-items: center; justify-content: center;
+            font-size: 18px; line-height: 1; padding: 0; transition: all var(--transition);
+        }
+        .faq-search .clear-btn:hover { background: #e0e6ee; color: var(--navy); }
+        .faq-search .clear-btn.show { display: inline-flex; }
+
+        .search-meta {
+            text-align: center; font-size: 13px; color: #6b7a8d;
+            margin: 12px 0 0; min-height: 18px; font-weight: 600;
+        }
+
+        /* ---- Category quick-nav chips ---- */
+        .faq-nav {
+            display: flex; flex-wrap: wrap; gap: 9px; justify-content: center;
+            max-width: 860px; margin: 20px auto 28px;
+        }
+        .faq-chip {
+            border: 1px solid #e3e9f1; background: var(--white); color: #2b3a4d;
+            padding: 8px 15px; border-radius: 999px; font-size: 13px; font-weight: 600;
+            font-family: var(--font-heading); cursor: pointer;
+            transition: all var(--transition); display: inline-flex; align-items: center; gap: 8px;
+            box-shadow: 0 1px 2px rgba(16, 42, 75, 0.04);
+        }
+        .faq-chip:hover {
+            border-color: var(--cyan); color: var(--cyan-dark);
+            transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0, 150, 180, 0.14);
+        }
+        .faq-chip .chip-count {
+            background: #eef3f8; color: #6b7a8d;
+            border-radius: 999px; font-size: 11px; padding: 1px 8px; font-weight: 700; line-height: 1.6;
+        }
+        .faq-chip:hover .chip-count { background: #e2f5f9; color: var(--cyan-dark); }
+
+        /* ---- Controls ---- */
+        .page-faq .controls { justify-content: flex-end; gap: 8px; margin: 0 0 18px; }
+        .page-faq .control-btn {
+            background: var(--white); color: #5a6b7e; border: 1px solid #e3e9f1;
+            padding: 8px 14px; font-size: 13px; border-radius: 9px; font-weight: 600;
+        }
+        .page-faq .control-btn:hover {
+            background: #f6fbfd; color: var(--cyan-dark); border-color: var(--cyan); transform: none;
+        }
+        .page-faq .control-btn.secondary { background: var(--white); color: #5a6b7e; }
+        .page-faq .control-btn.secondary:hover { color: var(--navy); border-color: #cdd6e2; background: #f7f9fc; }
+
+        /* ---- Category card ---- */
+        .page-faq .faq-category {
+            border: 1px solid #e6ebf2; border-radius: 16px; background: var(--white);
+            box-shadow: 0 6px 22px rgba(16, 42, 75, 0.05); margin-bottom: 16px;
+            scroll-margin-top: 90px; transition: box-shadow var(--transition), border-color var(--transition);
+        }
+        .page-faq .faq-category:hover { border-color: #dbe3ee; box-shadow: 0 12px 30px rgba(16, 42, 75, 0.09); }
+        .page-faq .faq-category.active { box-shadow: 0 16px 36px rgba(16, 42, 75, 0.10); }
+
+        /* ---- Category header ---- */
+        .page-faq .category-header {
+            background: var(--white); padding: 20px 24px; display: flex; align-items: center; gap: 14px;
+            transition: background var(--transition);
+        }
+        .page-faq .category-header::before {
+            content: ""; width: 4px; height: 22px; border-radius: 3px; flex-shrink: 0;
+            background: linear-gradient(180deg, var(--cyan), var(--cyan-dark));
+        }
+        .page-faq .category-header:hover { background: #f8fafc; }
+        .page-faq .category-header h2 {
+            color: var(--navy); font-size: 18px; letter-spacing: -0.01em; margin: 0; flex: 1;
+        }
+        .page-faq .category-icon {
+            width: 28px; height: 28px; border-radius: 50%; background: #eef6fb; color: var(--cyan-dark);
+            display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0;
+        }
+
+        /* ---- Items & questions ---- */
+        .page-faq .category-content { background: var(--white); border-top: 1px solid #eef2f7; border-radius: 0 0 16px 16px; }
+        .page-faq .faq-item { border-bottom: none; }
+        .page-faq .faq-item + .faq-item { border-top: 1px solid #eef2f7; }
+        .page-faq .faq-question { padding: 18px 24px; transition: background var(--transition); }
+        .page-faq .faq-question:hover { background: #f8fafc; }
+        .page-faq .faq-item.active > .faq-question { background: #f7fbfe; box-shadow: inset 3px 0 0 var(--cyan); }
+        .page-faq .faq-question h3 { font-size: 15.5px; font-weight: 600; color: var(--navy); line-height: 1.45; }
+        .page-faq .question-icon {
+            width: 26px; height: 26px; border-radius: 50%; background: #eef6fb; color: var(--cyan-dark);
+            display: flex; align-items: center; justify-content: center; font-size: 18px;
+            margin-left: 14px; flex-shrink: 0; transition: background var(--transition), color var(--transition);
+        }
+        .page-faq .faq-item.active .question-icon { background: var(--cyan); color: var(--white); transform: none; }
+
+        /* ---- Answer ---- */
+        .page-faq .faq-answer-content {
+            border-top: none; background: var(--white); color: #45525f;
+            font-size: 15px; line-height: 1.75; padding: 2px 24px 24px 24px;
+        }
+        .page-faq .faq-answer-content > *:first-child { margin-top: 0; }
+        .page-faq .faq-answer-content strong { color: var(--navy); font-weight: 600; }
+        .page-faq .faq-answer-content a {
+            color: var(--cyan-dark); text-decoration: none;
+            border-bottom: 1px solid rgba(0, 150, 180, 0.35); transition: border-color var(--transition);
+        }
+        .page-faq .faq-answer-content a:hover { border-bottom-color: var(--cyan-dark); }
+        .page-faq .faq-answer-content code {
+            background: #f1f5f9; border: 1px solid #e3e9f1; padding: 1px 6px;
+            border-radius: 5px; font-size: 13px; color: var(--navy);
+        }
+
+        mark.faq-hl { background: #fff1a8; color: inherit; padding: 0 1px; border-radius: 2px; }
+
+        /* ---- Note box ---- */
+        .page-faq .note-box {
+            background: #fff8ec; border: 1px solid #ffe2b0; border-left: 3px solid var(--orange);
+            border-radius: 10px; padding: 14px 16px; margin: 16px 0 4px;
+        }
+
+        /* ---- Table ---- */
+        .faq-answer-content table {
+            width: 100%; border-collapse: separate; border-spacing: 0; margin: 6px 0 14px;
+            font-size: 14px; border: 1px solid #e6ebf2; border-radius: 10px; overflow: hidden;
+        }
+        .faq-answer-content th, .faq-answer-content td {
+            border-bottom: 1px solid #eef2f7; padding: 10px 12px; text-align: left; vertical-align: top;
+        }
+        .faq-answer-content tr:last-child td { border-bottom: none; }
+        .faq-answer-content th { background: #f5f8fc; color: var(--navy); font-family: var(--font-heading); }
+
+        /* ---- No results ---- */
+        .no-results {
+            display: none; text-align: center; padding: 48px 20px; color: #6b7a8d;
+            max-width: 640px; margin: 0 auto; background: var(--white);
+            border: 1px solid #e6ebf2; border-radius: 16px; box-shadow: 0 6px 22px rgba(16, 42, 75, 0.05);
+        }
+        .no-results.show { display: block; }
+        .no-results strong { color: var(--navy); }
+
+        /* ---- Footer: reset the 3-column grid so the message is truly centered ---- */
+        .page-faq .footer-content { display: block; text-align: center; }
+        .page-faq .footer-content p { margin: 0 auto; max-width: 640px; }
+
+        /* ---- Expand-all safety (let big categories fully open) ---- */
+        .page-faq .faq-category.active .category-content { max-height: 18000px; }
+        .page-faq .faq-item.active .faq-answer { max-height: 4000px; }
+
+        @media (max-width: 640px) {
+            .page-faq .main-content { padding: 0 14px; }
+            .page-faq .page-header h1 { font-size: 32px; }
+            .page-faq .category-header { padding: 16px; }
+            .page-faq .faq-question { padding: 16px; }
+            .page-faq .faq-answer-content { padding: 2px 16px 20px; }
+        }
+    </style>
+</head>
+<body class="page-content page-faq">
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo">
+                <img src="msp-logo.png" alt="MSP Logo">
+                <div>
+                    <span class="logo-text">Maastricht Science Programme</span>
+                    <span class="logo-subtitle">Bachelor Thesis Research</span>
+                </div>
+            </a>
+            <nav class="nav-menu">
+                <a href="index.html">Home</a>
+                <a href="before-you-start.html">Before You Start</a>
+                <a href="writing-the-proposal.html">Proposal</a>
+                <a href="writing-the-thesis.html">Thesis</a>
+                <a href="btr-video.html">Video</a>
+                <a href="faq.html" style="font-weight: 600;">FAQ</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1>Frequently Asked Questions</h1>
+            <p>Answers to the questions we are asked most often about the Bachelor Thesis Research, organised by stage. Search below, jump to a section, or click any question to expand it.</p>
+        </div>
+
+        <div class="search-box faq-search">
+            <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="faqSearch" placeholder="Search for a question or topic…" oninput="searchFAQ()" aria-label="Search the FAQ">
+            <button type="button" class="clear-btn" onclick="clearSearch()" aria-label="Clear search">&times;</button>
+        </div>
+        <p class="search-meta" id="searchMeta" role="status" aria-live="polite"></p>
+
+        <nav class="faq-nav" aria-label="Jump to a category">
+            <button class="faq-chip" data-target="cat-before" onclick="gotoCategory('cat-before')">Before You Start <span class="chip-count"></span></button>
+            <button class="faq-chip" data-target="cat-proposal" onclick="gotoCategory('cat-proposal')">The Proposal <span class="chip-count"></span></button>
+            <button class="faq-chip" data-target="cat-practical" onclick="gotoCategory('cat-practical')">Practical Work <span class="chip-count"></span></button>
+            <button class="faq-chip" data-target="cat-thesis" onclick="gotoCategory('cat-thesis')">Written Thesis <span class="chip-count"></span></button>
+            <button class="faq-chip" data-target="cat-video" onclick="gotoCategory('cat-video')">The Video <span class="chip-count"></span></button>
+            <button class="faq-chip" data-target="cat-grades" onclick="gotoCategory('cat-grades')">Grades &amp; Graduation <span class="chip-count"></span></button>
+            <button class="faq-chip" data-target="cat-abroad" onclick="gotoCategory('cat-abroad')">Going Abroad <span class="chip-count"></span></button>
+            <button class="faq-chip" data-target="cat-extensions" onclick="gotoCategory('cat-extensions')">Extensions &amp; Contact <span class="chip-count"></span></button>
+        </nav>
+
+        <div class="controls">
+            <button class="control-btn" onclick="expandAll()">Expand All</button>
+            <button class="control-btn secondary" onclick="collapseAll()">Collapse All</button>
+        </div>
+
+        <div class="no-results" id="noResults">
+            <p><strong>No questions match your search.</strong></p>
+            <p>Try a different keyword, or email <a href="mailto:msp-btr@maastrichtuniversity.nl?subject=FAQ%20Question">msp-btr@maastrichtuniversity.nl</a> with the subject <strong>FAQ Question</strong> and we'll help.</p>
+        </div>
+
+        <!-- ============================================================
+             CATEGORY 1: BEFORE YOU START
+        ============================================================= -->
+        <div class="faq-category" id="cat-before">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <h2>1 · Before You Start</h2>
+                <span class="category-icon">&#9660;</span>
+            </div>
+            <div class="category-content">
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>Am I eligible to start my BTR?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>You need <strong>at least 145 ECTS</strong> before starting, of which at most <strong>12.5 ECTS and one project</strong> may still be under grading. Ideally all your other graduation requirements are also complete. The BTR is <strong>30 ECTS</strong>, completed in your final semester. Always meet your <strong>Academic Advisor first</strong>, they confirm your credits.</p>
+                        <ul>
+                            <li><strong>150+ ECTS:</strong> free to start, no additional module needed.</li>
+                            <li><strong>145 ECTS:</strong> free to start, but you'll need an additional module to graduate on time.</li>
+                            <li><strong>Below 145, with courses/a project under grading:</strong> provisionally accepted.</li>
+                            <li><strong>Below 145, nothing under grading:</strong> send a motivated request to the BTR Office; if supported, you then need final approval from the <strong>Board of Examiners</strong>.</li>
+                        </ul>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>When can I start? Are there still November and April starts?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>No, there are now only <strong>two start moments: September</strong> (Period 1) and <strong>February</strong> (Period 4). The November and April cohorts were dropped following the shortened academic year.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>How do I start? (the Request to Start)</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>Submit a <strong>Request to Start (RTS)</strong> form on <strong>Collent</strong> before the deadline for your cohort:</p>
+                        <ul>
+                            <li><strong>September 2026 cohort:</strong> 17 July 2026</li>
+                            <li><strong>February 2027 cohort:</strong> 11 December 2026</li>
+                        </ul>
+                        <p>The BTR Coordinator reviews your request and you receive a confirmation email once it is approved (allow roughly <strong>three weeks</strong>, longer in busy periods).</p>
+                        <p><a href="https://collent-fsemsp.maastrichtuniversity.nl/FSE_MSP/Account/Login?ReturnUrl=%2fFSE_MSP%2fHome%2fDashboard" target="_blank" rel="noopener noreferrer">Open the Collent dashboard</a></p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>What is the "proof of correspondence" I have to upload?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>An email <strong>from your Research Supervisor</strong> clearly stating that they agree to supervise you for the duration of the thesis, including the <strong>thesis topic</strong> and the <strong>start and end dates</strong>. It must come from an institutional email address.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>What is the "short thesis description"?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>A brief (about <strong>half an A4 page</strong>) personal description of your topic, background, aims, possible methods and expected outcomes. It is <strong>not graded</strong>; it simply confirms your BTR is genuine independent research. Don't copy-paste your supervisor's project page or papers.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>How long until my RTS is approved, and how will I know?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>The BTR Coordinator reviews all requests; once approved you receive an <strong>automatic confirmation email</strong>. If your situation is straightforward we can often tell you informally that you are <strong>provisionally accepted</strong> before the formal confirmation, just ask.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>How do I find a Research Supervisor?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>This is <strong>your responsibility</strong>, but use the tools available to you: the project catalogue on <a href="https://msp-btr.nl" target="_blank" rel="noopener noreferrer">msp-btr.nl</a>, the advertisement board (1st floor, PHS1), and direct emails to MSP/UM staff or external institutes whose work interests you.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>Does my supervisor need a PhD? Can I have two supervisors?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>Your <strong>official Research Supervisor must have a PhD</strong>. If your day-to-day supervisor is a PhD student, their group leader acts as the official supervisor. Co-supervisors or secondary supervisors are fine, just list them on your RTS.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>Can I change my supervisor or topic after starting?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>Contact the BTR Office as early as possible. Minor evolution of your topic is normal and just needs your supervisor's agreement; a change of supervisor is handled case-by-case, email us and we'll advise.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>There's a personal or family relationship with my supervisor, do I report it?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p><strong>Yes, if in doubt, report it.</strong> Any outside relationship (relative, friend, work colleague) must be declared on the <strong>Request to Start form</strong> so that any potential conflict of interest is on record.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>Can I take an additional course or module during my BTR?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p><strong>One module, maximum 5 non-BTR credits</strong>, and only if you are working <strong>in or near Maastricht</strong> (not abroad). It needs approval from <strong>both your Research Supervisor and the Board of Examiners</strong>. Note that failing the module (and needing a resit) can delay your graduation.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>How do I apply for the additional module, and what's the "backup course"?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>Submit the <strong>Additional Module form on the Intranet</strong> (select <strong>"During thesis"</strong>) by the <strong>course-registration deadline</strong>, and note it on your RTS.</p>
+                        <p>Register a <strong>backup course</strong> before the deadline and <strong>withdraw from it once your BTR is approved</strong>, otherwise it appears as a fail on your transcript.</p>
+                        <p><a href="https://intranet.maastrichtuniversity.nl/en/msp-students/forms-and-downloads/forms/additional-module-btr" target="_blank" rel="noopener noreferrer">Submit the Additional Module form</a></p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>What if I have an NDA or confidentiality agreement from my host?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>Tell the BTR Office <strong>even if the university doesn't need to sign it</strong>. If a UM signature is required it must go via Legal first, forward it to us at least <strong>three weeks</strong> before your host needs it back. Students with an NDA also get a separate confidential submission point, so that their work isn't stored in the plagiarism database.</p>
+                    </div></div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ============================================================
+             CATEGORY 2: THE PROPOSAL
+        ============================================================= -->
+        <div class="faq-category" id="cat-proposal">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <h2>2 · The Proposal</h2>
+                <span class="category-icon">&#9660;</span>
+            </div>
+            <div class="category-content">
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>What goes in the proposal, and how long can it be?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p><strong>Under 2,000 words</strong> (excluding references; no appendices), due roughly <strong>four weeks after your start date</strong>, see your <a href="timeline-september.html">September</a> or <a href="timeline-february.html">February</a> timeline for the exact date. Cover: literature/background, research question &amp; aims, methodology, time planning, expected outcomes &amp; impact, and a short <strong>ethics</strong> section.</p>
+                        <p>It is worth <strong>15%</strong> of your grade and is marked by your Research Supervisor and your Internal Advisor.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>Can I get a word-count extension on the proposal?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p><strong>No.</strong> Writing within a fixed limit is part of the exercise. Going over 2,000 words carries a <strong>0.5 penalty</strong>.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>How many references do I need?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>A <strong>minimum of 15 peer-reviewed articles that you have actually read</strong>, cited with <strong>numbered citations</strong>. References don't count toward the word limit.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>How much feedback will I get on a draft?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>Your supervisor gives feedback on <strong>one draft</strong> of the proposal (and one draft of the thesis). Internal Advisors do <strong>not</strong> review drafts.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>Where and how do I submit the proposal?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p><strong>Collent only</strong> (10 MB limit). Anything submitted by email or Canvas isn't counted.</p>
+                        <p><a href="https://collent-fsemsp.maastrichtuniversity.nl/FSE_MSP/Account/Login?ReturnUrl=%2fFSE_MSP%2fHome%2fDashboard" target="_blank" rel="noopener noreferrer">Open the Collent dashboard</a></p>
+                    </div></div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ============================================================
+             CATEGORY 3: THE PRACTICAL WORK
+        ============================================================= -->
+        <div class="faq-category" id="cat-practical">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <h2>3 · The Practical Work</h2>
+                <span class="category-icon">&#9660;</span>
+            </div>
+            <div class="category-content">
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>How is my practical work assessed?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>Your Research Supervisor grades it <strong>twice</strong>: a <strong>midterm</strong> assessment (<strong>15%</strong>) and a <strong>final</strong> assessment (<strong>35%</strong>), together <strong>50%</strong> of your grade. The midterm is a feedback moment to help you improve before the final.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>What is the research-group presentation?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>Near submission you give a <strong>presentation or defence to your supervisor's research group</strong>. Your supervisor sets the format, and it feeds into your <strong>final practical grade</strong>.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>What are the attendance and working expectations during the BTR?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>These are set by your <strong>Research Supervisor</strong> and communicated by day 1, there is no central attendance rule for the BTR itself.</p>
+                    </div></div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ============================================================
+             CATEGORY 4: THE WRITTEN THESIS
+        ============================================================= -->
+        <div class="faq-category" id="cat-thesis">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <h2>4 · The Written Thesis</h2>
+                <span class="category-icon">&#9660;</span>
+            </div>
+            <div class="category-content">
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>How long is the thesis and what must it contain?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>Typically <strong>8,000–15,000 words</strong> (excluding references and appendices): abstract (≤200 words), introduction, methods, results, discussion, conclusion, a <strong>personal critical reflection</strong>, and references. It is worth <strong>25%</strong> of your grade.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>Can my thesis be longer than 15,000 words?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>Only with your supervisor's <strong>written approval</strong>, communicated to the BTR Office (with a specific word figure) <strong>at least 48 hours before submission</strong>. Without that, going over 15,000 words carries a penalty of <strong>0.5 per 500 words (or part thereof)</strong> over the limit.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>I'm using LaTeX, anything to watch for?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>That's fine, just <strong>let the BTR Office know</strong>, and <strong>cross-check your word count</strong> with more than one tool, since LaTeX can count differently from Word. Word and LaTeX/Overleaf templates are on Canvas. (Equations within sensible use are generally not counted; a multi-page derivation may be.)</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>Where do I submit, and how should I name the file?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p><strong>Collent only.</strong> Name files <strong>Name_IDnumber_Submissiontype</strong> (for example <code>Lastname_i123456_BTRThesis</code>). The thesis upload limit is <strong>25 MB</strong>, keep images ≤300 dpi, or add a download link in the appendix and tell your supervisor and Internal Advisor.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>What are the late and multiple-submission penalties?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>Late: <strong>−0.5</strong>, plus another <strong>−0.5</strong> after one hour; <strong>more than 12 hours late is not accepted</strong>. Each <strong>additional version</strong> you submit also costs <strong>−0.5</strong> (even before the deadline), so only upload your final version.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>Collent won't accept my upload and the deadline is close. What do I do?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>Do <strong>not</strong> submit via Canvas or email, those are not valid submission routes. Instead, <strong>email the BTR Office immediately</strong> (<a href="mailto:msp-btr@maastrichtuniversity.nl">msp-btr@maastrichtuniversity.nl</a>) with your finished file attached and a note of the time, so there is a timestamped record. A delay caused by a Collent outage or maintenance carries <strong>no penalty</strong>: you upload in Collent once it is back online. The key is to contact us at the time, not afterwards.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>Is the thesis title submitted separately?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p><strong>No, not any more.</strong> Your thesis title is registered automatically when you submit your thesis, so there is no separate title entry. Do make sure the title on your title page is the final version: that title goes into our records and ends up on your transcript.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>How does the plagiarism / AI check work?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>All submissions go through the official <strong>plagiarism checker (Turnitin)</strong> as well as the graders' own review. Reusing parts of <strong>your own proposal</strong> in your introduction is allowed and is not plagiarism. <strong>Generative AI</strong> may not be used to produce assessed content unless explicitly permitted, and must be disclosed where it is allowed, see the MSLAS Rules &amp; Regulations. Suspected cases are referred to the Board of Examiners and assessed individually.</p>
+                    </div></div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ============================================================
+             CATEGORY 5: THE VIDEO
+        ============================================================= -->
+        <div class="faq-category" id="cat-video">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <h2>5 · The Video</h2>
+                <span class="category-icon">&#9660;</span>
+            </div>
+            <div class="category-content">
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>What is the BTR video?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>A <strong>5–7 minute</strong> video explaining your research <strong>to non-scientists</strong>, covering its scientific importance, societal importance and ethical considerations (all three are required). It is worth <strong>10%</strong> of your grade, is judged on content rather than production values, and is assessed by your <strong>Internal Advisor and a peer from your cohort</strong> (the second assessor). Full guidance is on the <a href="btr-video.html">Video page</a>.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>How and where do I submit the video?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>It's a <strong>two-step</strong> submission (max <strong>2 GB</strong>):</p>
+                        <ol>
+                            <li><strong>Upload to the SURFdrive folder</strong>, this is your permanent backup / safety net: <a href="https://surfdrive.surf.nl/s/WBdfOTCn6awXuWk" target="_blank" rel="noopener noreferrer">SURFdrive upload link</a>. Name the file with your <strong>ID + full name</strong> (e.g. <code>i123456_Lastname_BTRVideo.mp4</code>).</li>
+                            <li><strong>Submit a WeTransfer link via Collent</strong>, upload the same video to WeTransfer, generate the link, and submit that link in Collent. WeTransfer links expiring is not a problem: peer review happens on the same day, and SURFdrive is your backup, so there is no need to pay for WeTransfer Premium.</li>
+                        </ol>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>What is the consent section?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>The consent section is built <strong>directly into the Collent submission</strong>, there is no separate form to download or upload. You state whether your video may be shared beyond the graders/handlers, and you have the right to say <strong>"No."</strong> You must complete it <strong>either way</strong>, including if you say no, to finish your submission.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>What is the peer review, and what happens if I skip it?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>You must <strong>peer-review one other student's video</strong>. Your <strong>own video grade isn't released until you do it</strong>, and <strong>skipping it costs 1.0 point</strong>. You're paired with someone on the <strong>same deadline/extension timeline</strong>, and it's handled automatically: once your peer submits, you receive an email with a link to their video and to the grading sheet.</p>
+                    </div></div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ============================================================
+             CATEGORY 6: GRADES & GRADUATION
+        ============================================================= -->
+        <div class="faq-category" id="cat-grades">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <h2>6 · Grades &amp; Graduation</h2>
+                <span class="category-icon">&#9660;</span>
+            </div>
+            <div class="category-content">
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>How is my final grade calculated?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>It is a weighted average:</p>
+                        <ul>
+                            <li><strong>Proposal:</strong> 15%</li>
+                            <li><strong>Midterm practical:</strong> 15%</li>
+                            <li><strong>Final practical:</strong> 35%</li>
+                            <li><strong>Thesis:</strong> 25%</li>
+                            <li><strong>Video:</strong> 10%</li>
+                        </ul>
+                        <p>You pass and earn the 30 ECTS with a <strong>weighted average ≥ 5.5</strong>, a low component can be compensated by the others. Detailed criteria are in the <a href="rubrics.html">rubrics</a>.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>When and where do I get my grades?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>Grades and feedback appear on <strong>Canvas</strong> after each deadline; <strong>final grades</strong> are published on a set date (see your <a href="timeline-september.html">cohort timeline</a>). Rubrics become visible when the grades are released. A grade becomes visible to you once the <strong>last outstanding assessor</strong> has submitted, there is no separate release step on our side.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>Collent emailed me a deadline, or said my grade comes within 3 days. Is that right?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>No. <strong>Collent's automatic emails are not your source of truth.</strong> The "grade within 3 days" message is a generic system email and is not how BTR grading works, and any deadlines in Collent's own reminders should be ignored. Follow the dates on the <strong>front page of the BTR Canvas course</strong>, in the handbook, and on this website (your <a href="timeline-september.html">cohort timeline</a>). If anything seems to conflict, the Canvas front page is authoritative, and when in doubt email the BTR Office.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>I can't see my grade on Canvas, what's wrong?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>Usually an assessor (often the <strong>Internal Advisor</strong>) hasn't uploaded yet. Email the BTR Office and we'll check who is outstanding and chase them.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>I think my grade is wrong or too low, can I appeal?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>Assessors may differ by up to <strong>1.5</strong>; a larger gap is discussed between your Supervisor and Internal Advisor. You can request a formal <strong>appeal via the BTR Coordinator</strong>, but note that a re-grade can go <strong>down</strong> as well as up.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>Who is my Internal Advisor, what do they do, and when are they assigned?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>The <strong>Internal Advisor</strong> is an MSP staff member <strong>assigned by the BTR Office</strong> (you can't choose them), usually <strong>around the proposal deadline (~week 4)</strong>. They safeguard quality, offer impartial support, and grade your <strong>proposal, thesis and video</strong> (the video together with a peer, the second assessor), but <strong>not</strong> your practical work. They are <strong>not</strong> a second supervisor for content.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>When exactly do I graduate?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>Your graduation date is the <strong>last day of the month</strong> in which you complete everything:</p>
+                        <ul>
+                            <li><strong>September cohort:</strong> 31 January</li>
+                            <li><strong>February cohort:</strong> 30 June</li>
+                        </ul>
+                        <p>Even with all grades in, the <strong>Board of Examiners</strong> does a final graduation check before it's official.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>Is the graduation date the same as the ceremony?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>No, the <strong>ceremony</strong> is a separate event (typically held later in the year). Your official graduation date is when your requirements are met, not the ceremony date.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>I need proof of my degree for a master's application before graduating, is that possible?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>Yes, we can issue a <strong>Proof of Anticipated Degree</strong> while you finish and wait on grading. Just email us.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>Where do I see my transcript, GPA or diploma?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>Grades and GPA appear on your <strong>transcript via the student portal</strong>; the diploma is registered through the usual UM/DUO process after the Board of Examiners' final check. For graduation-decision and diploma timing, contact the <strong>Board of Examiners / ESD</strong>.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>Should I deregister once I'm done?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p><strong>Not until the Board of Examiners has given final approval</strong> of your grades (i.e. you have officially graduated). Don't deregister from Studielink or other platforms before that confirmation.</p>
+                        <p>After that, it depends on when you graduate:</p>
+                        <ul>
+                            <li><strong>Graduating in June, July or August</strong> (February cohort): you do not need to do anything. UM automatically ends your enrolment on <strong>1 September</strong>. Deregistering yourself earlier can affect things like DUO student financing, so leave it alone.</li>
+                            <li><strong>Graduating mid-year</strong>, e.g. 31 January (September cohort): once your graduation decision is in, you can request deregistration via Studielink from the month after graduation, and tuition for the remaining months is refunded pro rata. The <strong>Student Services Centre (SSC)</strong> is the contact for enrolment and refunds.</li>
+                        </ul>
+                    </div></div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ============================================================
+             CATEGORY 7: GOING ABROAD
+        ============================================================= -->
+        <div class="faq-category" id="cat-abroad">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <h2>7 · Going Abroad</h2>
+                <span class="category-icon">&#9660;</span>
+            </div>
+            <div class="category-content">
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>Can I do my BTR abroad, and what do I need?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>Yes, you can conduct your 30 ECTS BTR outside the Netherlands for valuable international research experience. You need: the <strong>145 ECTS</strong>, a supervisor <strong>with a PhD</strong>, an <strong>RTS submitted on Collent</strong>, and a signed <strong>External (Internship) Agreement</strong> sent to the BTR mailbox. Start with the <a href="before-you-start.html">Before You Start</a> page.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>What is the External (Internship) Agreement, and when is it due?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>It is a <strong>legal requirement for any BTR outside UM</strong>, <strong>no signed agreement, no BTR.</strong> Find it on Canvas, fill in the UM/host/your details, and have it <strong>fully signed by day 1 of your BTR</strong> (your start date). Send it to <a href="mailto:msp-btr@maastrichtuniversity.nl">msp-btr@maastrichtuniversity.nl</a>, that's all that's needed to submit it. (Your RTS form itself is due earlier, by the RTS deadline: 17 July 2026 for September, 11 December 2026 for February.)</p>
+                        <p><a href="https://canvas.maastrichtuniversity.nl/courses/3711/files/3840279?module_item_id=662527" target="_blank" rel="noopener noreferrer">Download the agreement from Canvas</a></p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>How do I get approval, and can it be any institution?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>First discuss your plans with your <strong>Academic Advisor</strong>, then complete the <strong>Request to Start</strong> on Collent with your supervisor and project details, so the BTR Coordinator can assess it. You may propose any institution, but it must be <strong>approved by MSP</strong> and meet the academic standards required for your research. Finding your supervisor abroad is your own responsibility.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>What do I need to arrange before going abroad?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>Everyone leaving the Netherlands completes an <strong>Emergency Contact form</strong>. Sort the practical side out early (3–6 months ahead):</p>
+                        <ul>
+                            <li><strong>Passport</strong> valid at least six months beyond your return date</li>
+                            <li><strong>Visa</strong> for non-EU destinations, and a renewed <strong>residence permit</strong> if needed</li>
+                            <li><strong>Health and travel insurance</strong></li>
+                            <li><strong>Accommodation</strong></li>
+                        </ul>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>How do Erasmus+ grants and scholarships work, and who decides?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>Only <strong>after</strong> the BTR Office approves your BTR do you contact the <strong>International Relations Office (IRO)</strong> with a copy of your approval. All grant and funding decisions are made by the <strong>IRO, not the BTR Office</strong>, on a <strong>case-by-case basis</strong>. Erasmus+ covers higher-education institutions in the EU/UK (not your home country), and the IRO confirms whether your host qualifies; for non-EU destinations an NL Scholarship may be available. The IRO confirms what you qualify for and handles the deadlines.</p>
+                        <p>Contact: <a href="mailto:fse-iro@maastrichtuniversity.nl">fse-iro@maastrichtuniversity.nl</a></p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>What about contact during, and credits afterwards?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>Keep up <strong>regular contact</strong> with your MSP Academic Advisor and your supervisor abroad so your research stays on track. On return, make sure all credits earned during your BTR abroad are properly <strong>converted and transferred</strong> to your MSP transcript.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>What are the deadlines for going abroad?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>The same RTS deadlines apply as for any BTR, <strong>17 July 2026</strong> (September) and <strong>11 December 2026</strong> (February), but because of visas, insurance and funding you should start preparing <strong>3–6 months ahead</strong>. Apply for grants through the IRO as early as possible.</p>
+                    </div></div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ============================================================
+             CATEGORY 8: EXTENSIONS, PROBLEMS & CONTACT
+        ============================================================= -->
+        <div class="faq-category" id="cat-extensions">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <h2>8 · Extensions, Problems &amp; Contact</h2>
+                <span class="category-icon">&#9660;</span>
+            </div>
+            <div class="category-content">
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>Can I get an extension on my BTR deadline?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>Possibly, extensions are decided on a <strong>case-by-case basis</strong>. They are usually only granted when <strong>circumstances outside your control</strong> have stopped you from making progress. Ordinary time-management or planning issues are not normally grounds for an extension. Extensions are granted in increments of <strong>one, two, or three weeks</strong>.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>How do I request an extension? (step by step)</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>There is a clear order to follow, please don't skip the first step:</p>
+                        <ol>
+                            <li><strong>Talk to your Research Supervisor first.</strong> Make sure they understand the situation and are on board, <em>before</em> you contact the BTR Office.</li>
+                            <li><strong>Email the BTR Office with your motivation.</strong> Send your request to <a href="mailto:msp-btr@maastrichtuniversity.nl?subject=BTR%20Extension%20Request">msp-btr@maastrichtuniversity.nl</a>, explaining why you need it, the <strong>specific length</strong> needed, and attaching any supporting documentation.</li>
+                            <li><strong>We review it.</strong> If we accept the request, we send you a provisional new timeline with your extended submission deadlines, and the extended grading deadlines for your supervisors, since these move along with your extension.</li>
+                            <li><strong>Get final confirmation from your advisors.</strong> Send the new timeline to both your <strong>Internal Advisor</strong> and your <strong>Research Supervisor</strong>. You can either tell us they are on board, or forward their confirmation emails to us.</li>
+                            <li><strong>We process it.</strong> Only once both have confirmed do we process the extension in the system.</li>
+                        </ol>
+                        <p>Good to know: when your thesis deadline moves, your <strong>video deadline moves with it</strong>; the video is always submitted after the thesis.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>What counts as a valid reason, and when should I ask?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>Extensions are normally reserved for <strong>circumstances genuinely beyond your control</strong> that have halted your progress, for example a medical situation or another unforeseen event. Documentation (where you have it) helps us assess the request.</p>
+                        <p>Ask <strong>as early as possible, well ahead of the deadline.</strong> Even if you only <em>expect</em> things might go wrong, send us an update so we are aware.</p>
+                        <div class="note-box">
+                            <strong>Please keep us in the loop early.</strong> It is always better to tell us how things are going than to wait until the deadline is upon you. If requests are left to the last minute, there is less chance they can be accepted.
+                        </div>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>Something serious happened (illness, data loss, equipment failure), what now?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <p>Genuine circumstances beyond your control can be considered. Contact the BTR Office (and, for personal circumstances, your Academic Advisor or student counsellor) as soon as possible so we can find a workable solution, don't wait until the deadline.</p>
+                    </div></div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleQuestion(this)">
+                        <h3>Who do I contact for what?</h3>
+                        <span class="question-icon">+</span>
+                    </div>
+                    <div class="faq-answer"><div class="faq-answer-content">
+                        <table>
+                            <thead>
+                                <tr><th>Topic</th><th>Contact</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>General BTR questions, extensions, problems, documents, deadlines</td><td><a href="mailto:msp-btr@maastrichtuniversity.nl">msp-btr@maastrichtuniversity.nl</a></td></tr>
+                                <tr><td>Grants while abroad (Erasmus+ / scholarships)</td><td><a href="mailto:fse-iro@maastrichtuniversity.nl">fse-iro@maastrichtuniversity.nl</a></td></tr>
+                                <tr><td>Thesis / proposal <strong>content</strong></td><td>Your Research Supervisor / Internal Advisor</td></tr>
+                                <tr><td>Graduation decision, diploma, additional-module approval</td><td>Board of Examiners / ESD</td></tr>
+                            </tbody>
+                        </table>
+                        <div class="note-box">
+                            <strong>NOTE:</strong> Any BTR-related email must include <strong>msp-btr@maastrichtuniversity.nl</strong> as the primary recipient or in CC to be answered.
+                        </div>
+                    </div></div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>Is your question not here? Please send an email to <a href="mailto:msp-btr@maastrichtuniversity.nl?subject=FAQ%20Question">msp-btr@maastrichtuniversity.nl</a> with the subject <strong>FAQ Question</strong></p>
+        </div>
+    </footer>
+
+    <script>
+        function toggleCategory(element) {
+            element.parentElement.classList.toggle('active');
+        }
+
+        function toggleQuestion(element) {
+            const item = element.parentElement;
+            const icon = element.querySelector('.question-icon');
+            item.classList.toggle('active');
+            if (icon) icon.textContent = item.classList.contains('active') ? '−' : '+';
+        }
+
+        function expandAll() {
+            document.querySelectorAll('.faq-category').forEach(cat => cat.classList.add('active'));
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.add('active');
+                const ic = item.querySelector('.question-icon');
+                if (ic) ic.textContent = '−';
+            });
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.faq-category').forEach(cat => cat.classList.remove('active'));
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('active');
+                const ic = item.querySelector('.question-icon');
+                if (ic) ic.textContent = '+';
+            });
+        }
+
+        function gotoCategory(id) {
+            const cat = document.getElementById(id);
+            if (!cat) return;
+            cat.classList.add('active');
+            cat.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function escapeRegExp(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+        function escapeHtml(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+        function highlightTitle(h3, term) {
+            const orig = h3.dataset.original || h3.textContent;
+            if (!term) { h3.textContent = orig; return; }
+            const re = new RegExp('(' + escapeRegExp(term) + ')', 'ig');
+            h3.innerHTML = escapeHtml(orig).replace(re, '<mark class="faq-hl">$1</mark>');
+        }
+
+        function clearSearch() {
+            const input = document.getElementById('faqSearch');
+            input.value = '';
+            searchFAQ();
+            input.focus();
+        }
+
+        function searchFAQ() {
+            const input = document.getElementById('faqSearch');
+            const raw = input.value.trim();
+            const term = raw.toLowerCase();
+            const clearBtn = document.querySelector('.faq-search .clear-btn');
+            const meta = document.getElementById('searchMeta');
+            const noRes = document.getElementById('noResults');
+            const nav = document.querySelector('.faq-nav');
+            const categories = document.querySelectorAll('.faq-category');
+
+            if (clearBtn) clearBtn.classList.toggle('show', raw.length > 0);
+
+            if (term === '') {
+                categories.forEach(cat => {
+                    cat.style.display = '';
+                    cat.classList.remove('active');
+                    cat.querySelectorAll('.faq-item').forEach(item => {
+                        item.style.display = '';
+                        item.classList.remove('active');
+                        const ic = item.querySelector('.question-icon');
+                        if (ic) ic.textContent = '+';
+                        highlightTitle(item.querySelector('.faq-question h3'), '');
+                    });
+                });
+                if (meta) meta.textContent = '';
+                if (noRes) noRes.classList.remove('show');
+                if (nav) nav.style.display = '';
+                return;
+            }
+
+            let total = 0;
+            categories.forEach(category => {
+                let catMatches = 0;
+                category.querySelectorAll('.faq-item').forEach(item => {
+                    const h3 = item.querySelector('.faq-question h3');
+                    const q = (h3.dataset.original || h3.textContent).toLowerCase();
+                    const a = item.querySelector('.faq-answer-content').textContent.toLowerCase();
+                    if (q.includes(term) || a.includes(term)) {
+                        item.style.display = '';
+                        item.classList.add('active');
+                        const ic = item.querySelector('.question-icon');
+                        if (ic) ic.textContent = '−';
+                        highlightTitle(h3, raw);
+                        catMatches++; total++;
+                    } else {
+                        item.style.display = 'none';
+                        item.classList.remove('active');
+                        highlightTitle(h3, '');
+                    }
+                });
+                if (catMatches > 0) { category.style.display = ''; category.classList.add('active'); }
+                else { category.style.display = 'none'; category.classList.remove('active'); }
+            });
+
+            if (meta) meta.textContent = total + ' result' + (total === 1 ? '' : 's') + ' for “' + raw + '”';
+            if (noRes) noRes.classList.toggle('show', total === 0);
+            if (nav) nav.style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Per-category question counts on the quick-nav chips
+            document.querySelectorAll('.faq-category').forEach(function (cat) {
+                const n = cat.querySelectorAll('.faq-item').length;
+                const badge = document.querySelector('.faq-chip[data-target="' + cat.id + '"] .chip-count');
+                if (badge) badge.textContent = n;
+            });
+            // Remember original question text for highlighting
+            document.querySelectorAll('.faq-question h3').forEach(function (h) { h.dataset.original = h.textContent; });
+            // Keyboard accessibility for headers and questions
+            document.querySelectorAll('.faq-question, .category-header').forEach(function (el) {
+                el.setAttribute('tabindex', '0');
+                el.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); }
+                });
+            });
+        });
+    </script>
+    <script src="nav.js"></script>
+</body>
+</html>

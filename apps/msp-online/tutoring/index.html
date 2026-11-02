@@ -1,0 +1,160 @@
+<!doctype html>
+<!--
+  index.html - landing page for the MSP Tutor Registration tool.
+  Static; no configuration needed here. See app/assets/config.js to connect Supabase.
+-->
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tutor Registration - Maastricht Science Programme</title>
+<meta name="description" content="Register to tutor a course tutorial group at the Maastricht Science Programme. First come, first served.">
+<link rel="icon" type="image/png" href="assets/img/msp-logo.png">
+<link rel="stylesheet" href="assets/msp-ui/msp-ui.css">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<!-- ========================================================================
+  NOT A CODER? You can still safely change the words on this page.
+  Edit the text inside the headings (<h1> <h2> <h3>) and paragraphs (<p>) below:
+  change the words, leave the < > tags alone. Full guide: EDITING-INSTRUCTIONS
+  (in the repo, or the PDF in the Tutoring folder).
+========================================================================= -->
+
+<main class="msp-main wide">
+<!-- Data-forward hero: live open-group counts, no gradient glow. -->
+<section class="board msp-hero" aria-label="Live availability">
+  <div class="board-inner">
+    <div class="board-head">
+      <div>
+        <div class="board-eyebrow">Maastricht Science Programme · Tutoring · <span id="ay"></span></div>
+        <h1>Tutor at the Maastricht Science Programme</h1>
+        <p class="sub">Eligible PhD candidates, MSP alumni and staff claim the course tutorial groups they want to teach - first come, first served. What's open updates live.</p>
+        <div style="margin-top:20px">
+          <a href="register.html" class="btn btn-primary">See what's open now
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+      <img class="board-emblem" src="assets/img/msp-logo.png" alt="">
+    </div>
+    <div class="board-stats" id="live-snapshot" aria-live="polite"></div>
+  </div>
+</section>
+
+  <div id="preview-banner"></div>
+
+  <h2 class="section">How it works</h2>
+  <p class="lead">A short, structured sign-up - no spreadsheets, no back-and-forth emails. The whole process takes a couple of minutes.</p>
+
+  <div class="cards">
+    <div class="card">
+      <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 4v16M16 4v16"/></svg></div>
+      <div class="step">Step 1</div>
+      <h3>Browse the timetable</h3>
+      <p>Open the registration page and read the week at a glance - every open tutorial group, by day and time slot, for the period.</p>
+    </div>
+    <div class="card">
+      <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+      <div class="step">Step 2</div>
+      <h3>Select your groups</h3>
+      <p>Pick the group(s) you want. Time clashes between your choices are flagged instantly so you don't double-book yourself.</p>
+    </div>
+    <div class="card">
+      <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+      <div class="step">Step 3</div>
+      <h3>Confirm</h3>
+      <p>Add your details and submit. The group locks to you immediately. If two people pick the same group at once, only the first is confirmed.</p>
+    </div>
+  </div>
+
+  <h2 class="section" style="margin-top:46px">What tutoring involves</h2>
+  <p class="lead">A clear, regular commitment for one teaching period. Here's what to expect before you claim a group.</p>
+
+  <div class="cards">
+    <div class="card">
+      <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+      <h3>A weekly rhythm</h3>
+      <p>Your group meets on two fixed half-days each week (the MSP slot system), for one period. Tutorial sessions are about 1.5 hours.</p>
+    </div>
+    <div class="card">
+      <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+      <h3>Lead a tutorial group</h3>
+      <p>You guide a small problem-based learning group and take attendance each session through Canvas.</p>
+    </div>
+    <div class="card">
+      <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+      <h3>You choose what fits</h3>
+      <p>Claim the specific group(s) and times that suit you. Clashes between your picks are flagged, so you never double-book.</p>
+    </div>
+  </div>
+
+  <h2 class="section" style="margin-top:46px">Who can tutor?</h2>
+  <p class="lead">Tutoring positions are open to eligible PhD candidates, MSP alumni and staff. If you have been invited by the MSP office, you are in the right place. If you are unsure whether you are eligible, email the office before registering.</p>
+
+  <div style="margin-top:26px">
+    <a href="register.html" class="btn btn-primary">Start registration
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</main>
+
+<footer class="msp-footer">
+  <div class="footer-inner">
+    <div>Questions? <a id="contact" href="#">contact the office</a></div>
+    <a href="privacy.html">Privacy statement</a>
+    <div class="copy">© Maastricht University</div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/config.js"></script>
+<script src="assets/demo-data.js"></script>
+<script src="assets/supabase.js"></script>
+<script src="assets/ui.js"></script>
+<script src="assets/feedback.js"></script>
+<script>
+  document.getElementById("ay").textContent = (window.MSP_CONFIG && MSP_CONFIG.ACADEMIC_YEAR) || "";
+  const email = (window.MSP_CONFIG && MSP_CONFIG.CONTACT_EMAIL) || "";
+  const c = document.getElementById("contact"); c.href = "mailto:" + email; c.textContent = email || "the office";
+  if (window.MSP && MSP.mode === "preview") {
+    document.getElementById("preview-banner").innerHTML =
+      '<div class="notice info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v5"/><path d="M12 16h.01"/></svg>'
+      + '<div><strong>Preview mode.</strong> The catalogue is real, but live sign-ups are off until Supabase is connected (see <code>app/assets/config.js</code>).</div></div>';
+  }
+  // Live open-group snapshot (the landing hero is the data).
+  (async function snapshot() {
+    const host = document.getElementById("live-snapshot");
+    try {
+      const cat = await MSP.getCatalogue();
+      const byP = {};
+      cat.forEach((c) => { const o = c.groups.filter((g) => g.is_open && g.claimed < g.capacity).length; byP[c.period] = (byP[c.period] || 0) + o; });
+      const periods = Object.keys(byP).sort();
+      const total = periods.reduce((a, p) => a + byP[p], 0);
+      let html = `<div class="bstat focal"><div class="n"><span class="live-dot"></span><span class="num" data-to="${total}" data-k="total">${total}</span></div><div class="l">Groups open now</div></div>`;
+      periods.forEach((p) => { html += `<div class="bstat"><div class="n"><span class="num" data-to="${byP[p]}" data-k="p${p}">${byP[p]}</span></div><div class="l">Open · Period ${p.replace(/^P/, "")}</div></div>`; });
+      host.innerHTML = html;
+      host.querySelectorAll(".num").forEach((el) => {
+        if (window.MSPUI) MSPUI.countUp(el, el.dataset.to, "home-" + el.dataset.k);
+        else el.textContent = el.dataset.to;
+      });
+      if (window.MSP && MSP.subscribe) MSP.subscribe(snapshot);
+    } catch (e) { host.innerHTML = ""; }
+  })();
+</script>
+<!-- The shared MSP frame (sidebar, canvas, type) - see assets/msp-ui/ -->
+<script src="assets/msp-ui/msp-shell.js"></script>
+<script>
+  MSPShell.init({
+    title: 'MSP Tutor Registration',
+    nav: [
+      { label: 'Home',              hint: 'Open positions',         href: 'index.html',    icon: 'home' },
+      { label: 'Register to tutor', hint: 'Claim a tutorial group', href: 'register.html', icon: 'edit' },
+      { divider: true },
+      { label: 'Office login',      hint: 'Dashboard',              href: 'admin.html',    icon: 'lock' }
+    ]
+  });
+</script>
+</body>
+</html>

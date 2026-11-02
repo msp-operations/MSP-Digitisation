@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MSP Online</title>
+<meta name="description" content="Every Maastricht Science Programme web tool in one place.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#011B3C">
+<link rel="icon" type="image/png" href="msp-ui/favicon.png">
+<link rel="stylesheet" href="msp-ui/msp-ui.css">
+<style>
+  /* The front door: one navy page, the emblem at the centre, the tools on its orbit.
+     No sidebar here on purpose; each tool opens in the shared sidebar layout. */
+  body{margin:0;font-family:var(--msp-font);color:#fff;-webkit-font-smoothing:antialiased;
+    background:
+      radial-gradient(ellipse 60% 55% at 50% 48%, rgba(110,210,236,.10) 0%, rgba(110,210,236,0) 60%),
+      radial-gradient(ellipse 120% 90% at 50% 0%, #0A3060 0%, #02274F 38%, #011B3C 75%);
+    background-color:#011B3C;min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
+  a{color:inherit}
+
+  /* top and bottom bars */
+  .bar{display:flex;align-items:center;justify-content:space-between;padding:28px 44px;gap:16px}
+  .bar img{height:30px;filter:brightness(0) invert(1);opacity:.92;display:block}
+  .switch{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:.06em;color:rgba(255,255,255,.75);text-decoration:none;padding:9px 16px;border:1px solid rgba(255,255,255,.18);border-radius:999px;transition:all .2s}
+  .switch:hover{background:#fff;color:var(--msp-navy);border-color:#fff}
+  .switch svg{width:14px;height:14px}
+  .kicker{display:inline-block;margin-top:24px;font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--msp-sky);padding:5px 12px;border:1px solid rgba(110,210,236,.35);border-radius:999px}
+  .bar .prog{font-size:10.5px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.55);text-align:right;line-height:1.6}
+  .foot{display:flex;justify-content:space-between;gap:16px;padding:22px 44px 28px;font-size:11px;color:rgba(255,255,255,.38);letter-spacing:.02em}
+  .foot a{color:rgba(255,255,255,.6);text-decoration:none;border-bottom:1px solid rgba(255,255,255,.18)}
+  .foot a:hover{color:#fff;border-color:rgba(255,255,255,.5)}
+
+  /* the stage */
+  .stage{flex:1 0 auto;position:relative;display:flex;align-items:center;justify-content:center;min-height:560px}
+  .orbit{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  .orbit ellipse{fill:none;stroke:rgba(255,255,255,.09);stroke-width:1}
+  .orbit ellipse.o2{stroke:rgba(110,210,236,.14);stroke-dasharray:2 7}
+  .orbit ellipse.o3{stroke:rgba(255,255,255,.05)}
+
+  .core{position:relative;z-index:2;text-align:center;width:440px;pointer-events:none}
+  .core img{view-transition-name:msp-emblem;width:188px;height:auto;display:block;margin:0 auto;filter:brightness(0) invert(1);opacity:.96}
+  .core .glow{position:absolute;left:50%;top:94px;width:280px;height:280px;transform:translate(-50%,-50%);border-radius:50%;
+    background:radial-gradient(circle, rgba(110,210,236,.16) 0%, rgba(110,210,236,0) 65%);z-index:-1}
+  .core h1{font-family:var(--msp-font-display);font-weight:700;font-size:30px;letter-spacing:-.02em;margin:12px 0 0;line-height:1.15}
+  .core .cap{margin-top:10px;min-height:44px;font-size:13.5px;line-height:1.6;color:rgba(255,255,255,.6);transition:opacity .2s}
+  .core .cap b{display:block;color:#fff;font-weight:600;font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:2px}
+
+  /* the tools */
+  .tool{position:absolute;z-index:3;transform:translate(-50%,-50%);display:inline-flex;align-items:center;gap:11px;
+    padding:10px 18px 10px 11px;border-radius:999px;text-decoration:none;white-space:nowrap;
+    background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.13);
+    -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+    font-size:14px;font-weight:600;letter-spacing:-.005em;color:#fff;
+    transition:background .25s,border-color .25s,color .25s,box-shadow .25s,transform .25s}
+  .tool .ic{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(110,210,236,.14);color:var(--msp-sky);flex-shrink:0;transition:background .25s,color .25s}
+  .tool .ic svg{width:15px;height:15px}
+  .tool:hover,.tool:focus-visible{background:#fff;color:var(--msp-navy);border-color:#fff;box-shadow:0 10px 30px rgba(0,0,0,.28);transform:translate(-50%,-50%) translateY(-2px);outline:none}
+  .tool:hover .ic,.tool:focus-visible .ic{background:var(--msp-navy);color:#fff}
+  .tool.soon{opacity:.45;cursor:default}
+  .tool.soon:hover{background:rgba(255,255,255,.055);color:#fff;border-color:rgba(255,255,255,.13);box-shadow:none;transform:translate(-50%,-50%)}
+  .tool.soon:hover .ic{background:rgba(110,210,236,.14);color:var(--msp-sky)}
+  .tool .tag{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;opacity:.7;margin-left:2px}
+
+  /* below 980px: no orbit, a clean list */
+  .list{display:none}
+  @media (max-width:980px){
+    .bar{padding:22px 22px}.bar .prog{display:none}
+    .foot{flex-direction:column;align-items:center;text-align:center;padding:24px 22px 32px}
+    .stage{flex-direction:column;min-height:0;padding:18px 0 8px}
+    .orbit,.tool.ring{display:none}
+    .core{width:auto;padding:0 22px;order:-1}
+    .core img{width:150px}
+    .core h1{font-size:26px}
+    .core .cap{display:none}
+    .list{display:grid;grid-template-columns:1fr;gap:8px;width:100%;max-width:520px;padding:28px 22px 0;box-sizing:border-box}
+    .list .tool{position:static;transform:none;white-space:normal;border-radius:14px;padding:12px 16px 12px 12px}
+    .list .tool:hover,.list .tool:focus-visible{transform:none}
+    .list .tool .txt{display:flex;flex-direction:column;gap:1px}
+    .list .tool .txt small{font-size:11.5px;font-weight:400;color:rgba(255,255,255,.55)}
+    .list .tool:hover .txt small{color:var(--msp-g5)}
+    .list .grp{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.4);margin:14px 4px 2px}
+    .list .grp:first-child{margin-top:0}
+  }
+  @media (prefers-reduced-motion:no-preference){
+    .tool.ring{animation:rise .7s cubic-bezier(.2,.7,.2,1) both}
+    @keyframes rise{from{opacity:0;transform:translate(-50%,-40%)}to{opacity:1;transform:translate(-50%,-50%)}}
+    .tool.ring.soon{animation-name:riseSoon}
+    @keyframes riseSoon{from{opacity:0;transform:translate(-50%,-40%)}to{opacity:.45;transform:translate(-50%,-50%)}}
+  }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <img src="msp-ui/um-wordmark.png" alt="Maastricht University">
+  <a class="switch" id="switch" href="#"></a>
+</header>
+
+<main class="stage" id="stage">
+  <svg class="orbit" id="orbit" aria-hidden="true"></svg>
+  <div class="core">
+    <div class="glow"></div>
+    <img src="msp-ui/msp-emblem.png" alt="Maastricht Science Programme">
+    <div class="kicker" id="kicker"></div>
+    <h1>MSP Online</h1>
+    <div class="cap" id="cap" aria-live="polite"></div>
+  </div>
+  <nav class="list" id="list" aria-label="MSP tools"></nav>
+</main>
+
+<footer class="foot">
+  <span>Maastricht Science Programme · Faculty of Science and Engineering · Maastricht University</span>
+  <span>Questions about a tool: <a href="mailto:msp-operations@maastrichtuniversity.nl">msp-operations@maastrichtuniversity.nl</a></span>
+</footer>
+
+<script>window.MSP_HUB = 'students';</script>
+<script src="projects.js"></script>
+<script src="msp-ui/msp-shell.js"></script>
+<script>
+(function () {
+  var HUBKEY = window.MSP_HUB || 'students';
+  if (MSPShell.rememberSuite) MSPShell.rememberSuite(HUBKEY);
+  var HUB = (window.MSP_HUBS || {})[HUBKEY] || { title: '', line: '' };
+  var P = (window.MSP_PROJECTS || []).filter(function (p) { return (p.hubs || []).indexOf(HUBKEY) >= 0; });
+  document.getElementById('kicker').textContent = HUB.title;
+  document.getElementById('cap').textContent = HUB.line;
+  var sw = document.getElementById('switch'), other = (window.MSP_HUBS || {})[HUB.other];
+  if (other) { sw.href = other.file; sw.innerHTML = HUB.otherLabel + ' <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>'; } else { sw.remove(); }
+  function blurb(p) { return (HUBKEY === 'staff' && p.blurbStaff) || p.blurb; }
+  var stage = document.getElementById('stage'), svg = document.getElementById('orbit');
+  var cap = document.getElementById('cap'), list = document.getElementById('list');
+  var DEFAULT = cap.innerHTML;
+
+  function el(p, ring) {
+    var href = (HUBKEY === 'staff' && p.nextStaff) || p.next || p.live, soon = p.status === 'dev' || !href;
+    var a = document.createElement(soon ? 'span' : 'a');
+    a.className = 'tool' + (ring ? ' ring' : '') + (soon ? ' soon' : '');
+    if (!soon) a.href = href;
+    a.innerHTML = '<span class="ic">' + MSPShell.icon(p.icon) + '</span>' +
+      (ring ? '<span>' + p.name + '</span>' + (soon ? '<span class="tag">soon</span>' : '')
+            : '<span class="txt">' + p.name + (soon ? ' <span class="tag">soon</span>' : '') + '<small>' + blurb(p) + '</small></span>');
+    if (ring) {
+      var show = function () { cap.innerHTML = '<b>' + p.name + '</b>' + blurb(p); };
+      var hide = function () { cap.innerHTML = DEFAULT; };
+      a.addEventListener('mouseenter', show); a.addEventListener('mouseleave', hide);
+      a.addEventListener('focus', show); a.addEventListener('blur', hide);
+      if (!soon) a.setAttribute('aria-label', p.name + ': ' + blurb(p));
+    }
+    return a;
+  }
+
+  // ring: tools spaced evenly on an ellipse around the emblem, first one at the top
+  var ringEls = P.map(function (p, i) {
+    var a = el(p, true); a.style.animationDelay = (0.05 * i) + 's'; stage.appendChild(a); return a;
+  });
+  function layout() {
+    var w = stage.clientWidth, h = stage.clientHeight, cx = w / 2, cy = h / 2;
+    var rx = Math.min(w * 0.40, 560), ry = Math.min(h * 0.40, 300);
+    svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+    svg.innerHTML =
+      '<ellipse class="o3" cx="' + cx + '" cy="' + cy + '" rx="' + (rx * 1.18) + '" ry="' + (ry * 1.22) + '"/>' +
+      '<ellipse cx="' + cx + '" cy="' + cy + '" rx="' + rx + '" ry="' + ry + '"/>' +
+      '<ellipse class="o2" cx="' + cx + '" cy="' + cy + '" rx="' + (rx * 0.62) + '" ry="' + (ry * 0.70) + '"/>';
+    ringEls.forEach(function (a, i) {
+      var t = -Math.PI / 2 + (2 * Math.PI * i) / ringEls.length;
+      a.style.left = (cx + rx * Math.cos(t)) + 'px';
+      a.style.top = (cy + ry * Math.sin(t)) + 'px';
+    });
+  }
+  layout(); window.addEventListener('resize', layout);
+
+  // narrow screens: a plain list
+  P.forEach(function (p) { list.appendChild(el(p, false)); });
+})();
+</script>
+</body>
+</html>

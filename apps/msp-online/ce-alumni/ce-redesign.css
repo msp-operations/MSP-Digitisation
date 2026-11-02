@@ -1,0 +1,132 @@
+/* ============================================================
+   CE ALUMNI NETWORK - DASHBOARD STYLES
+   Loaded by index.html after assets/msp-ui/msp-ui.css. The frame
+   (navy sidebar, slate canvas, Inter + DM Sans, the --msp-* tokens)
+   comes from the shared MSP kit; this file holds the dashboard's own
+   pieces: the hero map, the stat strip, section heads, bars and
+   rows, the status band and the closing CTA pair.
+   Tokens first, then layout primitives, then components.
+   ============================================================ */
+
+:root {
+  --navy: var(--msp-navy);
+  --navy-2: var(--msp-navy2);
+  --blue: #14B8A6;     /* CE teal: data accent, kept */
+  --accent: #10B981;   /* CE green: data accent, kept */
+  --paper: var(--msp-g0);
+  --hair: var(--msp-g2);
+  --ink-60: var(--msp-g7);
+  --ink-50: var(--msp-g5);
+  --serif: var(--msp-font-display);   /* display face is DM Sans via the kit */
+  --sans: var(--msp-font);
+  --ease: cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+img { max-width: 100%; height: auto; }
+
+@keyframes riseIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+/* ---- Layout primitives ---- */
+.wrap { max-width: none; margin: 0; padding: 0; }
+.section { padding-top: 40px; }
+.eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--msp-g4); margin-bottom: 6px; }
+.sec-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-bottom: 20px; }
+.sec-head h2, .lead h2 { font-size: 22px; line-height: 1.2; margin: 0; }
+.sec-link { font-size: 13px; font-weight: 600; color: var(--navy); white-space: nowrap; }
+.sec-link, .alum-link, .note a, .msp-footer a { text-decoration: none; }
+.sec-link:hover, .alum-link:hover, .note a:hover, .msp-footer a:hover { text-decoration: underline; }
+.lead p { font-size: 14px; line-height: 1.7; color: var(--ink-60); max-width: 60ch; margin: 8px 0 20px; text-wrap: pretty; }
+.note { margin-top: 14px; font-size: 12.5px; color: var(--ink-50); }
+.note a { font-weight: 600; }
+.btn-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* ---- Hero: an in-column .msp-hero card holding the copy and the map ---- */
+.hero.msp-hero { padding: 36px 40px 32px; }
+.hero-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 36px; align-items: center; }
+.hero-copy { animation: riseIn 0.7s var(--ease) both; min-width: 0; }
+.hero-eyebrow { display: inline-flex; align-items: center; gap: 10px; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255, 255, 255, 0.55); margin-bottom: 10px; }
+.hero-eyebrow::before { content: ''; display: block; width: 22px; height: 1px; background: var(--accent); }
+.msp-hero.hero h1 { font-size: 30px; line-height: 1.15; margin: 0 0 10px; }
+.hero h1 em { font-style: normal; color: var(--accent); }
+.msp-hero.hero p { font-size: 13.5px; line-height: 1.7; opacity: 0.78; max-width: 52ch; margin: 0 0 18px; }
+
+/* ---- Hero world map (d3 + Natural Earth, drawn into the SVG viewBox) ---- */
+.map-fig { margin: 0; animation: riseIn 0.9s var(--ease) both; min-width: 0; }
+#map { width: 100%; height: auto; aspect-ratio: 760 / 400; display: block; overflow: visible; }
+.map-legend { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.14); font-size: 12px; color: rgba(255, 255, 255, 0.6); }
+.map-legend span { display: inline-flex; align-items: center; gap: 7px; }
+.key { width: 9px; height: 9px; border-radius: 50%; display: block; }
+.key-orange { background: var(--accent); }
+.key-blue { background: var(--blue); }
+.map-tip { position: fixed; pointer-events: none; opacity: 0; background: #fff; color: var(--navy); border: 1px solid var(--hair); border-radius: 6px; padding: 6px 10px; font-size: 12px; font-weight: 600; box-shadow: var(--msp-sh-md); transition: opacity 0.12s ease; white-space: nowrap; transform: translate(-50%, -130%); z-index: 100; }
+
+/* ---- Stat strip: the kit's stat tiles ---- */
+.stat-strip { margin: 0; padding: 0; }
+.stat-strip .msp-stat-val { font-size: 32px; }
+
+/* ---- Cards ---- */
+.panel { background: #fff; border: 1px solid var(--hair); border-radius: var(--msp-r); box-shadow: var(--msp-sh); padding: 28px 32px; }
+.panel-note { font-size: 12.5px; color: var(--ink-50); max-width: 36ch; }
+.chip { align-self: flex-start; display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; color: var(--navy); }
+
+/* ---- Bars and ranked rows ---- */
+.track { display: block; height: 6px; border-radius: 999px; background: var(--msp-g1); overflow: hidden; }
+.track-lg { height: 8px; }
+.fill { display: block; height: 100%; border-radius: 999px; }
+.bar-navy { background: var(--navy); }
+.bar-blue { background: var(--blue); }
+.bar-orange { background: var(--accent); }
+
+.row { display: grid; grid-template-columns: 1fr 96px 40px; align-items: center; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--msp-g1); position: relative; overflow: hidden; }
+.row-name { font-size: 13.5px; font-weight: 500; position: relative; z-index: 1; padding-left: 34px; }
+.row-num { font-size: 13px; font-weight: 600; text-align: right; color: var(--ink-60); font-variant-numeric: tabular-nums; }
+.row-track, .row-num { position: relative; z-index: 1; }
+.country-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 4px 36px; }
+
+/* Country flags run the full height of the row at their own aspect ratio and
+   dissolve to the right, so the name sits over the faded tail. */
+.row-flag { position: absolute; left: 0; top: 0; height: 100%; width: auto; opacity: 0.28; pointer-events: none; z-index: 0;
+  -webkit-mask-image: linear-gradient(to right, #000 0%, rgba(0, 0, 0, 0.6) 40%, transparent 92%);
+          mask-image: linear-gradient(to right, #000 0%, rgba(0, 0, 0, 0.6) 40%, transparent 92%); }
+
+/* University logos. The set mixes square crests with wide wordmarks, so the
+   cell is fixed and the image is contained rather than cropped. */
+.uni { display: grid; grid-template-columns: 26px 34px minmax(0, 1fr) 120px 48px; align-items: center; gap: 14px; padding: 11px 0; border-top: 1px solid var(--msp-g1); }
+.uni-rank { font-size: 11px; font-weight: 700; color: var(--msp-g4); font-variant-numeric: tabular-nums; }
+.uni-logo { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; }
+.uni-logo img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.uni-main { min-width: 0; }
+.uni-name { display: block; font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
+.uni-country { display: block; font-size: 12px; color: var(--ink-50); margin-top: 1px; }
+.uni-num { font-size: 13.5px; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
+
+/* ---- Status band: a navy card in the column (was a full-bleed band) ---- */
+.growth { background: linear-gradient(135deg, var(--msp-navy) 0%, var(--msp-navy2) 40%, var(--msp-navy3) 100%); color: #fff; border-radius: var(--msp-rl); padding: 32px 36px; margin-top: 40px; box-shadow: 0 8px 32px rgba(1, 27, 60, 0.18), 0 2px 8px rgba(0, 0, 0, 0.08); }
+.growth h2 { color: #fff; }
+.growth .eyebrow { color: rgba(255, 255, 255, 0.45); }
+.growth-note { font-size: 12.5px; line-height: 1.6; color: rgba(255, 255, 255, 0.6); max-width: 36ch; }
+
+/* ---- Closing CTA pair ---- */
+.cta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; padding: 40px 0 0; }
+.cta-card { background: #fff; border: 1px solid var(--hair); border-radius: var(--msp-r); box-shadow: var(--msp-sh); padding: 26px 28px; }
+.cta-card h3 { font-family: var(--serif); font-size: 18px; font-weight: 700; line-height: 1.2; margin: 0 0 8px; }
+.cta-card p { font-size: 13.5px; line-height: 1.65; color: var(--ink-60); margin: 0 0 18px; }
+
+/* ---- Page footer (links the sidebar does not carry) ---- */
+.msp-footer .foot-links { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 6px; }
+
+/* ---- Responsive ---- */
+@media (max-width: 760px) {
+  .hero.msp-hero { padding: 26px 20px 22px; }
+  .panel { padding: 22px 18px; }
+  .uni { grid-template-columns: 22px 30px minmax(0, 1fr) 40px; gap: 10px; }
+  .uni .track-lg { display: none; }
+  .growth { padding: 24px 20px; }
+  .cta-card { padding: 22px 20px; }
+}
+
+/* Kit: .msp-content a (0,1,1) outranks .msp-btn-* colours, so restore them here. */
+.msp-content a.msp-btn-or, .msp-content a.msp-btn-navy, .msp-content a.msp-btn-or:hover, .msp-content a.msp-btn-navy:hover { color: #fff; }
+.msp-content a.msp-btn-sky { color: var(--msp-inf); }
+.msp-content a.msp-btn-gh { color: var(--msp-g5); }

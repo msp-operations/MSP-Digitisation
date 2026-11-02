@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#011B3C">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="MSP Alumni">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192x192.png">
+    <title>Country - MSP Alumni Network</title>
+    <link rel="icon" type="image/png" href="assets/logos/maastricht-science-programme-logo.png">
+    
+    <!-- Fonts -->
+    <link rel="stylesheet" href="assets/msp-ui/msp-ui.css">
+    <link rel="stylesheet" href="msp-redesign.css">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@0.576.0/dist/umd/lucide.js"></script>
+    
+    <!-- Data -->
+    <script src="data.js"></script>
+    
+    <style>
+        /* Page-specific styles. Tokens, cards, .card-title, the university
+           modal and the Leaflet wrapper rules come from msp-redesign.css. */
+
+        /* Hero: flag tile + country facts inside the kit hero card */
+        .country-hero { display: flex; gap: 28px; align-items: flex-start; }
+        .hero-flag-bg { flex: 0 0 auto; width: 132px; height: 88px; border-radius: 8px; background-size: cover; background-position: center; background-color: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+        .hero-right { flex: 1; min-width: 0; }
+        .hero-subtitle { font-size: 13.5px; opacity: 0.75; margin: 0; }
+        .hero-alumni-count { display: inline-flex; align-items: center; gap: 14px; background: rgba(110,210,236,0.12); border: 1px solid rgba(110,210,236,0.3); padding: 10px 16px; border-radius: var(--msp-r); margin: 14px 0 16px; }
+        .hero-alumni-number { font-family: var(--msp-font-display); font-size: 32px; font-weight: 700; color: var(--msp-sky); line-height: 1; }
+        .hero-alumni-label { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.1em; line-height: 1.35; }
+        .country-facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+        .fact-item { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.06); padding: 9px 12px; border-radius: var(--msp-rs); border: 1px solid rgba(255,255,255,0.08); min-width: 0; }
+        .fact-emoji:empty { display: none; }
+        .fact-info { flex: 1; min-width: 0; }
+        .fact-label { font-size: 9.5px; font-weight: 700; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.08em; }
+        .fact-value { font-size: 13px; font-weight: 600; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        /* Content */
+        .content-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+        .universities-section, .map-section { margin-bottom: 16px; }
+
+        /* Top cities */
+        .cities-list, .nationalities-list { display: flex; flex-direction: column; gap: 6px; }
+        .city-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; background: var(--msp-g0); border: 1px solid var(--msp-g1); border-radius: var(--msp-rs); }
+        .city-rank { width: 26px; height: 26px; background: var(--msp-navy); color: #fff; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; flex-shrink: 0; }
+        .city-item:nth-child(-n+3) .city-rank { background: var(--msp-sky); color: var(--msp-navy); }
+        .city-name { flex: 1; font-weight: 600; font-size: 13.5px; color: var(--msp-g9); min-width: 0; }
+        .city-count { font-weight: 700; font-size: 14px; color: var(--msp-navy); font-variant-numeric: tabular-nums; }
+        .city-bar, .nat-bar { width: 72px; height: 6px; background: var(--msp-g2); border-radius: 3px; overflow: hidden; flex-shrink: 0; }
+        .city-bar-fill { height: 100%; background: var(--blue); border-radius: 3px; }
+
+        /* Nationalities */
+        .nat-item { display: flex; align-items: center; gap: 12px; padding: 9px 12px; background: var(--msp-g0); border: 1px solid var(--msp-g1); border-radius: var(--msp-rs); }
+        .nat-flag { width: 30px; height: 20px; border-radius: 3px; object-fit: cover; box-shadow: 0 1px 3px rgba(0,0,0,0.15); flex-shrink: 0; }
+        .nat-name { flex: 1; font-weight: 500; font-size: 13.5px; color: var(--msp-g9); min-width: 0; }
+        .nat-count { font-weight: 700; font-size: 13.5px; color: var(--msp-navy); font-variant-numeric: tabular-nums; }
+        .nat-bar-fill { height: 100%; background: var(--orange); border-radius: 3px; }
+
+        /* Universities */
+        .universities-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+        .university-card { padding: 14px 16px; display: flex; align-items: center; gap: 14px; cursor: pointer; }
+        .university-logo { width: 48px; height: 48px; background: var(--msp-g0); border-radius: var(--msp-rs); display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid var(--msp-g2); flex-shrink: 0; }
+        .university-logo img { width: 38px; height: 38px; object-fit: contain; }
+        .university-logo i, .university-logo svg { color: var(--msp-g4); width: 22px; height: 22px; }
+        .university-info { flex: 1; min-width: 0; }
+        .university-name { font-weight: 600; font-size: 13.5px; color: var(--msp-g9); margin-bottom: 2px; line-height: 1.3; }
+        .university-count { font-size: 12.5px; color: var(--msp-g5); }
+        .university-count strong { color: var(--msp-navy); font-weight: 700; }
+
+        /* Map */
+        .map-card { padding: 22px 24px; }
+        #countryMap { height: 420px; border-radius: var(--msp-rs); overflow: hidden; border: 1px solid var(--msp-g2); }
+        .map-legend { display: flex; justify-content: center; gap: 24px; margin-top: 14px; flex-wrap: wrap; }
+        .map-legend-item { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--msp-g5); }
+        .map-legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .map-legend-dot.city { background: var(--orange); }
+        .map-legend-dot.university { background: var(--blue); }
+
+        @media (max-width: 900px) {
+            .content-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 640px) {
+            .country-hero { flex-direction: column; gap: 16px; }
+            .hero-flag-bg { width: 96px; height: 64px; }
+            .country-facts { grid-template-columns: 1fr 1fr; }
+            .universities-grid { grid-template-columns: 1fr; }
+            #countryMap { height: 300px; }
+            .map-card { padding: 14px; }
+        }
+    </style>
+</head>
+<body>
+    <main class="msp-main wide">
+    <div class="msp-page-head">
+        <a href="destinations.html" class="msp-btn msp-btn-gh msp-btn-sm">
+            <i data-lucide="arrow-left"></i>
+            Back to Destinations
+        </a>
+    </div>
+
+    <section class="msp-hero country-hero">
+        <div class="hero-flag-bg" id="heroFlagBg"></div>
+        <div class="hero-right">
+            <h1 class="hero-country-name" id="countryName">Loading...</h1>
+            <p class="hero-subtitle" id="heroSubtitle">MSP Alumni Network</p>
+
+            <div class="hero-alumni-count">
+                <div class="hero-alumni-number" id="totalAlumni">0</div>
+                <div class="hero-alumni-label">MSP Alumni<br>Living Here</div>
+            </div>
+
+            <div class="country-facts" id="countryFacts">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </section>
+        <div class="content-grid">
+            <div class="card">
+                <h3 class="card-title"><i data-lucide="map-pin"></i> Top Cities</h3>
+                <div class="cities-list" id="citiesList"></div>
+            </div>
+            <div class="card">
+                <h3 class="card-title"><i data-lucide="users"></i> Top Nationalities</h3>
+                <div class="nationalities-list" id="nationalitiesList"></div>
+            </div>
+        </div>
+        
+        <div class="universities-section">
+            <div class="card">
+                <h3 class="card-title"><i data-lucide="graduation-cap"></i> Master's Universities</h3>
+                <div class="universities-grid" id="universitiesGrid"></div>
+            </div>
+        </div>
+        
+        <div class="map-section">
+            <div class="map-card">
+                <h3 class="card-title"><i data-lucide="globe"></i> Where Alumni Are Located</h3>
+                <div id="countryMap"></div>
+                <div class="map-legend">
+                    <div class="map-legend-item">
+                        <span class="map-legend-dot city"></span>
+                        Major Cities
+                    </div>
+                    <div class="map-legend-item">
+                        <span class="map-legend-dot university"></span>
+                        University Locations
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="msp-footer">
+    <div class="foot-links">
+        <a href="https://www.instagram.com/msp_alumni/">Instagram</a>
+        <a href="https://www.linkedin.com/groups/12893377/">LinkedIn (MSP)</a>
+        <a href="https://www.linkedin.com/groups/4689010/">LinkedIn (FSE)</a>
+        <a href="https://www.maastrichtuniversity.nl">Maastricht University</a>
+        <a href="privacy.html">Privacy policy</a>
+    </div>
+    <div>&copy; 2026 MSP Alumni Network. Maastricht University, Faculty of Science and Engineering.</div>
+    </footer>
+
+    <!-- University Information Modal -->
+    <div id="universityModal" class="university-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="modal-close" id="modalClose">
+                    <i data-lucide="x"></i>
+                </button>
+                <div class="modal-logo-section">
+                    <div class="modal-logo" id="modalLogo">
+                        <i data-lucide="graduation-cap"></i>
+                    </div>
+                    <div class="modal-title-section">
+                        <h2 id="modalUniName">University Name</h2>
+                        <div class="modal-location">
+                            <i data-lucide="map-pin"></i>
+                            <span id="modalLocation">Location</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-info-grid">
+                    <div class="modal-info-item">
+                        <div class="modal-info-label">Founded</div>
+                        <div class="modal-info-value" id="modalFounded"> &mdash; </div>
+                    </div>
+                    <div class="modal-info-item">
+                        <div class="modal-info-label">Students</div>
+                        <div class="modal-info-value" id="modalStudents"> &mdash; </div>
+                    </div>
+                </div>
+                <p class="modal-description" id="modalDescription">
+                    Loading university information...
+                </p>
+                <a href="#" id="modalWebsite" target="_blank" rel="noopener noreferrer" class="modal-website-link">
+                    <span>Visit Website</span>
+                    <i data-lucide="external-link"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Initialize icons
+        lucide.createIcons();
+        
+        // Debug: Check if data.js loaded
+        console.log('COUNTRY_DETAILS defined:', typeof COUNTRY_DETAILS !== 'undefined');
+        if (typeof COUNTRY_DETAILS === 'undefined') {
+            document.getElementById('countryName').textContent = 'Error: data.js not loaded';
+            document.getElementById('heroSubtitle').textContent = 'Make sure data.js is in the same folder';
+            throw new Error('COUNTRY_DETAILS not defined - data.js may not be loaded');
+        }
+        
+        // COUNTRY_FACTS and UNI_LOGO_FILES are now loaded from data.js
+        // This provides comprehensive country info for ALL countries and logo mappings for all universities
+        
+        // City coordinates for mapping
+        const CITY_COORDS = {
+            // Netherlands
+            'Maastricht': [50.8514, 5.6909], 'Amsterdam': [52.3676, 4.9041], 'Utrecht': [52.0907, 5.1214],
+            'Leiden': [52.1601, 4.4970], 'Wageningen': [51.9692, 5.6654], 'Groningen': [53.2194, 6.5665],
+            'Rotterdam': [51.9244, 4.4777], 'Eindhoven': [51.4416, 5.4697], 'The Hague': [52.0705, 4.3007],
+            'Nijmegen': [51.8126, 5.8372], 'Delft': [52.0116, 4.3571],
+            // Germany
+            'Munich': [48.1351, 11.5820], 'Berlin': [52.5200, 13.4050], 'Hamburg': [53.5511, 9.9937],
+            'Cologne': [50.9375, 6.9603], 'Frankfurt': [50.1109, 8.6821], 'Heidelberg': [49.3988, 8.6724],
+            'Bonn': [50.7374, 7.0982], 'Aachen': [50.7753, 6.0839],
+            // UK
+            'London': [51.5074, -0.1278], 'Oxford': [51.7520, -1.2577], 'Cambridge': [52.2053, 0.1218],
+            'Edinburgh': [55.9533, -3.1883], 'Manchester': [53.4808, -2.2426], 'Bristol': [51.4545, -2.5879],
+            'Glasgow': [55.8642, -4.2518], 'Birmingham': [52.4862, -1.8904],
+            // Belgium
+            'Brussels': [50.8503, 4.3517], 'Leuven': [50.8798, 4.7005], 'Antwerp': [51.2194, 4.4025],
+            'Ghent': [51.0543, 3.7174], 'Liege': [50.6326, 5.5797],
+            // Sweden
+            'Stockholm': [59.3293, 18.0686], 'Uppsala': [59.8586, 17.6389], 'Lund': [55.7047, 13.1910],
+            'Gothenburg': [57.7089, 11.9746],
+            // Switzerland
+            'Zurich': [47.3769, 8.5417], 'Lausanne': [46.5197, 6.6323], 'Basel': [47.5596, 7.5886],
+            'Geneva': [46.2044, 6.1432], 'Bern': [46.9480, 7.4474],
+            // France
+            'Paris': [48.8566, 2.3522], 'Lyon': [45.7640, 4.8357], 'Marseille': [43.2965, 5.3698],
+            'Toulouse': [43.6047, 1.4442], 'Nice': [43.7102, 7.2620],
+            // Italy
+            'Milan': [45.4642, 9.1900], 'Rome': [41.9028, 12.4964], 'Bologna': [44.4949, 11.3426],
+            'Turin': [45.0703, 7.6869], 'Florence': [43.7696, 11.2558],
+            // Spain
+            'Barcelona': [41.3851, 2.1734], 'Madrid': [40.4168, -3.7038], 'Valencia': [39.4699, -0.3763],
+            // Denmark
+            'Copenhagen': [55.6761, 12.5683], 'Aarhus': [56.1629, 10.2039],
+            // USA
+            'Boston': [42.3601, -71.0589], 'San Francisco': [37.7749, -122.4194], 'New York': [40.7128, -74.0060],
+            'Los Angeles': [34.0522, -118.2437], 'Chicago': [41.8781, -87.6298],
+            // Others
+            'Helsinki': [60.1699, 24.9384], 'Vienna': [48.2082, 16.3738], 'Dublin': [53.3498, -6.2603],
+            'Luxembourg City': [49.6117, 6.1319], 'Toronto': [43.6532, -79.3832], 'Vancouver': [49.2827, -123.1207],
+            'Montreal': [45.5017, -73.5673], 'Lisbon': [38.7223, -9.1393], 'Sydney': [-33.8688, 151.2093], 
+            'Melbourne': [-37.8136, 144.9631], 'Oslo': [59.9139, 10.7522], 'Athens': [37.9838, 23.7275], 
+            'Warsaw': [52.2297, 21.0122], 'Tokyo': [35.6762, 139.6503], 'Singapore': [1.3521, 103.8198],
+            'Nairobi': [-1.2921, 36.8219], 'Cape Town': [-33.9249, 18.4241], 'Santiago': [-33.4489, -70.6693],
+            'Lima': [-12.0464, -77.0428], 'Bogota': [4.7110, -74.0721], 'Quito': [-0.1807, -78.4678],
+            'San Jose': [9.9281, -84.0907], 'Kingston': [18.0179, -76.8099]
+        };
+        
+        // Get country code from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const countryCode = urlParams.get('code') || 'nl';
+        
+        console.log('Country code:', countryCode);
+        console.log('Available countries:', Object.keys(COUNTRY_DETAILS));
+        console.log('Country data exists:', !!COUNTRY_DETAILS[countryCode]);
+        
+        const countryData = COUNTRY_DETAILS[countryCode];
+        const facts = COUNTRY_FACTS[countryCode] || {};
+        
+        if (!countryData) {
+            console.error('Country not found:', countryCode);
+            document.getElementById('countryName').textContent = 'Country Not Found: ' + countryCode;
+            document.getElementById('heroSubtitle').textContent = 'Available: ' + Object.keys(COUNTRY_DETAILS).slice(0, 10).join(', ') + '...';
+        } else {
+            // Update page title
+            document.title = `${countryData.name} | MSP Alumni Network`;
+            
+            // Hero flag background
+            document.getElementById('heroFlagBg').style.backgroundImage = `url('https://flagcdn.com/w1280/${countryCode}.png')`;
+            
+            // Country name and subtitle
+            document.getElementById('countryName').textContent = countryData.name;
+            document.getElementById('heroSubtitle').textContent = `${countryData.count} MSP alumni living in ${countryData.name}`;
+            document.getElementById('totalAlumni').textContent = countryData.count;
+            
+            // Country facts with emojis
+            const factsContainer = document.getElementById('countryFacts');
+            const factItems = [
+                { emoji: '', label: 'Capital', value: facts.capital || 'N/A' },
+                { emoji: '', label: 'Currency', value: facts.currency || 'N/A' },
+                { emoji: '', label: 'Language', value: facts.language || 'N/A' },
+                { emoji: '', label: 'Population', value: facts.population || 'N/A' },
+                { emoji: '', label: 'Continent', value: facts.continent || 'N/A' },
+                { emoji: '', label: 'Timezone', value: facts.timezone || 'N/A' }
+            ];
+            
+            factItems.forEach(fact => {
+                factsContainer.innerHTML += `
+                    <div class="fact-item">
+                        <span class="fact-emoji">${fact.emoji}</span>
+                        <div class="fact-info">
+                            <div class="fact-label">${fact.label}</div>
+                            <div class="fact-value">${fact.value}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // Top Cities with enhanced styling
+            const citiesList = document.getElementById('citiesList');
+            const maxCityCount = countryData.cities ? Math.max(...countryData.cities.map(c => c.count)) : 1;
+            (countryData.cities || []).forEach((city, index) => {
+                const barWidth = (city.count / maxCityCount * 100).toFixed(0);
+                citiesList.innerHTML += `
+                    <div class="city-item">
+                        <div class="city-rank">${index + 1}</div>
+                        <div class="city-name">${city.name}</div>
+                        <div class="city-bar">
+                            <div class="city-bar-fill" style="width: ${barWidth}%"></div>
+                        </div>
+                        <div class="city-count">${city.count}</div>
+                    </div>
+                `;
+            });
+            
+            // Nationalities with flags
+            const natList = document.getElementById('nationalitiesList');
+            const maxNatCount = countryData.nationalities ? Math.max(...countryData.nationalities.map(n => n.count)) : 1;
+            (countryData.nationalities || []).forEach(nat => {
+                const barWidth = (nat.count / maxNatCount * 100).toFixed(0);
+                natList.innerHTML += `
+                    <div class="nat-item">
+                        <img src="https://flagcdn.com/w80/${nat.code}.png" alt="${nat.name}" class="nat-flag">
+                        <div class="nat-name">${nat.name}</div>
+                        <div class="nat-bar">
+                            <div class="nat-bar-fill" style="width: ${barWidth}%"></div>
+                        </div>
+                        <div class="nat-count">${nat.count}</div>
+                    </div>
+                `;
+            });
+            
+            // Universities with logos
+            const uniGrid = document.getElementById('universitiesGrid');
+            (countryData.universities || []).forEach(uni => {
+                const logoFile = UNI_LOGO_FILES[uni.name];
+                const logoHtml = logoFile 
+                    ? `<img src="assets/logos/${logoFile}" alt="${uni.name}" onerror="this.parentElement.innerHTML='<i data-lucide=\\'graduation-cap\\'></i>'; lucide.createIcons();">`
+                    : `<i data-lucide="graduation-cap"></i>`;
+                    
+                uniGrid.innerHTML += `
+                    <div class="university-card" data-university-name="${uni.name.replace(/"/g, '&quot;')}">
+                        <div class="university-logo">${logoHtml}</div>
+                        <div class="university-info">
+                            <div class="university-name">${uni.name}</div>
+                            <div class="university-count"><strong>${uni.count}</strong> alumni</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            lucide.createIcons();
+            
+            // Add click handlers for university cards
+            document.querySelectorAll('.university-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const uniName = this.dataset.universityName;
+                    const uniInfo = UNIVERSITY_INFO[uniName];
+                    
+                    if (!uniInfo) {
+                        console.log('No detailed info available for:', uniName);
+                        return;
+                    }
+                    
+                    // Get modal elements
+                    const modal = document.getElementById('universityModal');
+                    const modalLogo = document.getElementById('modalLogo');
+                    const modalUniName = document.getElementById('modalUniName');
+                    const modalLocation = document.getElementById('modalLocation');
+                    const modalFounded = document.getElementById('modalFounded');
+                    const modalStudents = document.getElementById('modalStudents');
+                    const modalDescription = document.getElementById('modalDescription');
+                    const modalWebsite = document.getElementById('modalWebsite');
+                    
+                    // Populate modal with university info
+                    modalUniName.textContent = uniName;
+                    modalLocation.textContent = uniInfo.location;
+                    modalFounded.textContent = uniInfo.founded;
+                    modalStudents.textContent = uniInfo.students;
+                    modalDescription.textContent = uniInfo.description;
+                    modalWebsite.href = uniInfo.website;
+                    
+                    // Set logo in modal
+                    const logoFile = UNI_LOGO_FILES[uniName];
+                    if (logoFile) {
+                        modalLogo.innerHTML = `<img src="assets/logos/${logoFile}" alt="${uniName}">`;
+                    } else {
+                        modalLogo.innerHTML = '<i data-lucide="graduation-cap"></i>';
+                    }
+                    
+                    // Show modal
+                    modal.classList.add('active');
+                    lucide.createIcons();
+                });
+            });
+            
+            // Modal close functionality
+            const modal = document.getElementById('universityModal');
+            const modalClose = document.getElementById('modalClose');
+            
+            modalClose.addEventListener('click', function() {
+                modal.classList.remove('active');
+            });
+            
+            // Close modal when clicking outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+            
+            // Close modal with ESC key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modal.classList.contains('active')) {
+                    modal.classList.remove('active');
+                }
+            });
+            
+            // Map with multiple markers. The shared frame (site-nav.js) wraps
+            // the page into the content column after DOMContentLoaded and fires
+            // 'msp:frame'; the map is built then so Leaflet measures the final
+            // container and fitBounds is right. 'load' is the fallback.
+            let countryMapBuilt = false;
+            function buildCountryMap() {
+                if (countryMapBuilt || !countryData.coords) return;
+                countryMapBuilt = true;
+                const map = L.map('countryMap').setView(countryData.coords, 6);
+                // Basemap: Esri light gray canvas (keyless; Carto now watermarks unkeyed use)
+                L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+                    attribution: 'Tiles &copy; Esri, HERE, Garmin, OpenStreetMap contributors',
+                    maxZoom: 16
+                }).addTo(map);
+                L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
+                    maxZoom: 16
+                }).addTo(map);
+                
+                // Add city markers
+                (countryData.cities || []).forEach((city, index) => {
+                    const coords = CITY_COORDS[city.name];
+                    if (coords) {
+                        const radius = Math.min(Math.max(city.count / 5, 8), 25);
+                        L.circleMarker(coords, {
+                            radius: radius,
+                            fillColor: '#E84E10',
+                            color: '#fff',
+                            weight: 2,
+                            fillOpacity: 0.85
+                        }).addTo(map).bindPopup(`
+                            <strong>${city.name}</strong><br>
+                            <span style="color: #E84E10; font-weight: 700;">${city.count}</span> alumni
+                        `);
+                    }
+                });
+                
+                // Fit bounds to show all markers
+                const allCoords = (countryData.cities || [])
+                    .map(c => CITY_COORDS[c.name])
+                    .filter(c => c);
+                    
+                if (allCoords.length > 1) {
+                    map.fitBounds(allCoords, { padding: [50, 50] });
+                }
+
+                // Keep Leaflet's size in step with the column (sidebar breakpoints, drawer)
+                if (window.ResizeObserver) {
+                    new ResizeObserver(() => map.invalidateSize()).observe(document.getElementById('countryMap'));
+                }
+                window.addEventListener('resize', () => map.invalidateSize());
+            }
+            document.addEventListener('msp:frame', buildCountryMap);
+            window.addEventListener('load', buildCountryMap);
+        }
+    </script>
+<!-- Shared MSP frame: the sidebar is built from the config in site-nav.js -->
+    <script src="assets/msp-ui/msp-shell.js"></script>
+    <script>window.MSP_SHELL_OPTS = { active: 'destinations.html' };</script>
+    <script src="site-nav.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+    </script>
+</body>
+</html>

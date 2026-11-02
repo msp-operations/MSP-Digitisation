@@ -1,0 +1,2779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#001C3D">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="MSP Alumni">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192x192.png">
+    <title>Join the Community | MSP Alumni Network</title>
+    <link rel="icon" type="image/png" href="assets/logos/maastricht-science-programme-logo.png">
+    <meta name="description" content="Stay connected with MSP graduates across 59 countries. Get exclusive updates, join WhatsApp groups, win merch, and be part of a global network." data-text-template="Stay connected with {totalAlumni-formatted} MSP graduates across {countriesLivingIn} countries. Get exclusive updates, join WhatsApp groups, win merch, and be part of a global network.">
+    
+    <!-- Fonts -->
+    <link rel="stylesheet" href="assets/fonts/fonts.css">
+    <link rel="stylesheet" href="shared.css">
+
+    <!-- Lucide Icons -->
+    <script src="assets/vendor/lucide-0.576.0/lucide.js"></script>
+    <script src="data.js"></script>
+    <script src="data-bind.js"></script>
+    
+    <style>
+        :root {
+            --um-dark-blue: #001C3D;
+            --um-light-blue: #00A2DB;
+            --um-orange: #E84E10;
+            --um-white: #FFFFFF;
+            --um-gray-50: #f8fafc;
+            --um-gray-100: #f1f5f9;
+            --um-gray-200: #e2e8f0;
+            --um-gray-300: #cbd5e1;
+            --um-gray-400: #94a3b8;
+            --um-gray-500: #64748b;
+            --um-gray-600: #475569;
+            --um-gray-700: #334155;
+            --whatsapp-green: #25D366;
+            --whatsapp-dark: #128C7E;
+            --instagram-pink: #E1306C;
+            --linkedin-blue: #0077B5;
+            
+            --font-heading: var(--font-display);
+            --font-body: 'Plus Jakarta Sans', sans-serif;
+            
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
+            --shadow-xl: 0 20px 60px rgba(0,0,0,0.15);
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-xl: 28px;
+        }
+        
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { 
+            font-family: var(--font-body); 
+            font-size: 16px; 
+            line-height: 1.7; 
+            color: var(--um-dark-blue); 
+            background: var(--um-white);
+            overflow-x: hidden;
+        }
+        h1, h2, h3, h4 { font-family: var(--font-heading); line-height: 1.2; letter-spacing: -0.02em; }
+        a { color: var(--um-light-blue); text-decoration: none; transition: color 0.2s; }
+        a:hover { color: var(--um-orange); }
+        
+        /* Header */
+        header {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--um-gray-200);
+            padding: 0 50px;
+            height: 72px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            transition: box-shadow 0.3s;
+        }
+        header.scrolled { box-shadow: var(--shadow-md); }
+        .logo { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+        .logo-img { height: 44px; }
+        .logo-text h1 { font-size: 15px; font-weight: 700; color: var(--um-dark-blue); margin: 0; }
+        .logo-text p { font-size: 11px; color: var(--um-gray-500); margin: 0; }
+        .header-nav { display: flex; gap: 6px; align-items: center; }
+        .header-nav a { font-size: 14px; font-weight: 500; padding: 10px 18px; border-radius: var(--radius-sm); color: var(--um-gray-600); transition: all 0.2s; }
+        .header-nav a:hover { background: var(--um-gray-100); color: var(--um-dark-blue); }
+        .header-nav a.active { background: rgba(0,162,219,0.1); color: var(--um-light-blue); }
+        .header-nav .btn-cta { 
+            background: linear-gradient(135deg, var(--um-orange), #d94008); 
+            color: white; 
+            margin-left: 12px;
+            box-shadow: 0 4px 15px rgba(232,78,16,0.3);
+        }
+        .header-nav .btn-cta:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(232,78,16,0.4); color: white; }
+
+        /* Mobile menu toggle button */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            z-index: 1002;
+            width: 32px;
+            height: 32px;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: var(--um-dark-blue);
+            border-radius: 2px;
+            position: absolute;
+            left: 5px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .menu-toggle span:nth-child(1) { top: 8px; }
+        .menu-toggle span:nth-child(2) { top: 15px; }
+        .menu-toggle span:nth-child(3) { top: 22px; }
+
+        .menu-toggle.open span:nth-child(1) {
+            top: 15px;
+            transform: rotate(45deg);
+        }
+
+        .menu-toggle.open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-toggle.open span:nth-child(3) {
+            top: 15px;
+            transform: rotate(-45deg);
+        }
+
+        header.scrolled .menu-toggle span {
+            background: white;
+        }
+
+        /* Mobile nav overlay */
+        @media (max-width: 900px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            .header-nav {
+                position: fixed;
+                top: 0;
+                right: 0;
+                width: 280px;
+                height: 100vh;
+                height: 100dvh;
+                background: white;
+                flex-direction: column;
+                align-items: stretch;
+                padding: 80px 24px 32px;
+                gap: 0;
+                box-shadow: -4px 0 24px rgba(0,0,0,0.12);
+                transform: translateX(100%);
+                visibility: hidden;
+                transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.35s;
+                z-index: 1001;
+                overflow-y: auto;
+            }
+
+            .header-nav.open {
+                transform: translateX(0);
+                visibility: visible;
+            }
+
+            .header-nav a {
+                font-size: 16px;
+                padding: 14px 16px;
+                border-radius: var(--radius-sm);
+                color: var(--um-gray-600);
+                border-bottom: 1px solid var(--um-gray-100);
+            }
+
+            .header-nav a:last-child {
+                border-bottom: none;
+            }
+
+            .header-nav a:hover,
+            .header-nav a.active {
+                background: var(--um-gray-50);
+                color: var(--um-dark-blue);
+            }
+
+            .header-nav .btn-cta {
+                margin-left: 0;
+                margin-top: 12px;
+                text-align: center;
+            }
+        }
+
+        /* ============================================
+           HERO SECTION
+        ============================================ */
+        .hero {
+            background: linear-gradient(165deg, var(--um-dark-blue) 0%, #002a5c 50%, #003366 100%);
+            padding: 140px 50px 100px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-pattern {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+        
+        .hero-glow {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            animation: glowPulse 8s ease-in-out infinite;
+        }
+        .hero-glow-1 { width: 500px; height: 500px; background: rgba(0,162,219,0.15); top: -150px; right: 5%; }
+        .hero-glow-2 { width: 400px; height: 400px; background: rgba(37,211,102,0.1); bottom: -100px; left: 10%; animation-delay: -4s; }
+        
+        @keyframes glowPulse {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
+        .particle-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 25px;
+        }
+        .hero-badge i { width: 16px; height: 16px; color: var(--whatsapp-green); }
+        
+        .hero h1 {
+            font-size: 52px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 20px;
+            letter-spacing: -0.03em;
+        }
+        .hero h1 .highlight { 
+            background: linear-gradient(135deg, var(--um-orange), #ff6b35);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero p {
+            font-size: 20px;
+            color: rgba(255,255,255,0.8);
+            max-width: 650px;
+            margin: 0 auto 40px;
+            line-height: 1.7;
+        }
+        
+        /* Hero Social Buttons - Three in a row */
+        .hero-social-row {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .hero-social-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 28px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 15px;
+            color: white;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        .hero-social-btn i { width: 22px; height: 22px; }
+        
+        .hero-social-btn.whatsapp {
+            background: linear-gradient(135deg, var(--whatsapp-green), var(--whatsapp-dark));
+            box-shadow: 0 8px 25px rgba(37,211,102,0.3);
+        }
+        .hero-social-btn.whatsapp:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(37,211,102,0.4);
+            color: white;
+        }
+        
+        .hero-social-btn.instagram {
+            background: linear-gradient(135deg, #833AB4, #E1306C, #F77737);
+            box-shadow: 0 8px 25px rgba(225,48,108,0.3);
+        }
+        .hero-social-btn.instagram:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(225,48,108,0.4);
+            color: white;
+        }
+        
+        .hero-social-btn.linkedin {
+            background: linear-gradient(135deg, #0077B5, #00a0dc);
+            box-shadow: 0 8px 25px rgba(0,119,181,0.3);
+        }
+        .hero-social-btn.linkedin:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0,119,181,0.4);
+            color: white;
+        }
+        
+        /* Update Info Button Below */
+        .hero-update-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 18px 36px;
+            background: white;
+            color: var(--um-dark-blue);
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 17px;
+            transition: all 0.3s;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        }
+        .hero-update-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+            color: var(--um-dark-blue);
+        }
+        .hero-update-btn i { width: 22px; height: 22px; color: var(--um-orange); }
+        
+        /* ============================================
+           WHY WE NEED YOU SECTION
+        ============================================ */
+        .why-section {
+            padding: 100px 50px;
+            background: white;
+        }
+        .why-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .why-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .why-header h2 {
+            font-size: 38px;
+            font-weight: 700;
+            color: var(--um-dark-blue);
+            margin-bottom: 20px;
+        }
+        .why-intro {
+            font-size: 18px;
+            color: var(--um-gray-600);
+            line-height: 1.9;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .why-benefits {
+            background: var(--um-gray-50);
+            border-radius: var(--radius-xl);
+            padding: 50px;
+            margin-top: 40px;
+        }
+        .why-benefits h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--um-dark-blue);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+        .benefit-item {
+            display: flex;
+            gap: 16px;
+            padding: 20px;
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+        .benefit-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .benefit-icon i { width: 24px; height: 24px; }
+        .benefit-icon.whatsapp { background: rgba(37,211,102,0.1); color: var(--whatsapp-green); }
+        .benefit-icon.instagram { background: rgba(225,48,108,0.1); color: var(--instagram-pink); }
+        .benefit-icon.linkedin { background: rgba(0,119,181,0.1); color: var(--linkedin-blue); }
+        .benefit-icon.newsletter { background: rgba(0,162,219,0.1); color: var(--um-light-blue); }
+        .benefit-icon.events { background: rgba(232,78,16,0.1); color: var(--um-orange); }
+        .benefit-icon.meetups { background: rgba(0,28,61,0.1); color: var(--um-dark-blue); }
+        
+        .benefit-text h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--um-dark-blue);
+            margin-bottom: 6px;
+        }
+        .benefit-text p {
+            font-size: 14px;
+            color: var(--um-gray-600);
+            line-height: 1.6;
+            margin: 0;
+        }
+        
+        /* ============================================
+           FORM CARDS SECTION (Share Story + Update Info)
+        ============================================ */
+        .forms-section {
+            padding: 100px 50px;
+            background: var(--um-gray-50);
+        }
+        .forms-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 60px;
+        }
+        
+        /* Share Your Story Card */
+        .story-card {
+            background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 50%, #fbcfe8 100%);
+            border-radius: var(--radius-xl);
+            padding: 60px;
+            display: grid;
+            grid-template-columns: 1.3fr 0.7fr;
+            gap: 60px;
+            align-items: center;
+        }
+        
+        .story-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(219,39,119,0.1);
+            padding: 10px 20px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #db2777;
+            margin-bottom: 20px;
+        }
+        .story-badge i { width: 16px; height: 16px; }
+        
+        .story-text h2 {
+            font-size: 38px;
+            font-weight: 700;
+            color: var(--um-dark-blue);
+            margin-bottom: 16px;
+        }
+        .story-text > p {
+            font-size: 17px;
+            color: var(--um-gray-600);
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+        
+        .story-what-we-need {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 25px 30px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow-sm);
+        }
+        .story-what-we-need h4 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--um-dark-blue);
+            margin-bottom: 16px;
+        }
+        .story-what-we-need ul {
+            list-style: none;
+        }
+        .story-what-we-need ul li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            color: var(--um-gray-600);
+            font-size: 15px;
+        }
+        .story-what-we-need ul li i { width: 20px; height: 20px; color: #db2777; flex-shrink: 0; }
+        
+        .story-note {
+            font-size: 14px;
+            color: var(--um-gray-500);
+            margin-bottom: 25px;
+        }
+        .story-note strong { color: var(--um-dark-blue); }
+        
+        .story-submit-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 32px;
+            background: linear-gradient(135deg, #db2777, #be185d);
+            color: white;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s;
+            box-shadow: 0 8px 25px rgba(219,39,119,0.3);
+        }
+        .story-submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(219,39,119,0.4);
+            color: white;
+        }
+        .story-submit-btn i { width: 20px; height: 20px; }
+        
+        /* Instagram Mockup */
+        .story-preview {
+            display: flex;
+            justify-content: center;
+        }
+        .instagram-mockup {
+            background: white;
+            border-radius: 20px;
+            width: 300px;
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+        }
+        .instagram-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--um-gray-100);
+        }
+        .instagram-header svg { width: 24px; height: 24px; }
+        .instagram-header span { font-weight: 600; font-size: 14px; color: var(--um-dark-blue); }
+        .instagram-image {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, var(--um-gray-100), var(--um-gray-50));
+        }
+        .instagram-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--um-gray-400);
+        }
+        .instagram-placeholder i { width: 60px; height: 60px; margin-bottom: 12px; }
+        .instagram-placeholder span { font-size: 14px; font-weight: 500; }
+        .instagram-caption {
+            padding: 14px 16px;
+        }
+        .instagram-caption p {
+            font-size: 13px;
+            color: var(--um-gray-600);
+            line-height: 1.5;
+            margin: 0;
+        }
+        .instagram-caption strong { color: var(--um-dark-blue); }
+        .instagram-actions {
+            display: flex;
+            gap: 16px;
+            padding: 0 16px 16px;
+        }
+        .instagram-actions i { width: 24px; height: 24px; color: var(--um-gray-700); }
+        
+        /* ============================================
+           UPDATE INFO CARD — NODE DIAGRAM FORM
+        ============================================ */
+        .update-card {
+            background: linear-gradient(145deg, #001C3D 0%, #002a5c 60%, #003875 100%);
+            border-radius: var(--radius-xl);
+            padding: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+        .update-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(rgba(0,162,219,0.06) 1px, transparent 1px);
+            background-size: 28px 28px;
+            pointer-events: none;
+        }
+
+        .update-card-header {
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 1;
+        }
+        .update-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0,162,219,0.15);
+            border: 1px solid rgba(0,162,219,0.3);
+            padding: 10px 20px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--um-light-blue);
+            margin-bottom: 20px;
+        }
+        .update-badge i { width: 16px; height: 16px; }
+        .update-card-header h2 {
+            font-size: 38px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 12px;
+        }
+        .update-card-header > p {
+            font-size: 17px;
+            color: rgba(255,255,255,0.65);
+            line-height: 1.8;
+            max-width: 700px;
+        }
+
+        /* Identity row at top */
+        .update-identity-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 1;
+        }
+        .update-field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+        .update-field-group label {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.5);
+        }
+        .update-field-group input,
+        .update-field-group select {
+            padding: 13px 16px;
+            border: 1.5px solid rgba(255,255,255,0.12);
+            border-radius: var(--radius-sm);
+            font-family: var(--font-body);
+            font-size: 15px;
+            color: white;
+            background: rgba(255,255,255,0.07);
+            outline: none;
+            transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        .update-field-group input::placeholder { color: rgba(255,255,255,0.3); }
+        .update-field-group input:focus,
+        .update-field-group select:focus {
+            border-color: var(--um-light-blue);
+            background: rgba(0,162,219,0.1);
+            box-shadow: 0 0 0 3px rgba(0,162,219,0.15);
+        }
+        .update-field-group select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.4)' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 40px;
+            cursor: pointer;
+        }
+        .update-field-group select option { background: #001C3D; color: white; }
+
+        /* Node diagram wrapper */
+        .node-diagram-wrapper {
+            position: relative;
+            z-index: 1;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: var(--radius-lg);
+            padding: 50px 40px 40px;
+            margin-bottom: 32px;
+        }
+
+        /* Central node */
+        .node-center {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            /* vertical stem going down to branches */
+            padding-bottom: 40px;
+        }
+        /* The vertical line from center node downward */
+        .node-center::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 40px;
+            background: linear-gradient(to bottom, rgba(0,162,219,0.7), rgba(0,162,219,0.2));
+        }
+
+        .node-bubble-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, var(--um-light-blue), #0090c5);
+            border-radius: 20px;
+            padding: 22px 44px;
+            box-shadow: 0 0 0 8px rgba(0,162,219,0.12), 0 16px 50px rgba(0,162,219,0.35);
+            cursor: default;
+            position: relative;
+            z-index: 2;
+        }
+        .node-bubble-center .node-icon { font-size: 26px; }
+        .node-bubble-center .node-label {
+            font-size: 16px;
+            font-weight: 700;
+            color: white;
+            letter-spacing: 0.02em;
+        }
+        .node-bubble-center .node-sublabel {
+            font-size: 12px;
+            color: rgba(255,255,255,0.75);
+        }
+
+        /* Horizontal bar connecting all branch columns */
+        .node-connector-bar {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 0;
+        }
+        .node-connector-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 14%;
+            right: 14%;
+            height: 2px;
+            background: linear-gradient(to right,
+                transparent,
+                rgba(0,162,219,0.5) 15%,
+                rgba(0,162,219,0.5) 85%,
+                transparent
+            );
+        }
+
+        /* Branch rows */
+        .node-branches {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            padding-top: 0;
+        }
+
+        /* Branch group */
+        .node-branch {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            position: relative;
+            /* vertical stem from top of each branch upward to connector bar */
+            padding-top: 28px;
+        }
+        .node-branch::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 28px;
+            background: linear-gradient(to bottom, rgba(0,162,219,0.3), rgba(0,162,219,0.6));
+        }
+
+        /* Branch header bubble (clickable) */
+        .node-branch-head {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 18px 22px;
+            border-radius: var(--radius-md);
+            border: 2px solid rgba(255,255,255,0.14);
+            background: rgba(255,255,255,0.07);
+            cursor: pointer;
+            transition: all 0.25s;
+            user-select: none;
+            position: relative;
+        }
+        .node-branch-head:hover {
+            border-color: rgba(0,162,219,0.6);
+            background: rgba(0,162,219,0.12);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+        .node-branch-head.active {
+            border-color: var(--um-light-blue);
+            background: rgba(0,162,219,0.18);
+            box-shadow: 0 0 0 4px rgba(0,162,219,0.12), 0 6px 20px rgba(0,0,0,0.2);
+        }
+        .node-branch-head.location-head { border-color: rgba(232,78,16,0.35); }
+        .node-branch-head.location-head:hover { border-color: var(--um-orange); background: rgba(232,78,16,0.12); }
+        .node-branch-head.location-head.active { border-color: var(--um-orange); background: rgba(232,78,16,0.18); box-shadow: 0 0 0 4px rgba(232,78,16,0.12), 0 6px 20px rgba(0,0,0,0.2); }
+
+        .branch-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .branch-icon.blue   { background: rgba(0,162,219,0.25);  border: 1px solid rgba(0,162,219,0.3); }
+        .branch-icon.orange { background: rgba(232,78,16,0.25);  border: 1px solid rgba(232,78,16,0.3); }
+        .branch-icon.green  { background: rgba(34,197,94,0.2);   border: 1px solid rgba(34,197,94,0.3); }
+        .branch-icon.purple { background: rgba(168,85,247,0.2);  border: 1px solid rgba(168,85,247,0.3); }
+        .branch-icon.yellow { background: rgba(234,179,8,0.2);   border: 1px solid rgba(234,179,8,0.3); }
+        .branch-icon.pink   { background: rgba(236,72,153,0.2);  border: 1px solid rgba(236,72,153,0.3); }
+        .branch-icon.teal   { background: rgba(20,184,166,0.2);  border: 1px solid rgba(20,184,166,0.3); }
+
+        .branch-meta { flex: 1; min-width: 0; }
+        .branch-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: white;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .branch-desc {
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+            margin-top: 2px;
+        }
+        .branch-toggle {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(255,255,255,0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            line-height: 1;
+            color: rgba(255,255,255,0.6);
+            transition: all 0.25s;
+            flex-shrink: 0;
+        }
+        .node-branch-head.active .branch-toggle {
+            background: var(--um-light-blue);
+            border-color: var(--um-light-blue);
+            color: white;
+            transform: rotate(45deg);
+        }
+        .node-branch-head.location-head.active .branch-toggle {
+            background: var(--um-orange);
+            border-color: var(--um-orange);
+        }
+
+        /* Expanding fields panel */
+        .branch-fields {
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.3s;
+            opacity: 0;
+        }
+        .branch-fields.open {
+            max-height: 300px;
+            opacity: 1;
+        }
+        .branch-fields-inner {
+            padding: 12px 0 4px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border-left: 2px solid rgba(0,162,219,0.25);
+            margin-left: 18px;
+            margin-top: 8px;
+            padding-left: 20px;
+        }
+        .branch-fields-inner.orange-line { border-left-color: rgba(232,78,16,0.35); }
+
+        .branch-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .branch-input-label {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.4);
+        }
+        .branch-input,
+        .branch-textarea {
+            padding: 10px 14px;
+            border: 1.5px solid rgba(255,255,255,0.1);
+            border-radius: var(--radius-sm);
+            font-family: var(--font-body);
+            font-size: 13px;
+            color: white;
+            background: rgba(255,255,255,0.05);
+            outline: none;
+            transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        .branch-input::placeholder,
+        .branch-textarea::placeholder { color: rgba(255,255,255,0.25); }
+        .branch-input:focus,
+        .branch-textarea:focus {
+            border-color: var(--um-light-blue);
+            background: rgba(0,162,219,0.08);
+            box-shadow: 0 0 0 2px rgba(0,162,219,0.12);
+        }
+        .branch-textarea { resize: none; min-height: 70px; }
+
+        /* Extras row at bottom */
+        .update-extras {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr 2fr;
+            gap: 14px;
+            margin-bottom: 28px;
+        }
+        .update-extras-label {
+            grid-column: 1 / -1;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.35);
+            padding-bottom: 4px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        /* Submit area */
+        .update-submit-area {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .update-privacy-note {
+            font-size: 13px;
+            color: rgba(255,255,255,0.4);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .update-privacy-note svg { width: 13px; height: 13px; opacity: 0.5; }
+
+        .update-submit-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 40px;
+            background: linear-gradient(135deg, var(--um-light-blue), #0090c5);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 25px rgba(0,162,219,0.35);
+        }
+        .update-submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(0,162,219,0.5);
+        }
+        .update-submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .update-submit-btn i { width: 18px; height: 18px; }
+
+        /* Success */
+        .update-success {
+            display: none;
+            text-align: center;
+            padding: 60px 32px;
+            position: relative;
+            z-index: 1;
+        }
+        .update-success.visible { display: block; }
+        .update-success-ring {
+            width: 72px; height: 72px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 0 12px rgba(34,197,94,0.12);
+        }
+        .update-success-ring i { width: 34px; height: 34px; color: white; }
+        .update-success h3 { font-size: 26px; font-weight: 700; color: white; margin-bottom: 10px; }
+        .update-success p { font-size: 15px; color: rgba(255,255,255,0.6); max-width: 500px; margin: 0 auto; }
+
+        /* Error */
+        .update-error-msg {
+            display: none;
+            background: rgba(220,38,38,0.1);
+            border: 1px solid rgba(220,38,38,0.3);
+            color: #fca5a5;
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            margin-top: 14px;
+            position: relative; z-index: 1;
+        }
+        .update-error-msg.visible { display: block; }
+
+        @media (max-width: 768px) {
+            .update-identity-row { grid-template-columns: 1fr; }
+            .node-branches { grid-template-columns: 1fr; }
+            .update-extras { grid-template-columns: 1fr; }
+        }
+        
+        /* ============================================
+           PLATFORM CARDS SECTION (Instagram, WhatsApp, LinkedIn)
+        ============================================ */
+        .platforms-section {
+            padding: 100px 50px;
+            background: white;
+        }
+        .platforms-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+        .platforms-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        .platforms-header h2 {
+            font-size: 38px;
+            font-weight: 700;
+            color: var(--um-dark-blue);
+            margin-bottom: 16px;
+        }
+        .platforms-header p {
+            font-size: 18px;
+            color: var(--um-gray-500);
+        }
+        
+        /* Instagram Platform Card */
+        .instagram-section {
+            padding: 80px 50px;
+            background: linear-gradient(135deg, #833AB4 0%, #E1306C 50%, #F77737 100%);
+            position: relative;
+            overflow: hidden;
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+        }
+        .instagram-pattern {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='15' y='15' width='30' height='30' rx='8' fill='none' stroke='%23ffffff' stroke-opacity='0.05' stroke-width='2'/%3E%3C/svg%3E");
+            background-size: 60px 60px;
+        }
+        
+        .instagram-content {
+            max-width: 900px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .instagram-text h2 {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .instagram-logo {
+            width: 50px;
+            height: 50px;
+        }
+        .instagram-text p {
+            font-size: 18px;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+        
+        .instagram-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 35px;
+        }
+        .instagram-features span {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.15);
+            padding: 10px 18px;
+            border-radius: 100px;
+            font-size: 14px;
+            color: white;
+            font-weight: 500;
+        }
+        .instagram-features span i { width: 16px; height: 16px; }
+        
+        .instagram-join-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 36px;
+            background: white;
+            color: #E1306C;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 17px;
+            transition: all 0.3s;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        }
+        .instagram-join-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+            color: #E1306C;
+        }
+        .instagram-join-btn i { width: 24px; height: 24px; }
+        
+        .instagram-preview-box {
+            background: rgba(255,255,255,0.1);
+            border-radius: var(--radius-xl);
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+        .instagram-preview-box h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.8);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+        .instagram-handle {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 10px;
+        }
+        .instagram-handle-sub {
+            font-size: 14px;
+            color: rgba(255,255,255,0.7);
+        }
+        
+        /* WhatsApp Platform Card */
+        .whatsapp-section {
+            padding: 80px 50px;
+            background: linear-gradient(165deg, #075E54 0%, #128C7E 50%, #25D366 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .whatsapp-pattern {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5c13.8 0 25 11.2 25 25S43.8 55 30 55 5 43.8 5 30 16.2 5 30 5zm0 5C19 10 10 19 10 30s9 20 20 20 20-9 20-20-9-20-20-20zm-3 30l-8-8 2.8-2.8L27 34.4l11.2-11.2L41 26 27 40z' fill='%23ffffff' fill-opacity='0.03'/%3E%3C/svg%3E");
+            background-size: 60px 60px;
+        }
+        
+        .whatsapp-content {
+            max-width: 900px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .whatsapp-text h2 {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .whatsapp-logo {
+            width: 50px;
+            height: 50px;
+        }
+        .whatsapp-text p {
+            font-size: 18px;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+        
+        .whatsapp-stats {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 35px;
+        }
+        .whatsapp-stat {
+            text-align: left;
+        }
+        .whatsapp-stat-number {
+            font-family: var(--font-heading);
+            font-size: 48px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+        }
+        .whatsapp-stat-label {
+            font-size: 14px;
+            color: rgba(255,255,255,0.7);
+            margin-top: 6px;
+        }
+        
+        .whatsapp-join-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 36px;
+            background: white;
+            color: var(--whatsapp-dark);
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 17px;
+            transition: all 0.3s;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        }
+        .whatsapp-join-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+            color: var(--whatsapp-dark);
+        }
+        .whatsapp-join-btn i { width: 24px; height: 24px; }
+        
+        /* Country groups preview */
+        .country-groups {
+            background: rgba(255,255,255,0.1);
+            border-radius: var(--radius-xl);
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+        .country-groups h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.8);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+        .country-flags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .country-flag {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.15);
+            padding: 8px 14px;
+            border-radius: 100px;
+            font-size: 13px;
+            color: white;
+            font-weight: 500;
+        }
+        .country-flag img {
+            width: 20px;
+            height: 14px;
+            border-radius: 2px;
+        }
+        .country-flag.more {
+            background: rgba(255,255,255,0.25);
+        }
+        
+        /* LinkedIn Platform Card */
+        .linkedin-section {
+            padding: 80px 50px;
+            background: linear-gradient(165deg, #004182 0%, #0077B5 50%, #00a0dc 100%);
+            position: relative;
+            overflow: hidden;
+            border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+        }
+        .linkedin-pattern {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='20' y='20' width='20' height='20' fill='%23ffffff' fill-opacity='0.03'/%3E%3C/svg%3E");
+            background-size: 60px 60px;
+        }
+        
+        .linkedin-content {
+            max-width: 900px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .linkedin-text h2 {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .linkedin-logo {
+            width: 50px;
+            height: 50px;
+        }
+        .linkedin-text p {
+            font-size: 18px;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+        
+        .linkedin-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 35px;
+        }
+        .linkedin-features span {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.15);
+            padding: 10px 18px;
+            border-radius: 100px;
+            font-size: 14px;
+            color: white;
+            font-weight: 500;
+        }
+        .linkedin-features span i { width: 16px; height: 16px; }
+        
+        .linkedin-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .linkedin-join-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 32px;
+            background: white;
+            color: #0077B5;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        }
+        .linkedin-join-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+            color: #0077B5;
+        }
+        .linkedin-join-btn i { width: 22px; height: 22px; }
+        .linkedin-join-btn.secondary {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            box-shadow: none;
+        }
+        .linkedin-join-btn.secondary:hover {
+            background: rgba(255,255,255,0.25);
+            color: white;
+        }
+        
+        .linkedin-groups-box {
+            background: rgba(255,255,255,0.1);
+            border-radius: var(--radius-xl);
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+        .linkedin-groups-box h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.8);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+        .linkedin-group-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: var(--radius-md);
+            margin-bottom: 12px;
+        }
+        .linkedin-group-item:last-child { margin-bottom: 0; }
+        .linkedin-group-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .linkedin-group-icon i { width: 20px; height: 20px; color: white; }
+        .linkedin-group-info h5 {
+            font-size: 15px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 2px;
+        }
+        .linkedin-group-info span {
+            font-size: 12px;
+            color: rgba(255,255,255,0.7);
+        }
+        
+        /* ============================================
+           PHD SECTION
+        ============================================ */
+        .phd-section {
+            padding: 80px 50px;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            position: relative;
+        }
+        .phd-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .phd-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 28, 61, 0.08);
+            padding: 10px 20px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--um-dark-blue);
+            margin-bottom: 24px;
+        }
+        .phd-badge i { width: 16px; height: 16px; }
+        .phd-content h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--um-dark-blue);
+            margin-bottom: 16px;
+        }
+        .phd-content > p {
+            font-size: 18px;
+            color: var(--um-gray-600);
+            line-height: 1.8;
+            margin-bottom: 32px;
+        }
+        .phd-cta-box {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            box-shadow: var(--shadow-md);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .phd-cta-box p {
+            font-size: 16px;
+            color: var(--um-gray-600);
+            line-height: 1.7;
+            margin-bottom: 24px;
+        }
+        .phd-email-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: var(--um-dark-blue);
+            color: white;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+        .phd-email-btn:hover {
+            background: #002b5c;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            color: white;
+        }
+        .phd-email-btn i { width: 18px; height: 18px; }
+        
+        /* ============================================
+           MERCH SECTION
+        ============================================ */
+        .giveaways-section {
+            padding: 100px 50px;
+            background: var(--um-gray-50);
+            text-align: center;
+        }
+        .giveaways-header {
+            max-width: 700px;
+            margin: 0 auto 50px;
+        }
+        .giveaways-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(232,78,16,0.1);
+            padding: 10px 20px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--um-orange);
+            margin-bottom: 20px;
+        }
+        .giveaways-badge i { width: 16px; height: 16px; }
+        .giveaways-header h2 {
+            font-size: 38px;
+            font-weight: 700;
+            color: var(--um-dark-blue);
+            margin-bottom: 16px;
+        }
+        .giveaways-header p {
+            font-size: 18px;
+            color: var(--um-gray-500);
+            line-height: 1.7;
+        }
+        
+        .merch-grid {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            max-width: 900px;
+            margin: 0 auto 40px;
+        }
+        .merch-item {
+            background: white;
+            padding: 30px 40px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s;
+        }
+        .merch-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        .merch-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(232,78,16,0.1);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+        }
+        .merch-icon i { width: 28px; height: 28px; color: var(--um-orange); }
+        .merch-item h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--um-dark-blue);
+        }
+        
+        .merch-images-placeholder {
+            background: white;
+            border: 2px dashed var(--um-gray-300);
+            border-radius: var(--radius-lg);
+            padding: 60px;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            color: var(--um-gray-400);
+        }
+        .merch-images-placeholder i { width: 48px; height: 48px; margin-bottom: 12px; }
+        .merch-images-placeholder p { font-size: 15px; margin: 0; }
+        
+        .giveaway-note {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px 30px;
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--um-orange);
+        }
+        .giveaway-note p {
+            font-size: 15px;
+            color: var(--um-gray-600);
+            margin: 0;
+            text-align: left;
+        }
+        .giveaway-note strong { color: var(--um-dark-blue); }
+        
+        /* ============================================
+           DATA HANDLING SECTION
+        ============================================ */
+        .data-section {
+            padding: 100px 50px;
+            background: white;
+        }
+        .data-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .data-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .data-header h2 {
+            font-size: 38px;
+            font-weight: 700;
+            color: var(--um-dark-blue);
+            margin-bottom: 16px;
+        }
+        .data-header p {
+            font-size: 18px;
+            color: var(--um-gray-500);
+        }
+        
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        .data-card {
+            background: var(--um-gray-50);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+        }
+        .data-card.good {
+            border-top: 4px solid var(--whatsapp-green);
+        }
+        .data-card.never {
+            border-top: 4px solid var(--um-light-blue);
+        }
+        .data-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--um-dark-blue);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .data-card h3 i { width: 24px; height: 24px; }
+        .data-card.good h3 i { color: var(--whatsapp-green); }
+        .data-card.never h3 i { color: var(--um-light-blue); }
+        
+        .data-card ul {
+            list-style: none;
+        }
+        .data-card ul li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 0;
+            color: var(--um-gray-600);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+        .data-card ul li i { 
+            width: 20px; 
+            height: 20px; 
+            flex-shrink: 0; 
+            margin-top: 2px;
+        }
+        .data-card.good ul li i { color: var(--whatsapp-green); }
+        .data-card.never ul li i { color: var(--um-light-blue); }
+        
+        .privacy-cta {
+            text-align: center;
+            background: var(--um-gray-50);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+        }
+        .privacy-cta p {
+            font-size: 17px;
+            color: var(--um-gray-600);
+            margin-bottom: 20px;
+        }
+        .privacy-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: var(--um-dark-blue);
+            color: white;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+        .privacy-btn:hover {
+            background: #002a5c;
+            transform: translateY(-2px);
+            color: white;
+        }
+        .privacy-btn i { width: 20px; height: 20px; }
+        
+        /* ============================================
+           FOOTER
+        ============================================ */
+        footer {
+            background: var(--um-dark-blue);
+            color: rgba(255,255,255,0.7);
+            padding: 60px 50px 30px;
+        }
+        .footer-container {
+            max-width: 1200px; margin: 0 auto;
+            display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 60px; padding-bottom: 40px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .footer-brand { padding-right: 20px; }
+        .footer-logo { height: 40px; width: auto; filter: brightness(0) invert(1); margin-bottom: 16px; }
+        .footer-brand h3 { font-size: 16px; font-weight: 700; color: white; margin-bottom: 10px; }
+        .footer-brand p { font-size: 14px; line-height: 1.7; }
+        .footer-links-group h4 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.5); margin-bottom: 16px; }
+        .footer-links-group a { display: block; font-size: 14px; color: rgba(255,255,255,0.65); padding: 5px 0; transition: color var(--transition-fast); }
+        .footer-links-group a:hover { color: white; }
+        .footer-bottom { max-width: 1200px; margin: 0 auto; padding-top: 24px; font-size: 13px; color: rgba(255,255,255,0.35); }
+        
+        /* ============================================
+           RESPONSIVE
+        ============================================ */
+        @media (max-width: 900px) {
+            header { padding: 0 20px; }
+
+            .hero { padding: 120px 20px 80px; }
+            .hero h1 { font-size: 36px; }
+            .hero p { font-size: 17px; }
+            .hero-social-row { flex-direction: column; align-items: center; gap: 12px; }
+            .hero-social-btn { width: 100%; max-width: 280px; justify-content: center; }
+            
+            .why-section { padding: 60px 20px; }
+            .benefits-grid { grid-template-columns: 1fr; }
+            
+            .forms-section { padding: 60px 20px; }
+            .story-card, .update-card { 
+                grid-template-columns: 1fr; 
+                padding: 40px 30px;
+            }
+            .story-preview, .update-preview { display: none; }
+            
+            .platforms-section { padding: 60px 20px; }
+            .instagram-section, .whatsapp-section, .linkedin-section { padding: 60px 20px; }
+            .instagram-content, .whatsapp-content, .linkedin-content { grid-template-columns: 1fr; gap: 40px; }
+            .instagram-text h2, .whatsapp-text h2, .linkedin-text h2 { font-size: 32px; }
+            .whatsapp-stats { flex-direction: column; gap: 20px; }
+            
+            .phd-section { padding: 60px 20px; }
+            .phd-content h2 { font-size: 28px; }
+            .phd-cta-box { padding: 30px 20px; }
+            
+            .giveaways-section { padding: 60px 20px; }
+            .merch-grid { gap: 15px; }
+            .merch-item { padding: 20px 30px; }
+            
+            .data-section { padding: 60px 20px; }
+            .data-grid { grid-template-columns: 1fr; }
+            
+            footer { padding: 40px 20px; }
+            .footer-container { grid-template-columns: 1fr; gap: 30px; }
+        }
+            html { overflow-x: clip; } /* keeps the off-canvas phone menu and hero glow from widening the page */
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header id="header">
+        <a href="index.html" class="logo">
+            <img src="assets/logos/maastricht-science-programme-logo.png" alt="MSP" class="logo-img">
+            <div class="logo-text">
+                <h1>MSP Alumni Network</h1>
+                <p>Maastricht Science Programme</p>
+            </div>
+        </a>
+        <nav class="header-nav">
+            <a href="index.html">Home</a>
+            <a href="destinations.html">Destinations</a>
+            <a href="community.html" class="active">Community</a>
+            <a href="events.html">Events</a>
+            <a href="stories.html">Stories</a>
+            <a href="considering-msp.html" class="btn-cta">Considering MSP?</a>
+        </nav>
+        <button class="menu-toggle" onclick="toggleMobileNav(this)" aria-label="Menu"><span></span><span></span><span></span></button>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-pattern"></div>
+        <div class="hero-glow hero-glow-1"></div>
+        <div class="hero-glow hero-glow-2"></div>
+        <canvas id="particleCanvas" class="particle-canvas"></canvas>
+        
+        <div class="hero-content">
+            <div class="hero-badge">
+                <i data-lucide="users"></i>
+                <span>MSP Alumni Worldwide</span>
+            </div>
+            <h1>Join the <span class="highlight">MSP Alumni</span> Community</h1>
+            <p data-text-template="Stay connected with fellow graduates across {countriesLivingIn} countries. Get updates, win merch, and help us build something great together.">Stay connected with fellow graduates across 58 countries. Get updates, win merch, and help us build something great together.</p>
+            
+            <!-- Three social buttons in a row -->
+            <div class="hero-social-row">
+                <a href="#whatsapp-section" class="hero-social-btn whatsapp">
+                    <i data-lucide="message-circle"></i>
+                    Join WhatsApp
+                </a>
+                <a href="https://www.instagram.com/msp_alumni/" target="_blank" class="hero-social-btn instagram">
+                    <i data-lucide="instagram"></i>
+                    Follow on Instagram
+                </a>
+                <a href="#linkedin-section" class="hero-social-btn linkedin">
+                    <i data-lucide="linkedin"></i>
+                    Connect on LinkedIn
+                </a>
+            </div>
+            
+            <!-- Update info button below -->
+            <a href="#forms-section" class="hero-update-btn">
+                <i data-lucide="user-plus"></i>
+                Update Your Info
+            </a>
+        </div>
+    </section>
+
+    <!-- Why We Need You Section -->
+    <section class="why-section">
+        <div class="why-container">
+            <div class="why-header">
+                <h2>Thanks for Being Here</h2>
+                <p class="why-intro">
+                    The alumni office at MSP has been working hard to build a database so we can follow the inspiring journeys of our graduates around the world. The challenge? A lot of the emails we have are outdated, which means surveys and updates don't reach everyone. That's where you come in &mdash; by sharing some basic info, you help us plan better activities, organize events, and keep the community connected.
+                </p>
+            </div>
+            
+            <div class="why-benefits">
+                <h3>What's In It For You?</h3>
+                <div class="benefits-grid">
+                    <div class="benefit-item">
+                        <div class="benefit-icon instagram">
+                            <i data-lucide="instagram"></i>
+                        </div>
+                        <div class="benefit-text">
+                            <h4>Alumni Stories on Instagram</h4>
+                            <p>We share stories about alumni around the world &mdash; what they're up to now and their journeys since MSP.</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon instagram">
+                            <i data-lucide="gift"></i>
+                        </div>
+                        <div class="benefit-text">
+                            <h4>Quizzes & Giveaways</h4>
+                            <p>Win free MSP merch through quiz questions and giveaways on Instagram. Hoodies, zippers, and more!</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon newsletter">
+                            <i data-lucide="mail"></i>
+                        </div>
+                        <div class="benefit-text">
+                            <h4>Newsletter Updates</h4>
+                            <p>For those without Instagram, we compile alumni stories and MSP updates in a newsletter.</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon linkedin">
+                            <i data-lucide="award"></i>
+                        </div>
+                        <div class="benefit-text">
+                            <h4>Share Achievements</h4>
+                            <p>Our LinkedIn groups are the place to share academic achievements, publications, and career wins.</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon meetups">
+                            <i data-lucide="map-pin"></i>
+                        </div>
+                        <div class="benefit-text">
+                            <h4>Meetups & Gatherings</h4>
+                            <p>By knowing where alumni are, we can organize lunches, dinners, or informal gatherings in cities worldwide.</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon events">
+                            <i data-lucide="calendar"></i>
+                        </div>
+                        <div class="benefit-text">
+                            <h4>Events in Maastricht</h4>
+                            <p>The alumni conference is coming back, plus we're celebrating MSP's 15th birthday at the end of the year!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Form Cards Section -->
+    <section class="forms-section" id="forms-section">
+        <div class="forms-container">
+            <!-- Update Your Info Card — Node Diagram Form -->
+            <div class="update-card" id="update-info-section">
+                <div class="update-card-header">
+                    <div class="update-badge">
+                        <i data-lucide="network"></i>
+                        Keep Us Updated
+                    </div>
+                    <h2>Update Your Info</h2>
+                    <p>Already in the network, or just graduated? Fill in as much or as little as you like — every piece helps us keep the map accurate, plan events, and connect the right people.</p>
+                </div>
+
+                <!-- Success state -->
+                <div class="update-success" id="update-success">
+                    <div class="update-success-ring">
+                        <i data-lucide="check"></i>
+                    </div>
+                    <h3>Got it — thank you!</h3>
+                    <p>We'll update your record in the database. If you want to add anything else, just drop us an email at msp-alumni@maastrichtuniversity.nl.</p>
+                </div>
+
+                <!-- Form -->
+                <form id="alumni-node-form" action="#preview-form-disabled" method="POST">
+                    <input type="text" name="_gotcha" style="display:none">
+                    <input type="hidden" name="_subject" value="MSP Alumni Profile Update">
+
+                    <!-- Identity: always visible -->
+                    <div class="update-identity-row">
+                        <div class="update-field-group">
+                            <label>Full name *</label>
+                            <input type="text" name="name" placeholder="e.g. Jana Novak" required>
+                        </div>
+                        <div class="update-field-group">
+                            <label>Graduation year *</label>
+                            <select name="graduation_year" required>
+                                <option value="" disabled selected>Select year</option>
+                                <option>2011</option><option>2012</option><option>2013</option>
+                                <option>2014</option><option>2015</option><option>2016</option>
+                                <option>2017</option><option>2018</option><option>2019</option>
+                                <option>2020</option><option>2021</option><option>2022</option>
+                                <option>2023</option><option>2024</option><option>2025</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Node diagram -->
+                    <div class="node-diagram-wrapper" id="node-diagram">
+
+                        <!-- Central node -->
+                        <div class="node-center" id="node-center-el">
+                            <div class="node-bubble-center">
+                                <span class="node-icon">🎓</span>
+                                <span class="node-label">Your MSP Profile</span>
+                                <span class="node-sublabel">Click any category to expand</span>
+                            </div>
+                        </div>
+
+                        <!-- Horizontal connector bar -->
+                        <div class="node-connector-bar"></div>
+
+                        <!-- Branch grid -->
+                        <div class="node-branches">
+
+                            <!-- Location branch -->
+                            <div class="node-branch" id="branch-location">
+                                <div class="node-branch-head location-head" onclick="toggleBranch('location')">
+                                    <div class="branch-icon orange">📍</div>
+                                    <div class="branch-meta">
+                                        <div class="branch-name">Current Location</div>
+                                        <div class="branch-desc">Where you live right now</div>
+                                    </div>
+                                    <div class="branch-toggle">+</div>
+                                </div>
+                                <div class="branch-fields" id="fields-location">
+                                    <div class="branch-fields-inner orange-line">
+                                        <div class="branch-input-group">
+                                            <div class="branch-input-label">Country</div>
+                                            <input type="text" class="branch-input" name="location_country" placeholder="e.g. Germany">
+                                        </div>
+                                        <div class="branch-input-group">
+                                            <div class="branch-input-label">City</div>
+                                            <input type="text" class="branch-input" name="location_city" placeholder="e.g. Berlin">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Working branch -->
+                            <div class="node-branch" id="branch-working">
+                                <div class="node-branch-head" onclick="toggleBranch('working')">
+                                    <div class="branch-icon blue">💼</div>
+                                    <div class="branch-meta">
+                                        <div class="branch-name">Working</div>
+                                        <div class="branch-desc">Full-time or part-time job</div>
+                                    </div>
+                                    <div class="branch-toggle">+</div>
+                                </div>
+                                <div class="branch-fields" id="fields-working">
+                                    <div class="branch-fields-inner">
+                                        <div class="branch-input-group">
+                                            <div class="branch-input-label">Employer / Organisation</div>
+                                            <input type="text" class="branch-input" name="work_employer" placeholder="e.g. WHO, Philips, startupname">
+                                        </div>
+                                        <div class="branch-input-group">
+                                            <div class="branch-input-label">Job Title</div>
+                                            <input type="text" class="branch-input" name="work_title" placeholder="e.g. Research Analyst">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Master's branch -->
+                            <div class="node-branch" id="branch-masters">
+                                <div class="node-branch-head" onclick="toggleBranch('masters')">
+                                    <div class="branch-icon purple">🎓</div>
+                                    <div class="branch-meta">
+                                        <div class="branch-name">Master's</div>
+                                        <div class="branch-desc">Current or completed MSc</div>
+                                    </div>
+                                    <div class="branch-toggle">+</div>
+                                </div>
+                                <div class="branch-fields" id="fields-masters">
+                                    <div class="branch-fields-inner">
+                                        <div class="branch-input-group">
+                                            <div class="branch-input-label">University</div>
+                                            <input type="text" class="branch-input" name="masters_university" placeholder="e.g. Utrecht University">
+                                        </div>
+                                        <div class="branch-input-group">
+                                            <div class="branch-input-label">Programme</div>
+                                            <input type="text" class="branch-input" name="masters_programme" placeholder="e.g. MSc Neuroscience">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- PhD branch -->
+                            <div class="node-branch" id="branch-phd">
+                                <div class="node-branch-head" onclick="toggleBranch('phd')">
+                                    <div class="branch-icon teal">🔬</div>
+                                    <div class="branch-meta">
+                                        <div class="branch-name">PhD</div>
+                                        <div class="branch-desc">Doctorate / research position</div>
+                                    </div>
+                                    <div class="branch-toggle">+</div>
+                                </div>
+                                <div class="branch-fields" id="fields-phd">
+                                    <div class="branch-fields-inner">
+                                        <div class="branch-input-group">
+                                            <div class="branch-input-label">University / Institute</div>
+                                            <input type="text" class="branch-input" name="phd_university" placeholder="e.g. ETH Zürich">
+                                        </div>
+                                        <div class="branch-input-group">
+                                            <div class="branch-input-label">Research Topic</div>
+                                            <input type="text" class="branch-input" name="phd_topic" placeholder="e.g. Computational neuroscience">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Internship branch -->
+                            <div class="node-branch" id="branch-internship">
+                                <div class="node-branch-head" onclick="toggleBranch('internship')">
+                                    <div class="branch-icon green">📋</div>
+                                    <div class="branch-meta">
+                                        <div class="branch-name">Internship</div>
+                                        <div class="branch-desc">Current or recent placement</div>
+                                    </div>
+                                    <div class="branch-toggle">+</div>
+                                </div>
+                                <div class="branch-fields" id="fields-internship">
+                                    <div class="branch-fields-inner">
+                                        <div class="branch-input-group">
+                                            <div class="branch-input-label">Organisation</div>
+                                            <input type="text" class="branch-input" name="internship_org" placeholder="e.g. RIVM, CERN">
+                                        </div>
+                                        <div class="branch-input-group">
+                                            <div class="branch-input-label">Role</div>
+                                            <input type="text" class="branch-input" name="internship_role" placeholder="e.g. Data science intern">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Gap year branch -->
+                            <div class="node-branch" id="branch-gapyear">
+                                <div class="node-branch-head" onclick="toggleBranch('gapyear')">
+                                    <div class="branch-icon yellow">🌍</div>
+                                    <div class="branch-meta">
+                                        <div class="branch-name">Gap Year / Travel</div>
+                                        <div class="branch-desc">Taking time between chapters</div>
+                                    </div>
+                                    <div class="branch-toggle">+</div>
+                                </div>
+                                <div class="branch-fields" id="fields-gapyear">
+                                    <div class="branch-fields-inner">
+                                        <div class="branch-input-group">
+                                            <div class="branch-input-label">Where / What</div>
+                                            <textarea class="branch-textarea" name="gapyear_details" placeholder="e.g. Travelling Southeast Asia, volunteering in Costa Rica..."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Other branch -->
+                            <div class="node-branch" id="branch-other">
+                                <div class="node-branch-head" onclick="toggleBranch('other')">
+                                    <div class="branch-icon pink">✨</div>
+                                    <div class="branch-meta">
+                                        <div class="branch-name">Other</div>
+                                        <div class="branch-desc">Anything else worth sharing</div>
+                                    </div>
+                                    <div class="branch-toggle">+</div>
+                                </div>
+                                <div class="branch-fields" id="fields-other">
+                                    <div class="branch-fields-inner">
+                                        <div class="branch-input-group">
+                                            <div class="branch-input-label">Tell us</div>
+                                            <textarea class="branch-textarea" name="other_details" placeholder="Projects, freelance, looking for opportunities, founding something..."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div><!-- /node-branches -->
+                    </div><!-- /node-diagram-wrapper -->
+
+                    <!-- Extras: contact update + free text -->
+                    <div class="update-extras">
+                        <div class="update-extras-label">Optional — update your contact details or share anything else</div>
+                        <div class="update-field-group">
+                            <label>New email</label>
+                            <input type="email" name="updated_email" placeholder="your@email.com">
+                        </div>
+                        <div class="update-field-group">
+                            <label>New phone</label>
+                            <input type="tel" name="updated_phone" placeholder="+31 6 12 34 56 78">
+                        </div>
+                        <div class="update-field-group">
+                            <label>Anything else</label>
+                            <input type="text" name="anything_else" placeholder="Events you'd like, alumni to connect with, achievements to feature...">
+                        </div>
+                    </div>
+
+                    <div class="update-submit-area">
+                        <p class="update-privacy-note">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                            Only the MSP Alumni team sees this. Never shared publicly. We use these details to keep your alumni record up to date; they go by email to the MSP Alumni Office via Formspree.
+                        </p>
+                        <button type="submit" class="update-submit-btn" id="update-submit-btn">
+                            <i data-lucide="send"></i>
+                            Send My Info
+                        </button>
+                    </div>
+
+                    <div class="update-error-msg" id="update-error">
+                        Something went wrong. Please email us directly at msp-alumni@maastrichtuniversity.nl.
+                    </div>
+                </form>
+            </div>
+
+            <!-- Share Your Story Card -->
+            <div class="story-card">
+                <div class="story-text">
+                    <div class="story-badge">
+                        <i data-lucide="sparkles"></i>
+                        Get Featured
+                    </div>
+                    <h2>Share Your Story</h2>
+                    <p>We'd love to feature your journey on our Instagram and website. Your story could inspire current students and prospective MSP'ers to follow their own path in science.</p>
+                    
+                    <div class="story-what-we-need">
+                        <h4>What we'd love to hear:</h4>
+                        <ul>
+                            <li><i data-lucide="check"></i> Your MSP graduation year</li>
+                            <li><i data-lucide="check"></i> Where you went for your Master's</li>
+                            <li><i data-lucide="check"></i> What you're doing now</li>
+                            <li><i data-lucide="check"></i> Your favorite MSP memory</li>
+                            <li><i data-lucide="check"></i> A photo of you (optional)</li>
+                        </ul>
+                    </div>
+                    
+                    <p class="story-note"><strong>Note:</strong> We'll always send you a draft before posting anything. You control what goes public.</p>
+                    
+                    <a href="mailto:msp-alumni@maastrichtuniversity.nl?subject=I'd like to share my MSP story&body=Hi MSP Alumni Team,%0D%0A%0D%0AI'd like to be featured! Here's my info:%0D%0A%0D%0AName:%0D%0AGraduation Year:%0D%0AMaster's University/Programme:%0D%0ACurrent Role:%0D%0AFavorite MSP Memory:%0D%0A%0D%0A[Feel free to attach a photo]" class="story-submit-btn">
+                        <i data-lucide="send"></i>
+                        Share Your Story
+                    </a>
+                </div>
+                
+                <div class="story-preview">
+                    <div class="instagram-mockup">
+                        <div class="instagram-header">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                            </svg>
+                            <span>msp_alumni</span>
+                        </div>
+                        <div class="instagram-image">
+                            <div class="instagram-placeholder">
+                                <i data-lucide="user"></i>
+                                <span>Your photo here</span>
+                            </div>
+                        </div>
+                        <div class="instagram-caption">
+                            <p><strong>msp_alumni</strong> Meet [Your Name]! Class of 20XX, now doing amazing things at...</p>
+                        </div>
+                        <div class="instagram-actions">
+                            <i data-lucide="heart"></i>
+                            <i data-lucide="message-circle"></i>
+                            <i data-lucide="send"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Platform Cards Section -->
+    <section class="platforms-section">
+        <div class="platforms-header">
+            <h2>Stay Connected</h2>
+            <p>Choose how you want to be part of the community</p>
+        </div>
+        
+        <div class="platforms-container">
+            <!-- Instagram Card -->
+            <section class="instagram-section">
+                <div class="instagram-pattern"></div>
+                <div class="instagram-content">
+                    <div class="instagram-text">
+                        <h2>
+                            <svg class="instagram-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                            </svg>
+                            Instagram
+                        </h2>
+                        <p>Follow us for alumni spotlights, quiz questions, merch giveaways, and behind-the-scenes MSP content. This is where the fun happens!</p>
+                        
+                        <div class="instagram-features">
+                            <span><i data-lucide="user"></i> Alumni Stories</span>
+                            <span><i data-lucide="help-circle"></i> Quizzes</span>
+                            <span><i data-lucide="gift"></i> Giveaways</span>
+                            <span><i data-lucide="image"></i> MSP Life</span>
+                        </div>
+                        
+                        <a href="https://www.instagram.com/msp_alumni/" target="_blank" class="instagram-join-btn">
+                            <i data-lucide="instagram"></i>
+                            Follow @msp_alumni
+                        </a>
+                    </div>
+                    
+                    <div class="instagram-preview-box">
+                        <h4>Find Us At</h4>
+                        <div class="instagram-handle">@msp_alumni</div>
+                        <div class="instagram-handle-sub">Alumni stories, quizzes & giveaways</div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- WhatsApp Card -->
+            <section class="whatsapp-section" id="whatsapp-section">
+                <div class="whatsapp-pattern"></div>
+                <div class="whatsapp-content">
+                    <div class="whatsapp-text">
+                        <h2>
+                            <svg class="whatsapp-logo" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                            </svg>
+                            WhatsApp
+                        </h2>
+                        <p>Join country-based WhatsApp groups to connect with alumni near you. Share updates, ask questions, and stay in the loop with what's happening in the MSP community.</p>
+                        
+                        <div class="whatsapp-stats">
+                            <div class="whatsapp-stat">
+                                <div class="whatsapp-stat-number" data-stat="whatsapp-members">400+</div>
+                                <div class="whatsapp-stat-label">Members</div>
+                            </div>
+                            <div class="whatsapp-stat">
+                                <div class="whatsapp-stat-number" data-stat="whatsapp-groups">18</div>
+                                <div class="whatsapp-stat-label">Country Groups</div>
+                            </div>
+                        </div>
+                        
+                        <a href="mailto:msp-alumni@maastrichtuniversity.nl?subject=I'd like to join a WhatsApp group&body=Hi MSP Alumni Team,%0D%0A%0D%0AI'd like to join a WhatsApp group!%0D%0A%0D%0AMy name:%0D%0ACountry I'm in:%0D%0A%0D%0AThanks!" class="whatsapp-join-btn">
+                            <i data-lucide="message-circle"></i>
+                            Request to Join
+                        </a>
+                    </div>
+                    
+                    <div class="country-groups">
+                        <h4>Active Country Groups</h4>
+                        <div class="country-flags">
+                            <div class="country-flag"><img src="https://flagcdn.com/w20/nl.png" alt="NL"> Netherlands</div>
+                            <div class="country-flag"><img src="https://flagcdn.com/w20/de.png" alt="DE"> Germany</div>
+                            <div class="country-flag"><img src="https://flagcdn.com/w20/gb.png" alt="GB"> UK</div>
+                            <div class="country-flag"><img src="https://flagcdn.com/w20/be.png" alt="BE"> Belgium</div>
+                            <div class="country-flag"><img src="https://flagcdn.com/w20/se.png" alt="SE"> Sweden</div>
+                            <div class="country-flag"><img src="https://flagcdn.com/w20/ch.png" alt="CH"> Switzerland</div>
+                            <div class="country-flag"><img src="https://flagcdn.com/w20/fr.png" alt="FR"> France</div>
+                            <div class="country-flag"><img src="https://flagcdn.com/w20/es.png" alt="ES"> Spain</div>
+                            <div class="country-flag"><img src="https://flagcdn.com/w20/it.png" alt="IT"> Italy</div>
+                            <div class="country-flag"><img src="https://flagcdn.com/w20/dk.png" alt="DK"> Denmark</div>
+                            <div class="country-flag"><img src="https://flagcdn.com/w20/at.png" alt="AT"> Austria</div>
+                            <div class="country-flag"><img src="https://flagcdn.com/w20/us.png" alt="US"> USA</div>
+                            <div class="country-flag more">+12 more</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- LinkedIn Card -->
+            <section class="linkedin-section" id="linkedin-section">
+                <div class="linkedin-pattern"></div>
+                <div class="linkedin-content">
+                    <div class="linkedin-text">
+                        <h2>
+                            <svg class="linkedin-logo" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                            </svg>
+                            LinkedIn
+                        </h2>
+                        <p>Connect professionally with fellow MSP alumni. Share your achievements, publications, career milestones, and academic news with the community.</p>
+                        
+                        <div class="linkedin-features">
+                            <span><i data-lucide="trophy"></i> Achievements</span>
+                            <span><i data-lucide="file-text"></i> Publications</span>
+                            <span><i data-lucide="briefcase"></i> Career Updates</span>
+                            <span><i data-lucide="users"></i> Networking</span>
+                        </div>
+                        
+                        <div class="linkedin-buttons">
+                            <a href="https://www.linkedin.com/groups/12472184/" target="_blank" class="linkedin-join-btn">
+                                <i data-lucide="users"></i>
+                                Join MSP Alumni Group
+                            </a>
+                            <a href="https://www.linkedin.com/groups/14782233/" target="_blank" class="linkedin-join-btn secondary">
+                                <i data-lucide="building"></i>
+                                Join FSE Alumni Group
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="linkedin-groups-box">
+                        <h4>Our LinkedIn Groups</h4>
+                        <div class="linkedin-group-item">
+                            <div class="linkedin-group-icon">
+                                <i data-lucide="flask-conical"></i>
+                            </div>
+                            <div class="linkedin-group-info">
+                                <h5>MSP Alumni Network</h5>
+                                <span>Maastricht Science Programme graduates</span>
+                            </div>
+                        </div>
+                        <div class="linkedin-group-item">
+                            <div class="linkedin-group-icon">
+                                <i data-lucide="building"></i>
+                            </div>
+                            <div class="linkedin-group-info">
+                                <h5>FSE Alumni Network</h5>
+                                <span>Faculty of Science & Engineering</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </section>
+
+    <!-- PhD Alumni Section -->
+    <section class="phd-section">
+        <div class="phd-content">
+            <div class="phd-badge">
+                <i data-lucide="graduation-cap"></i>
+                Research Community
+            </div>
+            <h2>Doing a PhD?</h2>
+            <p>We're building a showcase of MSP's research community and would love to include you. Whether you're currently pursuing a doctorate or have already completed one, your journey inspires future students.</p>
+            
+            <div class="phd-cta-box">
+                <p>Drop us an email with your institution, research field, and any details you'd like to share. We'll feature MSP PhD alumni once we've gathered enough stories to do the community justice.</p>
+                <a href="mailto:msp-alumni@maastrichtuniversity.nl?subject=MSP%20PhD%20Alumni%20Feature" class="phd-email-btn">
+                    <i data-lucide="mail"></i>
+                    Get in Touch
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Merch Section -->
+    <section class="giveaways-section">
+        <div class="giveaways-header">
+            <div class="giveaways-badge">
+                <i data-lucide="gift"></i>
+                Exclusive for Alumni
+            </div>
+            <h2>MSP Merch You Could Win</h2>
+            <p>We regularly run giveaways through Instagram and the newsletter. Stay connected and you could win official MSP merchandise!</p>
+        </div>
+        
+        <div class="merch-grid">
+            <div class="merch-item">
+                <div class="merch-icon"><i data-lucide="shirt"></i></div>
+                <h4>Hoodies</h4>
+            </div>
+            <div class="merch-item">
+                <div class="merch-icon"><i data-lucide="archive"></i></div>
+                <h4>Zip-Ups</h4>
+            </div>
+            <div class="merch-item">
+                <div class="merch-icon"><i data-lucide="coffee"></i></div>
+                <h4>Mugs</h4>
+            </div>
+            <div class="merch-item">
+                <div class="merch-icon"><i data-lucide="flask-conical"></i></div>
+                <h4>Bottles</h4>
+            </div>
+            <div class="merch-item">
+                <div class="merch-icon"><i data-lucide="shopping-bag"></i></div>
+                <h4>Tote Bags</h4>
+            </div>
+        </div>
+        
+        <div class="merch-images-placeholder">
+            <i data-lucide="image"></i>
+            <p>Merch photos coming soon &mdash; stay tuned!</p>
+        </div>
+        
+        <div class="giveaway-note">
+            <p><strong>How to enter:</strong> Just be part of the community! We announce giveaways through Instagram and the newsletter. Make sure we have your current email to be eligible.</p>
+        </div>
+    </section>
+
+    <!-- Data Handling Section -->
+    <section class="data-section">
+        <div class="data-container">
+            <div class="data-header">
+                <h2>Your Data, Your Control</h2>
+                <p>Here's exactly what we do &mdash; and don't do &mdash; with your information</p>
+            </div>
+            
+            <div class="data-grid">
+                <div class="data-card good">
+                    <h3><i data-lucide="check-circle"></i> What We Do</h3>
+                    <ul>
+                        <li><i data-lucide="check"></i> Use your info to send you relevant updates and newsletters</li>
+                        <li><i data-lucide="check"></i> Create anonymous, aggregated statistics for the website (e.g., "462 alumni in the Netherlands")</li>
+                        <li><i data-lucide="check"></i> Organize events in cities where alumni are located</li>
+                        <li><i data-lucide="check"></i> Connect you with other alumni if you both agree</li>
+                        <li><i data-lucide="check"></i> Always ask before featuring you publicly</li>
+                    </ul>
+                </div>
+                
+                <div class="data-card never">
+                    <h3><i data-lucide="shield"></i> What We Never Do</h3>
+                    <ul>
+                        <li><i data-lucide="x"></i> Share your personal information with third parties</li>
+                        <li><i data-lucide="x"></i> Display your name or details publicly without explicit consent</li>
+                        <li><i data-lucide="x"></i> Sell or monetize your data in any way</li>
+                        <li><i data-lucide="x"></i> Spam you &mdash; we send 3-4 emails per year maximum</li>
+                        <li><i data-lucide="x"></i> Make it difficult to opt out (just email us anytime)</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="privacy-cta">
+                <p>Want the full details? Our privacy policy explains everything in plain language.</p>
+                <a href="privacy.html" class="privacy-btn">
+                    <i data-lucide="file-text"></i>
+                    Read Privacy Policy
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-brand">
+                <img src="assets/logos/maastricht-science-programme-logo.png" alt="MSP" class="footer-logo">
+                <h3>MSP Alumni Network</h3>
+                <p>Connecting MSP graduates from the Maastricht Science Programme across the world. Part of the Faculty of Science and Engineering at Maastricht University.</p>
+            </div>
+            <div class="footer-links-group">
+                <h4>Explore</h4>
+                <a href="index.html">Home</a>
+                <a href="destinations.html">Destinations</a>
+                <a href="community.html">Community</a>
+                <a href="events.html">Events</a>
+                <a href="stories.html">Stories</a>
+            </div>
+            <div class="footer-links-group">
+                <h4>Connect</h4>
+                <a href="considering-msp.html">Considering MSP?</a>
+                <a href="https://www.maastrichtuniversity.nl" target="_blank">Maastricht University</a>
+                <a href="privacy.html">Privacy Policy</a>
+            </div>
+            <div class="footer-links-group">
+                <h4>Follow Us</h4>
+                <a href="https://www.instagram.com/msp_alumni/" target="_blank">Instagram</a>
+                <a href="https://www.linkedin.com/groups/12893377/" target="_blank">LinkedIn (MSP)</a>
+                <a href="https://www.linkedin.com/groups/4689010/" target="_blank">LinkedIn (FSE)</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 MSP Alumni Network. Maastricht University, Faculty of Science and Engineering.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile nav toggle
+        function toggleMobileNav(btn) {
+            const nav = document.querySelector('.header-nav');
+            const isOpen = nav.classList.contains('open');
+            btn.classList.toggle('open');
+            nav.classList.toggle('open');
+
+            if (!isOpen) {
+                const backdrop = document.createElement('div');
+                backdrop.className = 'nav-backdrop';
+                backdrop.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.3);z-index:999;opacity:0;transition:opacity 0.3s ease';
+                document.body.appendChild(backdrop);
+                document.body.style.overflow = 'hidden';
+                requestAnimationFrame(() => backdrop.style.opacity = '1');
+                backdrop.addEventListener('click', () => toggleMobileNav(btn));
+            } else {
+                const backdrop = document.querySelector('.nav-backdrop');
+                if (backdrop) {
+                    backdrop.style.opacity = '0';
+                    setTimeout(() => backdrop.remove(), 300);
+                }
+                document.body.style.overflow = '';
+            }
+        }
+
+        // Close mobile nav when a link is clicked
+        document.querySelectorAll('.header-nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                const btn = document.querySelector('.menu-toggle');
+                if (btn.classList.contains('open')) {
+                    toggleMobileNav(btn);
+                }
+            });
+        });
+
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        // Header scroll effect
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+        
+        // Particle/Constellation Animation
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        function resizeCanvas() {
+            const hero = document.querySelector('.hero');
+            canvas.width = hero.offsetWidth;
+            canvas.height = hero.offsetHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        
+        // Particle class
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.radius = Math.random() * 2 + 1;
+                this.opacity = Math.random() * 0.5 + 0.2;
+                // Science colors: light blue, cyan, white
+                const colors = ['rgba(0, 162, 219,', 'rgba(0, 200, 255,', 'rgba(255, 255, 255,'];
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+            }
+            
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                
+                // Wrap around edges
+                if (this.x < 0) this.x = canvas.width;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.y < 0) this.y = canvas.height;
+                if (this.y > canvas.height) this.y = 0;
+            }
+            
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color + this.opacity + ')';
+                ctx.fill();
+            }
+        }
+        
+        // Create particles
+        const particles = [];
+        const particleCount = 60;
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+        
+        // Connection distance
+        const connectionDistance = 150;
+        
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Update and draw particles
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+            
+            // Draw connections (constellation effect)
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < connectionDistance) {
+                        const opacity = (1 - distance / connectionDistance) * 0.15;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(0, 162, 219, ${opacity})`;
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+                }
+            }
+            
+            requestAnimationFrame(animate);
+        }
+        
+        animate();
+    </script>
+
+    <!-- Node Diagram Form JS -->
+    <script>
+        // ── Toggle branches ──────────────────────────────────────────────
+        const openBranches = new Set();
+
+        function toggleBranch(id) {
+            const head = document.querySelector(`#branch-${id} .node-branch-head`);
+            const fields = document.getElementById(`fields-${id}`);
+            if (!head || !fields) return;
+
+            if (openBranches.has(id)) {
+                openBranches.delete(id);
+                head.classList.remove('active');
+                fields.classList.remove('open');
+            } else {
+                openBranches.add(id);
+                head.classList.add('active');
+                fields.classList.add('open');
+            }
+        }
+
+        // ── Form submission via fetch (Formspree) ────────────────────────
+        const nodeForm = document.getElementById('alumni-node-form');
+        if (nodeForm) {
+            nodeForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('update-submit-btn');
+                const errEl = document.getElementById('update-error');
+                const successEl = document.getElementById('update-success');
+
+                btn.disabled = true;
+                btn.innerHTML = '<i data-lucide="loader"></i> Sending…';
+                lucide.createIcons();
+                errEl.classList.remove('visible');
+
+                try {
+                    const data = new FormData(nodeForm);
+                    const res = await fetch(nodeForm.action, {
+                        method: 'POST',
+                        body: data,
+                        headers: { 'Accept': 'application/json' }
+                    });
+
+                    if (res.ok) {
+                        nodeForm.style.display = 'none';
+                        successEl.classList.add('visible');
+                        lucide.createIcons();
+                    } else {
+                        throw new Error('Server error');
+                    }
+                } catch {
+                    errEl.classList.add('visible');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i data-lucide="send"></i> Send My Info';
+                    lucide.createIcons();
+                }
+            });
+        }
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+    </script>
+</body>
+</html>

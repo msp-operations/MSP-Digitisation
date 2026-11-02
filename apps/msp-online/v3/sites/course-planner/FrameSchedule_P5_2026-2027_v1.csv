@@ -1,0 +1,38 @@
+Version,Period,ValidFrom,,,,,,
+1.0,5,2026-2027,,,,,,
+Slot,Code,Title,Coordinator,Corequisite,Prerequisite,Days,CorequisiteOf,PrerequisiteCodes
+A,CHE2010,General Chemistry,Chris Bahn,TRUE,TRUE,"MonAM, WedPM",PRA2034,CHE1101
+A,BIO3001,Molecular Biology,Kathia Jimenez Monroy,TRUE,TRUE,"MonAM, WedPM",PRA3003,BIO2001+BIO2007
+A,PHY2002,Thermodynamics and Statistical Mechanics,Slava Vieru,FALSE,TRUE,"MonAM, WedPM",,MAT2006/MAT2009
+A,INT1005,Commercializing Science & Technology,Jermain Kaminski,FALSE,FALSE,"MonAM, WedPM",,
+B,BIO3004,Animal Behaviour,Linnea van Griethuijsen,FALSE,TRUE,"MonPM, ThuAM",,BIO2004+BIO2005
+B,PHY2007,Optics,Sebastian Steinlechner,FALSE,FALSE,"MonPM, ThuAM",,
+B,INT2008,Molecular Toxicology,Misha Vrolijk,FALSE,FALSE,"MonPM, ThuAM",,
+B,INT3011,Landscape Archaeology,Kyla Jazwa,FALSE,TRUE,"MonPM, ThuAM",,PRA2009/INT2012/PRA2024/PRA2015
+B,MAT2004,Linear Algebra,Martin Frohn,FALSE,FALSE,"MonPM, ThuAM",,
+C,BIO2002,Ecology,John Sloggett,FALSE,FALSE,"TueAM, ThuPM",,
+C,BIO2006,Biotechnology,David Cortens,FALSE,TRUE,"TueAM, ThuPM",,BIO2007+PRA2014
+C,CHE3012,Nanomaterials and Catalysis,Annelies van der Bok,FALSE,TRUE,"TueAM, ThuPM",,CHE3010
+C,PHY3006,General Relativity,Gideon Koekoek,FALSE,TRUE,"TueAM, ThuPM",,PHY3002/PHY2011
+C,MAT2005,Probability and Statistics,Otti d'Huys,FALSE,TRUE,"TueAM, ThuPM",,MAT2006
+D,BIO3003,Medical Microbiology,Frank Stassen,TRUE,TRUE,"TuePM, FriAM",PRA3010,BIO2001+BIO2007
+D,MAT1007,Mathematical Tools for Scientists,Mariët Hofstee,FALSE,FALSE,"TuePM, FriAM",,
+D,INT2014,Imaging Engineering,Gavin Hazell,FALSE,FALSE,"TuePM, FriAM",,
+D,PHY2005,Fundamentals of Quantum Mechanics,Keri Vos,FALSE,TRUE,"TuePM, FriAM",,MAT2004/MAT2006/MAT2008
+E,NEU1003,Computational Neuroscience,Renaud Jolivet,FALSE,FALSE,"WedAM, FriPM",,
+E,PHY3005,Electrodynamics,Stefan Danilishin,FALSE,TRUE,"WedAM, FriPM",,PHY2004+MAT2009+PHY2011
+E,CHE2007,Solid State Chemistry,Giuditta Perversi,FALSE,FALSE,"WedAM, FriPM",,
+E,INT2009,Biophysics,Anjusha Mathew,FALSE,FALSE,"WedAM, FriPM",,
+E,PHY2008,Solar System Astronomy,Chad Ellington,FALSE,FALSE,"WedAM, FriPM",,
+,PRA1003,Basic Physics Laboratory,Suzan du Pree,FALSE,FALSE,"WedAM, FriAM",,
+,PRA1005,Data Collection Techniques in Neuroscience,Mark Roberts,FALSE,FALSE,"WedPM, ThuAM",,
+,PRA2007,Physics Laboratory,Chris Pawley & Maarten van Veghel,FALSE,TRUE,MonAM,,PRA1003
+,PRA2008,Physical Chemistry,Slava Vieru,FALSE,TRUE,FriPM,,PRA2034+PHY2002+CHE3007
+,PRA2009,Field Skills in Biology,Phil Klahs,FALSE,FALSE,"TuePM, WedPM",,
+,PRA2020,Practical Mass Spectrometry,Anjusha Mathew,FALSE,TRUE,ThuPM,,INT2010
+,PRA2023,Astronomical Observing Techniques,Chad Ellington,FALSE,FALSE,MonPM,,
+,PRA2034,General Chemistry Laboratory,Chris Bahn,TRUE,TRUE,"TueAM, FriPM",CHE2010,PRA1101/PRA1102
+,PRA3003,Molecular Biology,Kathia Jimenez Monroy,TRUE,TRUE,"TuePM, FriAM",BIO3001,PRA2014+core 1000-level
+,PRA3010,Microbiology,Frank Stassen,TRUE,TRUE,"WedAM, ThuPM",BIO3003,BIO2001+BIO2007
+,PRA3011,The Limburg Landscape,Phil Klahs,FALSE,TRUE,FriPM,,PRA2009
+,PRA3025,Science Communication: Curating Science Exhibits,May Lee & Kyle Jazwa,FALSE,TRUE,ThuPM,,PRA2027

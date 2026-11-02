@@ -1,0 +1,40 @@
+Version,Period,ValidFrom,,,,,,
+1.0,4,2026-2027,,,,,,
+Slot,Code,Title,Coordinator,Corequisite,Prerequisite,Days,CorequisiteOf,PrerequisiteCodes
+A,BIO2003,General Botany,Phil Klahs,TRUE,FALSE,"MonAM, WedPM",PRA2011,
+A,BIO3010,"Genomics, Proteomics and Other Omics Technologies",Birol Cabukusta,FALSE,FALSE,"MonAM, WedPM",,
+A,CHE2009,Fundamentals of Organic Chemistry,Hanne Diliën,TRUE,FALSE,"MonAM, WedPM",PRA2032,
+A,CHE3009,Crystallography,Giuditta Perversi,FALSE,TRUE,"MonAM, WedPM",,PRO1002+CHE2007+CHE2002+MAT2004
+A,PHY3010,Lasers and Applications,Anna Green,FALSE,TRUE,"MonAM, WedPM",,PHY2005+MAT2006+MAT2004+PHY2007
+B,BIO2005,Evolutionary Biology,Linnea van Griethuijsen,FALSE,FALSE,"MonPM, ThuAM",,
+B,BIO2010,Human Anatomy & Physiology,Aaron Isaacs,FALSE,FALSE,"MonPM, ThuAM",,
+B,MAT2006,Calculus,Niloufar Yousefimanesh,FALSE,FALSE,"MonPM, ThuAM",,
+B,MAT2008,Differential Equations,Mariët Hofstee,FALSE,TRUE,"MonPM, ThuAM",,
+B,NEU3002,Brain-Inspired Engineering,Renaud Jolivet,FALSE,TRUE,"MonPM, ThuAM",,NEU1003/INT1003
+C,BIO2007,Genetics,Leon de Windt,TRUE,TRUE,"TueAM, ThuPM",PRA2014,BIO2001
+C,INT2010,Principles of Mass Spectrometry,Ian Anthony,FALSE,FALSE,"TueAM, ThuPM",,
+C,NEU1001,Introduction to Neuroscience,Laurence de Nijs,FALSE,FALSE,"TueAM, ThuPM",,
+C,INT2012,Archaeological Science,Kyle Jazwa,FALSE,FALSE,"TueAM, ThuPM",,
+C,PHY2004,Electricity and Magnetism,Stefan Danilishin,FALSE,TRUE,"TueAM, ThuPM",,MAT2009/MAT1002/MAT2004/PHY1001
+D,BIO2001,Cell Biology,Martijn van Griensven,FALSE,FALSE,"TuePM, FriAM",,
+D,INT3003,Biomaterials,C. Domingues Mota/P. Wieringa,FALSE,TRUE,"TuePM, FriAM",,CHE2001
+D,PHY1003,Mechanics,Lorenzo Reverberi,FALSE,TRUE,"TuePM, FriAM",,PHY1101
+D,PHY2011,Special Relativity,Jacco de Vries,FALSE,TRUE,"TuePM, FriAM",,PHY2001/PHY1003
+E,INT1003,Introduction to Biomedical Engineering,Daan van Beek,FALSE,FALSE,"WedAM, FriPM",,
+E,INT1007,Introduction to Earth Sciences,Jesse Hennekam,FALSE,FALSE,"WedAM, FriPM",,
+E,INT3008,Regenerative Medicine,David Kilian,FALSE,TRUE,"WedAM, FriPM",,BIO2001+CHE2001
+E,CHE3011,Instrumental Analysis,Annelies van der Bok,FALSE,TRUE,"WedAM, FriPM",,CHE2004
+,PRA1008,Basics of Palaeontology,Jesse Hennekam,FALSE,FALSE,"MonAM, MonPM",,
+,PRA1009,Neuro Anatomy Skills,Daan van Beek,TRUE,FALSE,"TueAM, TuePM, ThuAM, ThuPM",NEU1001,
+,PRA2005,Advanced Molecular Laboratory Skills,Erik Steen Redeker,FALSE,TRUE,"MonAM, MonPM, WedAM, WedPM",,
+,PRA2011,Exploring the World of Plants,Phil Klahs,TRUE,FALSE,"TueAM, TuePM, ThuAM, ThuPM",BIO2003,
+,PRA2014,Genetics,S. Olieslagers / D. Cortens,TRUE,TRUE,"MonAM, MonPM, WedAM, WedPM, FriAM, FriPM",BIO2007,BIO2001
+,PRA2028,Mathematics and Art,Mariet Hofstee,FALSE,FALSE,"WedAM, WedPM",,
+,PRA2029,3D Visualizations and Transformations,May Lee,FALSE,FALSE,"TueAM, TuePM",,
+,PRA2031,Python Programming Language,Ruth Grosseholz,FALSE,FALSE,"WedAM, WedPM, ThuAM, ThuPM",,
+,PRA2032,Fundamentals of Organic Chemistry Laboratory,Hanne Dilliën,TRUE,FALSE,"TueAM, TuePM, ThuAM, ThuPM, FriAM, FriPM",CHE2009,
+,PRA3012,Advanced Electronics,Bart van Grinsven,FALSE,TRUE,"MonAM, MonPM, WedAM, WedPM",,PRA2006+PHY2006
+,PRA3014,Spectroscopic Methods,Annelies van der Bok,FALSE,TRUE,"MonAM, MonPM, TueAM, TuePM",,CHE2004
+,PRA3017,Applied Cell Biology,Silvia Bolognin,FALSE,TRUE,"TueAM, TuePM, ThuAM, ThuPM",,PRA2014
+,PRA3024,Analysis of Big Data in Physics,Jacco de Vries & Maarten v. Veghel,FALSE,TRUE,"WedAM, WedPM",,MAT2007
+,PRA3504,The Academic Life Cycle,Kyle Jazwa,FALSE,TRUE,"MonAM, MonPM",,PRA2015

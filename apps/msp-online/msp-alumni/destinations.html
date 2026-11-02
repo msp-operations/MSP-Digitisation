@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#011B3C">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="MSP Alumni">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192x192.png">
+    <title>Global Destinations | MSP Alumni Network</title>
+    <link rel="icon" type="image/png" href="assets/logos/maastricht-science-programme-logo.png">
+    <meta name="description" content="Explore where MSP alumni pursue Master's degrees and build careers - across 233 universities in 58 countries worldwide." data-text-template="Explore where MSP alumni pursue Master's degrees and build careers - across {universitiesAttended} universities in {countriesLivingIn} countries worldwide.">
+    
+    <link rel="stylesheet" href="assets/msp-ui/msp-ui.css">
+    <link rel="stylesheet" href="msp-redesign.css">
+    <script src="https://unpkg.com/lucide@0.576.0/dist/umd/lucide.js"></script>
+    <script src="data.js"></script>
+    <script src="data-bind.js"></script>
+    
+    <!-- Leaflet CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <style>
+        /* Page-specific styles. Tokens, cards, the university modal and the
+           Leaflet wrapper rules come from msp-redesign.css (after msp-ui.css). */
+
+        /* Stat tiles under the hero: the counters animate on .stat-number */
+        .stats-ribbon { margin-bottom: 16px; }
+
+        /* Map card */
+        .map-card { padding: 12px; margin-bottom: 8px; }
+        .map-wrapper { width: 100%; height: 520px; border-radius: var(--msp-rs); overflow: hidden; border: 1px solid var(--msp-g2); }
+        #leaflet-map { width: 100%; height: 100%; background: #0a1628; }
+        .leaflet-container { background: #0a1628 !important; }
+        .leaflet-control-zoom { border: none !important; }
+        .leaflet-control-zoom a { background: rgba(1,27,60,0.9) !important; color: white !important; border: 1px solid rgba(255,255,255,0.2) !important; }
+        .leaflet-control-zoom a:hover { background: var(--msp-navy3) !important; }
+        .leaflet-control-attribution { background: rgba(0,0,0,0.5) !important; color: rgba(255,255,255,0.5) !important; font-size: 10px !important; }
+        .leaflet-control-attribution a { color: rgba(255,255,255,0.7) !important; }
+
+        /* Markers (data colours: orange = origin, blue = destinations) */
+        .custom-marker { background: none; border: none; }
+        .marker-maastricht { width: 20px; height: 20px; background: var(--orange); border-radius: 50%; border: 3px solid white; box-shadow: 0 0 20px var(--orange), 0 0 40px rgba(232,78,16,0.5); animation: pulseMarker 2s ease-in-out infinite; }
+        .marker-destination { width: 12px; height: 12px; background: var(--blue); border-radius: 50%; border: 2px solid white; box-shadow: 0 0 10px var(--blue); transition: all 0.3s; cursor: pointer; }
+        .marker-destination:hover { transform: scale(1.3); background: var(--orange); box-shadow: 0 0 20px var(--orange); }
+        @keyframes pulseMarker { 0%, 100% { box-shadow: 0 0 20px var(--orange), 0 0 40px rgba(232,78,16,0.5); } 50% { box-shadow: 0 0 30px var(--orange), 0 0 60px rgba(232,78,16,0.7); } }
+
+        /* Popup card on the map */
+        .leaflet-popup-content-wrapper { background: transparent !important; border-radius: 12px !important; box-shadow: 0 10px 40px rgba(0,0,0,0.4) !important; padding: 0 !important; overflow: hidden; }
+        .leaflet-popup-content { margin: 0 !important; padding: 0 !important; }
+        .leaflet-popup-tip-container { display: none; }
+        .popup-card { width: 220px; height: 140px; position: relative; overflow: hidden; border-radius: 12px; cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .popup-card:hover { transform: scale(1.03); box-shadow: 0 15px 50px rgba(0,0,0,0.5); }
+        .popup-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.7) 100%); z-index: 1; }
+        .popup-flag-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+        .popup-content { position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; padding: 14px; color: white; }
+        .popup-city { font-family: var(--msp-font-display); font-size: 18px; font-weight: 700; text-shadow: 0 2px 8px rgba(0,0,0,0.5); margin-bottom: 2px; }
+        .popup-country { font-size: 12.5px; opacity: 0.9; text-shadow: 0 1px 4px rgba(0,0,0,0.5); margin-bottom: 8px; }
+        .popup-stats { display: flex; gap: 8px; }
+        .popup-stat { background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding: 3px 9px; border-radius: 20px; font-size: 11.5px; font-weight: 600; }
+        .popup-stat strong { color: #fff; }
+        .popup-cta { position: absolute; top: 10px; right: 10px; background: var(--msp-orange); color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 3; transition: transform 0.2s; }
+        .popup-card:hover .popup-cta { transform: scale(1.1); }
+
+        /* Legend overlay inside the map */
+        .map-legend { position: absolute; bottom: 16px; left: 16px; background: rgba(1,27,60,0.92); padding: 12px 16px; border-radius: var(--msp-rs); z-index: 1000; border: 1px solid rgba(255,255,255,0.1); }
+        .legend-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); margin-bottom: 8px; }
+        .legend-item { display: flex; align-items: center; gap: 10px; font-size: 12px; color: white; margin-bottom: 5px; }
+        .legend-item:last-child { margin-bottom: 0; }
+        .legend-dot { width: 11px; height: 11px; border-radius: 50%; }
+        .legend-dot.origin { background: var(--orange); box-shadow: 0 0 8px var(--orange); }
+        .legend-dot.destination { background: var(--blue); }
+        .legend-line { width: 24px; height: 2px; background: var(--orange); opacity: 0.6; }
+
+        /* Sections */
+        .universities-section, .countries-section { padding-top: 40px; }
+        .section-header { margin-bottom: 20px; }
+        .section-label { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--msp-g4); margin-bottom: 8px; }
+        .section-label i, .section-label svg { width: 14px; height: 14px; }
+        .section-title { font-size: clamp(21px, 2.3vw, 27px); line-height: 1.15; margin: 0 0 6px; }
+        .section-subtitle { font-size: 14px; color: var(--msp-g5); max-width: 60ch; margin: 0; }
+
+        /* Tiers */
+        .featured-unis-container { margin: 0 0 32px; }
+        .tier-header { display: flex; align-items: center; gap: 10px 14px; margin-bottom: 14px; flex-wrap: wrap; }
+        .tier-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--msp-navy); color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; letter-spacing: 0.02em; }
+        .tier-badge i, .tier-badge svg { width: 13px; height: 13px; }
+        .tier-line { flex: 1 1 40px; height: 1px; background: var(--msp-g2); }
+        .tier-header .tier-count { font-family: var(--msp-font); font-size: 12.5px; font-weight: 500; color: var(--msp-g5); }
+
+        /* University cards */
+        .uni-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+        .uni-card { padding: 20px 16px; cursor: pointer; position: relative; overflow: hidden; text-align: center; }
+        .uni-card.prestige { border-color: var(--msp-inf-bd); background: var(--msp-inf-bg); }
+        .hidden { display: none !important; }
+        .uni-card-badge { position: absolute; top: 10px; right: 10px; background: var(--msp-navy); color: #fff; font-size: 9.5px; font-weight: 700; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.06em; }
+        .uni-card .uni-logo { width: 72px; height: 72px; border-radius: var(--msp-rs); background: #fff; border: 1px solid var(--msp-g2); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; padding: 10px; }
+        .uni-card .uni-logo img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .uni-card .uni-logo i, .uni-card .uni-logo svg { width: 28px; height: 28px; color: var(--msp-g4); }
+        .uni-card .uni-name { font-size: 13.5px; font-weight: 600; color: var(--msp-g9); margin-bottom: 4px; line-height: 1.3; }
+        .uni-location { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12px; color: var(--msp-g5); margin-bottom: 10px; }
+        .uni-location img { width: 18px; height: 12px; border-radius: 2px; }
+        .uni-stats { display: flex; gap: 12px; align-items: center; justify-content: center; }
+        .uni-stat { font-size: 12.5px; color: var(--msp-g5); }
+        .uni-stat strong { color: var(--msp-navy); font-weight: 700; }
+
+        /* Countries */
+        .countries-section .country-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+        .country-card { padding: 18px 14px; text-align: center; cursor: pointer; }
+        .country-card.top { border-color: var(--msp-inf-bd); background: var(--msp-inf-bg); }
+        .country-flag { width: 48px; height: 34px; border-radius: 4px; object-fit: cover; box-shadow: var(--msp-sh); margin: 0 auto 10px; }
+        .country-card h4 { font-size: 13px; font-weight: 600; color: var(--msp-g9); margin: 0 0 2px; }
+        .country-card p { font-size: 12px; color: var(--msp-g5); margin: 0; }
+        .country-card p strong { color: var(--msp-navy); font-weight: 700; }
+
+        /* University directory table */
+        .university-directory { padding: 24px; margin-top: 8px; }
+        .directory-header h3 { font-family: var(--msp-font-display); font-size: 20px; font-weight: 700; margin: 0 0 4px; }
+        .directory-header p { font-size: 13.5px; color: var(--msp-g5); margin: 0 0 18px; }
+        .directory-controls { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+        .search-box-table { display: flex; align-items: center; gap: 8px; background: #fff; border: 1.5px solid var(--msp-g2); border-radius: var(--msp-rs); padding: 8px 12px; flex: 1; min-width: 220px; transition: border-color 0.15s, box-shadow 0.15s; }
+        .search-box-table:focus-within { border-color: var(--msp-navy); box-shadow: 0 0 0 3px rgba(1,27,60,0.08); }
+        .search-box-table i, .search-box-table svg { width: 16px; height: 16px; color: var(--msp-g4); flex-shrink: 0; }
+        .search-box-table input { border: none; outline: none; font-size: 13.5px; font-family: var(--msp-font); width: 100%; background: transparent; color: var(--msp-g9); }
+        .sort-controls { display: flex; align-items: center; gap: 8px; }
+        .sort-controls label { font-size: 10.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--msp-g5); white-space: nowrap; }
+        .sort-controls select { padding: 8px 12px; border: 1.5px solid var(--msp-g2); border-radius: var(--msp-rs); font-size: 13px; font-family: var(--msp-font); color: var(--msp-g9); background: #fff; cursor: pointer; }
+        .sort-controls select:hover { border-color: var(--msp-g3); }
+        .sort-controls select:focus { outline: none; border-color: var(--msp-navy); box-shadow: 0 0 0 3px rgba(1,27,60,0.08); }
+        .university-table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: var(--msp-rs); border: 1px solid var(--msp-g2); }
+        .university-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .university-table th { background: var(--msp-g0); padding: 10px 14px; text-align: left; font-size: 10px; font-weight: 700; color: var(--msp-g4); text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 2px solid var(--msp-g2); white-space: nowrap; }
+        .university-table th.rank-col { width: 52px; text-align: center; }
+        .university-table th.name-col { min-width: 260px; }
+        .university-table th.country-col { width: 170px; }
+        .university-table th.alumni-col { width: 90px; text-align: right; }
+        .university-table th.percent-col { width: 70px; text-align: right; }
+        .university-table tbody tr { border-bottom: 1px solid var(--msp-g1); cursor: pointer; }
+        .university-table tbody tr:last-child { border-bottom: none; }
+        .university-table tbody tr:hover { background: var(--msp-g0); }
+        .university-table tbody tr.featured-row { font-weight: 500; }
+        .university-table td { padding: 11px 14px; vertical-align: middle; }
+        .rank-cell { text-align: center; font-weight: 600; color: var(--msp-g4); font-size: 12px; font-family: var(--msp-font-mono); }
+        .name-cell { font-weight: 500; color: var(--msp-g9); display: flex; align-items: center; gap: 10px; }
+        .name-cell-featured { color: var(--msp-navy); font-weight: 600; }
+        .country-cell { color: var(--msp-g5); display: flex; align-items: center; gap: 8px; }
+        .country-flag-small { width: 22px; height: 15px; border-radius: 3px; object-fit: cover; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .alumni-cell { text-align: right; font-weight: 700; color: var(--msp-navy); font-size: 13.5px; font-variant-numeric: tabular-nums; }
+        .percent-cell { text-align: right; color: var(--msp-g5); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+        .featured-badge-table { display: inline-flex; background: var(--msp-navy); color: #fff; padding: 2px 7px; border-radius: 4px; font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+        .table-info { margin-top: 14px; text-align: center; color: var(--msp-g4); font-size: 12px; }
+        .table-expand-container { text-align: center; margin-top: 14px; }
+        .table-expand-btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; background: var(--msp-navy); color: #fff; border: none; border-radius: var(--msp-rs); font-size: 13px; font-weight: 600; font-family: var(--msp-font); cursor: pointer; transition: background 0.15s; }
+        .table-expand-btn:hover { background: var(--msp-navy2); }
+        .table-expand-btn i, .table-expand-btn svg { width: 15px; height: 15px; transition: transform 0.3s ease; }
+        .table-expand-btn.expanded i, .table-expand-btn.expanded svg { transform: rotate(180deg); }
+
+        @media (max-width: 900px) {
+            .map-wrapper { height: 420px; }
+        }
+        @media (max-width: 640px) {
+            .map-wrapper { height: 340px; }
+            .map-legend { display: none; }
+            .uni-grid { grid-template-columns: repeat(2, 1fr); }
+            .countries-section .country-grid { grid-template-columns: repeat(2, 1fr); }
+            .university-directory { padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <main class="msp-main wide">
+    <section class="msp-hero">
+        <div class="hero-copy">
+            <div class="msp-hero-kicker">Global Alumni Network</div>
+            <h1>Where MSP <em>Opens Doors</em></h1>
+            <p class="hero-subtitle" data-text-template="From Maastricht to the world's leading universities. Explore where MSP alumni pursue Master's degrees and build careers.">From Maastricht to the world's leading universities. Explore where MSP alumni pursue Master's degrees and build careers.</p>
+        </div>
+    </section>
+
+    <section class="msp-stats stats-ribbon">
+        <div class="msp-stat">
+            <div class="msp-stat-val stat-number" data-target="233">0</div>
+            <div class="msp-stat-label">Universities</div>
+        </div>
+        <div class="msp-stat">
+            <div class="msp-stat-val stat-number" data-target="58">0</div>
+            <div class="msp-stat-label">Countries</div>
+        </div>
+        <div class="msp-stat">
+            <div class="msp-stat-val">8/10</div>
+            <div class="msp-stat-label">World Top 10</div>
+        </div>
+        <div class="msp-stat">
+            <div class="msp-stat-val stat-number" data-target="141">0</div>
+            <div class="msp-stat-label">PhD Track</div>
+        </div>
+    </section>
+
+    <section class="map-card" id="alumni-map">
+        <div class="map-wrapper">
+            <div id="leaflet-map"></div>
+
+            <div class="map-legend">
+                <div class="legend-title">Legend</div>
+                <div class="legend-item">
+                    <div class="legend-dot origin"></div>
+                    <span>Maastricht (Origin)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot destination"></div>
+                    <span>Alumni Destinations</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-line"></div>
+                    <span>Alumni Flow</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+        <section class="universities-section" id="universities">
+        <div class="section-header">
+            <div class="section-label"><i data-lucide="graduation-cap"></i>Academic Destinations</div>
+            <h2 class="section-title">Where MSP Alumni Study</h2>
+            <p class="section-subtitle">From world-leading institutions to specialized research centers, MSP graduates pursue excellence globally.</p>
+        </div>
+        
+        <!-- WORLD TOP 10 -->
+        <div class="featured-unis-container">
+            <div class="tier-header">
+                <div class="tier-badge"><i data-lucide="award"></i> World Top 10 Universities</div>
+                <div class="tier-line"></div>
+                <div class="tier-count">8 of the world's top 10 universities</div>
+            </div>
+            <div class="uni-grid" id="prestige-grid"></div>
+        </div>
+        
+        <!-- FEATURED (10+ alumni) -->
+        <div class="featured-unis-container">
+            <div class="tier-header">
+                <div class="tier-badge"><i data-lucide="star"></i> Featured Universities</div>
+                <div class="tier-line"></div>
+                <div class="tier-count">Top destinations with 10+ MSP alumni</div>
+            </div>
+            <div class="uni-grid" id="featured-grid"></div>
+        </div>
+        
+        <!-- COMPLETE DIRECTORY TABLE -->
+        <div class="university-directory">
+            <div class="directory-header">
+                <h3>Complete University Directory</h3>
+                <p id="directory-subtitle">All universities where MSP alumni have pursued master's degrees</p>
+            </div>
+            
+            <div class="directory-controls">
+                <div class="search-box-table">
+                    <i data-lucide="search"></i>
+                    <input type="text" placeholder="Search universities..." id="table-search">
+                </div>
+                <div class="sort-controls">
+                    <label>Sort by:</label>
+                    <select id="sort-select">
+                        <option value="count-desc">Alumni Count (High to Low)</option>
+                        <option value="count-asc">Alumni Count (Low to High)</option>
+                        <option value="name-asc">University Name (A-Z)</option>
+                        <option value="name-desc">University Name (Z-A)</option>
+                        <option value="country-asc">Country (A-Z)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="university-table-container">
+                <table class="university-table" id="uni-table">
+                    <thead>
+                        <tr>
+                            <th class="rank-col">#</th>
+                            <th class="name-col">University</th>
+                            <th class="country-col">Country</th>
+                            <th class="alumni-col">Alumni</th>
+                            <th class="percent-col">%</th>
+                        </tr>
+                    </thead>
+                    <tbody id="uni-table-body">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="table-info">
+                <span id="table-showing">Showing 10 of <span data-stat="universitiesAttended">233</span> universities</span>
+            </div>
+            
+            <div class="table-expand-container">
+                <button class="table-expand-btn" id="table-expand-btn" onclick="toggleTableExpand()">
+                    <span id="expand-btn-text">Show All Universities</span>
+                    <i data-lucide="chevron-down"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+    
+<section class="countries-section" id="countries">
+        <div class="section-header">
+            <div class="section-label"><i data-lucide="map-pin"></i>Alumni Locations</div>
+            <h2 class="section-title">Around the World</h2>
+            <p class="section-subtitle">From graduation in Maastricht to careers across six continents.</p>
+        </div>
+        <div class="country-grid" id="country-grid"></div>
+    </section>
+    
+    <!-- University Information Modal -->
+    <div id="universityModal" class="university-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="modal-close" id="modalClose">
+                    <i data-lucide="x"></i>
+                </button>
+                <div class="modal-logo-section">
+                    <div class="modal-logo" id="modalLogo">
+                        <i data-lucide="graduation-cap"></i>
+                    </div>
+                    <div class="modal-title-section">
+                        <h2 id="modalUniName">University Name</h2>
+                        <div class="modal-location">
+                            <i data-lucide="map-pin"></i>
+                            <span id="modalLocation">Location</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-info-grid">
+                    <div class="modal-info-item">
+                        <div class="modal-info-label">Founded</div>
+                        <div class="modal-info-value" id="modalFounded"> &mdash; </div>
+                    </div>
+                    <div class="modal-info-item">
+                        <div class="modal-info-label">Students</div>
+                        <div class="modal-info-value" id="modalStudents"> &mdash; </div>
+                    </div>
+                </div>
+                <p class="modal-description" id="modalDescription">
+                    Loading university information...
+                </p>
+                <a href="#" id="modalWebsite" target="_blank" rel="noopener noreferrer" class="modal-website-link">
+                    <span>Visit Website</span>
+                    <i data-lucide="external-link"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    </main>
+    <footer class="msp-footer">
+    <div class="foot-links">
+        <a href="https://www.instagram.com/msp_alumni/">Instagram</a>
+        <a href="https://www.linkedin.com/groups/12893377/">LinkedIn (MSP)</a>
+        <a href="https://www.linkedin.com/groups/4689010/">LinkedIn (FSE)</a>
+        <a href="https://www.maastrichtuniversity.nl">Maastricht University</a>
+        <a href="privacy.html">Privacy policy</a>
+    </div>
+    <div>&copy; 2026 MSP Alumni Network. Maastricht University, Faculty of Science and Engineering.</div>
+    <div class="foot-note"><span data-text-template="Data current as of {lastUpdated}.">Data current as of July 2026.</span></div>
+    </footer>
+    
+    <script>
+        // ============================================
+        // Check data.js loaded
+        // ============================================
+        if (typeof COUNTRY_DETAILS === 'undefined' || typeof UNIVERSITY_INFO === 'undefined' || typeof UNI_LOGO_FILES === 'undefined') {
+            console.error('data.js not loaded properly');
+            alert('Error: data.js not loaded. Make sure data.js is in the same directory.');
+        }
+        
+        // ============================================
+        // STATE VARIABLES
+        // ============================================
+        let tableExpanded = false;
+        const TABLE_INITIAL_LIMIT = 10;
+        let currentFilteredUniversities = [];
+        
+        // ============================================
+        // DATA AGGREGATION
+        // ============================================
+        const MAASTRICHT = [50.8514, 5.6910];
+        
+        // Top 10 prestige universities (manually defined)
+        const PRESTIGE_UNIS = [
+            'Imperial College London',
+            'ETH Zurich',
+            'ETH Zurich',
+            'University College London',
+            'UCL',
+            'University of Cambridge',
+            'University of Oxford',
+            'EPFL',
+            'MIT',
+            'Stanford University',
+            'Harvard University',
+            'Princeton University'
+        ];
+        
+        // Top 5 destination countries
+        const TOP_COUNTRIES = ['nl', 'gb', 'de', 'se', 'be'];
+        
+        // Complete university list from Excel database (263 total)
+
+        // Final university list
+        // Total universities: 233
+                const ALL_UNIVERSITIES = [
+            { name: "Maastricht University", country: "Netherlands", code: "nl", count: 143, featured: true },
+            { name: "Utrecht University", country: "Netherlands", code: "nl", count: 99, featured: true },
+            { name: "University of Amsterdam", country: "Netherlands", code: "nl", count: 75, featured: true },
+            { name: "Leiden University", country: "Netherlands", code: "nl", count: 45, featured: true },
+            { name: "Wageningen University & Research", country: "Netherlands", code: "nl", count: 43, featured: true },
+            { name: "Radboud University", country: "Netherlands", code: "nl", count: 38, featured: true },
+            { name: "University of Groningen", country: "Netherlands", code: "nl", count: 25, featured: true },
+            { name: "KU Leuven", country: "Belgium", code: "be", count: 21, featured: true },
+            { name: "Delft University of Technology", country: "Netherlands", code: "nl", count: 20, featured: true },
+            { name: "Uppsala University", country: "Sweden", code: "se", count: 19, featured: true },
+            { name: "Imperial College London", country: "United Kingdom", code: "gb", count: 19, featured: true },
+            { name: "Vrije Universiteit Amsterdam", country: "Netherlands", code: "nl", count: 16, featured: true },
+            { name: "University of Copenhagen", country: "Denmark", code: "dk", count: 14, featured: true },
+            { name: "Lund University", country: "Sweden", code: "se", count: 14, featured: true },
+            { name: "ETH Zurich", country: "Switzerland", code: "ch", count: 14, featured: true },
+            { name: "University College London", country: "United Kingdom", code: "gb", count: 14, featured: true },
+            { name: "Karolinska Institutet", country: "Sweden", code: "se", count: 11, featured: true },
+            { name: "Technical University of Munich", country: "Germany", code: "de", count: 10, featured: true },
+            { name: "Stockholm University", country: "Sweden", code: "se", count: 9, featured: false },
+            { name: "Eindhoven University of Technology", country: "Netherlands", code: "nl", count: 9, featured: false },
+            { name: "University of Cambridge", country: "United Kingdom", code: "gb", count: 8, featured: false },
+            { name: "Vrije Universiteit Brussel", country: "Belgium", code: "be", count: 7, featured: false },
+            { name: "University of Oxford", country: "United Kingdom", code: "gb", count: 7, featured: false },
+            { name: "University of Edinburgh", country: "United Kingdom", code: "gb", count: 7, featured: false },
+            { name: "Universita di Bologna", country: "Italy", code: "it", count: 6, featured: false },
+            { name: "Humboldt-Universitat zu Berlin", country: "Germany", code: "de", count: 5, featured: false },
+            { name: "Ecole Polytechnique", country: "France", code: "fr", count: 5, featured: false },
+            { name: "University of Birmingham", country: "United Kingdom", code: "gb", count: 5, featured: false },
+            { name: "University of Helsinki", country: "Finland", code: "fi", count: 5, featured: false },
+            { name: "Technical University of Denmark", country: "Denmark", code: "dk", count: 5, featured: false },
+            { name: "Universite Libre de Bruxelles", country: "Belgium", code: "be", count: 4, featured: false },
+            { name: "Aalto University", country: "Finland", code: "fi", count: 4, featured: false },
+            { name: "University College Dublin", country: "Ireland", code: "ie", count: 4, featured: false },
+            { name: "Ghent University", country: "Belgium", code: "be", count: 4, featured: false },
+            { name: "University of Cologne", country: "Germany", code: "de", count: 4, featured: false },
+            { name: "Erasmus University Rotterdam", country: "Netherlands", code: "nl", count: 4, featured: false },
+            { name: "Universitat de Barcelona", country: "Spain", code: "es", count: 4, featured: false },
+            { name: "University of Vienna", country: "Austria", code: "at", count: 4, featured: false },
+            { name: "University of Antwerp", country: "Belgium", code: "be", count: 4, featured: false },
+            { name: "King\'s College London", country: "United Kingdom", code: "gb", count: 3, featured: false },
+            { name: "Universitat Pompeu Fabra", country: "Spain", code: "es", count: 3, featured: false },
+            { name: "University of Glasgow", country: "United Kingdom", code: "gb", count: 3, featured: false },
+            { name: "University of Twente", country: "Netherlands", code: "nl", count: 3, featured: false },
+            { name: "Universitat Autonoma de Barcelona", country: "Spain", code: "es", count: 3, featured: false },
+            { name: "University of Zurich", country: "Switzerland", code: "ch", count: 3, featured: false },
+            { name: "Copenhagen Business School", country: "Denmark", code: "dk", count: 3, featured: false },
+            { name: "KTH Royal Institute of Technology", country: "Sweden", code: "se", count: 3, featured: false },
+            { name: "Universite Paris-Saclay", country: "France", code: "fr", count: 3, featured: false },
+            { name: "University of Gothenburg", country: "Sweden", code: "se", count: 2, featured: false },
+            { name: "Queen Mary University of London", country: "United Kingdom", code: "gb", count: 2, featured: false },
+            { name: "Sorbonne University", country: "France", code: "fr", count: 2, featured: false },
+            { name: "Trinity College Dublin", country: "Ireland", code: "ie", count: 2, featured: false },
+            { name: "Norwegian University of Science and Technology", country: "Norway", code: "no", count: 2, featured: false },
+            { name: "University of Leeds", country: "United Kingdom", code: "gb", count: 2, featured: false },
+            { name: "Universita degli Studi di Ferrara", country: "Italy", code: "it", count: 2, featured: false },
+            { name: "James Cook University", country: "Australia", code: "au", count: 2, featured: false },
+            { name: "University of Aberdeen", country: "United Kingdom", code: "gb", count: 2, featured: false },
+            { name: "University of Liege", country: "Belgium", code: "be", count: 2, featured: false },
+            { name: "Universitat Politecnica de Catalunya", country: "Spain", code: "es", count: 2, featured: false },
+            { name: "Bocconi University", country: "Italy", code: "it", count: 2, featured: false },
+            { name: "University of Manchester", country: "United Kingdom", code: "gb", count: 2, featured: false },
+            { name: "Universidad Autonoma de Madrid", country: "Spain", code: "es", count: 2, featured: false },
+            { name: "Ecole Polytechnique Federale de Lausanne", country: "Switzerland", code: "ch", count: 2, featured: false },
+            { name: "University of Salford", country: "United Kingdom", code: "gb", count: 2, featured: false },
+            { name: "University of Bern", country: "Switzerland", code: "ch", count: 2, featured: false },
+            { name: "Universita di Pavia", country: "Italy", code: "it", count: 2, featured: false },
+            { name: "University of Valencia", country: "Spain", code: "es", count: 2, featured: false },
+            { name: "Technische Universitat Wien", country: "Austria", code: "at", count: 2, featured: false },
+            { name: "University of Tubingen", country: "Germany", code: "de", count: 2, featured: false },
+            { name: "Charite - Universitatsmedizin Berlin", country: "Germany", code: "de", count: 2, featured: false },
+            { name: "University of Sheffield", country: "United Kingdom", code: "gb", count: 2, featured: false },
+            { name: "Goethe University Frankfurt", country: "Germany", code: "de", count: 2, featured: false },
+            { name: "UCL / Sorbonne Universite", country: "London/Paris", code: "xx", count: 2, featured: false },
+            { name: "Universite Claude Bernard Lyon 1", country: "France", code: "fr", count: 2, featured: false },
+            { name: "McGill University", country: "Canada", code: "ca", count: 2, featured: false },
+            { name: "Heidelberg University", country: "Germany", code: "de", count: 2, featured: false },
+            { name: "Szeged University", country: "Hungary", code: "hu", count: 2, featured: false },
+            { name: "University of Barcelona", country: "Spain", code: "es", count: 2, featured: false },
+            { name: "Pompeu Fabra University", country: "Spain", code: "es", count: 2, featured: false },
+            { name: "LMU Munich", country: "Germany", code: "de", count: 2, featured: false },
+            { name: "University of Nottingham", country: "United Kingdom", code: "gb", count: 1, featured: false },
+            { name: "University of London", country: "United Kingdom", code: "gb", count: 1, featured: false },
+            { name: "Bogazici University", country: "Turkey", code: "tr", count: 1, featured: false },
+            { name: "University of East Anglia", country: "United Kingdom", code: "gb", count: 1, featured: false },
+            { name: "Universite de Picardie Jules Verne", country: "France", code: "fr", count: 1, featured: false },
+            { name: "University Politehnica of Bucharest", country: "Romania", code: "ro", count: 1, featured: false },
+            { name: "University of Exeter", country: "United Kingdom", code: "gb", count: 1, featured: false },
+            { name: "University of Cologne / University of Bonn", country: "Germany", code: "de", count: 1, featured: false },
+            { name: "The University of Edinburg / University of Capetown", country: "Scotland/South Africa", code: "xx", count: 1, featured: false },
+            { name: "University of Leicester", country: "United Kingdom", code: "gb", count: 1, featured: false },
+            { name: "University of San Francisco", country: "United States", code: "us", count: 1, featured: false },
+            { name: "Heriot-Watt University", country: "United Kingdom", code: "gb", count: 1, featured: false },
+            { name: "ESCP Europe", country: "France", code: "fr", count: 1, featured: false },
+            { name: "University of Kent", country: "United Kingdom", code: "gb", count: 1, featured: false },
+            { name: "Cambridge Judge Business School", country: "United Kingdom", code: "gb", count: 1, featured: false },
+            { name: "ULM University", country: "Germany", code: "de", count: 1, featured: false },
+            { name: "Swiss Federal Technology Iinstitute of Lausanne", country: "Switzerland", code: "ch", count: 1, featured: false },
+            { name: "KTH Royal Institute of Technology / Grenoble INP", country: "France", code: "fr", count: 1, featured: false },
+            { name: "University of Applied Sciences Switzerland", country: "Switzerland", code: "ch", count: 1, featured: false },
+            { name: "University of Southern Denmark", country: "Denmark", code: "dk", count: 1, featured: false },
+            { name: "University of Regensburg", country: "Germany", code: "de", count: 1, featured: false },
+            { name: "University of Strasbourg / Utrecht University", country: "France", code: "fr", count: 1, featured: false },
+            { name: "Technological University Dublin", country: "Ireland", code: "ie", count: 1, featured: false },
+            { name: "University of Munster", country: "Germany", code: "de", count: 1, featured: false },
+            { name: "DTU / University of Copenhagen (Joint)", country: "Denmark", code: "dk", count: 1, featured: false },
+            { name: "Centrale Nantes", country: "France", code: "fr", count: 1, featured: false },
+            { name: "Universite Bourgogne Franche-Comte", country: "France", code: "fr", count: 1, featured: false },
+            { name: "Regent\'s University London", country: "United Kingdom", code: "gb", count: 1, featured: false },
+            { name: "University of St Andrews", country: "United Kingdom", code: "gb", count: 1, featured: false },
+            { name: "University of Warwick", country: "United Kingdom", code: "gb", count: 1, featured: false },
+            { name: "Universite de Namur", country: "Belgium", code: "be", count: 1, featured: false },
+            { name: "Illinois Institute of Technology", country: "United States", code: "us", count: 1, featured: false },
+            { name: "Harvard University", country: "United States", code: "us", count: 1, featured: false },
+            { name: "University of Bremen", country: "Germany", code: "de", count: 1, featured: false },
+            { name: "University of Luxembourg", country: "Luxembourg", code: "lu", count: 1, featured: false },
+            { name: "UCL / Brunel University", country: "United Kingdom", code: "gb", count: 1, featured: false },
+            { name: "University of Rome Tor Vergata", country: "Italy", code: "it", count: 1, featured: false },
+            { name: "University of Lisbon", country: "Portugal", code: "pt", count: 1, featured: false },
+            { name: "University of Toronto", country: "Canada", code: "ca", count: 1, featured: false },
+            { name: "University of Basel", country: "Switzerland", code: "ch", count: 1, featured: false },
+            { name: "University of KwaZulu-natal", country: "South Africa", code: "za", count: 1, featured: false },
+            { name: "University of British Columbia", country: "Canada", code: "ca", count: 1, featured: false },
+            { name: "Institute of Science and Technology Austria", country: "Austria", code: "at", count: 1, featured: false },
+            { name: "Universite Paul Sabatier Toulouse III", country: "France", code: "fr", count: 1, featured: false },
+            { name: "Pontificia Universidad Catolica de Chile", country: "Chile", code: "cl", count: 1, featured: false },
+            { name: "University of Hamburg", country: "Germany", code: "de", count: 1, featured: false },
+            { name: "Sapienza Universita di Roma (ARCHMAT Erasmus Mundus)", country: "Italy / Greece / Portugal", code: "xx", count: 1, featured: false },
+            { name: "Universita degli Studi di Genova", country: "Italy", code: "it", count: 1, featured: false },
+            { name: "Queen\'s University Belfast", country: "United Kingdom", code: "gb", count: 1, featured: false },
+            { name: "University of Mons", country: "Belgium", code: "be", count: 1, featured: false },
+            { name: "University of Portsmouth", country: "United Kingdom", code: "gb", count: 1, featured: false },
+            { name: "ISF Istituto di Scienze Forensi", country: "Italy", code: "it", count: 1, featured: false },
+            { name: "TH Koln", country: "Germany", code: "de", count: 1, featured: false },
+            { name: "Conservatorium van Amsterdam", country: "Netherlands", code: "nl", count: 1, featured: false },
+            { name: "TU Dublin Computer Science", country: "Ireland", code: "ie", count: 1, featured: false },
+            { name: "University of Lincoln", country: "United Kingdom", code: "gb", count: 1, featured: false },
+            { name: "NOVA IMS Information Management School", country: "Portugal", code: "pt", count: 1, featured: false },
+            { name: "National University of Singapore", country: "Singapore", code: "sg", count: 1, featured: false },
+            { name: "Universidad Complutense de Madrid", country: "Spain", code: "es", count: 1, featured: false },
+            { name: "Rotterdam Business School", country: "Netherlands", code: "nl", count: 1, featured: false },
+            { name: "Universita di Padova", country: "Italy", code: "it", count: 1, featured: false },
+            { name: "Linkoping University", country: "Sweden", code: "se", count: 1, featured: false },
+            { name: "University of Nicosia Medical School", country: "Cyprus", code: "cy", count: 1, featured: false },
+            { name: "University of Athens", country: "Greece", code: "gr", count: 1, featured: false },
+            { name: "Sapienza Universita di Roma", country: "Italy", code: "it", count: 1, featured: false },
+            { name: "Universita Cattolica del Sacro Cuore", country: "Italy", code: "it", count: 1, featured: false },
+            { name: "Zhejiang University of Science and Technology", country: "China", code: "cn", count: 1, featured: false },
+            { name: "Tampere University", country: "Finland", code: "fi", count: 1, featured: false },
+            { name: "Sorbonne Universite", country: "France", code: "fr", count: 1, featured: false },
+            { name: "Universite Grenoble Alpes", country: "France", code: "fr", count: 1, featured: false },
+            { name: "University of Dusseldorf", country: "Germany", code: "de", count: 1, featured: false },
+            { name: "University of Bonn", country: "Germany", code: "de", count: 1, featured: false },
+            { name: "Copenhagen Business School / Utrecht University", country: "Denmark + Netherlands", code: "xx", count: 1, featured: false },
+            { name: "University of Lille / Leipzig University / Jagiellonian University", country: "France/Germany/Poland", code: "xx", count: 1, featured: false },
+            { name: "Vrije Universiteit Brussels (VUB)", country: "Belgium", code: "be", count: 1, featured: false },
+            { name: "Universita degli Studi di Napoli Federico II", country: "Italy", code: "it", count: 1, featured: false },
+            { name: "Jagiellonian University", country: "Poland", code: "pl", count: 1, featured: false },
+            { name: "Lisbon School of Economics and Management", country: "Portugal", code: "pt", count: 1, featured: false },
+            { name: "Leiden University / Delft University of Technology", country: "Netherlands", code: "nl", count: 1, featured: false },
+            { name: "University of Maribor", country: "Slovenia", code: "si", count: 1, featured: false },
+            { name: "IE University", country: "Spain", code: "es", count: 1, featured: false },
+            { name: "University College London / Sorbonne University", country: "United Kingdom", code: "gb", count: 1, featured: false },
+            { name: "Universidad Publica de Navarra", country: "Spain", code: "es", count: 1, featured: false },
+            { name: "The University of West Indies, Mona", country: "Jamaica", code: "jm", count: 1, featured: false },
+            { name: "Okinawa Institute of Science and Technology", country: "Japan", code: "jp", count: 1, featured: false },
+            { name: "Malaysia University", country: "Malaysia", code: "my", count: 1, featured: false },
+            { name: "Universita degli Studi dell\'Insubria", country: "Italy", code: "it", count: 1, featured: false },
+            { name: "University of California, Los Angeles", country: "United States", code: "us", count: 1, featured: false },
+            { name: "The Johns Hopkins University", country: "United States", code: "us", count: 1, featured: false },
+            { name: "Keck Graduate Institute", country: "United States", code: "us", count: 1, featured: false },
+            { name: "University of Gastronomic Sciences - Pollenzo / University of London", country: "United Kingdom", code: "gb", count: 1, featured: false },
+            { name: "Stockholm University / Universitatsmedizin Berlin", country: "Germany", code: "de", count: 1, featured: false },
+            { name: "Tilburg University", country: "Netherlands", code: "nl", count: 1, featured: false },
+            { name: "KTH Royal Institute of Technology / Technical University of Denmark", country: "Denmark", code: "dk", count: 1, featured: false },
+            { name: "Universitatsmedizin Berlin", country: "Germany", code: "de", count: 1, featured: false },
+            { name: "University of Norway", country: "Norway", code: "no", count: 1, featured: false },
+            { name: "University of Oslo", country: "Norway", code: "no", count: 1, featured: false },
+            { name: "University of Algarve", country: "Portugal", code: "pt", count: 1, featured: false },
+            { name: "London School of Hygiene and Tropical Medicine", country: "United Kingdom", code: "gb", count: 1, featured: false },
+            { name: "University of Lille", country: "France", code: "fr", count: 1, featured: false },
+            { name: "Technical University of Germany / Imperial College London", country: "Germany/United Kingdom", code: "xx", count: 1, featured: false },
+            { name: "University of Gottingen", country: "Germany", code: "de", count: 1, featured: false },
+            { name: "UCLouvain", country: "Belgium", code: "be", count: 1, featured: false },
+            { name: "Central European University", country: "Austria", code: "at", count: 1, featured: false },
+            { name: "Princeton University", country: "United States", code: "us", count: 1, featured: false },
+            { name: "Medical University of Vienna", country: "Austria", code: "at", count: 1, featured: false },
+            { name: "Vienna University of Technology", country: "Austria", code: "at", count: 1, featured: false },
+            { name: "Freidrich Alexander University Erlangen Nurnberg", country: "Germany", code: "de", count: 1, featured: false },
+            { name: "University of Milan", country: "Italy", code: "it", count: 1, featured: false },
+            { name: "Emlyon Business School", country: "France", code: "fr", count: 1, featured: false },
+            { name: "University of Bordeaux", country: "France", code: "fr", count: 1, featured: false },
+            { name: "Politecnico di Milano", country: "Italy", code: "it", count: 1, featured: false },
+            { name: "Kyoto University", country: "Japan", code: "jp", count: 1, featured: false },
+            { name: "City University of Hong Kong", country: "Hong Kong", code: "hk", count: 1, featured: false },
+            { name: "University of Bologna / Oslo / MCI (Erasmus Mundus)", country: "Bologna/Oslo/Innsbruck", code: "xx", count: 1, featured: false },
+            { name: "University of Worcester", country: "United Kingdom", code: "gb", count: 1, featured: false },
+            { name: "Boston University", country: "United States", code: "us", count: 1, featured: false },
+            { name: "London School of Economics and Political Science", country: "UK", code: "xx", count: 1, featured: false },
+            { name: "Norwegian University of Life Sciences", country: "Norway", code: "no", count: 1, featured: false },
+            { name: "Universiteit Utrecht", country: "Netherlands", code: "nl", count: 1, featured: false },
+            { name: "Leiden University / TU Delft", country: "Netherlands", code: "nl", count: 1, featured: false },
+            { name: "Chimie ParisTech - PSL", country: "France", code: "fr", count: 1, featured: false },
+            { name: "Florida International University", country: "USA", code: "xx", count: 1, featured: false },
+            { name: "Vrije Universiteit Brussel (TROPIMUNDO Erasmus Mundus)", country: "Belgium / Sri Lanka / Italy", code: "xx", count: 1, featured: false },
+            { name: "Medical University of Warsaw", country: "Poland", code: "pl", count: 1, featured: false },
+            { name: "Universidad Miguel Hernandez de Elche", country: "Spain", code: "es", count: 1, featured: false },
+            { name: "Institut Polytechnique de Paris", country: "France", code: "fr", count: 1, featured: false },
+            { name: "University of Geneva", country: "Switzerland", code: "ch", count: 1, featured: false },
+            { name: "Royal Veterinary College", country: "United Kingdom", code: "gb", count: 1, featured: false },
+            { name: "Keck Graduate University", country: "United States", code: "us", count: 1, featured: false },
+            { name: "University of Ghent", country: "Belgium", code: "be", count: 1, featured: false },
+            { name: "Rheinische Friedrich-Wilhelms-Universitat Bonn", country: "Germany", code: "de", count: 1, featured: false },
+            { name: "University of Heidelberg", country: "Germany", code: "de", count: 1, featured: false },
+            { name: "New Bulgarian University", country: "Bulgaria", code: "bg", count: 1, featured: false },
+            { name: "Universite de Lausanne", country: "Switzerland", code: "ch", count: 1, featured: false },
+            { name: "ESCP Business School", country: "France", code: "fr", count: 1, featured: false },
+            { name: "ISAE-SUPAERO", country: "France", code: "fr", count: 1, featured: false },
+            { name: "American College of Greece", country: "Greece", code: "gr", count: 1, featured: false },
+            { name: "University of Bologna", country: "Italy", code: "it", count: 1, featured: false },
+            { name: "University of Pavia", country: "Italy", code: "it", count: 1, featured: false },
+            { name: "Nova University Lisbon", country: "Portugal", code: "pt", count: 1, featured: false },
+            { name: "University of Pretoria", country: "South Africa", code: "za", count: 1, featured: false },
+            { name: "Camilo Jose Cela University", country: "Spain", code: "es", count: 1, featured: false },
+            { name: "Eidgenossische Technische Hochschule", country: "Switzerland", code: "ch", count: 1, featured: false },
+            { name: "Bristol University", country: "United Kingdom", code: "gb", count: 1, featured: false },
+            { name: "University of Bath", country: "United Kingdom", code: "gb", count: 1, featured: false },
+            { name: "Universidad Carlos III de Madrid", country: "Spain", code: "es", count: 1, featured: false },
+            { name: "Ecole Normale Superieure", country: "France", code: "fr", count: 1, featured: false },
+            { name: "Uppsala University / Ludwig-Maximilian University", country: "Mobility European Program: Uppsala (Sweden) and Munich (Germany)", code: "xx", count: 1, featured: false },
+            { name: "IQS Barcelona", country: "Spain", code: "es", count: 1, featured: false },
+            { name: "Erasmus University", country: "Netherlands", code: "nl", count: 1, featured: false },
+        ];
+        
+        
+                const DESTINATIONS = [
+            // Netherlands
+            { name: "Amsterdam", country: "Netherlands", code: "nl", lat: 52.3676, lng: 4.9041, alumni: 152, unis: ["UvA", "VU Amsterdam"] },
+            { name: "Utrecht", country: "Netherlands", code: "nl", lat: 52.0907, lng: 5.1214, alumni: 92, unis: ["Utrecht University"] },
+            { name: "Leiden", country: "Netherlands", code: "nl", lat: 52.1601, lng: 4.4970, alumni: 41, unis: ["Leiden University"] },
+            { name: "Wageningen", country: "Netherlands", code: "nl", lat: 51.9692, lng: 5.6654, alumni: 37, unis: ["Wageningen University"] },
+            { name: "Nijmegen", country: "Netherlands", code: "nl", lat: 51.8126, lng: 5.8372, alumni: 36, unis: ["Radboud University"] },
+            { name: "Groningen", country: "Netherlands", code: "nl", lat: 53.2194, lng: 6.5665, alumni: 23, unis: ["University of Groningen"] },
+            { name: "Delft", country: "Netherlands", code: "nl", lat: 52.0116, lng: 4.3571, alumni: 17, unis: ["TU Delft"] },
+            { name: "Eindhoven", country: "Netherlands", code: "nl", lat: 51.4416, lng: 5.4697, alumni: 9, unis: ["TU Eindhoven"] },
+            
+            // UK
+            { name: "London", country: "United Kingdom", code: "gb", lat: 51.5074, lng: -0.1278, alumni: 48, unis: ["Imperial", "UCL", "King's"] },
+            { name: "Cambridge", country: "United Kingdom", code: "gb", lat: 52.2053, lng: 0.1218, alumni: 8, unis: ["University of Cambridge"] },
+            { name: "Oxford", country: "United Kingdom", code: "gb", lat: 51.7520, lng: -1.2577, alumni: 6, unis: ["University of Oxford"] },
+            { name: "Edinburgh", country: "United Kingdom", code: "gb", lat: 55.9533, lng: -3.1883, alumni: 7, unis: ["University of Edinburgh"] },
+            
+            // Sweden
+            { name: "Stockholm", country: "Sweden", code: "se", lat: 59.3293, lng: 18.0686, alumni: 22, unis: ["Stockholm University", "KTH", "Karolinska"] },
+            { name: "Uppsala", country: "Sweden", code: "se", lat: 59.8586, lng: 17.6389, alumni: 18, unis: ["Uppsala University"] },
+            { name: "Lund", country: "Sweden", code: "se", lat: 55.7047, lng: 13.1910, alumni: 10, unis: ["Lund University"] },
+            
+            // Germany
+            { name: "Munich", country: "Germany", code: "de", lat: 48.1351, lng: 11.5820, alumni: 11, unis: ["TU Munich", "LMU Munich"] },
+            { name: "Berlin", country: "Germany", code: "de", lat: 52.5200, lng: 13.4050, alumni: 8, unis: ["Humboldt", "FU Berlin"] },
+            { name: "Heidelberg", country: "Germany", code: "de", lat: 49.3988, lng: 8.6724, alumni: 5, unis: ["Heidelberg University"] },
+            
+            // Belgium
+            { name: "Leuven", country: "Belgium", code: "be", lat: 50.8798, lng: 4.7005, alumni: 21, unis: ["KU Leuven"] },
+            { name: "Ghent", country: "Belgium", code: "be", lat: 51.0543, lng: 3.7174, alumni: 8, unis: ["Ghent University"] },
+            { name: "Brussels", country: "Belgium", code: "be", lat: 50.8503, lng: 4.3517, alumni: 6, unis: ["ULB", "VUB"] },
+            
+            // Switzerland
+            { name: "Zurich", country: "Switzerland", code: "ch", lat: 47.3769, lng: 8.5417, alumni: 18, unis: ["ETH Zurich", "UZH"] },
+            { name: "Lausanne", country: "Switzerland", code: "ch", lat: 46.5197, lng: 6.6323, alumni: 6, unis: ["EPFL"] },
+            
+            // Denmark
+            { name: "Copenhagen", country: "Denmark", code: "dk", lat: 55.6761, lng: 12.5683, alumni: 21, unis: ["University of Copenhagen", "DTU"] },
+            
+            // France
+            { name: "Paris", country: "France", code: "fr", lat: 48.8566, lng: 2.3522, alumni: 18, unis: ["Sorbonne", "ENS", "Sciences Po"] },
+            
+            // Other European
+            { name: "Vienna", country: "Austria", code: "at", lat: 48.2082, lng: 16.3738, alumni: 5, unis: ["University of Vienna"] },
+            { name: "Helsinki", country: "Finland", code: "fi", lat: 60.1699, lng: 24.9384, alumni: 4, unis: ["University of Helsinki"] },
+            { name: "Dublin", country: "Ireland", code: "ie", lat: 53.3498, lng: -6.2603, alumni: 4, unis: ["Trinity College Dublin"] },
+            { name: "Barcelona", country: "Spain", code: "es", lat: 41.3851, lng: 2.1734, alumni: 6, unis: ["University of Barcelona"] },
+            { name: "Oslo", country: "Norway", code: "no", lat: 59.9139, lng: 10.7522, alumni: 3, unis: ["University of Oslo"] },
+            { name: "Rome", country: "Italy", code: "it", lat: 41.9028, lng: 12.4964, alumni: 4, unis: ["Sapienza"] },
+            { name: "Bologna", country: "Italy", code: "it", lat: 44.4949, lng: 11.3426, alumni: 6, unis: ["University of Bologna"] },
+            { name: "Lisbon", country: "Portugal", code: "pt", lat: 38.7223, lng: -9.1393, alumni: 3, unis: ["University of Lisbon"] },
+            { name: "Warsaw", country: "Poland", code: "pl", lat: 52.2297, lng: 21.0122, alumni: 2, unis: ["Medical University of Warsaw"] },
+            
+            // USA
+            { name: "Boston", country: "United States", code: "us", lat: 42.3601, lng: -71.0589, alumni: 4, unis: ["MIT", "Harvard"] },
+            { name: "San Francisco", country: "United States", code: "us", lat: 37.7749, lng: -122.4194, alumni: 2, unis: ["Stanford", "UC Berkeley"] },
+            { name: "Los Angeles", country: "United States", code: "us", lat: 34.0522, lng: -118.2437, alumni: 1, unis: ["UCLA"] },
+            { name: "New York", country: "United States", code: "us", lat: 40.7128, lng: -74.0060, alumni: 2, unis: ["Columbia"] },
+            
+            // Other Worldwide
+            { name: "Melbourne", country: "Australia", code: "au", lat: -37.8136, lng: 144.9631, alumni: 3, unis: ["University of Melbourne"] },
+            { name: "Toronto", country: "Canada", code: "ca", lat: 43.6532, lng: -79.3832, alumni: 3, unis: ["University of Toronto"] },
+            { name: "Vancouver", country: "Canada", code: "ca", lat: 49.2827, lng: -123.1207, alumni: 1, unis: ["UBC"] },
+            { name: "Singapore", country: "Singapore", code: "sg", lat: 1.3521, lng: 103.8198, alumni: 1, unis: ["NUS"] },
+            { name: "Hong Kong", country: "Hong Kong", code: "hk", lat: 22.3193, lng: 114.1694, alumni: 1, unis: ["City University"] },
+            { name: "Tokyo", country: "Japan", code: "jp", lat: 35.6762, lng: 139.6503, alumni: 2, unis: ["Kyoto University"] },
+            { name: "Santiago", country: "Chile", code: "cl", lat: -33.4489, lng: -70.6693, alumni: 1, unis: ["Pontificia Universidad Catolica"] }
+        ];
+        
+        const COUNTRIES = Object.entries(COUNTRY_DETAILS).map(([code, data]) => ({
+            name: data.name,
+            code: code,
+            alumni: data.count,
+            universities: data.universities ? data.universities.length : 0,
+            top: TOP_COUNTRIES.includes(code)
+        })).sort((a, b) => b.alumni - a.alumni);
+        
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            initCounters();
+            renderUniversities();
+            renderCountries();
+            initTableControls();
+            initModal();
+        });
+
+        // The shared frame (site-nav.js) wraps the page into the content
+        // column after DOMContentLoaded and fires 'msp:frame'; the map is built
+        // then, so Leaflet measures the final container. 'load' is the fallback.
+        let mapBuilt = false;
+        function buildMapOnce() { if (mapBuilt) return; mapBuilt = true; initMap(); }
+        document.addEventListener('msp:frame', buildMapOnce);
+        window.addEventListener('load', buildMapOnce);
+        
+        function initCounters() {
+            const counters = document.querySelectorAll('.stat-number[data-target]');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateCounter(entry.target);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+            counters.forEach(c => observer.observe(c));
+        }
+        
+        function animateCounter(el) {
+            const target = parseInt(el.dataset.target);
+            const duration = 2000;
+            const start = performance.now();
+            function update(now) {
+                const progress = Math.min((now - start) / duration, 1);
+                el.textContent = Math.round((1 - Math.pow(1 - progress, 3)) * target);
+                if (progress < 1) requestAnimationFrame(update);
+            }
+            requestAnimationFrame(update);
+        }
+        
+        // ============================================
+        // LEAFLET MAP
+        // ============================================
+        function initMap() {
+            const map = L.map('leaflet-map', {
+                center: [50, 10],
+                zoom: 4,
+                minZoom: 2,
+                maxZoom: 8,
+                zoomControl: true,
+                attributionControl: true
+            });
+            
+            // Keep Leaflet's size in step with the column (sidebar breakpoints, drawer)
+            const mapEl = document.getElementById('leaflet-map');
+            if (window.ResizeObserver) {
+                new ResizeObserver(() => map.invalidateSize()).observe(mapEl);
+            }
+            window.addEventListener('resize', () => map.invalidateSize());
+            setTimeout(() => map.invalidateSize(), 0);
+
+            // Basemap: Esri dark gray canvas (keyless; Carto now watermarks unkeyed use)
+            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles &copy; Esri, HERE, Garmin, OpenStreetMap contributors',
+                maxZoom: 16
+            }).addTo(map);
+            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
+                maxZoom: 16
+            }).addTo(map);
+            
+            const maastrichtIcon = L.divIcon({
+                className: 'custom-marker',
+                html: '<div class="marker-maastricht"></div>',
+                iconSize: [20, 20],
+                iconAnchor: [10, 10]
+            });
+            
+            L.marker(MAASTRICHT, { icon: maastrichtIcon })
+                .addTo(map)
+                .bindPopup(createPopup('Maastricht', 'Netherlands', 'nl', 1321, ['MSP Origin'], false));
+            
+            DESTINATIONS.forEach(dest => {
+                const destIcon = L.divIcon({
+                    className: 'custom-marker',
+                    html: '<div class="marker-destination"></div>',
+                    iconSize: [12, 12],
+                    iconAnchor: [6, 6]
+                });
+                
+                L.marker([dest.lat, dest.lng], { icon: destIcon })
+                    .addTo(map)
+                    .bindPopup(createPopup(dest.name, dest.country, dest.code, dest.alumni, dest.unis, true));
+                
+                const latlngs = getCurvedPath(MAASTRICHT, [dest.lat, dest.lng]);
+                L.polyline(latlngs, {
+                    color: '#E84E10',
+                    weight: 1.5,
+                    opacity: 0.4,
+                    dashArray: '8, 4'
+                }).addTo(map);
+            });
+        }
+        
+        function createPopup(name, country, code, alumni, unis, clickable = true) {
+            const countryData = COUNTRIES.find(c => c.code === code);
+            const uniCount = countryData ? countryData.universities : unis.length;
+            
+            return `
+                <div class="popup-card" ${clickable ? `onclick="window.location.href='country.html?code=${code}'"` : ''}>
+                    <img class="popup-flag-bg" src="https://flagcdn.com/w640/${code}.png" alt="${country}">
+                    <div class="popup-content">
+                        <div class="popup-city">${name}</div>
+                        <div class="popup-country">${country}</div>
+                        <div class="popup-stats">
+                            <div class="popup-stat"><strong>${alumni}</strong> alumni</div>
+                            <div class="popup-stat"><strong>${uniCount}</strong> unis</div>
+                        </div>
+                    </div>
+                    ${clickable ? '<div class="popup-cta">Explore &rarr;</div>' : ''}
+                </div>
+            `;
+        }
+        
+        function getCurvedPath(start, end) {
+            const latlngs = [];
+            const offsetX = (end[1] - start[1]) * 0.2;
+            const offsetY = (end[0] - start[0]) * 0.2;
+            const midLat = (start[0] + end[0]) / 2 + offsetY;
+            const midLng = (start[1] + end[1]) / 2 - offsetX;
+            
+            for (let i = 0; i <= 50; i++) {
+                const t = i / 50;
+                const lat = (1-t)*(1-t)*start[0] + 2*(1-t)*t*midLat + t*t*end[0];
+                const lng = (1-t)*(1-t)*start[1] + 2*(1-t)*t*midLng + t*t*end[1];
+                latlngs.push([lat, lng]);
+            }
+            return latlngs;
+        }
+        
+        // ============================================
+        // UNIVERSITIES
+        // ============================================
+        function createUniCard(uni, isPrestige) {
+            const card = document.createElement('div');
+            card.className = 'uni-card' + (isPrestige ? ' prestige' : '');
+            card.dataset.name = uni.name.toLowerCase();
+            card.dataset.uniName = uni.name;
+            
+            const logoFile = UNI_LOGO_FILES[uni.name];
+            const logoHtml = logoFile 
+                ? `<img src="assets/logos/${logoFile}" alt="${uni.name}" onerror="this.parentElement.innerHTML='<i data-lucide=\'graduation-cap\'></i>'; lucide.createIcons();">`
+                : `<i data-lucide="graduation-cap"></i>`;
+            
+            card.innerHTML = `
+                ${isPrestige ? '<div class="uni-card-badge">Top 10</div>' : ''}
+                <div class="uni-logo">${logoHtml}</div>
+                <div class="uni-name">${uni.name}</div>
+                <div class="uni-location">
+                    <img src="https://flagcdn.com/w20/${uni.code}.png" alt="${uni.country}">
+                    ${uni.country}
+                </div>
+                <div class="uni-stats">
+                    <div class="uni-stat"><strong>${uni.count}</strong> alumni</div>
+                </div>
+            `;
+            
+            card.onclick = () => openUniModal(uni.name);
+            
+            return card;
+        }
+        
+                function renderUniversities() {
+            // 1. Render prestige universities (World Top 10)
+            const prestigeUnis = ALL_UNIVERSITIES.filter(u => {
+                return PRESTIGE_UNIS.includes(u.name) || PRESTIGE_UNIS.includes(u.name.replace(/u/g, 'u'));
+            });
+            const prestigeGrid = document.getElementById('prestige-grid');
+            prestigeUnis.forEach(uni => {
+                const card = createUniCard(uni, true);
+                prestigeGrid.appendChild(card);
+            });
+            
+            // 2. Render featured universities (10+ alumni)
+            const featuredUnis = ALL_UNIVERSITIES.filter(u => u.featured);
+            const featuredGrid = document.getElementById('featured-grid');
+            featuredUnis.forEach(uni => {
+                const card = createUniCard(uni, false);
+                featuredGrid.appendChild(card);
+            });
+            
+            // 3. Render complete table (initially limited)
+            document.getElementById('directory-subtitle').textContent = 
+                `All ${ALL_UNIVERSITIES.length} universities where MSP alumni have pursued master's degrees`;
+            renderUniversityTable(ALL_UNIVERSITIES, TABLE_INITIAL_LIMIT);
+            
+            lucide.createIcons();
+        }
+        
+        function renderUniversityTable(universities, limit = null) {
+            const tbody = document.getElementById('uni-table-body');
+            tbody.innerHTML = '';
+            
+            // Store for later use
+            currentFilteredUniversities = universities;
+            
+            const totalAlumni = universities.reduce((sum, u) => sum + u.count, 0);
+            const displayLimit = limit !== null ? limit : universities.length;
+            const displayUniversities = universities.slice(0, displayLimit);
+            
+            displayUniversities.forEach((uni, index) => {
+                const row = document.createElement('tr');
+                if (uni.featured) row.classList.add('featured-row');
+                row.onclick = () => openUniModal(uni.name);
+                
+                const percent = ((uni.count / totalAlumni) * 100).toFixed(1);
+                
+                row.innerHTML = `
+                    <td class="rank-cell">${index + 1}</td>
+                    <td class="name-cell ${uni.featured ? 'name-cell-featured' : ''}">
+                        ${uni.name}
+                        ${uni.featured ? '<span class="featured-badge-table">Featured</span>' : ''}
+                    </td>
+                    <td class="country-cell">
+                        <img src="https://flagcdn.com/w40/${uni.code}.png" alt="${uni.country}" class="country-flag-small">
+                        ${uni.country}
+                    </td>
+                    <td class="alumni-cell">${uni.count}</td>
+                    <td class="percent-cell">${percent}%</td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            updateTableInfo(displayUniversities.length, universities.length, ALL_UNIVERSITIES.length);
+        }
+        
+        function updateTableInfo(showing, filtered, total) {
+            const infoText = filtered === total 
+                ? `Showing ${showing} of ${total} universities`
+                : `Showing ${showing} of ${filtered} universities (filtered from ${total})`;
+            document.getElementById('table-showing').textContent = infoText;
+            
+            // Update expand button visibility and text
+            const expandBtn = document.getElementById('table-expand-btn');
+            const expandText = document.getElementById('expand-btn-text');
+            
+            if (filtered <= TABLE_INITIAL_LIMIT) {
+                expandBtn.style.display = 'none';
+            } else {
+                expandBtn.style.display = 'inline-flex';
+                if (tableExpanded) {
+                    expandText.textContent = 'Show Top 10 Only';
+                    expandBtn.classList.add('expanded');
+                } else {
+                    expandText.textContent = `Show All ${filtered} Universities`;
+                    expandBtn.classList.remove('expanded');
+                }
+            }
+            
+            // Refresh icons
+            lucide.createIcons();
+        }
+        
+        function toggleTableExpand() {
+            tableExpanded = !tableExpanded;
+            const limit = tableExpanded ? null : TABLE_INITIAL_LIMIT;
+            renderUniversityTable(currentFilteredUniversities, limit);
+        }
+        
+        function sortUniversities(universities, sortBy) {
+            const sorted = [...universities];
+            
+            switch(sortBy) {
+                case 'count-desc':
+                    return sorted.sort((a, b) => b.count - a.count);
+                case 'count-asc':
+                    return sorted.sort((a, b) => a.count - b.count);
+                case 'name-asc':
+                    return sorted.sort((a, b) => a.name.localeCompare(b.name));
+                case 'name-desc':
+                    return sorted.sort((a, b) => b.name.localeCompare(a.name));
+                case 'country-asc':
+                    return sorted.sort((a, b) => a.country.localeCompare(b.country));
+                default:
+                    return sorted;
+            }
+        }
+        
+        function initTableControls() {
+            const searchInput = document.getElementById('table-search');
+            const sortSelect = document.getElementById('sort-select');
+            
+            if (!searchInput || !sortSelect) return;
+            
+            let currentSort = 'count-desc';
+            let currentSearch = '';
+            
+            function updateTable() {
+                let filtered = ALL_UNIVERSITIES;
+                
+                if (currentSearch) {
+                    const query = currentSearch.toLowerCase();
+                    filtered = filtered.filter(u => 
+                        u.name.toLowerCase().includes(query) || 
+                        u.country.toLowerCase().includes(query)
+                    );
+                }
+                
+                const sorted = sortUniversities(filtered, currentSort);
+                const limit = tableExpanded ? null : TABLE_INITIAL_LIMIT;
+                renderUniversityTable(sorted, limit);
+            }
+            
+            searchInput.addEventListener('input', (e) => {
+                currentSearch = e.target.value.trim();
+                updateTable();
+            });
+            
+            sortSelect.addEventListener('change', (e) => {
+                currentSort = e.target.value;
+                updateTable();
+            });
+        }
+        
+                function initSearch() {
+            document.getElementById('search-input').addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase().trim();
+                document.querySelectorAll('.uni-card').forEach(card => {
+                    card.classList.toggle('hidden', query && !card.dataset.name.includes(query));
+                });
+            });
+        }
+        
+        // ============================================
+        // ============================================
+        // MODAL
+        // ============================================
+        function initModal() {
+            const modal = document.getElementById('universityModal');
+            const modalClose = document.getElementById('modalClose');
+            
+            if (!modal || !modalClose) return;
+            
+            modalClose.addEventListener('click', () => {
+                modal.classList.remove('active');
+            });
+            
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+            
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modal.classList.contains('active')) {
+                    modal.classList.remove('active');
+                }
+            });
+        }
+        
+        function openUniModal(uniName) {
+            // Phase 1 Fix: Check for alias mapping first
+            const mappedName = UNIVERSITY_ALIASES[uniName] || uniName;
+            const uniInfo = UNIVERSITY_INFO[mappedName];
+            
+            if (!uniInfo) {
+                console.log('No detailed info available for:', uniName, '(checked as:', mappedName, ')');
+                return;
+            }
+            
+            const modal = document.getElementById('universityModal');
+            const modalLogo = document.getElementById('modalLogo');
+            const modalUniName = document.getElementById('modalUniName');
+            const modalLocation = document.getElementById('modalLocation');
+            const modalFounded = document.getElementById('modalFounded');
+            const modalStudents = document.getElementById('modalStudents');
+            const modalDescription = document.getElementById('modalDescription');
+            const modalWebsite = document.getElementById('modalWebsite');
+            
+            // Display original name from database
+            modalUniName.textContent = uniName;
+            modalLocation.textContent = uniInfo.location;
+            modalFounded.textContent = uniInfo.founded;
+            modalStudents.textContent = uniInfo.students;
+            modalDescription.textContent = uniInfo.description;
+            modalWebsite.href = uniInfo.website;
+            
+            // Check for logo using both original and mapped names
+            const logoFile = UNI_LOGO_FILES[uniName] || UNI_LOGO_FILES[mappedName];
+            if (logoFile) {
+                modalLogo.innerHTML = `<img src="assets/logos/${logoFile}" alt="${uniName}">`;
+            } else {
+                modalLogo.innerHTML = '<i data-lucide="graduation-cap"></i>';
+            }
+            
+            modal.classList.add('active');
+            lucide.createIcons();
+        }
+        
+                // ============================================
+        // COUNTRIES
+        // ============================================
+        function renderCountries() {
+            const grid = document.getElementById('country-grid');
+            if (!grid) {
+                console.log('country-grid element not found');
+                return;
+            }
+            COUNTRIES.forEach(country => {
+                const card = document.createElement('div');
+                card.className = 'country-card' + (country.top ? ' top' : '');
+                card.innerHTML = `
+                    <img class="country-flag" src="https://flagcdn.com/w80/${country.code}.png" alt="${country.name}">
+                    <h4>${country.name}</h4>
+                    <p><strong>${country.alumni}</strong> alumni</p>
+                `;
+                card.onclick = () => window.location.href = `country.html?code=${country.code}`;
+                grid.appendChild(card);
+            });
+        }
+        
+    </script>
+<!-- Shared MSP frame: the sidebar is built from the config in site-nav.js -->
+    <script src="assets/msp-ui/msp-shell.js"></script>
+    <script src="site-nav.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+    </script>
+</body>
+</html>

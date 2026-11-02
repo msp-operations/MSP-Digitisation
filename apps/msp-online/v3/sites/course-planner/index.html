@@ -1,0 +1,2033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MSP Course Planner</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#011B3C;--navy2:#02274F;--navy3:#0A3060;
+  --sky:#6ED2EC;--orange:#E87722;--um-red:#BE0028;
+  --ok:#15803D;--ok-bg:#F0FDF4;--ok-bd:#86EFAC;
+  --warn:#92400E;--warn-bg:#FFFBEB;--warn-bd:#FCD34D;
+  --err:#B91C1C;--err-bg:#FEF2F2;--err-bd:#FCA5A5;
+  --inf:#0C4A6E;--inf-bg:#F0F9FF;--inf-bd:#7DD3FC;
+  --g0:#F8FAFC;--g1:#F1F5F9;--g2:#E2E8F0;--g3:#CBD5E1;
+  --g4:#94A3B8;--g5:#64748B;--g7:#334155;--g9:#0F172A;
+  --sa-bg:#EFF6FF;--sa:#1D4ED8;--sb-bg:#F0FDF4;--sb:#166534;
+  --sc-bg:#FEFCE8;--sc:#854D0E;--sd-bg:#F5F3FF;--sd:#5B21B6;
+  --se-bg:#FFF1F2;--se:#9F1239;
+  --r:10px;--rs:6px;
+  --sh:0 1px 3px rgba(0,0,0,.04),0 1px 2px rgba(0,0,0,.03);
+  --sh-md:0 4px 20px rgba(0,0,0,.06),0 2px 6px rgba(0,0,0,.03);
+  --sh-lg:0 8px 30px rgba(0,0,0,.08),0 4px 10px rgba(0,0,0,.04)
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--g0);color:var(--g9);min-height:100vh;font-size:14px;line-height:1.6}
+
+/* ── Layout: Sidebar + Content ── */
+.app-layout{display:flex;min-height:100vh}
+
+/* ── Sidebar ── */
+.sidebar{width:260px;background:var(--navy);color:#fff;position:fixed;top:0;left:0;bottom:0;z-index:200;display:flex;flex-direction:column;overflow-y:auto;box-shadow:4px 0 24px rgba(1,27,60,.12)}
+.sb-brand{padding:28px 24px 20px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sb-brand .sb-logo{height:32px;width:auto;object-fit:contain;filter:brightness(0) invert(1);opacity:.9;margin-bottom:14px;display:block}
+.sb-brand .sb-title{font-family:'DM Sans',sans-serif;font-size:20px;font-weight:700;letter-spacing:-.02em;line-height:1.15;color:#fff}
+.sb-brand .sb-sub{font-size:9.5px;color:rgba(255,255,255,.4);letter-spacing:.1em;text-transform:uppercase;margin-top:5px;font-weight:500;line-height:1.4}
+.sb-nav{padding:20px 14px;flex:1}
+.sb-nav-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.3);padding:0 10px;margin-bottom:8px}
+.sb-link{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;font-size:13.5px;font-weight:500;color:rgba(255,255,255,.55);text-decoration:none;transition:all .2s;border:none;background:none;cursor:pointer;font-family:inherit;width:100%;text-align:left;margin-bottom:4px}
+.sb-link:hover{background:rgba(255,255,255,.08);color:rgba(255,255,255,.9)}
+.sb-link.active{background:rgba(255,255,255,.12);color:#fff;font-weight:600;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.sb-link .sb-ico{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(255,255,255,.06);transition:background .2s}
+.sb-link:hover .sb-ico{background:rgba(255,255,255,.1)}
+.sb-link.active .sb-ico{background:rgba(110,210,236,.15);color:var(--sky)}
+.sb-link svg{width:18px;height:18px}
+.sb-link .sb-text{line-height:1.2}
+.sb-link .sb-hint{font-size:10px;color:rgba(255,255,255,.3);font-weight:400;display:block;margin-top:1px}
+.sb-link.active .sb-hint{color:rgba(255,255,255,.45)}
+.sb-divider{height:1px;background:rgba(255,255,255,.06);margin:16px 10px}
+.sb-meta{padding:16px 24px;border-top:1px solid rgba(255,255,255,.06);font-size:10.5px;color:rgba(255,255,255,.3);line-height:1.6}
+.sb-meta span{display:block;margin-bottom:2px}
+.sb-meta .sb-cfg{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;border-radius:var(--rs);font-size:10.5px;font-weight:600;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);cursor:pointer;font-family:inherit;transition:all .15s;margin-top:8px}
+.sb-meta .sb-cfg:hover{background:rgba(255,255,255,.12);color:rgba(255,255,255,.8)}
+.sb-footer{padding:16px 24px;border-top:1px solid rgba(255,255,255,.06)}
+.sb-footer img{height:36px;width:auto;object-fit:contain;filter:brightness(0) invert(1);opacity:.4;display:block;margin-bottom:8px}
+.sb-footer .sb-privacy{font-size:9px;color:rgba(255,255,255,.25);line-height:1.5}
+
+/* ── Main Content ── */
+.content-area{flex:1;margin-left:260px;min-height:100vh;background:var(--g0)}
+.main{max-width:860px;margin:0 auto;padding:32px 32px 80px}
+.main.wide{max-width:1100px}
+
+/* ── Hide old header styles ── */
+.hdr{display:none}
+
+/* ── Mobile sidebar toggle ── */
+.sb-toggle{display:none;position:fixed;top:12px;left:12px;z-index:300;width:40px;height:40px;border-radius:10px;background:var(--navy);color:#fff;border:none;cursor:pointer;align-items:center;justify-content:center;box-shadow:var(--sh-md);font-size:18px}
+.sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:190}
+.view{display:none}
+.view.active{display:block}
+#loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;gap:14px;color:var(--g4)}
+.spin{width:32px;height:32px;border:3px solid var(--g2);border-top-color:var(--navy);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#errscr{display:none;flex-direction:column;align-items:center;padding:64px 20px;gap:14px;text-align:center}
+#errscr h2{font-family:'DM Sans',sans-serif;font-size:22px;font-weight:700;color:var(--g7)}
+#errscr p{font-size:13.5px;color:var(--g5);max-width:400px;line-height:1.7}
+
+/* ── Plan Tabs ── */
+.plan-tabs{display:flex;gap:6px;margin-bottom:22px;background:#fff;padding:6px;border-radius:var(--r);border:1px solid var(--g2);box-shadow:var(--sh)}
+.ptab{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:7px;cursor:pointer;border:none;background:transparent;font-size:13px;font-weight:500;color:var(--g5);transition:all .2s;font-family:inherit}
+.ptab:hover{background:var(--g0);color:var(--g7)}
+.ptab.active{background:var(--navy);color:#fff;box-shadow:var(--sh-md)}
+.ptab .tlbl{font-weight:600}
+.ptab.tok .tst{color:var(--ok)} .ptab.active .tst{color:rgba(255,255,255,.7)}
+.ptab.twarn .tst{color:var(--orange)} .ptab.terr .tst{color:var(--err)}
+.ptab-cmp{flex:none;padding:10px 16px;font-weight:600;gap:5px;color:var(--navy);border:1.5px solid var(--g2)}
+.ptab-cmp:hover{border-color:var(--navy);background:var(--sa-bg)}
+.ptab-cmp.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* ── Cards ── */
+.card{background:#fff;border-radius:var(--r);box-shadow:var(--sh);border:1px solid var(--g2);margin-bottom:16px;overflow:hidden;transition:box-shadow .2s}
+.card:hover{box-shadow:var(--sh-md)}
+.card-h{padding:16px 24px;border-bottom:1px solid var(--g1);display:flex;align-items:center;gap:12px}
+.step{width:28px;height:28px;background:var(--navy);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.step.ok{background:var(--ok)}
+.card-h h2{font-size:15px;font-weight:600;color:var(--g9);letter-spacing:-.01em}
+.hint{font-size:12px;color:var(--g4);margin-left:auto;font-weight:400}
+.card-b{padding:24px}
+
+/* ── Form Fields ── */
+.field{margin-bottom:18px} .field:last-child{margin-bottom:0}
+.flbl{display:block;font-size:10.5px;font-weight:600;color:var(--g5);margin-bottom:6px;letter-spacing:.08em;text-transform:uppercase}
+.sw{position:relative}
+.sw select{width:100%;padding:10px 32px 10px 14px;border:1.5px solid var(--g2);border-radius:var(--rs);font-size:13.5px;font-family:inherit;color:var(--g9);background:#fff;appearance:none;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.sw select:hover{border-color:var(--g3)} .sw select:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(1,27,60,.08)}
+.sw select option:disabled{color:var(--g3)}
+.sw::after{content:'\25BE';position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--g4);pointer-events:none;font-size:12px}
+.cpanel{display:none;margin-top:8px;padding:10px 14px;background:var(--g0);border:1px solid var(--g1);border-radius:var(--rs);font-size:12.5px} .cpanel.show{display:block}
+.crow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:3px} .crow:last-child{margin-bottom:0}
+.slotb{display:inline-flex;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.05em}
+.sl-A{background:var(--sa-bg);color:var(--sa)} .sl-B{background:var(--sb-bg);color:var(--sb)} .sl-C{background:var(--sc-bg);color:var(--sc)} .sl-D{background:var(--sd-bg);color:var(--sd)} .sl-E{background:var(--se-bg);color:var(--se)}
+.tg{display:inline-flex;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:600}
+.tg-co{background:var(--inf-bg);color:var(--inf)} .tg-pre{background:var(--warn-bg);color:var(--warn)}
+.days{display:flex;flex-wrap:wrap;gap:4px}
+.daychip{background:var(--navy);color:#fff;font-size:10px;font-weight:500;padding:2px 8px;border-radius:4px;letter-spacing:.02em}
+.coord{color:var(--g5);font-size:12px}
+.divr{border:none;border-top:1px solid var(--g1);margin:18px 0}
+.labct{font-size:12px;color:var(--g4);margin-top:6px}
+
+/* ── Status Pills ── */
+.spill{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;margin-left:auto;white-space:nowrap;letter-spacing:.02em}
+.sp-pend{background:var(--g1);color:var(--g4)} .sp-ok{background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok-bd)} .sp-warn{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-bd)} .sp-err{background:var(--err-bg);color:var(--err);border:1px solid var(--err-bd)}
+
+/* ── Alerts ── */
+.alrt{display:flex;gap:10px;align-items:flex-start;padding:12px 16px;border-radius:var(--rs);margin-bottom:8px;line-height:1.5} .alrt:last-child{margin-bottom:0}
+.aico{font-size:14px;flex-shrink:0;margin-top:1px} .abdy{flex:1} .abdy strong{display:block;font-weight:600;font-size:13px;margin-bottom:2px} .abdy p{color:var(--g5);font-size:12.5px}
+.a-ok{background:var(--ok-bg);border:1px solid var(--ok-bd)} .a-ok .aico,.a-ok strong{color:var(--ok)}
+.a-warn{background:var(--warn-bg);border:1px solid var(--warn-bd)} .a-warn .aico,.a-warn strong{color:var(--warn)}
+.a-err{background:var(--err-bg);border:1px solid var(--err-bd)} .a-err .aico,.a-err strong{color:var(--err)}
+.a-inf{background:var(--inf-bg);border:1px solid var(--inf-bd)} .a-inf .aico,.a-inf strong{color:var(--inf)}
+
+/* ── Prerequisite Boxes ── */
+.pb{display:flex;gap:10px;align-items:flex-start;padding:12px 16px;background:var(--warn-bg);border:1px solid var(--warn-bd);border-radius:var(--rs);margin-bottom:8px;font-size:12.5px;line-height:1.5;transition:all .2s} .pb:last-child{margin-bottom:0} .pb.conf{background:var(--ok-bg);border-color:var(--ok-bd)}
+.pb input[type=checkbox]{width:15px;height:15px;margin-top:3px;flex-shrink:0;cursor:pointer;accent-color:var(--navy)}
+.pb label{cursor:pointer;color:var(--g5)} .pb label .pc{font-weight:600;color:var(--warn)} .pb.conf label .pc{color:var(--ok)}
+.ph{font-size:11px;color:var(--warn);margin-top:3px;display:block;font-style:italic} .pb.conf .ph{display:none}
+.guidance{margin-top:6px;padding:9px 12px;background:rgba(12,74,110,.04);border-left:3px solid var(--inf-bd);border-radius:0 var(--rs) var(--rs) 0;font-size:11.5px;color:var(--g5);line-height:1.6}
+.guidance strong{color:var(--g7);font-weight:600}
+.guidance a{color:var(--inf);font-weight:500;text-decoration:none} .guidance a:hover{text-decoration:underline}
+.seclbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--g4);margin-bottom:10px;margin-top:2px}
+
+/* ── Next Steps Card ── */
+.nsteps{list-style:none;padding:0;margin:0;counter-reset:ns}
+.nsteps li{position:relative;padding:6px 0 6px 32px;font-size:13px;color:var(--g7);counter-increment:ns}
+.nsteps li::before{content:counter(ns);position:absolute;left:0;top:6px;width:22px;height:22px;border-radius:50%;background:var(--navy);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.dl-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.dl-box{padding:12px 14px;border-radius:var(--rs);border:1px solid var(--g2);background:var(--g0)}
+.dl-box .dl-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g4);margin-bottom:3px}
+.dl-box .dl-val{font-size:13px;font-weight:600;color:var(--g9)}
+.dl-box.dl-urgent{border-color:var(--warn-bd);background:var(--warn-bg)}
+.dl-box.dl-urgent .dl-lbl{color:var(--warn)} .dl-box.dl-urgent .dl-val{color:var(--warn)}
+.links-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.links-row a{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:var(--rs);font-size:11.5px;font-weight:500;color:var(--navy);background:var(--sa-bg);border:1px solid rgba(29,78,216,.1);text-decoration:none;transition:all .15s}
+.links-row a:hover{background:var(--navy);color:#fff}
+.emptys{text-align:center;padding:28px 20px;color:var(--g4)} .emptys .ei{font-size:28px;display:block;margin-bottom:8px;opacity:.6} .emptys p{font-size:13px}
+
+/* ── Weekly Timetable ── */
+.timetable{border-collapse:collapse;width:100%;font-size:12px;table-layout:fixed}
+.timetable th{background:var(--g0);padding:8px 6px;text-align:center;font-size:10px;font-weight:700;color:var(--g4);text-transform:uppercase;letter-spacing:.08em;border:1px solid var(--g2)}
+.timetable td{border:1px solid var(--g2);padding:4px;height:56px;vertical-align:top;background:#fff}
+.timetable .tt-label{background:var(--g0);font-weight:600;color:var(--g5);text-align:center;width:60px;font-size:11px;vertical-align:middle}
+.tt-cell{border-radius:4px;padding:5px 6px;font-size:10.5px;line-height:1.3;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;font-weight:500}
+.tt-course{background:var(--sa-bg);color:var(--sa);border:1px solid rgba(29,78,216,.15)}
+.tt-course.sl-B{background:var(--sb-bg);color:var(--sb);border-color:rgba(22,101,52,.15)}
+.tt-course.sl-C{background:var(--sc-bg);color:var(--sc);border-color:rgba(133,77,14,.15)}
+.tt-course.sl-D{background:var(--sd-bg);color:var(--sd);border-color:rgba(91,33,182,.15)}
+.tt-course.sl-E{background:var(--se-bg);color:var(--se);border-color:rgba(159,18,57,.15)}
+.tt-lab{background:var(--inf-bg);color:var(--inf);border:1px solid rgba(12,74,110,.15)}
+.tt-code{font-weight:700;font-size:10px;letter-spacing:.02em}
+.tt-name{font-size:9px;opacity:.8;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+
+/* ── Comparison View ── */
+.cmp-view{display:none}
+.cmp-view.show{display:block}
+.cmp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.cmp-col{background:#fff;border:1px solid var(--g2);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)}
+.cmp-col-h{padding:12px 16px;font-weight:700;font-size:14px;color:#fff;background:var(--navy);display:flex;align-items:center;gap:8px}
+.cmp-col-h .cmp-st{margin-left:auto;font-size:10px;font-weight:600;padding:2px 8px;border-radius:12px;background:rgba(255,255,255,.15)}
+.cmp-col-h .cmp-st-ok{background:rgba(21,128,61,.2);color:#86EFAC}
+.cmp-col-h .cmp-st-warn{background:rgba(232,119,34,.2);color:#FCD34D}
+.cmp-col-h .cmp-st-err{background:rgba(185,28,28,.2);color:#FCA5A5}
+.cmp-col-b{padding:12px}
+.cmp-item{padding:8px 10px;border-radius:var(--rs);margin-bottom:6px;font-size:12px;border:1px solid var(--g1);background:var(--g0)}
+.cmp-item:last-child{margin-bottom:0}
+.cmp-item .ci-type{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g4);margin-bottom:2px}
+.cmp-item .ci-code{font-weight:600;color:var(--g9)}
+.cmp-item .ci-title{font-size:11px;color:var(--g5)}
+.cmp-item .ci-days{display:flex;gap:3px;margin-top:4px;flex-wrap:wrap}
+.cmp-empty{text-align:center;padding:20px 12px;color:var(--g4);font-size:12px}
+.cmp-tt{margin-top:8px}
+.cmp-tt .timetable td{height:36px}
+.cmp-tt .timetable .tt-cell{font-size:9px;padding:3px}
+.cmp-tt .timetable .tt-code{font-size:8.5px}
+.cmp-tt .timetable .tt-name{display:none}
+
+/* ── Summary Table ── */
+.stbl{width:100%;border-collapse:collapse;font-size:13px}
+.stbl th{background:var(--g0);padding:10px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--g4);text-transform:uppercase;letter-spacing:.08em;border-bottom:2px solid var(--g2)}
+.stbl td{padding:12px 14px;border-bottom:1px solid var(--g1);vertical-align:middle} .stbl tr:last-child td{border-bottom:none}
+.stbl tr:hover td{background:var(--g0)}
+.tchip{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g4);background:var(--g1);padding:3px 8px;border-radius:4px}
+.scode{color:var(--g4);font-size:12px;font-family:'SF Mono',Monaco,Consolas,monospace} .sname{font-weight:500;color:var(--g9);line-height:1.3} .scoord{font-size:12px;color:var(--g4)}
+
+/* ── Action Bar ── */
+.actbar{padding:16px 24px;background:var(--g0);border-top:1px solid var(--g1);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:var(--rs);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:all .15s}
+.btn-or{background:var(--orange);color:#fff;box-shadow:0 1px 3px rgba(232,119,34,.3)} .btn-or:hover{opacity:.9;box-shadow:0 2px 8px rgba(232,119,34,.35)} .btn-or:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
+.btn-gh{background:#fff;color:var(--g5);border:1.5px solid var(--g2)} .btn-gh:hover{border-color:var(--g4);color:var(--g7)}
+.btn-navy{background:var(--navy);color:#fff} .btn-navy:hover{background:var(--navy2)}
+.actnote{margin-left:auto;font-size:11.5px;color:var(--g4);line-height:1.5;text-align:right;max-width:260px}
+
+/* ── Footer ── */
+footer{text-align:center;padding:20px 24px;font-size:12px;color:var(--g4);border-top:1px solid var(--g2);background:#fff;display:flex;flex-direction:column;align-items:center;gap:6px}
+footer .ft-line{margin-bottom:0;font-size:11px}
+footer .ft-privacy{font-size:10.5px;color:var(--g4);max-width:600px;line-height:1.5}
+
+/* ── Dashboard ── */
+.upload-zone{border:2.5px dashed var(--g3);border-radius:16px;padding:60px 40px;text-align:center;transition:all .2s;cursor:pointer;background:#fff}
+.upload-zone:hover,.upload-zone.drag-over{border-color:var(--navy);background:var(--sa-bg);transform:translateY(-2px);box-shadow:var(--sh-md)}
+.upload-zone .uz-icon{font-size:48px;margin-bottom:16px;display:block;opacity:.7}
+.upload-zone h2{font-family:'DM Sans',sans-serif;font-size:22px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.upload-zone p{font-size:13.5px;color:var(--g5);max-width:400px;margin:0 auto 16px;line-height:1.7}
+.upload-zone .uz-privacy{font-size:11.5px;color:var(--g4);margin-top:16px;display:flex;align-items:center;justify-content:center;gap:6px}
+.skip-link{display:inline-block;margin-top:20px;font-size:13px;color:var(--g4);text-decoration:none;transition:color .15s}
+.skip-link:hover{color:var(--navy)}
+
+/* Dashboard profile card */
+.profile-card{background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 40%,var(--navy3) 100%);color:#fff;border-radius:16px;padding:32px 36px;margin-bottom:20px;box-shadow:0 8px 32px rgba(1,27,60,.18),0 2px 8px rgba(0,0,0,.08);display:flex;align-items:center;gap:24px;position:relative;overflow:hidden;border:2.5px solid transparent}
+.profile-card::before{content:'';position:absolute;top:-60px;right:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(110,210,236,.08) 0%,transparent 70%);pointer-events:none}
+/* Bene Meritum: subtle silver border */
+.profile-card.dist-bm{border-color:rgba(148,163,184,.4);box-shadow:0 8px 32px rgba(1,27,60,.18),0 0 0 1px rgba(148,163,184,.15)}
+/* Cum Laude: gold border + glow */
+.profile-card.dist-cl{border-color:#D4A843;box-shadow:0 8px 32px rgba(1,27,60,.18),0 0 20px rgba(212,168,67,.2),0 0 0 1px rgba(212,168,67,.3)}
+.profile-card.dist-cl::after{content:'';position:absolute;inset:0;border-radius:14px;background:linear-gradient(135deg,rgba(212,168,67,.06) 0%,transparent 40%,transparent 60%,rgba(212,168,67,.04) 100%);pointer-events:none}
+/* Summa Cum Laude: gold border + gold name + shimmer */
+.profile-card.dist-scl{border-color:#D4A843;box-shadow:0 8px 32px rgba(1,27,60,.18),0 0 30px rgba(212,168,67,.25),0 0 0 1px rgba(212,168,67,.4)}
+.profile-card.dist-scl::after{content:'';position:absolute;inset:0;border-radius:14px;background:linear-gradient(135deg,rgba(212,168,67,.1) 0%,transparent 30%,transparent 70%,rgba(212,168,67,.08) 100%);pointer-events:none}
+.profile-card.dist-scl h2{background:linear-gradient(90deg,#F5D77A 0%,#D4A843 30%,#F5E6A3 50%,#D4A843 70%,#F5D77A 100%);background-size:200% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:goldShimmer 4s ease infinite}
+@keyframes goldShimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.profile-card .pc-distinction{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:4px 14px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.pc-dist-bm{background:rgba(148,163,184,.15);color:rgba(255,255,255,.7);border:1px solid rgba(148,163,184,.2)}
+.pc-dist-cl{background:rgba(212,168,67,.15);color:#F5D77A;border:1px solid rgba(212,168,67,.25)}
+.pc-dist-scl{background:rgba(212,168,67,.2);color:#F5E6A3;border:1px solid rgba(212,168,67,.35)}
+.profile-card .pc-left{flex:1}
+.profile-card h2{font-family:'DM Sans',sans-serif;font-size:26px;font-weight:700;margin-bottom:4px;letter-spacing:-.02em}
+.profile-card .pc-sub{font-size:13px;opacity:.7;margin-bottom:6px}
+.profile-card .pc-meta{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;opacity:.55;margin-top:10px}
+.profile-card .pc-actions{display:flex;gap:8px;margin-top:14px}
+.profile-card .pc-actions button{padding:6px 14px;border-radius:var(--rs);font-size:11px;font-weight:600;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.1);color:#fff;cursor:pointer;font-family:inherit;transition:all .2s;backdrop-filter:blur(4px)}
+.profile-card .pc-actions button:hover{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.4);transform:translateY(-1px)}
+.profile-card .pc-logo{flex-shrink:0;width:200px;height:auto;opacity:.7;filter:brightness(0) invert(1);transition:opacity .3s}
+.profile-card:hover .pc-logo{opacity:.85}
+
+/* Quick stats row */
+.stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px}
+.stat-card{background:#fff;border-radius:14px;padding:20px 16px 16px;text-align:center;border:1.5px solid var(--g2);box-shadow:var(--sh);transition:all .3s;cursor:pointer;position:relative;overflow:hidden}
+.stat-card:hover{box-shadow:var(--sh-md);transform:translateY(-3px);border-color:var(--g3)}
+.stat-card .sc-val{font-family:'DM Sans',sans-serif;font-size:28px;font-weight:700;color:var(--navy);line-height:1.1}
+.stat-card .sc-label{font-size:10px;font-weight:700;color:var(--g4);text-transform:uppercase;letter-spacing:.08em;margin-top:6px}
+.stat-card .sc-sub{font-size:11px;color:var(--g5);margin-top:3px}
+.stat-card .sc-tooltip{display:none;position:absolute;left:0;right:0;bottom:0;top:0;background:rgba(255,255,255,.98);backdrop-filter:blur(8px);padding:14px 12px;font-size:11.5px;color:var(--g7);line-height:1.5;text-align:left;border-radius:14px;z-index:5;overflow-y:auto;animation:fadeInUp .2s ease}
+.stat-card .sc-tooltip h4{font-size:10px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.stat-card .sc-tooltip .sc-close{position:absolute;top:6px;right:8px;font-size:16px;color:var(--g4);cursor:pointer;line-height:1;padding:2px}
+.stat-card.sc-open .sc-tooltip{display:block}
+.stat-card.sc-ok{border-color:var(--ok-bd);background:var(--ok-bg)} .stat-card.sc-ok .sc-val{color:var(--ok)} .stat-card.sc-ok:hover{border-color:var(--ok);background:var(--ok-bg)}
+.stat-card.sc-warn{border-color:var(--warn-bd);background:var(--warn-bg)} .stat-card.sc-warn .sc-val{color:var(--warn)} .stat-card.sc-warn:hover{border-color:var(--warn)}
+
+/* Progress sections */
+.prog-section{background:#fff;border-radius:14px;border:1px solid var(--g2);box-shadow:var(--sh);margin-bottom:10px;overflow:hidden;transition:all .2s}
+.prog-section:hover{box-shadow:var(--sh-md)}
+.prog-header{padding:16px 22px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:background .15s;user-select:none}
+.prog-header:hover{background:var(--g0)}
+.prog-header .prog-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;background:var(--sa-bg);color:var(--sa)}
+.prog-header .prog-icon.pi-ok{background:var(--ok-bg);color:var(--ok)}
+.prog-header .prog-icon.pi-warn{background:var(--warn-bg);color:var(--warn)}
+.prog-header h3{font-size:14px;font-weight:600;color:var(--g9);width:180px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prog-header .prog-summary{font-size:12px;color:var(--g5);font-weight:500;min-width:80px;text-align:right;flex-shrink:0}
+.prog-header .prog-arrow{font-size:10px;color:var(--g4);transition:transform .2s;flex-shrink:0}
+.prog-section.open .prog-arrow{transform:rotate(90deg)}
+.prog-body{display:none;padding:0 22px 18px;border-top:1px solid var(--g1)}
+.prog-section.open .prog-body{display:block}
+.prog-bar-wrap{flex:1;height:10px;background:var(--g1);border-radius:6px;overflow:hidden;position:relative}
+.prog-bar{height:100%;border-radius:6px;transition:width 1.2s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden}
+.prog-bar::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(180deg,rgba(255,255,255,.25) 0%,transparent 50%,rgba(0,0,0,.05) 100%);border-radius:6px}
+.prog-bar.bar-default{background:linear-gradient(90deg,var(--navy) 0%,var(--sky) 100%)}
+.prog-bar.bar-ok{background:linear-gradient(90deg,#059669 0%,#34D399 60%,#6EE7B7 100%)}
+.prog-bar.bar-warn{background:linear-gradient(90deg,#B45309 0%,#F59E0B 60%,#FCD34D 100%)}
+.prog-pct{font-size:11px;font-weight:700;color:var(--g5);width:38px;text-align:right;flex-shrink:0}
+.prog-item{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:12.5px;border-bottom:1px solid var(--g0)}
+.prog-item:last-child{border-bottom:none}
+.prog-item .pi-code{font-family:'SF Mono',Monaco,Consolas,monospace;font-weight:600;color:var(--g5);min-width:70px}
+.prog-item .pi-title{flex:1;color:var(--g7)}
+.prog-item .pi-grade{font-weight:600;min-width:36px;text-align:right}
+.prog-item .pi-status{font-size:11px}
+.prog-sub{font-size:11.5px;color:var(--g5);margin-top:8px;padding:6px 10px;background:var(--g0);border-radius:var(--rs)}
+
+/* GPA Chart */
+.gpa-chart-card{background:#fff;border-radius:14px;border:1px solid var(--g2);box-shadow:var(--sh);padding:24px;margin-bottom:20px;transition:box-shadow .2s}
+.gpa-chart-card:hover{box-shadow:var(--sh-md)}
+.gpa-chart-card h3{font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;color:var(--navy);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.gpa-chart-card h3 span{font-size:18px}
+.gpa-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px solid var(--g1);font-size:11px;color:var(--g5)}
+.gpa-legend-item{display:flex;align-items:center;gap:5px}
+.gpa-legend-swatch{width:16px;height:3px;border-radius:2px}
+.gpa-legend-dot{width:8px;height:8px;border-radius:50%}
+
+/* Semester history */
+.sem-acc{background:#fff;border-radius:var(--r);border:1px solid var(--g2);box-shadow:var(--sh);margin-bottom:12px;overflow:hidden}
+.sem-header{padding:12px 20px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:background .15s;user-select:none}
+.sem-header:hover{background:var(--g0)}
+.sem-header h3{font-size:13px;font-weight:600;color:var(--g9);flex:1}
+.sem-header .sem-info{font-size:12px;color:var(--g5)}
+.sem-header .sem-arrow{font-size:10px;color:var(--g4);transition:transform .2s}
+.sem-acc.open .sem-arrow{transform:rotate(90deg)}
+.sem-body{display:none;padding:0 20px 14px;border-top:1px solid var(--g1)}
+.sem-acc.open .sem-body{display:block}
+
+/* Action card */
+.action-card{background:#fff;border-radius:var(--r);border:1px solid var(--g2);border-left:4px solid var(--orange);box-shadow:var(--sh);padding:24px;margin-bottom:16px}
+.action-card h3{font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;color:var(--navy);margin-bottom:12px}
+.action-card ul{margin:0 0 16px 18px;font-size:13px;color:var(--g7);line-height:1.8}
+.action-card .ac-warn{padding:10px 14px;background:var(--warn-bg);border:1px solid var(--warn-bd);border-radius:var(--rs);font-size:12.5px;color:var(--warn);margin-bottom:12px}
+.action-card .ac-tip{padding:10px 14px;background:var(--inf-bg);border:1px solid var(--inf-bd);border-radius:var(--rs);font-size:12.5px;color:var(--inf);margin-bottom:12px}
+
+/* ── Catalogue ── */
+.toolbar{display:flex;align-items:center;gap:12px;margin-bottom:28px;flex-wrap:wrap}
+.search-box{flex:1;min-width:240px;position:relative}
+.search-box input{width:100%;padding:11px 16px 11px 40px;border:1.5px solid var(--g2);border-radius:var(--r);font-size:14px;font-family:inherit;color:var(--g9);background:#fff;transition:all .15s;box-shadow:var(--sh)}
+.search-box input:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(1,27,60,.08)}
+.search-box::before{content:'\1F50D';position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:14px;opacity:.4;pointer-events:none}
+.filter-chips{display:flex;gap:6px;flex-wrap:wrap}
+.fchip{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;border:1.5px solid var(--g2);background:#fff;color:var(--g5);cursor:pointer;transition:all .15s;font-family:inherit}
+.fchip:hover{border-color:var(--g3);color:var(--g7)}
+.fchip.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.result-count{font-size:12px;color:var(--g4);font-weight:500}
+
+.slot-section{margin-bottom:32px}
+.slot-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid var(--g2)}
+.slot-badge{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:10px;font-size:16px;font-weight:800;color:#fff;letter-spacing:.02em;flex-shrink:0}
+.slot-badge.sl-A{background:var(--sa)} .slot-badge.sl-B{background:var(--sb)} .slot-badge.sl-C{background:#B45309} .slot-badge.sl-D{background:var(--sd)} .slot-badge.sl-E{background:var(--se)} .slot-badge.sl-PRA{background:var(--navy)}
+.slot-header h2{font-family:'DM Sans',sans-serif;font-size:18px;font-weight:700;color:var(--g9)}
+.slot-header .slot-info{font-size:12px;color:var(--g4);font-weight:400}
+.slot-count{margin-left:auto;font-size:11px;color:var(--g4);background:var(--g1);padding:3px 10px;border-radius:12px;font-weight:600}
+
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
+.ccard{background:#fff;border:1.5px solid var(--g2);border-radius:var(--r);overflow:hidden;transition:all .2s;cursor:pointer;position:relative}
+.ccard:hover{box-shadow:var(--sh-md);transform:translateY(-1px)}
+.ccard.expanded{box-shadow:var(--sh-lg);grid-column:1/-1}
+.ccard.card-A{background:#EBF3FF;border-color:#C5D9F5} .ccard.card-A:hover{border-color:#9BBDE8}
+.ccard.card-B{background:#EDFAF0;border-color:#B8E6C4} .ccard.card-B:hover{border-color:#86D69A}
+.ccard.card-C{background:#FFF7EB;border-color:#F5DFB8} .ccard.card-C:hover{border-color:#ECCC8E}
+.ccard.card-D{background:#F3EEFA;border-color:#D4C4EA} .ccard.card-D:hover{border-color:#B89FDC}
+.ccard.card-E{background:#FFF0F1;border-color:#F5C4C8} .ccard.card-E:hover{border-color:#EA9EA5}
+.ccard.card-PRA{background:#EFF6FF;border-color:#C5D9F5} .ccard.card-PRA:hover{border-color:#9BBDE8}
+.ccard-top{padding:18px 20px 14px;display:flex;flex-direction:column;gap:6px}
+.ccard-row1{display:flex;align-items:flex-start;gap:10px}
+.ccard .cc-code{font-size:12px;font-weight:700;color:#fff;background:var(--navy);padding:3px 10px;border-radius:5px;font-family:'SF Mono',Monaco,Consolas,monospace;letter-spacing:.03em;flex-shrink:0}
+.ccard .cc-slot{font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px;letter-spacing:.05em}
+.cc-slot.sl-A{background:var(--sa-bg);color:var(--sa)} .cc-slot.sl-B{background:var(--sb-bg);color:var(--sb)} .cc-slot.sl-C{background:var(--sc-bg);color:var(--sc)} .cc-slot.sl-D{background:var(--sd-bg);color:var(--sd)} .cc-slot.sl-E{background:var(--se-bg);color:var(--se)}
+.ccard .cc-title{font-size:16px;font-weight:700;color:var(--g9);line-height:1.3;font-family:'DM Sans',sans-serif}
+.ccard .cc-coord{font-size:12px;color:var(--g5)}
+.ccard-meta{display:flex;align-items:center;gap:8px;padding:0 20px 14px;flex-wrap:wrap}
+.ccard-meta .daychip{background:var(--g9);color:#fff;font-size:10px;font-weight:600;padding:3px 9px;border-radius:5px;letter-spacing:.02em}
+.tag{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;padding:3px 9px;border-radius:5px;letter-spacing:.03em}
+.tag-pre{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-bd)}
+.tag-co{background:var(--inf-bg);color:var(--inf);border:1px solid var(--inf-bd)}
+.tag-passed{background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok-bd)}
+.ccard-expand{font-size:11px;color:var(--navy);font-weight:600;padding:10px 20px;background:rgba(0,0,0,.03);border-top:1px solid rgba(0,0,0,.06);display:flex;align-items:center;gap:5px;transition:all .15s}
+.ccard:hover .ccard-expand{background:rgba(0,0,0,.06)}
+.ccard.expanded .ccard-expand{display:none}
+.ccard-detail{display:none;padding:0 20px 20px;border-top:1.5px solid var(--g1)}
+.ccard.expanded .ccard-detail{display:block}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:16px}
+.detail-section{margin-bottom:0}
+.detail-section h4{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--g1)}
+.detail-section p{font-size:13px;color:var(--g7);line-height:1.7;margin-bottom:0}
+.detail-section ul{margin:0 0 0 16px;padding:0;list-style:none}
+.detail-section li{font-size:12.5px;color:var(--g7);line-height:1.6;padding:2px 0;position:relative;padding-left:14px}
+.detail-section li::before{content:'\2022';position:absolute;left:0;color:var(--navy);font-weight:700}
+.detail-full{grid-column:1/-1}
+.detail-lit{white-space:pre-line;font-size:12.5px;color:var(--g5);line-height:1.6}
+.detail-close{display:inline-flex;align-items:center;gap:5px;margin-top:16px;padding:8px 16px;border-radius:var(--rs);font-size:12px;font-weight:600;color:var(--navy);background:var(--sa-bg);border:1px solid rgba(29,78,216,.15);cursor:pointer;font-family:inherit;transition:all .15s}
+.detail-close:hover{background:var(--navy);color:#fff}
+.no-results{text-align:center;padding:60px 20px;color:var(--g4)}
+.no-results span{font-size:40px;display:block;margin-bottom:12px;opacity:.5}
+.no-results p{font-size:14px}
+
+/* ── Advice Panel ── */
+.advice-panel{background:var(--inf-bg);border:1px solid var(--inf-bd);border-radius:var(--r);padding:16px 20px;margin-bottom:16px}
+.advice-panel h3{font-size:13px;font-weight:700;color:var(--inf);margin-bottom:8px}
+.advice-panel ul{margin:0 0 0 16px;font-size:12.5px;color:var(--g7);line-height:1.8}
+
+/* ── Animations ── */
+@keyframes fadeInUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeInUp .4s ease both}
+.fade-in-d1{animation-delay:.05s}
+.fade-in-d2{animation-delay:.1s}
+.fade-in-d3{animation-delay:.15s}
+.fade-in-d4{animation-delay:.2s}
+.fade-in-d5{animation-delay:.25s}
+@keyframes countUp{from{opacity:0}to{opacity:1}}
+
+/* ── Print ── */
+.printonly{display:none}
+@media print{
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  body{background:#fff!important}
+  .sidebar,.sb-toggle,.sb-overlay{display:none!important}
+  .content-area{margin-left:0!important}
+  .hdr{display:none!important}
+  footer{display:none!important}
+  .main{padding:12px!important;max-width:100%!important}
+  #loading,#errscr{display:none!important}
+  .plan-tabs{display:none!important}
+  .cmp-view{display:none!important}
+  #planview>.card:not(#sumcard){display:none!important}
+  #ttcard{display:none!important}
+  #sumcard{box-shadow:none!important;border:1px solid #ddd!important;margin:0!important}
+  .actbar{display:none!important}
+  .printonly{display:block!important}
+  .sum-status-alert{display:none!important}
+  .guidance{display:none!important}
+  #nextsteps{display:none!important}
+  #infoscreen{display:none!important}
+  .advice-panel{display:none!important}
+  .card-h .spill{display:none!important}
+  .card-h .step{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+}
+
+/* ── Responsive ── */
+@media(max-width:1100px){
+  .sidebar{width:220px}
+  .content-area{margin-left:220px}
+  .sb-link{padding:10px 12px;font-size:12.5px}
+  .sb-link .sb-ico{width:32px;height:32px}
+}
+@media(max-width:900px){
+  .cmp-grid{grid-template-columns:1fr;gap:10px}
+  .stats-row{grid-template-columns:repeat(3,1fr)}
+  .profile-card .pc-logo{width:140px}
+  .sidebar{transform:translateX(-100%);transition:transform .3s ease;width:280px}
+  .sidebar.open{transform:translateX(0)}
+  .content-area{margin-left:0}
+  .sb-toggle{display:flex}
+  .sb-overlay.show{display:block}
+}
+@media(max-width:640px){
+  .dl-grid{grid-template-columns:1fr}
+  .main{padding:20px 12px 60px;padding-top:56px}
+  .card-h{padding:14px 16px} .card-b{padding:16px}
+  .actbar{padding:12px 16px}
+  .plan-tabs{padding:4px}
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .profile-card{flex-direction:column;text-align:center;padding:24px 20px}
+  .profile-card .pc-meta{justify-content:center}
+  .profile-card .pc-actions{justify-content:center}
+  .profile-card .pc-logo{width:100px}
+  .cards-grid{grid-template-columns:1fr}
+  .detail-grid{grid-template-columns:1fr}
+  .toolbar{flex-direction:column;align-items:stretch}
+  .upload-zone{padding:40px 20px}
+}
+</style>
+</head>
+<body>
+<div class="app-layout">
+
+<!-- ── Sidebar ── -->
+<button class="sb-toggle" onclick="toggleSidebar()" aria-label="Menu">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<div class="sb-overlay" id="sbOverlay" onclick="toggleSidebar()"></div>
+<aside class="sidebar" id="sidebar">
+  <div class="sb-brand">
+    <img src="logo-header.png" alt="Maastricht University" class="sb-logo">
+    <div class="sb-title">MSP Course Planner</div>
+    <div class="sb-sub">Maastricht Science Programme<br>Faculty of Science &amp; Engineering</div>
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-nav-label">Navigation</div>
+    <a class="sb-link active" href="#dashboard" data-view="dashboard" onclick="switchView('dashboard');closeSidebar()">
+      <span class="sb-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span>
+      <span class="sb-text">Dashboard<span class="sb-hint">Transcript &amp; progress</span></span>
+    </a>
+    <a class="sb-link" href="#planner" data-view="planner" onclick="switchView('planner');closeSidebar()">
+      <span class="sb-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+      <span class="sb-text">Course Planner<span class="sb-hint">Build your schedule</span></span>
+    </a>
+    <a class="sb-link" href="#catalogue" data-view="catalogue" onclick="switchView('catalogue');closeSidebar()">
+      <span class="sb-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+      <span class="sb-text">Course Catalogue<span class="sb-hint">Browse all courses</span></span>
+    </a>
+    <div class="sb-divider"></div>
+    <a class="sb-link" href="#info" data-view="info" onclick="switchView('info');closeSidebar()">
+      <span class="sb-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>
+      <span class="sb-text">Information<span class="sb-hint">Rules &amp; deadlines</span></span>
+    </a>
+  </nav>
+  <div class="sb-meta">
+    <span id="mp">Loading&hellip;</span>
+    <span id="mv" style="display:none"></span>
+    <span id="mc" style="display:none"></span>
+    <button class="sb-cfg" onclick="document.getElementById('csvf').click()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Load config</button>
+  </div>
+  <div class="sb-footer">
+    <img src="logo-main.png" alt="MSP">
+    <div class="sb-privacy">Your data stays in your browser. Nothing is uploaded.</div>
+  </div>
+</aside>
+
+<!-- ── Content ── -->
+<div class="content-area">
+<input type="file" id="csvf" accept=".csv" style="display:none">
+<input type="file" id="pdff" accept=".pdf" style="display:none">
+
+<main class="main" id="mainEl">
+  <div id="loading"><div class="spin"></div><p style="font-size:13px">Loading schedule&hellip;</p></div>
+  <div id="errscr">
+    <span style="font-size:36px">&#128203;</span>
+    <h2>Load the course schedule</h2>
+    <p>The schedule could not load automatically. Use the button below to load the CSV file &mdash; available on Canvas or from your advisor.</p>
+    <button class="btn btn-or" onclick="document.getElementById('csvf').click()">&#128194;&nbsp; Load config file (.csv)</button>
+    <p style="font-size:11.5px;color:var(--g4);margin-top:8px">&#128274; Everything stays on your device.</p>
+  </div>
+
+  <!-- ═══ VIEW: DASHBOARD ═══ -->
+  <div id="view-dashboard" class="view">
+    <div id="dash-upload">
+      <div class="upload-zone" id="dropZone" onclick="document.getElementById('pdff').click()">
+        <span class="uz-icon">&#128196;</span>
+        <h2>Upload your MSP Transcript</h2>
+        <p>Drop your transcript PDF here or click to browse. Your transcript is processed entirely in your browser &mdash; no data is sent anywhere.</p>
+        <button class="btn btn-or" onclick="event.stopPropagation();document.getElementById('pdff').click()">&#128194;&nbsp; Choose PDF</button>
+        <div class="uz-privacy">&#128274; Your data stays on your device</div>
+      </div>
+      <div style="text-align:center;margin-top:8px">
+        <p style="font-size:12px;color:var(--g4);margin-bottom:4px">&#128161; Download your transcript from the Student Portal &rarr; My Courses &rarr; Grade list</p>
+        <a href="#planner" class="skip-link" onclick="switchView('planner')">&mdash; or continue without transcript &mdash;<br>Skip to Course Planner &rarr;</a>
+      </div>
+    </div>
+    <div id="dash-profile" style="display:none">
+      <div id="dashContent"></div>
+    </div>
+  </div>
+
+  <!-- ═══ VIEW: PLANNER ═══ -->
+  <div id="view-planner" class="view">
+    <div id="advicePanel" class="advice-panel" style="display:none"></div>
+    <div class="plan-tabs">
+      <button class="ptab active" id="tab-A" onclick="switchPlan('A')"><span class="tlbl">Plan A</span><span class="tst" id="ts-A"></span></button>
+      <button class="ptab" id="tab-B" onclick="switchPlan('B')"><span class="tlbl">Plan B</span><span class="tst" id="ts-B"></span></button>
+      <button class="ptab" id="tab-C" onclick="switchPlan('C')"><span class="tlbl">Plan C</span><span class="tst" id="ts-C"></span></button>
+      <button class="ptab ptab-cmp" id="tab-cmp" onclick="toggleCmp()">&#9638; Compare</button>
+    </div>
+    <div id="planview">
+    <div class="card">
+      <div class="card-h"><div class="step">1</div><h2>Select Your Courses</h2><span class="hint">2 courses from different time slots</span></div>
+      <div class="card-b">
+        <div class="field"><label class="flbl">Course 1</label><div class="sw"><select id="c1"></select></div><div class="cpanel" id="pi1"></div></div>
+        <hr class="divr">
+        <div class="field"><label class="flbl">Course 2</label><div class="sw"><select id="c2"></select></div><div class="cpanel" id="pi2"></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h"><div class="step">2</div><h2>Select Your Practical</h2><span class="hint">Must not overlap with course days</span></div>
+      <div class="card-b">
+        <div class="field"><label class="flbl">Practical / Skill</label><div class="sw"><select id="lab"></select></div><div id="labct" class="labct"></div><div class="cpanel" id="pil"></div></div>
+      </div>
+    </div>
+    <div class="card" id="ttcard">
+      <div class="card-h"><div class="step">&#128197;</div><h2>Weekly Timetable</h2><span class="hint">Your schedule at a glance</span></div>
+      <div class="card-b" id="ttbd"><div class="emptys"><span class="ei">&#128197;</span><p>Select courses to see your weekly timetable.</p></div></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><div class="step">3</div><h2>Checks &amp; Confirmations</h2><span class="spill sp-pend" id="chkst">&mdash; Select courses first</span></div>
+      <div class="card-b" id="chkbd"><div class="emptys"><span class="ei">&#10003;</span><p>Select your courses above to see checks.</p></div></div>
+    </div>
+    <div class="card" id="nextsteps" style="display:none">
+      <div class="card-h"><div class="step">4</div><h2>Next Steps</h2><span class="hint">What to do with your plan</span></div>
+      <div class="card-b" id="nsbd"></div>
+    </div>
+    <div class="card" id="sumcard">
+      <div class="card-h"><div class="step ok">&#10003;</div><h2>Your Plan</h2><span class="spill sp-pend" id="planst">Incomplete</span></div>
+      <div class="printonly" style="padding:14px 24px 0;border-bottom:1px solid var(--g2)">
+        <p style="font-size:12px;color:var(--g5)">MSP Course Planner &middot; <span id="pp"></span> &middot; Printed: <span id="pd"></span></p>
+        <p style="font-size:11px;color:var(--g4);margin-top:3px">For self-preparation only. Confirm all registrations with your academic advisor.</p>
+      </div>
+      <div id="sumbd" style="padding:24px"><div class="emptys"><span class="ei">&#128203;</span><p>Your plan will appear here once you select courses.</p></div></div>
+      <div class="actbar">
+        <button class="btn btn-or" id="btnp" onclick="window.print()" disabled>&#128424;&nbsp; Save as PDF</button>
+        <button class="btn btn-gh" onclick="resetPlan()">&#8635;&nbsp; Reset plan</button>
+        <span class="actnote">For self-preparation only.<br>Always confirm with your academic advisor.</span>
+      </div>
+    </div>
+    </div>
+    <div id="cmpview" class="cmp-view"></div>
+  </div>
+
+  <!-- ═══ VIEW: CATALOGUE ═══ -->
+  <div id="view-catalogue" class="view">
+    <div class="toolbar">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search by course code, title, coordinator, or keyword..." oninput="applyCatFilters()">
+      </div>
+      <div class="filter-chips" id="filterChips"></div>
+    </div>
+    <div id="resultCount" class="result-count" style="margin-bottom:16px"></div>
+    <div id="catalogue"></div>
+  </div>
+
+  <!-- ═══ VIEW: INFO ═══ -->
+  <div id="view-info" class="view">
+    <div class="card">
+      <div class="card-h"><div class="step">&#9432;</div><h2>Rules, Waivers &amp; Deadlines</h2><span class="hint">EER &amp; R&amp;R references</span></div>
+      <div class="card-b" id="infobd" style="line-height:1.7"></div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="ft-privacy">This tool processes your transcript entirely in your browser. No data is uploaded to any server.</div>
+  <div style="font-size:10px;color:var(--g4);margin-top:2px">This tool is for planning purposes only and does not replace official academic advising. Always verify with your Academic Advisor.</div>
+</footer>
+</div><!-- /content-area -->
+</div><!-- /app-layout -->
+<script>
+// ═══════════════════════════════════════════════════
+// GLOBAL STATE
+// ═══════════════════════════════════════════════════
+const AUTO='FrameSchedule_P5_v1.csv';
+const DESC_FILE='MSP_P5_Course_Descriptions.md';
+const DEADLINES={switch:'Friday 6 March 2026, 17:00',withdrawal:'Friday 3 April 2026, 17:00',period:'5',year:'2025\u20132026'};
+const LINKS={switchForm:'https://intranet.maastrichtuniversity.nl/en/msp-students/forms-and-downloads-0/withdrawswitch',waivers:'https://intranet.maastrichtuniversity.nl/en/msp-students/waivers',transcript:'https://intranet.maastrichtuniversity.nl/en/msp-students/forms-and-downloads/forms/transcript-request',additionalModule:'https://intranet.maastrichtuniversity.nl/en/msp-students/forms-and-downloads/forms/additional-module',esd:'mailto:msp-educationsupport@maastrichtuniversity.nl'};
+const HUMANITIES_CODES=['INT2007','INT3001','HUM2051','INT2013','INT3012'];
+const CORE_CODES=['BIO1101','CHE1101','PHY1101','INT1101','PRA1101','PRA1102','PRO1101'];
+
+let courses=[],labs=[],cfgV='',cfgP='',cfgY='';
+let descriptions={};
+const PLANS={A:emptyPlan(),B:emptyPlan(),C:emptyPlan()};
+let act='A',cmpMode=false;
+let activeView='dashboard';
+let catFilter='all';
+
+const APP={
+  config:null,
+  transcript:null
+};
+
+function emptyPlan(){return{c1:'',c2:'',lab:'',ack:{}};}
+
+// ═══════════════════════════════════════════════════
+// TRANSCRIPT PARSER
+// ═══════════════════════════════════════════════════
+async function parseTranscriptPDF(file){
+  const arrayBuffer=await file.arrayBuffer();
+  const pdf=await pdfjsLib.getDocument({data:arrayBuffer}).promise;
+  let fullText='';
+  for(let i=1;i<=pdf.numPages;i++){
+    const page=await pdf.getPage(i);
+    const content=await page.getTextContent();
+    const pageText=content.items.map(it=>it.str).join(' ');
+    fullText+=pageText+'\n';
+  }
+  if(fullText.trim().length<50){
+    throw new Error('SCAN');
+  }
+  if(!fullText.includes('Maastricht Science Programme')&&!fullText.includes('Liberal Arts and Sciences')){
+    throw new Error('NOT_MSP');
+  }
+  return parseTranscriptText(fullText);
+}
+
+function parseTranscriptText(text){
+  const result={student:{},semesters:[],computed:{}};
+
+  // Parse student info
+  const snMatch=text.match(/Student\s*number\s*\/\s*Studentnummer\s*:\s*(\d+)/i);
+  if(snMatch)result.student.studentNumber=snMatch[1];
+
+  const nameMatch=text.match(/Name\s*\/\s*Naam\s*:\s*([^\n]+?)(?=\s*Date\s*of\s*birth)/i);
+  if(nameMatch)result.student.name=nameMatch[1].trim();
+
+  const dobMatch=text.match(/Date\s*of\s*birth\s*\/\s*Geboortedatum\s*:\s*([^\n]+?)(?=\s*Place\s*of\s*birth)/i);
+  if(dobMatch)result.student.dateOfBirth=dobMatch[1].trim().split('/')[0].trim();
+
+  const pobMatch=text.match(/Place\s*of\s*birth\s*\/\s*Geboorteplaats\s*:\s*([^\n]+?)(?=\s*Programme)/i);
+  if(pobMatch)result.student.placeOfBirth=pobMatch[1].trim();
+
+  result.student.programme='Maastricht Science Programme';
+
+  // Parse print date
+  const printMatch=text.match(/Print\s*date\s*\/\s*Printdatum\s*:\s*([^\n]+)/i);
+  if(printMatch)result.student.printDate=printMatch[1].trim().split('/')[0].trim();
+
+  // Split into semester blocks
+  const semPattern=/Semester\s+(\d+)\s+(\d+\s+\w+\s+\d{4}\s*-\s*\d+\s+\w+\s+\d{4})/gi;
+  const semMatches=[...text.matchAll(semPattern)];
+
+  for(let si=0;si<semMatches.length;si++){
+    const semNum=parseInt(semMatches[si][1]);
+    const semPeriod=semMatches[si][2].trim();
+    const startIdx=semMatches[si].index+semMatches[si][0].length;
+    const endIdx=si+1<semMatches.length?semMatches[si+1].index:text.length;
+    const block=text.substring(startIdx,endIdx);
+
+    const semester={number:semNum,period:semPeriod,modules:[],semGPA:null,progressRate:null,cumGPA:null};
+
+    // Parse modules: CODE Title ECTS_attempted ECTS_earned Grade [Resit]
+    const codePattern=/([A-Z]{2,4}\d{4})\s+/g;
+    let match;
+    const codePositions=[];
+    while((match=codePattern.exec(block))!==null){
+      codePositions.push({code:match[1],index:match.index,fullMatch:match[0]});
+    }
+
+    for(let ci=0;ci<codePositions.length;ci++){
+      const cp=codePositions[ci];
+      const nextStart=ci+1<codePositions.length?codePositions[ci+1].index:block.length;
+      const segment=block.substring(cp.index+cp.fullMatch.length,nextStart).trim();
+
+      // Extract numbers from the segment - grades and ECTS use comma as decimal
+      const numbers=[];
+      const numPattern=/(\d+[.,]\d+|\d+)/g;
+      let nm;
+      const titleParts=[];
+      let foundFirstNum=false;
+      const tokens=segment.split(/\s+/);
+
+      for(const tok of tokens){
+        if(!foundFirstNum&&!/^\d/.test(tok)&&tok!=='NG'&&tok!=='NVD'){
+          titleParts.push(tok);
+        }else{
+          foundFirstNum=true;
+          if(tok==='NG'||tok==='NVD'){
+            numbers.push(0);
+          }else{
+            const cleaned=tok.replace(',','.');
+            const n=parseFloat(cleaned);
+            if(!isNaN(n))numbers.push(n);
+          }
+        }
+      }
+
+      // Filter out page numbers and other noise
+      if(numbers.length<2)continue;
+      // Also skip if this looks like a GPA line
+      const title=titleParts.join(' ').replace(/\s+/g,' ').trim();
+      if(!title||title.length<3)continue;
+
+      const ectsAttempted=numbers[0]||0;
+      const ectsEarned=numbers.length>1?numbers[1]:0;
+      const grade=numbers.length>2?numbers[2]:0;
+      const resit=numbers.length>3?numbers[3]:null;
+
+      const prefix=cp.code.replace(/\d+/,'');
+      const levelDigit=parseInt(cp.code.match(/\d/)[0]);
+      const level=levelDigit*1000;
+      let type='course';
+      if(prefix==='PRA')type='skill';
+      else if(prefix==='PRO')type='project';
+
+      const passed=ectsEarned>0&&(grade>=5.5||grade===0);
+
+      semester.modules.push({
+        code:cp.code,title,ectsAttempted,ectsEarned,grade,resit,
+        passed:ectsEarned>0,type,level,prefix
+      });
+    }
+
+    // Parse GPA/PR lines
+    const gpaMatch=block.match(/Sem\s*GPA\s+(\d+[.,]\d+)/i);
+    if(gpaMatch)semester.semGPA=parseFloat(gpaMatch[1].replace(',','.'));
+
+    const prMatch=block.match(/PR\s+[\d.,]+\s*\/\s*[\d.,]+\s*=\s*([\d.,]+)/i);
+    if(prMatch)semester.progressRate=parseFloat(prMatch[1].replace(',','.'));
+
+    const cumMatch=block.match(/Cum\s*GPA\s+([\d.,]+)/i);
+    if(cumMatch)semester.cumGPA=parseFloat(cumMatch[1].replace(',','.'));
+
+    result.semesters.push(semester);
+  }
+
+  // Compute aggregates
+  computeAggregates(result);
+  return result;
+}
+
+function computeAggregates(data){
+  const allModules=data.semesters.flatMap(s=>s.modules);
+  const passed=allModules.filter(m=>m.passed);
+  const passedCodes=new Set(passed.map(m=>m.code));
+
+  let totalEarned=0,totalAttempted=0;
+  allModules.forEach(m=>{totalEarned+=m.ectsEarned;totalAttempted+=m.ectsAttempted;});
+
+  const coursesP=passed.filter(m=>m.type==='course');
+  const skillsP=passed.filter(m=>m.type==='skill');
+  const projectsP=passed.filter(m=>m.type==='project');
+
+  const countByLevel=(arr,lvl)=>arr.filter(m=>m.level===lvl).length;
+
+  const lastSem=data.semesters[data.semesters.length-1];
+  const cumGPA=lastSem?.cumGPA||0;
+  const pr=lastSem?.progressRate||0;
+
+  // Core check
+  const core={};
+  let allCoreMet=true;
+  CORE_CODES.forEach(code=>{
+    const m=passed.find(p=>p.code===code);
+    core[code]={passed:!!m,grade:m?m.grade:null};
+    if(!m)allCoreMet=false;
+  });
+  core.allCoreMet=allCoreMet;
+
+  // General education
+  const mathCourse=passed.find(m=>m.prefix==='MAT'||(m.code==='SCI3003'));
+  const humCourse=passed.find(m=>HUMANITIES_CODES.includes(m.code));
+
+  // BTR eligibility: need 145 ECTS
+  const btrEligible=totalEarned>=145;
+
+  // Distinction projection
+  let distinction='';
+  if(cumGPA>=9.0)distinction='Summa Cum Laude';
+  else if(cumGPA>=8.0)distinction='Cum Laude';
+  else if(cumGPA>=7.0)distinction='Bene Meritum';
+  else distinction='';
+
+  data.computed={
+    totalECTSEarned:totalEarned,
+    totalECTSAttempted:totalAttempted,
+    currentCumGPA:cumGPA,
+    currentPR:pr,
+    passedCodes,
+    courses:{total:coursesP.length,intro:countByLevel(coursesP,1000),intermediate:countByLevel(coursesP,2000),advanced:countByLevel(coursesP,3000)},
+    skills:{total:skillsP.length,intro:countByLevel(skillsP,1000),intermediate:countByLevel(skillsP,2000),advanced:countByLevel(skillsP,3000)},
+    projects:{total:projectsP.length,intro:countByLevel(projectsP,1000),intermediate:countByLevel(projectsP,2000),advanced:countByLevel(projectsP,3000)},
+    requirements:{
+      totalECTS:{earned:totalEarned,required:180,met:totalEarned>=180},
+      core,
+      courses:{
+        total:{count:coursesP.length,required:20,met:coursesP.length>=20},
+        advanced:{count:countByLevel(coursesP,3000),required:4,met:countByLevel(coursesP,3000)>=4},
+        introMax:{count:countByLevel(coursesP,1000),max:7,met:countByLevel(coursesP,1000)<=7}
+      },
+      skills:{
+        total:{count:skillsP.length,required:10,met:skillsP.length>=10},
+        advanced:{count:countByLevel(skillsP,3000),required:2,met:countByLevel(skillsP,3000)>=2},
+        introMax:{count:countByLevel(skillsP,1000),max:4,met:countByLevel(skillsP,1000)<=4}
+      },
+      projects:{
+        total:{count:projectsP.length,required:5,met:projectsP.length>=5},
+        advanced:{count:countByLevel(projectsP,3000),required:1,met:countByLevel(projectsP,3000)>=1},
+        introMax:{count:countByLevel(projectsP,1000),max:2,met:countByLevel(projectsP,1000)<=2}
+      },
+      btr:{completed:false,eligible:btrEligible,ectsForEligibility:{current:totalEarned,required:145}},
+      generalEducation:{
+        mathematics:{met:!!mathCourse,course:mathCourse?mathCourse.code:null},
+        humanities:{met:!!humCourse,course:humCourse?humCourse.code:null}
+      },
+      gpa:{current:cumGPA,projectedDistinction:distinction},
+      bsa:{applicable:data.semesters.length<=2,met:totalEarned>=60,ectsInFirstYear:data.semesters.length>=1?data.semesters.filter(s=>s.number<=2).flatMap(s=>s.modules).reduce((a,m)=>a+m.ectsEarned,0):0}
+    }
+  };
+}
+
+// ═══════════════════════════════════════════════════
+// DASHBOARD VIEW
+// ═══════════════════════════════════════════════════
+function buildDashboard(){
+  const t=APP.transcript;
+  if(!t){
+    document.getElementById('dash-upload').style.display='';
+    document.getElementById('dash-profile').style.display='none';
+    return;
+  }
+  document.getElementById('dash-upload').style.display='none';
+  document.getElementById('dash-profile').style.display='';
+
+  const r=t.computed.requirements;
+  const c=t.computed;
+  let html='';
+
+  // ─── Profile Card ───
+  const dist=r.gpa.projectedDistinction;
+  const distClass=dist==='Summa Cum Laude'?' dist-scl':dist==='Cum Laude'?' dist-cl':dist==='Bene Meritum'?' dist-bm':'';
+  const distBadge=dist==='Summa Cum Laude'?`<div class="pc-distinction pc-dist-scl"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg> Summa Cum Laude</div>`:dist==='Cum Laude'?`<div class="pc-distinction pc-dist-cl"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg> Cum Laude</div>`:dist==='Bene Meritum'?`<div class="pc-distinction pc-dist-bm"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg> Bene Meritum</div>`:'';
+  html+=`<div class="profile-card${distClass} fade-in">
+    <div class="pc-left">
+      <h2>${esc(t.student.name||'Student')}</h2>
+      <div class="pc-sub">${esc(t.student.programme)}</div>
+      <div class="pc-meta">
+        <span>Student #${esc(t.student.studentNumber||'—')}</span>
+        <span>Semester ${t.semesters.length}</span>
+        ${t.student.printDate?`<span>Transcript printed: ${esc(t.student.printDate)}</span>`:''}
+      </div>
+      ${distBadge}
+      <div class="pc-actions">
+        <button onclick="document.getElementById('pdff').click()">&#128259; Change transcript</button>
+        <button onclick="clearTranscript()">&#10005; Clear</button>
+      </div>
+    </div>
+    <img src="logo-main.png" alt="MSP" class="pc-logo">
+  </div>`;
+
+  // ─── Quick Stats Row ───
+  const pct=Math.round(c.totalECTSEarned/180*100);
+  const gpaLetter=c.currentCumGPA>=9?'A+':c.currentCumGPA>=8?'A':c.currentCumGPA>=7?'B':c.currentCumGPA>=6?'C':'D';
+  html+=`<div class="stats-row fade-in fade-in-d1">
+    <div class="stat-card" onclick="toggleStatCard(this)">
+      <div class="sc-val">${c.totalECTSEarned}</div><div class="sc-label">ECTS</div><div class="sc-sub">of 180</div>
+      <div class="sc-tooltip"><span class="sc-close" onclick="event.stopPropagation();closeStatCard(this)">\u00D7</span><h4>ECTS Credits</h4>You have earned <strong>${c.totalECTSEarned}</strong> of the <strong>180 ECTS</strong> required to graduate.<br><br>Each course = 5 ECTS<br>Each practical = 2.5 ECTS<br>BTR = 30 ECTS<br><br><strong>${(180-c.totalECTSEarned).toFixed(1)} ECTS</strong> remaining.</div>
+    </div>
+    <div class="stat-card" onclick="toggleStatCard(this)">
+      <div class="sc-val">${c.currentCumGPA.toFixed(1)}</div><div class="sc-label">GPA</div><div class="sc-sub">(${gpaLetter})</div>
+      <div class="sc-tooltip"><span class="sc-close" onclick="event.stopPropagation();closeStatCard(this)">\u00D7</span><h4>Cumulative GPA</h4>Your grade point average across all semesters.<br><br>Scale: 1.0 \u2013 10.0<br>Pass threshold: 5.5<br><br><strong>\u2265 9.0</strong> = Summa Cum Laude<br><strong>\u2265 8.0</strong> = Cum Laude<br><strong>\u2265 7.0</strong> = Bene Meritum</div>
+    </div>
+    <div class="stat-card" onclick="toggleStatCard(this)">
+      <div class="sc-val">${c.currentPR.toFixed(2)}</div><div class="sc-label">PR</div><div class="sc-sub">Progress Rate</div>
+      <div class="sc-tooltip"><span class="sc-close" onclick="event.stopPropagation();closeStatCard(this)">\u00D7</span><h4>Progress Rate</h4>ECTS earned \u00f7 ECTS attempted.<br><br>A PR of <strong>1.00</strong> means you passed every module you attempted.<br><br>Current: <strong>${c.totalECTSEarned}</strong> earned / <strong>${c.totalECTSAttempted}</strong> attempted = <strong>${c.currentPR.toFixed(2)}</strong></div>
+    </div>
+    <div class="stat-card${pct>=75?' sc-ok':pct>=50?'':' sc-warn'}" onclick="toggleStatCard(this)">
+      <div class="sc-val">${pct}%</div><div class="sc-label">Done</div><div class="sc-sub">${c.totalECTSEarned} / 180</div>
+      <div class="sc-tooltip"><span class="sc-close" onclick="event.stopPropagation();closeStatCard(this)">\u00D7</span><h4>Completion</h4>Overall degree progress.<br><br>Courses: ${c.courses.total}/20<br>Skills: ${c.skills.total}/10<br>Projects: ${c.projects.total}/5<br>BTR: ${r.btr.completed?'Complete':'Not started'}<br><br>You are <strong>${pct}%</strong> of the way to graduation.</div>
+    </div>
+    <div class="stat-card${r.gpa.projectedDistinction?' sc-ok':''}" onclick="toggleStatCard(this)">
+      <div class="sc-val" style="font-size:16px">${r.gpa.projectedDistinction||'\u2014'}</div><div class="sc-label">Track</div><div class="sc-sub">Distinction</div>
+      <div class="sc-tooltip"><span class="sc-close" onclick="event.stopPropagation();closeStatCard(this)">\u00D7</span><h4>Distinction Track</h4>Based on your current GPA of <strong>${c.currentCumGPA.toFixed(1)}</strong>:<br><br>${c.currentCumGPA>=9?'<strong>Summa Cum Laude</strong> \u2014 Exceptional. Top academic achievement.':c.currentCumGPA>=8?'<strong>Cum Laude</strong> \u2014 With honours. Outstanding performance.':c.currentCumGPA>=7?'<strong>Bene Meritum</strong> \u2014 With merit. Strong academic record.':'\u2014 No distinction track currently. GPA \u2265 7.0 needed for Bene Meritum.'}<br><br><em>Distinctions are awarded at graduation and require meeting all requirements with no resits (for SCL).</em></div>
+    </div>
+  </div>`;
+
+  // ─── GPA Over Time Chart ───
+  if(t.semesters.length>=2){
+    html+=buildGPAChart(t);
+  }
+
+  // ─── Graduation Progress ───
+  html+=`<h3 style="font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;color:var(--navy);margin:24px 0 14px;display:flex;align-items:center;gap:8px"><span style="display:inline-flex;color:var(--navy)">${SVG_ICONS.cap}</span> Graduation Progress</h3>`;
+
+  // Overall
+  html+=buildProgSection('Overall Progress',`${c.totalECTSEarned} / 180 ECTS`,c.totalECTSEarned/180*100,r.totalECTS.met,'',false,'target');
+
+  // Core
+  const coreItems=CORE_CODES.map(code=>{
+    const m=r.core[code];
+    const allMods=t.semesters.flatMap(s=>s.modules);
+    const mod=allMods.find(x=>x.code===code);
+    const statusIco=m.passed?`<span style="color:var(--ok);display:inline-flex">${SVG_ICONS.check}</span>`:`<span style="color:var(--err);display:inline-flex">${SVG_ICONS.x}</span>`;
+    return`<div class="prog-item"><span class="pi-code">${code}</span><span class="pi-title">${mod?mod.title:code}</span><span class="pi-grade" style="color:${m.passed?'var(--ok)':'var(--err)'}">${m.grade!==null?m.grade.toFixed(1):'\u2014'}</span><span class="pi-status">${statusIco}</span></div>`;
+  }).join('');
+  html+=buildProgSection('Core Curriculum',`${Object.values(r.core).filter(v=>v.passed).length-1} / 7`,r.core.allCoreMet?100:Object.values(r.core).filter(v=>v.passed).length/8*100,r.core.allCoreMet,coreItems,false,'grid');
+
+  // Courses
+  const chk=SVG_ICONS.check,wrn=SVG_ICONS.alert;
+  const courseDetail=`<div class="prog-sub">Advanced (min ${r.courses.advanced.required}): ${r.courses.advanced.count} ${r.courses.advanced.met?'<span style="color:var(--ok);display:inline-flex;vertical-align:middle">'+chk+'</span>':'<span style="color:var(--warn);display:inline-flex;vertical-align:middle">'+wrn+'</span>'} &nbsp; Introductory (max ${r.courses.introMax.max}): ${r.courses.introMax.count} ${r.courses.introMax.met?'<span style="color:var(--ok);display:inline-flex;vertical-align:middle">'+chk+'</span>':'<span style="color:var(--warn);display:inline-flex;vertical-align:middle">'+wrn+'</span>'}</div>${r.courses.total.met?'':'<div class="prog-sub" style="color:var(--warn)">Need '+(r.courses.total.required-r.courses.total.count)+' more courses</div>'}`;
+  html+=buildProgSection(`Courses (${r.courses.total.required} required)`,`${r.courses.total.count} / ${r.courses.total.required}`,r.courses.total.count/r.courses.total.required*100,r.courses.total.met,courseDetail,false,'book');
+
+  // Skills
+  const skillDetail=`<div class="prog-sub">Advanced (min ${r.skills.advanced.required}): ${r.skills.advanced.count} ${r.skills.advanced.met?'<span style="color:var(--ok);display:inline-flex;vertical-align:middle">'+chk+'</span>':'<span style="color:var(--warn);display:inline-flex;vertical-align:middle">'+wrn+'</span>'} &nbsp; Introductory (max ${r.skills.introMax.max}): ${r.skills.introMax.count} ${r.skills.introMax.met?'<span style="color:var(--ok);display:inline-flex;vertical-align:middle">'+chk+'</span>':'<span style="color:var(--warn);display:inline-flex;vertical-align:middle">'+wrn+'</span>'}</div>${r.skills.total.met?'':'<div class="prog-sub" style="color:var(--warn)">Need '+(r.skills.total.required-r.skills.total.count)+' more skill training</div>'}`;
+  html+=buildProgSection(`Skills (${r.skills.total.required} required)`,`${r.skills.total.count} / ${r.skills.total.required}`,r.skills.total.count/r.skills.total.required*100,r.skills.total.met,skillDetail,false,'flask');
+
+  // Projects
+  const projDetail=`<div class="prog-sub">Advanced (min ${r.projects.advanced.required}): ${r.projects.advanced.count} ${r.projects.advanced.met?'<span style="color:var(--ok);display:inline-flex;vertical-align:middle">'+chk+'</span>':'<span style="color:var(--warn);display:inline-flex;vertical-align:middle">'+wrn+'</span>'} &nbsp; Introductory (max ${r.projects.introMax.max}): ${r.projects.introMax.count} ${r.projects.introMax.met?'<span style="color:var(--ok);display:inline-flex;vertical-align:middle">'+chk+'</span>':'<span style="color:var(--warn);display:inline-flex;vertical-align:middle">'+wrn+'</span>'}</div>${r.projects.total.met?'':'<div class="prog-sub" style="color:var(--warn)">Need '+(r.projects.total.required-r.projects.total.count)+' more project</div>'}`;
+  html+=buildProgSection(`Projects (${r.projects.total.required} required)`,`${r.projects.total.count} / ${r.projects.total.required}`,r.projects.total.count/r.projects.total.required*100,r.projects.total.met,projDetail,false,'clipboard');
+
+  // BTR
+  const btrDetail=r.btr.eligible?'<div class="prog-sub" style="color:var(--ok)">You are eligible to start your BTR (>= 145 ECTS)</div>':`<div class="prog-sub" style="color:var(--warn)">Need ${(145-c.totalECTSEarned).toFixed(1)} more ECTS before BTR eligibility (requirement: 145 ECTS)</div>`;
+  html+=buildProgSection('BTR (30 ECTS)',r.btr.completed?'Completed':'Not started',r.btr.completed?100:0,r.btr.completed,btrDetail,false,'filetext');
+
+  // General Education
+  const geDetail=`<div class="prog-sub">Mathematics: ${r.generalEducation.mathematics.met?r.generalEducation.mathematics.course+' <span style="color:var(--ok);display:inline-flex;vertical-align:middle">'+chk+'</span>':'Not yet met <span style="color:var(--warn);display:inline-flex;vertical-align:middle">'+wrn+'</span>'}</div><div class="prog-sub">Humanities: ${r.generalEducation.humanities.met?r.generalEducation.humanities.course+' <span style="color:var(--ok);display:inline-flex;vertical-align:middle">'+chk+'</span>':'Not yet met <span style="color:var(--warn);display:inline-flex;vertical-align:middle">'+wrn+'</span>'}</div>`;
+  const geMet=r.generalEducation.mathematics.met&&r.generalEducation.humanities.met;
+  html+=buildProgSection('General Education',geMet?'Complete':'Incomplete',geMet?100:r.generalEducation.mathematics.met||r.generalEducation.humanities.met?50:0,geMet,geDetail,false,'globe');
+
+  // ─── Semester History ───
+  html+=`<h3 style="font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;color:var(--navy);margin:24px 0 12px;display:flex;align-items:center;gap:8px"><span style="display:inline-flex;color:var(--navy)">${SVG_ICONS.chart}</span> Semester History</h3>`;
+  t.semesters.forEach((sem,i)=>{
+    const isLast=i===t.semesters.length-1;
+    const semECTS=sem.modules.reduce((a,m)=>a+m.ectsEarned,0);
+    let body=sem.modules.map(m=>{const sico=m.passed?`<span style="color:var(--ok);display:inline-flex">${SVG_ICONS.check}</span>`:`<span style="color:var(--err);display:inline-flex">${SVG_ICONS.x}</span>`;return`<div class="prog-item"><span class="pi-code">${m.code}</span><span class="pi-title">${esc(m.title)}</span><span class="pi-grade" style="color:${m.passed?'var(--ok)':'var(--err)'};">${m.grade>0?m.grade.toFixed(1):'NG'}</span><span class="pi-status">${sico}</span></div>`;}).join('');
+    html+=`<div class="sem-acc fade-in${isLast?' open':''}">
+      <div class="sem-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="sem-arrow">\u25B6</span>
+        <h3>Semester ${sem.number} &mdash; ${esc(sem.period)}</h3>
+        <span class="sem-info">${semECTS.toFixed(1)} ECTS &nbsp; GPA ${sem.semGPA?sem.semGPA.toFixed(1):'—'}</span>
+      </div>
+      <div class="sem-body" style="padding-top:12px">${body}</div>
+    </div>`;
+  });
+
+  // ─── What You Still Need ───
+  const needed=[];
+  if(!r.courses.total.met)needed.push(`${r.courses.total.required-r.courses.total.count} more course${r.courses.total.required-r.courses.total.count>1?'s':''}`);
+  if(!r.skills.total.met)needed.push(`${r.skills.total.required-r.skills.total.count} more skill training`);
+  if(!r.projects.total.met)needed.push(`${r.projects.total.required-r.projects.total.count} more project${r.projects.total.required-r.projects.total.count>1?'s':''}`);
+  if(!r.btr.completed)needed.push('Bachelor Thesis Research (30 ECTS)');
+  const remaining=180-c.totalECTSEarned;
+
+  html+=`<div class="action-card fade-in" style="margin-top:24px" id="dash-needs">
+    <h3 style="display:flex;align-items:center;gap:8px"><span style="display:inline-flex;color:var(--navy)">${SVG_ICONS.clipboard}</span> What You Still Need</h3>
+    <ul>${needed.map(n=>`<li>${n}</li>`).join('')}<li>Total: ${remaining.toFixed(1)} ECTS remaining</li></ul>`;
+  if(!r.btr.eligible){
+    html+=`<div class="ac-warn">\u26A0 You need ${(145-c.totalECTSEarned).toFixed(1)} more ECTS before you're eligible to start your BTR (requirement: 145 ECTS).</div>`;
+  }
+  // Pace projection
+  const semCount=t.semesters.length;
+  const avgPerSem=semCount>0?c.totalECTSEarned/semCount:30;
+  const semsLeft=Math.ceil(remaining/avgPerSem);
+  html+=`<div class="ac-tip"><span style="display:inline-flex;vertical-align:middle;margin-right:4px;color:var(--inf)">${SVG_ICONS.trending}</span> At your current pace (~${avgPerSem.toFixed(0)} ECTS/semester), you can graduate after approximately ${semsLeft} more semester${semsLeft!==1?'s':''}${r.btr.completed?'':' (including BTR)'}.</div>`;
+  html+=`<div style="text-align:center;margin-top:4px"><a href="#planner" class="btn btn-or" onclick="switchView('planner')" style="text-decoration:none">\u2192 Go to Course Planner</a></div>`;
+
+  // Credit sourcing disclaimer
+  html+=`<div style="margin-top:12px;padding:8px 12px;background:var(--g0);border-radius:var(--rs);font-size:11px;color:var(--g4)">&#9888; We can't verify credit sourcing rules (90 MSP / 120 catalogue) from the transcript alone. Check with your advisor.</div>`;
+  html+=`</div>`;
+
+  document.getElementById('dashContent').innerHTML=html;
+
+  // Animate progress bars after render
+  requestAnimationFrame(()=>{
+    document.querySelectorAll('.prog-bar').forEach(bar=>{
+      const w=bar.dataset.width;
+      bar.style.width='0%';
+      requestAnimationFrame(()=>{bar.style.width=w+'%';});
+    });
+  });
+}
+
+const SVG_ICONS={
+  target:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
+  grid:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>',
+  book:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
+  flask:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6m-5 0v6.5L4.5 18a1 1 0 0 0 .87 1.5h13.26a1 1 0 0 0 .87-1.5L14 9.5V3"/></svg>',
+  clipboard:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4m-4 4h4m-8-4h.01m-.01 4h.01"/></svg>',
+  filetext:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>',
+  globe:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
+  cap:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/></svg>',
+  chart:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>',
+  trending:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>',
+  alert:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+  check:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+  x:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+  arrow:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>'
+};
+
+function buildProgSection(title,summary,pct,met,body,startOpen,iconKey){
+  pct=Math.min(pct,100);
+  const barClass=met?'bar-ok':pct>60?'bar-default':'bar-warn';
+  const iconClass=met?'pi-ok':pct>60?'':'pi-warn';
+  const ico=SVG_ICONS[iconKey]||SVG_ICONS.chart;
+  const checkIco=met?`<span style="color:var(--ok);display:inline-flex;margin-left:2px">${SVG_ICONS.check}</span>`:'';
+  return`<div class="prog-section${startOpen?' open':''}">
+    <div class="prog-header" onclick="this.parentElement.classList.toggle('open')">
+      <div class="prog-icon ${iconClass}">${ico}</div>
+      <h3>${title}</h3>
+      <div class="prog-bar-wrap"><div class="prog-bar ${barClass}" data-width="${pct.toFixed(0)}" style="width:${pct.toFixed(0)}%"></div></div>
+      <span class="prog-pct">${pct.toFixed(0)}%</span>
+      <span class="prog-summary">${summary} ${checkIco}</span>
+      <span class="prog-arrow">${SVG_ICONS.arrow}</span>
+    </div>
+    <div class="prog-body" style="padding-top:12px">${body}</div>
+  </div>`;
+}
+
+function buildGPAChart(t){
+  const sems=t.semesters.filter(s=>s.cumGPA>0);
+  if(sems.length<2)return'';
+  const W=680,H=220,padL=48,padR=20,padT=30,padB=36;
+  const chartW=W-padL-padR,chartH=H-padT-padB;
+  const dataMin=Math.min(...sems.map(s=>s.cumGPA),...sems.filter(s=>s.semGPA>0).map(s=>s.semGPA));
+  const minGPA=Math.min(6.5,Math.floor(dataMin*2)/2-0.5);
+  const maxGPA=Math.min(10,Math.ceil(Math.max(...sems.map(s=>s.cumGPA),9)*2+1)/2);
+  const range=maxGPA-minGPA||1;
+  const x=i=>padL+(i/(sems.length-1))*chartW;
+  const y=gpa=>padT+chartH-(((gpa-minGPA)/range)*chartH);
+
+  // Build line path
+  let linePath=`M ${x(0)} ${y(sems[0].cumGPA)}`;
+  for(let i=1;i<sems.length;i++)linePath+=` L ${x(i)} ${y(sems[i].cumGPA)}`;
+
+  // Also build semester GPA path
+  const semGPAs=sems.filter(s=>s.semGPA>0);
+  let semPath='';
+  if(semGPAs.length>=2){
+    const semIdx=semGPAs.map(s=>sems.indexOf(s));
+    semPath=`M ${x(semIdx[0])} ${y(semGPAs[0].semGPA)}`;
+    for(let i=1;i<semGPAs.length;i++)semPath+=` L ${x(semIdx[i])} ${y(semGPAs[i].semGPA)}`;
+  }
+
+  // Area fill under cumGPA
+  let areaPath=linePath+` L ${x(sems.length-1)} ${padT+chartH} L ${x(0)} ${padT+chartH} Z`;
+
+  // Threshold lines
+  const thresholds=[
+    {gpa:9,label:'Summa Cum Laude',color:'#D97706'},
+    {gpa:8,label:'Cum Laude',color:'#059669'},
+    {gpa:7,label:'Bene Meritum',color:'#6366F1'}
+  ].filter(th=>th.gpa>=minGPA&&th.gpa<=maxGPA);
+
+  let svg=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;max-height:240px" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="gpafill" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#011B3C" stop-opacity=".12"/>
+        <stop offset="100%" stop-color="#011B3C" stop-opacity=".01"/>
+      </linearGradient>
+      <linearGradient id="gpaline" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#011B3C"/>
+        <stop offset="100%" stop-color="#6ED2EC"/>
+      </linearGradient>
+      <filter id="glow"><feGaussianBlur stdDeviation="2" result="g"/><feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>`;
+
+  // Grid lines
+  const steps=Math.round(range*2);
+  for(let i=0;i<=steps;i++){
+    const gpa=minGPA+i*0.5;
+    const yy=y(gpa);
+    svg+=`<line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="#E2E8F0" stroke-width=".5"/>`;
+    svg+=`<text x="${padL-8}" y="${yy+4}" text-anchor="end" font-size="10" fill="#94A3B8" font-family="Inter,sans-serif">${gpa.toFixed(1)}</text>`;
+  }
+
+  // Threshold lines
+  thresholds.forEach(th=>{
+    const yy=y(th.gpa);
+    svg+=`<line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="${th.color}" stroke-width="1.5" stroke-dasharray="6 4" opacity=".5"/>`;
+    svg+=`<text x="${W-padR-2}" y="${yy-5}" text-anchor="end" font-size="9" fill="${th.color}" font-family="Inter,sans-serif" font-weight="600" opacity=".7">${th.label}</text>`;
+  });
+
+  // Area fill
+  svg+=`<path d="${areaPath}" fill="url(#gpafill)"/>`;
+
+  // Semester GPA line (subtle)
+  if(semPath)svg+=`<path d="${semPath}" fill="none" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="3 3" opacity=".4"/>`;
+
+  // Cumulative GPA line
+  svg+=`<path d="${linePath}" fill="none" stroke="url(#gpaline)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>`;
+
+  // Data points + labels
+  sems.forEach((s,i)=>{
+    const cx=x(i),cy=y(s.cumGPA);
+    svg+=`<circle cx="${cx}" cy="${cy}" r="5" fill="#011B3C" stroke="#fff" stroke-width="2"/>`;
+    svg+=`<text x="${cx}" y="${cy-10}" text-anchor="middle" font-size="10" fill="#011B3C" font-weight="700" font-family="Inter,sans-serif">${s.cumGPA.toFixed(1)}</text>`;
+    svg+=`<text x="${cx}" y="${padT+chartH+16}" text-anchor="middle" font-size="9" fill="#94A3B8" font-family="Inter,sans-serif">S${s.number}</text>`;
+  });
+
+  svg+=`</svg>`;
+
+  return`<div class="gpa-chart-card fade-in fade-in-d2">
+    <h3><span style="display:inline-flex;color:var(--navy)">${SVG_ICONS.trending}</span> GPA Over Time</h3>
+    ${svg}
+    <div class="gpa-legend">
+      <div class="gpa-legend-item"><div class="gpa-legend-dot" style="background:#011B3C"></div> Cumulative GPA</div>
+      <div class="gpa-legend-item"><div class="gpa-legend-swatch" style="background:#94A3B8;border:1px dashed #94A3B8"></div> Semester GPA</div>
+      <div class="gpa-legend-item"><div class="gpa-legend-swatch" style="background:#D97706"></div> Summa Cum Laude (\u2265 9.0)</div>
+      <div class="gpa-legend-item"><div class="gpa-legend-swatch" style="background:#059669"></div> Cum Laude (\u2265 8.0)</div>
+      <div class="gpa-legend-item"><div class="gpa-legend-swatch" style="background:#6366F1"></div> Bene Meritum (\u2265 7.0)</div>
+    </div>
+    <div style="text-align:center;margin-top:14px"><a href="#dash-needs" onclick="document.getElementById('dash-needs').scrollIntoView({behavior:'smooth'});return false" class="btn btn-navy" style="text-decoration:none;font-size:12px;padding:8px 18px;display:inline-flex;align-items:center;gap:6px">${SVG_ICONS.clipboard} Missing Graduation Requirements</a></div>
+  </div>`;
+}
+
+function toggleStatCard(el){
+  const wasOpen=el.classList.contains('sc-open');
+  document.querySelectorAll('.stat-card.sc-open').forEach(c=>c.classList.remove('sc-open'));
+  if(!wasOpen)el.classList.add('sc-open');
+}
+function closeStatCard(closeBtn){
+  closeBtn.closest('.stat-card').classList.remove('sc-open');
+}
+
+function clearTranscript(){
+  APP.transcript=null;
+  buildDashboard();
+  // Reset planner prereq auto-checks
+  if(courses.length)switchPlan(act);
+}
+
+// ═══════════════════════════════════════════════════
+// VIEW ROUTING
+// ═══════════════════════════════════════════════════
+function switchView(view){
+  activeView=view;
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  const el=document.getElementById('view-'+view);
+  if(el)el.classList.add('active');
+  // Update sidebar links
+  document.querySelectorAll('.sb-link').forEach(l=>{
+    l.classList.toggle('active',l.dataset.view===view);
+  });
+  // Also update old nav-links if they exist
+  document.querySelectorAll('.nav-link').forEach(l=>{
+    l.classList.toggle('active',l.dataset.view===view);
+  });
+  // Adjust container width
+  const m=document.getElementById('mainEl');
+  m.classList.toggle('wide',view==='catalogue');
+  // Build views on demand
+  if(view==='catalogue'&&catBuilt)applyCatFilters();
+  if(view==='info')buildInfoScreen();
+  if(view==='dashboard')buildDashboard();
+  if(view==='planner')buildAdvicePanel();
+  window.location.hash=view;
+}
+
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sbOverlay').classList.toggle('show');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sbOverlay').classList.remove('show');
+}
+
+function showScreen(s){
+  document.getElementById('loading').style.display=s==='ld'?'flex':'none';
+  document.getElementById('errscr').style.display=s==='err'?'flex':'none';
+  if(s==='pl'){
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    const target=window.location.hash.replace('#','')||'dashboard';
+    switchView(['dashboard','planner','catalogue','info'].includes(target)?target:'dashboard');
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// CSV / CONFIG LOADING
+// ═══════════════════════════════════════════════════
+function parseRow(row){
+  const res=[];let q=false,c='';
+  for(let i=0;i<row.length;i++){const ch=row[i];if(ch==='"'){q=!q;continue;}if(ch===','&&!q){res.push(c.trim());c='';continue;}c+=ch;}
+  res.push(c.trim());return res;
+}
+
+function load(text){
+  courses=[];labs=[];cfgV=cfgP=cfgY='';
+  const lines=text.split(/\r?\n/).filter(l=>l.trim());
+  let hi=-1;
+  for(let i=0;i<lines.length;i++){
+    const c=parseRow(lines[i]);
+    if(c[0]==='Version'&&i+1<lines.length){const m=parseRow(lines[i+1]);cfgV=m[0]||'';cfgP=m[1]||'';cfgY=m[2]||'';}
+    if(c[0]==='Slot'){hi=i;break;}
+  }
+  if(hi<0){showScreen('err');return;}
+  const hdrs=parseRow(lines[hi]);
+  for(let i=hi+1;i<lines.length;i++){
+    const row=parseRow(lines[i]);if(row.length<3||!row[1])continue;
+    const e={};hdrs.forEach((h,idx)=>e[h]=(row[idx]||'').trim());
+    e.Corequisite=e.Corequisite?.toUpperCase()==='TRUE';
+    e.Prerequisite=e.Prerequisite?.toUpperCase()==='TRUE';
+    e.Days=e.Days?e.Days.split(/\s*,\s*/).map(d=>d.trim()).filter(Boolean):[];
+    e.CorequisiteOf=(e.CorequisiteOf||'').trim();
+    e.PrerequisiteCodes=(e.PrerequisiteCodes||'').trim();
+    if(e.Slot)courses.push(e);else labs.push(e);
+  }
+  document.getElementById('mp').textContent=cfgP&&cfgY?`Period ${cfgP} \u00b7 ${cfgY}`:'Schedule loaded';
+  if(cfgV){document.getElementById('mv').textContent=`v${cfgV}`;document.getElementById('mv').style.display='';}
+  document.getElementById('mc').textContent=`${courses.length} courses \u00b7 ${labs.length} practicals`;
+  document.getElementById('mc').style.display='';
+  document.getElementById('pp').textContent=cfgP&&cfgY?`Period ${cfgP}, ${cfgY}`:'';
+  document.getElementById('pd').textContent=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  switchPlan('A');showScreen('pl');
+}
+
+// ═══════════════════════════════════════════════════
+// PLANNER — PLAN SWITCHING & COURSE SELECTION
+// ═══════════════════════════════════════════════════
+function switchPlan(k){
+  if(cmpMode)toggleCmp();
+  act=k;
+  document.querySelectorAll('.ptab:not(.ptab-cmp)').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+k).classList.add('active');
+  const p=PLANS[k];
+  buildCourse1();
+  const cv1=courses.find(c=>c.Code===p.c1)||null;
+  document.getElementById('c1').value=p.c1;
+  buildCourse2(cv1?.Slot||null);
+  document.getElementById('c2').value=p.c2;
+  const cv2=courses.find(c=>c.Code===p.c2)||null;
+  const used=new Set([...(cv1?.Days||[]),...(cv2?.Days||[])]);
+  buildLabs(used);
+  document.getElementById('lab').value=p.lab;
+  showPanel(cv1,'pi1',false);showPanel(cv2,'pi2',false);
+  showPanel(labs.find(l=>l.Code===p.lab)||null,'pil',true);
+  checkPrereqs();buildSummary();buildNextSteps();buildTT();buildAdvicePanel();
+}
+
+function save(){const p=PLANS[act];p.c1=document.getElementById('c1').value;p.c2=document.getElementById('c2').value;p.lab=document.getElementById('lab').value;}
+
+function prereqIndicator(code){
+  if(!APP.transcript)return'';
+  const pc=APP.transcript.computed.passedCodes;
+  if(pc.has(code))return' \u2705 passed';
+  return'';
+}
+
+function buildCourse1(){
+  const s=document.getElementById('c1');
+  s.innerHTML='<option value="">\u2014 Select a course \u2014</option>';
+  addGroupedOptions(s,groupBySlot(courses,null));
+}
+function buildCourse2(ex){
+  const s=document.getElementById('c2'),pv=s.value;
+  s.innerHTML='<option value="">\u2014 Select a course \u2014</option>';
+  addGroupedOptions(s,groupBySlot(courses,ex));
+  if(pv&&[...s.options].some(o=>o.value===pv))s.value=pv;
+}
+function groupBySlot(arr,ex){const g={};arr.forEach(c=>{if(c.Slot===ex&&ex)return;if(!g[c.Slot])g[c.Slot]=[];g[c.Slot].push(c);});return g;}
+
+function addGroupedOptions(s,g){
+  const t=APP.transcript;
+  Object.keys(g).sort().forEach(sl=>{
+    const og=document.createElement('optgroup');
+    og.label=sl?`Slot ${sl}`:'Other';
+    g[sl].forEach(c=>{
+      let flags=[c.Corequisite?'\u25ca':'',c.Prerequisite?'\u25b2':''].filter(Boolean).join(' ');
+      let extra='';
+      if(t){
+        const pc=t.computed.passedCodes;
+        if(pc.has(c.Code)){
+          const mod=t.semesters.flatMap(s=>s.modules).find(m=>m.code===c.Code);
+          extra=` \u2705 already passed${mod?' ('+mod.grade.toFixed(1)+')':''}`;
+        }else if(c.Prerequisite&&c.PrerequisiteCodes){
+          const met=checkPrereqsMet(c.PrerequisiteCodes,pc);
+          extra=met?' \u2705 prereqs met':' \u274C missing prereqs';
+        }else if(!c.Prerequisite){
+          extra=' \u25CF no prereqs';
+        }
+      }
+      const opt=new Option(`${c.Code} \u2014 ${c.Title}${flags?'  '+flags:''}${extra}`,c.Code);
+      og.appendChild(opt);
+    });
+    s.appendChild(og);
+  });
+}
+
+function checkPrereqsMet(prereqStr,passedCodes){
+  // Format: CODE1+CODE2 (AND), CODE1/CODE2 (OR)
+  const andGroups=prereqStr.split('+').map(g=>g.trim());
+  return andGroups.every(group=>{
+    const orCodes=group.split('/').map(c=>c.trim());
+    return orCodes.some(code=>passedCodes.has(code));
+  });
+}
+
+function buildLabs(used){
+  const s=document.getElementById('lab'),pv=s.value;
+  s.innerHTML='<option value="">\u2014 Select a practical \u2014</option>';
+  const ok=labs.filter(l=>!l.Days.some(d=>used.has(d)));
+  const t=APP.transcript;
+  ok.forEach(l=>{
+    let f=[l.Corequisite?'\u25ca':'',l.Prerequisite?'\u25b2':''].filter(Boolean).join(' ');
+    let extra='';
+    if(t){
+      const pc=t.computed.passedCodes;
+      if(pc.has(l.Code)){
+        extra=' \u2705 already passed';
+      }else if(l.Prerequisite&&l.PrerequisiteCodes){
+        const met=checkPrereqsMet(l.PrerequisiteCodes,pc);
+        extra=met?' \u2705 prereqs met':' \u274C missing prereqs';
+      }
+    }
+    const opt=new Option(`${l.Code} \u2014 ${l.Title}${f?'  '+f:''}${extra}`,l.Code);
+    s.appendChild(opt);
+  });
+  if(pv&&[...s.options].some(o=>o.value===pv))s.value=pv;
+  document.getElementById('labct').textContent=used.size===0?`${labs.length} practicals available`:`${ok.length} of ${labs.length} practicals compatible with your courses`;
+}
+
+const getCourse1=()=>courses.find(c=>c.Code===document.getElementById('c1').value)||null;
+const getCourse2=()=>courses.find(c=>c.Code===document.getElementById('c2').value)||null;
+const getLab=()=>labs.find(l=>l.Code===document.getElementById('lab').value)||null;
+function formatDay(d){return d.replace('AM',' AM').replace('PM',' PM');}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function showPanel(item,id,isLab){
+  const el=document.getElementById(id);
+  if(!item){el.classList.remove('show');return;}
+  const chips=item.Days.map(d=>`<span class="daychip">${formatDay(d)}</span>`).join('');
+  const tags=[item.Corequisite?'<span class="tg tg-co">\u25ca Co-req</span>':'',item.Prerequisite?'<span class="tg tg-pre">\u25b2 Pre-req</span>':''].filter(Boolean).join('');
+  let prereqStatus='';
+  if(APP.transcript&&item.Prerequisite&&item.PrerequisiteCodes){
+    const met=checkPrereqsMet(item.PrerequisiteCodes,APP.transcript.computed.passedCodes);
+    prereqStatus=met?'<div style="margin-top:4px"><span style="color:var(--ok);font-size:11px;font-weight:600">\u2705 Prerequisites met (verified from transcript)</span></div>':'<div style="margin-top:4px"><span style="color:var(--err);font-size:11px;font-weight:600">\u274C Missing prerequisite: '+item.PrerequisiteCodes+'</span></div>';
+  }
+  let passedBadge='';
+  if(APP.transcript&&APP.transcript.computed.passedCodes.has(item.Code)){
+    const mod=APP.transcript.semesters.flatMap(s=>s.modules).find(m=>m.code===item.Code);
+    passedBadge=`<div style="margin-top:4px"><span style="color:var(--warn);font-size:11px;font-weight:600">\u26A0 You already passed this course${mod?' (grade: '+mod.grade.toFixed(1)+')':''}</span></div>`;
+  }
+  el.innerHTML=`<div class="crow">${!isLab?`<span class="slotb sl-${item.Slot}">SLOT ${item.Slot}</span>`:''}<div class="days">${chips}</div>${tags}</div><div class="crow"><span class="coord">Coordinator: ${item.Coordinator}</span></div>${prereqStatus}${passedBadge}`;
+  el.classList.add('show');
+}
+
+// ═══════════════════════════════════════════════════
+// WEEKLY TIMETABLE
+// ═══════════════════════════════════════════════════
+const DAYS=['Mon','Tue','Wed','Thu','Fri'];
+const TIMES=['AM','PM'];
+
+function buildTT(){
+  const c1=getCourse1(),c2=getCourse2(),lab=getLab();
+  const sel=[c1,c2].filter(Boolean);
+  const bd=document.getElementById('ttbd');
+  if(!sel.length){bd.innerHTML='<div class="emptys"><span class="ei">\u{1F4C5}</span><p>Select courses to see your weekly timetable.</p></div>';return;}
+  bd.innerHTML=buildTTHTML(c1,c2,lab,false);
+}
+
+function buildTTHTML(c1,c2,lab,compact){
+  const grid={};
+  DAYS.forEach(d=>TIMES.forEach(t=>{grid[d+t]=[];}));
+  const items=[[c1,'course'],[c2,'course'],[lab,'lab']];
+  items.forEach(([it,type])=>{if(!it)return;it.Days.forEach(d=>{if(grid[d])grid[d].push({item:it,type});});});
+  let html='<table class="timetable"><thead><tr><th></th>';
+  DAYS.forEach(d=>{html+=`<th>${d}</th>`;});
+  html+='</tr></thead><tbody>';
+  TIMES.forEach(t=>{
+    html+=`<tr><td class="tt-label">${t}</td>`;
+    DAYS.forEach(d=>{
+      const cell=grid[d+t];
+      if(cell.length){
+        const e=cell[0];
+        const cls=e.type==='lab'?'tt-lab':`tt-course sl-${e.item.Slot||''}`;
+        const shortName=compact?'':`<div class="tt-name">${e.item.Title}</div>`;
+        html+=`<td><div class="tt-cell ${cls}"><div class="tt-code">${e.item.Code}</div>${shortName}</div></td>`;
+      }else{html+='<td></td>';}
+    });
+    html+='</tr>';
+  });
+  html+='</tbody></table>';
+  return html;
+}
+
+// ═══════════════════════════════════════════════════
+// PLAN STATUS & CHECKS
+// ═══════════════════════════════════════════════════
+function planStatus(k){
+  const p=PLANS[k];
+  const c1=courses.find(c=>c.Code===p.c1)||null,c2=courses.find(c=>c.Code===p.c2)||null;
+  const lab=labs.find(l=>l.Code===p.lab)||null,sel=[c1,c2].filter(Boolean);
+  if(!sel.length)return'empty';
+  const iss=[];
+  for(const c of sel)if(c.Corequisite&&c.CorequisiteOf&&(!lab||lab.Code!==c.CorequisiteOf))iss.push('co');
+  if(lab&&lab.Corequisite&&lab.CorequisiteOf&&!sel.some(c=>c.Code===lab.CorequisiteOf))iss.push('co');
+  for(const it of [...sel,lab].filter(Boolean)){
+    if(it.Prerequisite&&it.PrerequisiteCodes){
+      if(APP.transcript){
+        if(!checkPrereqsMet(it.PrerequisiteCodes,APP.transcript.computed.passedCodes)&&!p.ack[it.Code])iss.push('pre');
+      }else{
+        if(!p.ack[it.Code])iss.push('pre');
+      }
+    }
+  }
+  if(sel.length===2&&lab&&!iss.length)return'ok';
+  if(iss.includes('co'))return'err';if(iss.includes('pre'))return'warn';return'inc';
+}
+
+function updateTabIcons(){
+  ['A','B','C'].forEach(k=>{
+    const t=document.getElementById('tab-'+k),ts=document.getElementById('ts-'+k);
+    t.classList.remove('tok','twarn','terr');
+    const s=planStatus(k);
+    if(s==='ok'){ts.textContent=' \u2713';t.classList.add('tok');}
+    else if(s==='warn'){ts.textContent=' \u26a0';t.classList.add('twarn');}
+    else if(s==='err'){ts.textContent=' \u26a0';t.classList.add('terr');}
+    else ts.textContent='';
+  });
+}
+
+function checkPrereqs(){
+  const c1=getCourse1(),c2=getCourse2(),lab=getLab(),sel=[c1,c2].filter(Boolean);
+  const p=PLANS[act],sEl=document.getElementById('chkst'),bEl=document.getElementById('chkbd');
+  if(!sel.length){sEl.className='spill sp-pend';sEl.textContent='\u2014 Select courses first';bEl.innerHTML='<div class="emptys"><span class="ei">\u2713</span><p>Select your courses to see checks.</p></div>';return;}
+  let html='',badCo=false,unPre=false,coI=[];
+  const t=APP.transcript;
+  const pc=t?t.computed.passedCodes:null;
+
+  for(const c of sel){if(c.Corequisite&&c.CorequisiteOf){const rc=c.CorequisiteOf,rl=labs.find(l=>l.Code===rc);const rn=rl?.Title||courses.find(x=>x.Code===rc)?.Title||rc;
+    // Auto-waive if already passed
+    const autoWaived=pc&&pc.has(rc);
+    coI.push({from:c,rc,rn,rt:rl?'practical':'course',ok:(lab&&lab.Code===rc)||autoWaived,autoWaived});}}
+  if(lab&&lab.Corequisite&&lab.CorequisiteOf){const rc=lab.CorequisiteOf,rn=courses.find(c=>c.Code===rc)?.Title||rc,sat=sel.some(c=>c.Code===rc);
+    const autoWaived=pc&&pc.has(rc);
+    if(!coI.some(i=>i.from.Code===rc&&i.rc===lab.Code))coI.push({from:lab,rc,rn,rt:'course',ok:sat||autoWaived,autoWaived});}
+
+  if(coI.length){html+='<p class="seclbl">Co-requisites</p>';coI.forEach(i=>{if(i.ok)html+=`<div class="alrt a-ok"><span class="aico">\u2713</span><div class="abdy"><strong>Co-requisite satisfied</strong><p><em>${i.from.Code}</em> requires <em>${i.rc} \u2014 ${i.rn}</em>. ${i.autoWaived?'Already passed in a previous period (auto-waived).':'Already selected.'}</p></div></div>`;else{badCo=true;html+=`<div class="alrt a-err"><span class="aico">\u26a0</span><div class="abdy"><strong>Missing co-requisite</strong><p><em>${i.from.Code} \u2014 ${i.from.Title}</em> must be taken with <strong>${i.rc} \u2014 ${i.rn}</strong>.</p><div class="guidance"><strong>Add the co-requisite</strong> to your plan, or contact the module coordinator to <a href="${LINKS.waivers}" target="_blank">request a waiver</a>. If you have already passed the co-requisite in a previous period, it is automatically waived.</div></div></div>`;}});}
+
+  const preI=[];
+  for(const it of [...sel,lab].filter(Boolean)){
+    if(it.Prerequisite&&it.PrerequisiteCodes){
+      // If transcript loaded and prereqs met, auto-acknowledge
+      if(pc&&checkPrereqsMet(it.PrerequisiteCodes,pc)){
+        p.ack[it.Code]=true;
+      }else if(!(it.Code in p.ack)){
+        p.ack[it.Code]=false;
+      }
+      preI.push(it);
+    }
+  }
+
+  if(preI.length){
+    if(html)html+='<div style="height:12px"></div>';
+    html+='<p class="seclbl">Prerequisites</p>';
+    preI.forEach(it=>{
+      const ok=p.ack[it.Code];
+      const autoMet=pc&&checkPrereqsMet(it.PrerequisiteCodes,pc);
+      if(!ok)unPre=true;
+      if(autoMet){
+        html+=`<div class="alrt a-ok"><span class="aico">\u2713</span><div class="abdy"><strong>Prerequisites met</strong><p><em>${it.Code} \u2014 ${it.Title}</em> requires ${formatPrereqs(it.PrerequisiteCodes)}. Verified from your transcript.</p></div></div>`;
+      }else{
+        html+=`<div class="pb ${ok?'conf':''}" id="pb-${it.Code}"><input type="checkbox" id="ck-${it.Code}" ${ok?'checked':''} onchange="acknowledgeCheck('${it.Code}',this.checked)"><label for="ck-${it.Code}">To take <strong>${it.Code} \u2014 ${it.Title}</strong> you must have completed: <span class="pc">${formatPrereqs(it.PrerequisiteCodes)}</span>.<span class="ph">Check this box to confirm.</span></label></div>${!ok?'<div class="guidance">Don\u2019t have the prerequisite? You can <a href="'+LINKS.waivers+'" target="_blank"><strong>request a waiver</strong></a> from the course coordinator.</div>':''}`;
+      }
+    });
+  }
+
+  if(!coI.length&&!preI.length)html='<div class="alrt a-ok"><span class="aico">\u2713</span><div class="abdy"><strong>No prerequisites or co-requisites</strong><p>Your selection has no additional requirements.</p></div></div>';
+  bEl.innerHTML=html;
+  if(badCo){sEl.className='spill sp-err';sEl.textContent='\u26a0 Missing co-requisite';}
+  else if(unPre){sEl.className='spill sp-warn';sEl.textContent='! Confirm prerequisites';}
+  else{sEl.className='spill sp-ok';sEl.textContent='\u2713 All checks passed';}
+  updateTabIcons();
+}
+
+function acknowledgeCheck(code,v){PLANS[act].ack[code]=v;checkPrereqs();buildSummary();}
+function formatPrereqs(s){return s.split('+').map(pt=>{const or=pt.trim().split('/').map(p=>`<strong>${p.trim()}</strong>`);return or.length>1?or.join(' <em>or</em> '):or[0];}).join(' <em>and</em> ');}
+
+// ═══════════════════════════════════════════════════
+// ADVICE PANEL (transcript-aware)
+// ═══════════════════════════════════════════════════
+function buildAdvicePanel(){
+  const el=document.getElementById('advicePanel');
+  if(!el)return;
+  if(!APP.transcript){el.style.display='none';return;}
+  const t=APP.transcript;
+  const r=t.computed.requirements;
+  const tips=[];
+
+  if(!r.skills.total.met){
+    const need=r.skills.total.required-r.skills.total.count;
+    tips.push(`You still need ${need} more skill training \u2014 consider selecting a PRA module this period.`);
+  }
+  if(!r.projects.total.met){
+    tips.push(`You still need ${r.projects.total.required-r.projects.total.count} more project(s).`);
+  }
+  // Intro course warning
+  const introCoursesUsed=r.courses.introMax.count;
+  const introMax=r.courses.introMax.max;
+  if(introCoursesUsed>=introMax-1&&introCoursesUsed<introMax){
+    tips.push(`You have room for only ${introMax-introCoursesUsed} more introductory course(s) (used ${introCoursesUsed} of max ${introMax}).`);
+  }
+  // GPA
+  if(r.gpa.projectedDistinction){
+    tips.push(`Your GPA is ${t.computed.currentCumGPA.toFixed(1)} \u2014 you're on track for ${r.gpa.projectedDistinction}. Choose courses strategically to maintain this.`);
+  }
+  // BTR
+  const c1=getCourse1(),c2=getCourse2(),lab=getLab();
+  const planECTS=(c1?5:0)+(c2?5:0)+(lab?2.5:0);
+  const afterPlan=t.computed.totalECTSEarned+planECTS;
+  if(!r.btr.eligible){
+    tips.push(`After this period, you'll have ${afterPlan.toFixed(1)} ECTS \u2014 ${afterPlan>=145?'enough':'not enough'} for BTR eligibility (requires 145).`);
+  }
+
+  if(!tips.length){el.style.display='none';return;}
+  el.style.display='';
+  el.innerHTML=`<h3>&#128161; Based on your transcript</h3><ul>${tips.map(t=>`<li>${t}</li>`).join('')}</ul>`;
+}
+
+// ═══════════════════════════════════════════════════
+// SUMMARY
+// ═══════════════════════════════════════════════════
+function buildSummary(){
+  const c1=getCourse1(),c2=getCourse2(),lab=getLab(),sel=[c1,c2].filter(Boolean);
+  const p=PLANS[act],sEl=document.getElementById('planst'),bEl=document.getElementById('sumbd'),btn=document.getElementById('btnp');
+  if(!sel.length){sEl.className='spill sp-pend';sEl.textContent='Incomplete';bEl.innerHTML='<div class="emptys"><span class="ei">\u{1F4CB}</span><p>Select courses to see your plan.</p></div>';btn.disabled=true;return;}
+  const iss=[];
+  for(const c of sel)if(c.Corequisite&&c.CorequisiteOf&&(!lab||lab.Code!==c.CorequisiteOf)){
+    const autoWaived=APP.transcript&&APP.transcript.computed.passedCodes.has(c.CorequisiteOf);
+    if(!autoWaived)iss.push(`Missing co-req: ${c.Code}`);
+  }
+  if(lab&&lab.Corequisite&&lab.CorequisiteOf&&!sel.some(c=>c.Code===lab.CorequisiteOf)){
+    const autoWaived=APP.transcript&&APP.transcript.computed.passedCodes.has(lab.CorequisiteOf);
+    if(!autoWaived)iss.push(`Missing co-req: ${lab.Code}`);
+  }
+  for(const it of [...sel,lab].filter(Boolean))if(it.Prerequisite&&it.PrerequisiteCodes&&!p.ack[it.Code])iss.push(`Unconfirmed prereq: ${it.Code}`);
+  const done=sel.length===2&&lab&&!iss.length;
+
+  let rows='';
+  sel.forEach(c=>{
+    const chips=c.Days.map(d=>`<span class="daychip">${formatDay(d)}</span>`).join(' ');
+    let prereqInfo='';
+    if(c.Prerequisite&&c.PrerequisiteCodes){
+      const met=p.ack[c.Code];
+      prereqInfo=`<div style="font-size:10.5px;margin-top:3px;color:${met?'var(--ok)':'var(--warn)'}">Prereq: ${c.PrerequisiteCodes} ${met?'\u2713':'\u26a0'}</div>`;
+    }
+    let coreqInfo='';
+    if(c.Corequisite&&c.CorequisiteOf){
+      const labOk=lab&&lab.Code===c.CorequisiteOf;
+      const autoWaived=APP.transcript&&APP.transcript.computed.passedCodes.has(c.CorequisiteOf);
+      const ok=labOk||autoWaived;
+      coreqInfo=`<div style="font-size:10.5px;margin-top:2px;color:${ok?'var(--ok)':'var(--err)'}">Co-req: ${c.CorequisiteOf} ${ok?'\u2713':'\u2717'}</div>`;
+    }
+    rows+=`<tr><td><span class="tchip">Course</span></td><td><div class="scode">${c.Code}</div><div class="sname">${c.Title}</div>${prereqInfo}${coreqInfo}</td><td><span class="slotb sl-${c.Slot}">SLOT ${c.Slot}</span></td><td><div class="days">${chips}</div></td><td class="scoord">${c.Coordinator}</td></tr>`;
+  });
+  if(lab){
+    const chips=lab.Days.map(d=>`<span class="daychip">${formatDay(d)}</span>`).join(' ');
+    let prereqInfo='';
+    if(lab.Prerequisite&&lab.PrerequisiteCodes){const met=p.ack[lab.Code];prereqInfo=`<div style="font-size:10.5px;margin-top:3px;color:${met?'var(--ok)':'var(--warn)'}">Prereq: ${lab.PrerequisiteCodes} ${met?'\u2713':'\u26a0'}</div>`;}
+    let coreqInfo='';
+    if(lab.Corequisite&&lab.CorequisiteOf){const ok=sel.some(c=>c.Code===lab.CorequisiteOf)||(APP.transcript&&APP.transcript.computed.passedCodes.has(lab.CorequisiteOf));coreqInfo=`<div style="font-size:10.5px;margin-top:2px;color:${ok?'var(--ok)':'var(--err)'}">Co-req: ${lab.CorequisiteOf} ${ok?'\u2713':'\u2717'}</div>`;}
+    rows+=`<tr><td><span class="tchip">Practical</span></td><td><div class="scode">${lab.Code}</div><div class="sname">${lab.Title}</div>${prereqInfo}${coreqInfo}</td><td>\u2014</td><td><div class="days">${chips}</div></td><td class="scoord">${lab.Coordinator}</td></tr>`;
+  }else rows+='<tr><td><span class="tchip">Practical</span></td><td colspan="4" style="color:var(--g4);font-style:italic;font-size:12px">No practical selected yet</td></tr>';
+
+  let sb='';
+  if(done)sb='<div class="alrt a-ok sum-status-alert" style="margin-top:16px"><span class="aico">\u2713</span><div class="abdy"><strong>Plan complete \u2014 ready to print</strong><p>All checks passed. Save as PDF to bring to your advising session.</p></div></div>';
+  else if(iss.length)sb=`<div class="alrt a-warn sum-status-alert" style="margin-top:16px"><span class="aico">\u26a0</span><div class="abdy"><strong>Outstanding issues</strong><p>${iss.join(' \u00b7 ')}</p></div></div>`;
+
+  const ttHtml=buildTTHTML(c1,c2,lab,false);
+
+  let checksHtml='';
+  const allItems=[...sel,lab].filter(Boolean);
+  const preItems=allItems.filter(it=>it.Prerequisite&&it.PrerequisiteCodes);
+  const coItems=[];
+  for(const c of sel){if(c.Corequisite&&c.CorequisiteOf)coItems.push({from:c.Code,req:c.CorequisiteOf,ok:(lab&&lab.Code===c.CorequisiteOf)||(APP.transcript&&APP.transcript.computed.passedCodes.has(c.CorequisiteOf))});}
+  if(lab&&lab.Corequisite&&lab.CorequisiteOf)coItems.push({from:lab.Code,req:lab.CorequisiteOf,ok:sel.some(c=>c.Code===lab.CorequisiteOf)||(APP.transcript&&APP.transcript.computed.passedCodes.has(lab.CorequisiteOf))});
+
+  if(preItems.length||coItems.length){
+    checksHtml='<div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--g2)"><p class="seclbl" style="margin-bottom:8px">Prerequisite &amp; Co-requisite Summary</p>';
+    preItems.forEach(it=>{const met=p.ack[it.Code];checksHtml+=`<div style="font-size:12px;padding:4px 0;color:${met?'var(--ok)':'var(--warn)'}"><strong>${it.Code}</strong> requires ${it.PrerequisiteCodes} \u2014 ${met?'Confirmed \u2713':'Unconfirmed \u26a0'}</div>`;});
+    coItems.forEach(ci=>{checksHtml+=`<div style="font-size:12px;padding:4px 0;color:${ci.ok?'var(--ok)':'var(--err)'}"><strong>${ci.from}</strong> co-requisite ${ci.req} \u2014 ${ci.ok?'Satisfied \u2713':'Missing \u2717'}</div>`;});
+    checksHtml+='</div>';
+  }
+
+  // Transcript summary in print
+  let transcriptSummary='';
+  if(APP.transcript){
+    const tc=APP.transcript.computed;
+    transcriptSummary=`<div class="printonly" style="margin-top:16px;padding:14px;background:var(--g0);border:1px solid var(--g2);border-radius:var(--rs)"><p class="seclbl" style="margin-bottom:6px">Transcript Summary</p><div style="font-size:12px;color:var(--g7)">Current ECTS: ${tc.totalECTSEarned} / 180 &nbsp;&bull;&nbsp; After this plan: ${(tc.totalECTSEarned+(c1?5:0)+(c2?5:0)+(lab?2.5:0)).toFixed(1)} &nbsp;&bull;&nbsp; GPA: ${tc.currentCumGPA.toFixed(1)} &nbsp;&bull;&nbsp; Courses: ${tc.courses.total}/20 &nbsp;&bull;&nbsp; Skills: ${tc.skills.total}/10 &nbsp;&bull;&nbsp; Projects: ${tc.projects.total}/5</div></div>`;
+  }
+
+  let printReminders=`<div class="printonly" style="margin-top:16px;padding:14px;background:var(--g0);border:1px solid var(--g2);border-radius:var(--rs)"><p class="seclbl" style="margin-bottom:6px">Important Reminders</p><ul style="margin:0 0 0 16px;font-size:11.5px;color:var(--g5);line-height:1.7"><li>This plan is for self-preparation only. <strong>Confirm all registrations with your academic advisor.</strong></li><li>If you need prerequisite waivers, contact the course coordinator <strong>before the registration deadline</strong>.</li><li>Period ${DEADLINES.period} switch deadline: <strong>${DEADLINES.switch}</strong></li><li>Period ${DEADLINES.period} withdrawal deadline: <strong>${DEADLINES.withdrawal}</strong></li></ul></div>`;
+
+  bEl.innerHTML=`<div style="overflow-x:auto"><table class="stbl"><thead><tr><th>Type</th><th>Course / Practical</th><th>Slot</th><th>Schedule</th><th>Coordinator</th></tr></thead><tbody>${rows}</tbody></table></div><div style="margin-top:18px"><p class="seclbl" style="margin-bottom:8px">Weekly Timetable</p>${ttHtml}</div>${checksHtml}${transcriptSummary}${printReminders}${sb}`;
+  if(done){sEl.className='spill sp-ok';sEl.textContent='\u2713 Ready to print';}
+  else if(iss.length){sEl.className='spill sp-warn';sEl.textContent='\u26a0 Issues to resolve';}
+  else{sEl.className='spill sp-pend';sEl.textContent='Incomplete';}
+  btn.disabled=!sel.length;
+}
+
+// ═══════════════════════════════════════════════════
+// COMPARISON VIEW
+// ═══════════════════════════════════════════════════
+function toggleCmp(){
+  cmpMode=!cmpMode;
+  const cmpBtn=document.getElementById('tab-cmp'),planView=document.getElementById('planview'),cmpView=document.getElementById('cmpview');
+  if(cmpMode){cmpBtn.classList.add('active');document.querySelectorAll('.ptab:not(.ptab-cmp)').forEach(t=>t.classList.remove('active'));planView.style.display='none';cmpView.classList.add('show');buildCmp();}
+  else{cmpBtn.classList.remove('active');planView.style.display='block';cmpView.classList.remove('show');document.getElementById('tab-'+act).classList.add('active');}
+}
+function buildCmp(){
+  const el=document.getElementById('cmpview');
+  let html='<div class="cmp-grid">';
+  ['A','B','C'].forEach(k=>{
+    const p=PLANS[k],c1=courses.find(c=>c.Code===p.c1)||null,c2=courses.find(c=>c.Code===p.c2)||null;
+    const lab=labs.find(l=>l.Code===p.lab)||null,sel=[c1,c2].filter(Boolean),st=planStatus(k);
+    let stCls='',stTxt='';
+    if(st==='ok'){stCls='cmp-st-ok';stTxt='\u2713 Ready';}else if(st==='warn'){stCls='cmp-st-warn';stTxt='\u26a0 Warnings';}else if(st==='err'){stCls='cmp-st-err';stTxt='\u26a0 Issues';}else if(st==='empty'){stTxt='Empty';}else{stTxt='Incomplete';}
+    html+=`<div class="cmp-col"><div class="cmp-col-h">Plan ${k}<span class="cmp-st ${stCls}">${stTxt}</span></div><div class="cmp-col-b">`;
+    if(!sel.length){html+='<div class="cmp-empty">No courses selected</div>';}else{
+      sel.forEach(c=>{const chips=c.Days.map(d=>`<span class="daychip">${formatDay(d)}</span>`).join('');html+=`<div class="cmp-item"><div class="ci-type">Course &middot; <span class="slotb sl-${c.Slot}">SLOT ${c.Slot}</span></div><div class="ci-code">${c.Code}</div><div class="ci-title">${c.Title}</div><div class="ci-days">${chips}</div></div>`;});
+      if(lab){const chips=lab.Days.map(d=>`<span class="daychip">${formatDay(d)}</span>`).join('');html+=`<div class="cmp-item"><div class="ci-type">Practical</div><div class="ci-code">${lab.Code}</div><div class="ci-title">${lab.Title}</div><div class="ci-days">${chips}</div></div>`;}
+      else{html+='<div class="cmp-item" style="opacity:.5"><div class="ci-type">Practical</div><div class="ci-title" style="font-style:italic">Not selected</div></div>';}
+      html+=`<div class="cmp-tt">${buildTTHTML(c1,c2,lab,true)}</div>`;
+    }
+    html+='</div></div>';
+  });
+  html+='</div><div style="text-align:center"><button class="btn btn-gh" onclick="toggleCmp()">\u2190 Back to plan editor</button></div>';
+  el.innerHTML=html;
+}
+
+// ═══════════════════════════════════════════════════
+// NEXT STEPS
+// ═══════════════════════════════════════════════════
+function buildNextSteps(){
+  const c1=getCourse1(),c2=getCourse2(),lab=getLab(),sel=[c1,c2].filter(Boolean);
+  const el=document.getElementById('nextsteps'),bd=document.getElementById('nsbd');
+  if(!sel.length){el.style.display='none';return;}
+  el.style.display='';
+  const done=sel.length===2&&lab&&planStatus(act)==='ok';
+  const switchDate=new Date('2026-03-06T17:00:00');
+  const now=new Date();
+  const switchUrgent=now>new Date(switchDate.getTime()-7*24*60*60*1000);
+  let html='';
+  if(done){
+    html+=`<div class="alrt a-ok"><span class="aico">\u2713</span><div class="abdy"><strong>Your plan looks good!</strong><p>Here\u2019s what to do next:</p></div></div>`;
+    html+=`<ol class="nsteps" style="margin-top:12px"><li><strong>Save this plan as PDF</strong> using the button below</li><li><strong>Bring it to your academic advising session</strong></li><li><strong>Register</strong> for your chosen modules via the course registration form before the deadline</li><li><strong>Check the switch/withdrawal deadlines</strong> if you need to make changes later</li></ol>`;
+  }else{
+    html+=`<div class="alrt a-inf"><span class="aico">\u2139</span><div class="abdy"><strong>Almost there</strong><p>Resolve the outstanding issues above, then follow these steps to finalise your registration.</p></div></div>`;
+  }
+  html+=`<div class="dl-grid"><div class="dl-box${switchUrgent?' dl-urgent':''}"><div class="dl-lbl">Switch deadline \u2014 Period ${DEADLINES.period}</div><div class="dl-val">${DEADLINES.switch}</div></div><div class="dl-box"><div class="dl-lbl">Withdrawal deadline \u2014 Period ${DEADLINES.period}</div><div class="dl-val">${DEADLINES.withdrawal}</div></div></div>`;
+  html+=`<div class="links-row"><a href="${LINKS.switchForm}" target="_blank">\u{1F4DD} Switch/withdraw form</a></div>`;
+  bd.innerHTML=html;
+}
+
+// ═══════════════════════════════════════════════════
+// CATALOGUE VIEW
+// ═══════════════════════════════════════════════════
+let catBuilt=false;
+const SLOT_META={
+  'A':{label:'Slot A',schedule:'Monday AM & Wednesday PM'},
+  'B':{label:'Slot B',schedule:'Monday PM & Thursday AM'},
+  'C':{label:'Slot C',schedule:'Tuesday AM & Thursday PM'},
+  'D':{label:'Slot D',schedule:'Tuesday PM & Friday AM'},
+  'E':{label:'Slot E',schedule:'Wednesday AM & Friday PM'},
+  'PRA':{label:'Practicals & Skills',schedule:'Various days'}
+};
+
+function parseMD(text){
+  descriptions={};
+  const blocks=text.split(/^---$/m).map(b=>b.trim()).filter(b=>b&&!b.startsWith('#')&&!b.startsWith('Source:'));
+  blocks.forEach(block=>{
+    if(/^##\s+SLOT\s+[A-E]/i.test(block)||/^##\s+PRACTICALS/i.test(block))return;
+    const cleaned=block.replace(/^##\s+.*\n*/m,'').trim();
+    if(!cleaned)return;
+    const firstLine=cleaned.split('\n')[0].trim();
+    const codeMatch=firstLine.match(/^([A-Z]{2,4}\d{4})\s+(.+)$/);
+    if(!codeMatch)return;
+    const code=codeMatch[1],title=codeMatch[2];
+    const rest=cleaned.substring(firstLine.length).trim();
+    const desc={title,raw:rest,sections:{}};
+    let currentSection='',currentContent=[];
+    rest.split('\n').forEach(line=>{
+      const trimmed=line.trim();
+      const sectionNames=['Course coordinator','Coordinator','Practical coordinator','Contact','Pre-requisites','Prerequisites','Co-requisites','Corequisites','Objectives','Description of the course','Description of the skill','Description of the practical','Literature','Recommended reading','Recommended','Instructional format','Assessment','Note'];
+      const matchedSection=sectionNames.find(s=>trimmed.toLowerCase().startsWith(s.toLowerCase()));
+      if(matchedSection&&trimmed.length<matchedSection.length+3){
+        if(currentSection)desc.sections[currentSection]=currentContent.join('\n').trim();
+        currentSection=matchedSection;currentContent=[];
+      }else if(matchedSection&&trimmed.length>=matchedSection.length+3){
+        if(currentSection)desc.sections[currentSection]=currentContent.join('\n').trim();
+        currentSection=matchedSection;currentContent=[trimmed.substring(matchedSection.length).replace(/^[:\s]+/,'')];
+      }else{currentContent.push(line);}
+    });
+    if(currentSection)desc.sections[currentSection]=currentContent.join('\n').trim();
+    descriptions[code]=desc;
+  });
+}
+
+function buildFilterChips(){
+  const el=document.getElementById('filterChips');
+  const slots=['all','A','B','C','D','E','PRA'];
+  const labels={'all':'All','A':'Slot A','B':'Slot B','C':'Slot C','D':'Slot D','E':'Slot E','PRA':'Practicals'};
+  el.innerHTML=slots.map(s=>`<button class="fchip${s===catFilter?' active':''}" onclick="setCatFilter('${s}')">${labels[s]}</button>`).join('');
+}
+function setCatFilter(f){catFilter=f;buildFilterChips();applyCatFilters();}
+
+function applyCatFilters(){
+  const query=document.getElementById('searchInput').value.toLowerCase().trim();
+  const all=[...courses,...labs];
+  const groups={};
+  const t=APP.transcript;
+  const pc=t?t.computed.passedCodes:null;
+
+  all.forEach(item=>{
+    const slot=item.Slot||'PRA';
+    if(catFilter!=='all'&&slot!==catFilter)return;
+    if(query){
+      const desc=descriptions[item.Code];
+      const searchable=(item.Code+' '+item.Title+' '+(item.Coordinator||'')+' '+(desc?.sections?.['Description of the course']||'')+' '+(desc?.sections?.['Description of the skill']||'')+' '+(desc?.sections?.['Description of the practical']||'')+' '+(desc?.sections?.['Objectives']||'')).toLowerCase();
+      if(!searchable.includes(query))return;
+    }
+    if(!groups[slot])groups[slot]=[];
+    groups[slot].push(item);
+  });
+
+  const order=['A','B','C','D','E','PRA'];
+  let html='';let total=0;
+  order.forEach(sl=>{
+    if(!groups[sl])return;
+    const items=groups[sl];total+=items.length;
+    const meta=SLOT_META[sl];
+    html+=`<div class="slot-section"><div class="slot-header"><div class="slot-badge sl-${sl}">${sl==='PRA'?'P':sl}</div><div><h2>${meta.label}</h2><span class="slot-info">${meta.schedule}</span></div><span class="slot-count">${items.length} course${items.length!==1?'s':''}</span></div><div class="cards-grid">`;
+
+    items.forEach(item=>{
+      const desc=descriptions[item.Code];
+      const days=item.Days.map(d=>`<span class="daychip">${formatDay(d)}</span>`).join('');
+      const tags=[];
+      if(item.Slot)tags.push(`<span class="cc-slot sl-${item.Slot}">SLOT ${item.Slot}</span>`);
+      if(item.Prerequisite)tags.push('<span class="tag tag-pre">\u25b2 Pre-req</span>');
+      if(item.Corequisite)tags.push('<span class="tag tag-co">\u25ca Co-req</span>');
+      if(pc&&pc.has(item.Code))tags.push('<span class="tag tag-passed">\u2705 Passed</span>');
+
+      // Prereq indicator for catalogue
+      let prereqBadge='';
+      if(pc&&item.Prerequisite&&item.PrerequisiteCodes){
+        const met=checkPrereqsMet(item.PrerequisiteCodes,pc);
+        prereqBadge=met?'<span class="tag tag-passed">\u2705 Prereqs met</span>':'<span class="tag tag-pre">\u274C Missing prereqs</span>';
+        tags.push(prereqBadge);
+      }
+
+      html+=`<div class="ccard card-${item.Slot||'PRA'}" id="card-${item.Code}" onclick="toggleCard('${item.Code}',event)"><div class="ccard-top"><div class="ccard-row1"><span class="cc-code">${item.Code}</span>${tags.join('')}</div><div class="cc-title">${esc(item.Title)}</div><div class="cc-coord">${esc(item.Coordinator)}</div></div><div class="ccard-meta">${days}</div><div class="ccard-expand">\u25B6 Click to view full course description</div>`;
+
+      // Detail panel
+      html+='<div class="ccard-detail">';
+      if(desc){
+        html+='<div class="detail-grid">';
+        const descText=desc.sections['Description of the course']||desc.sections['Description of the skill']||desc.sections['Description of the practical']||'';
+        if(descText)html+=`<div class="detail-section detail-full"><h4>Description</h4><p>${esc(descText).replace(/\n/g,'<br>')}</p></div>`;
+        const obj=desc.sections['Objectives']||'';
+        if(obj){const objItems=obj.split(/\n/).map(l=>l.replace(/^[•✓\-\d.]+\s*/,'').trim()).filter(Boolean);html+=`<div class="detail-section"><h4>Objectives</h4><ul>${objItems.map(o=>`<li>${esc(o)}</li>`).join('')}</ul></div>`;}
+        const pre=desc.sections['Pre-requisites']||desc.sections['Prerequisites']||'';
+        const coreq=desc.sections['Co-requisites']||desc.sections['Corequisites']||'';
+        const rec=desc.sections['Recommended']||'';
+        if(pre||coreq||rec){
+          html+='<div class="detail-section"><h4>Requirements</h4>';
+          if(pre){const pItems=pre.split(/\n/).map(l=>l.replace(/^[•✓\-]+\s*/,'').trim()).filter(Boolean);html+=`<p style="font-size:11px;font-weight:700;color:var(--warn);margin-bottom:2px;text-transform:uppercase;letter-spacing:.06em">Prerequisites</p><ul>${pItems.map(p=>`<li>${esc(p)}</li>`).join('')}</ul>`;}
+          if(coreq&&!coreq.toLowerCase().includes('none')){const cItems=coreq.split(/\n/).map(l=>l.replace(/^[•✓\-]+\s*/,'').trim()).filter(Boolean);html+=`<p style="font-size:11px;font-weight:700;color:var(--inf);margin-bottom:2px;margin-top:8px;text-transform:uppercase;letter-spacing:.06em">Co-requisites</p><ul>${cItems.map(c=>`<li>${esc(c)}</li>`).join('')}</ul>`;}
+          if(rec&&!rec.toLowerCase().includes('none')){const rItems=rec.split(/\n/).map(l=>l.replace(/^[•✓\-]+\s*/,'').trim()).filter(Boolean);html+=`<p style="font-size:11px;font-weight:700;color:var(--ok);margin-bottom:2px;margin-top:8px;text-transform:uppercase;letter-spacing:.06em">Recommended</p><ul>${rItems.map(r=>`<li>${esc(r)}</li>`).join('')}</ul>`;}
+          html+='</div>';
+        }
+        const lit=desc.sections['Literature']||desc.sections['Recommended reading']||'';
+        if(lit)html+=`<div class="detail-section"><h4>Literature</h4><div class="detail-lit">${esc(lit).replace(/\n/g,'<br>')}</div></div>`;
+        const fmt=desc.sections['Instructional format']||'';
+        if(fmt)html+=`<div class="detail-section"><h4>Instructional Format</h4><p>${esc(fmt).replace(/\n/g,'<br>')}</p></div>`;
+        const assess=desc.sections['Assessment']||'';
+        if(assess){const aItems=assess.split(/\n/).map(l=>l.replace(/^[•✓\-\d.]+\s*/,'').trim()).filter(Boolean);html+=`<div class="detail-section"><h4>Assessment</h4><ul>${aItems.map(a=>`<li>${esc(a)}</li>`).join('')}</ul></div>`;}
+        const contact=desc.sections['Contact']||'';
+        const coordinator=desc.sections['Course coordinator']||desc.sections['Coordinator']||desc.sections['Practical coordinator']||'';
+        if(coordinator||contact){html+='<div class="detail-section"><h4>Contact</h4>';if(coordinator)html+=`<p>${esc(coordinator)}</p>`;if(contact)html+=`<p style="margin-top:2px"><a href="mailto:${esc(contact.trim())}" style="color:var(--sa);font-size:12.5px">${esc(contact.trim())}</a></p>`;html+='</div>';}
+        html+='</div>';
+      }else{html+='<p style="color:var(--g4);font-size:13px;padding-top:14px;font-style:italic">No detailed description available for this course.</p>';}
+      html+=`<button class="detail-close" onclick="event.stopPropagation();closeCard('${item.Code}')">\u2190 Collapse details</button></div></div>`;
+    });
+    html+='</div></div>';
+  });
+
+  if(!total)html='<div class="no-results"><span>\uD83D\uDD0D</span><p>No courses match your search. Try a different keyword.</p></div>';
+  document.getElementById('catalogue').innerHTML=html;
+  document.getElementById('resultCount').textContent=`Showing ${total} course${total!==1?'s':''}`;
+}
+
+function toggleCard(code,event){
+  if(event&&event.target.closest('.detail-close'))return;
+  const el=document.getElementById('card-'+code);
+  if(!el)return;
+  const wasExpanded=el.classList.contains('expanded');
+  document.querySelectorAll('.ccard.expanded').forEach(c=>c.classList.remove('expanded'));
+  if(!wasExpanded){el.classList.add('expanded');setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'nearest'}),50);}
+}
+function closeCard(code){const el=document.getElementById('card-'+code);if(el)el.classList.remove('expanded');}
+
+// ═══════════════════════════════════════════════════
+// INFO SCREEN
+// ═══════════════════════════════════════════════════
+function buildInfoScreen(){
+  document.getElementById('infobd').innerHTML=`
+    <h3 style="font-size:15px;color:var(--navy);margin-bottom:10px">Prerequisite Waivers</h3>
+    <p style="font-size:13px;color:var(--g5);margin-bottom:4px;font-style:italic">Legal basis: EER Article 4.3</p>
+    <p style="font-size:13px;color:var(--g7);margin-bottom:8px">A student can only start a module if they meet the prerequisites. All 3000-level modules must have prerequisites; 2000-level modules may have them; 1000-level modules do not.</p>
+    <p style="font-size:13px;color:var(--g7);margin-bottom:8px">Prerequisites can be waived with <strong>written consent from the course coordinator</strong> of the module that requires the prerequisite (EER Art. 4.3.3).</p>
+    <ol style="font-size:13px;color:var(--g7);padding-left:20px;margin-bottom:10px">
+      <li style="margin-bottom:4px">Email the course coordinator with a short explanation of why you should receive a waiver</li>
+      <li style="margin-bottom:4px">The coordinator evaluates whether you can cope with the course content</li>
+      <li style="margin-bottom:4px">The coordinator grants the waiver by replying to your email</li>
+      <li style="margin-bottom:4px">Hand in this approval email with your course selection form</li>
+      <li>You will <strong>not</strong> be registered without the waiver, or with a waiver handed in after the deadline</li>
+    </ol>
+    <p style="font-size:13px;color:var(--g7);margin-bottom:8px"><strong>When:</strong> Waivers can be requested twice a year &mdash; November and May &mdash; during course registration.</p>
+    <p style="font-size:13px;color:var(--warn);margin-bottom:12px"><strong>Important:</strong> Waivers should only be requested as an exception.</p>
+
+    <details style="margin-bottom:16px;border:1px solid var(--g2);border-radius:var(--rs);overflow:hidden">
+      <summary style="padding:10px 14px;font-size:13px;font-weight:600;color:var(--navy);cursor:pointer;background:var(--g0)">Course-specific waiver notes</summary>
+      <div style="padding:12px 14px;font-size:12.5px;color:var(--g7);line-height:1.7">
+        <p><strong>BIO3004 Animal Behaviour</strong> (prereq: BIO2004 + BIO2005) &mdash; Students without BIO2004 General Zoology but with sufficient biology background may be able to take this course with a waiver.</p>
+        <p style="margin-top:6px"><strong>CHE3009 Crystallography</strong> (prereq: PRO1002) &mdash; Not recommended for first-year students.</p>
+        <p style="margin-top:6px"><strong>PRA2007 Physics Laboratory</strong> (prereq: PRA1003) &mdash; Waivers unlikely without equivalent experimental physics experience.</p>
+        <p style="margin-top:6px"><strong>MAT2004 Linear Algebra</strong> &mdash; Requires substantial high-school mathematics experience.</p>
+      </div>
+    </details>
+
+    <hr style="border:none;border-top:1px solid var(--g2);margin:20px 0">
+
+    <h3 style="font-size:15px;color:var(--navy);margin-bottom:10px">Co-requisite Waivers</h3>
+    <p style="font-size:13px;color:var(--g5);margin-bottom:4px;font-style:italic">Legal basis: EER Article 4.3.5\u20134.3.8</p>
+    <p style="font-size:13px;color:var(--g7);margin-bottom:8px">Co-requisites require taking two or more modules in the same period. A co-requisite can be waived with <strong>written consent from the module coordinator</strong>.</p>
+    <p style="font-size:13px;color:var(--g7);margin-bottom:12px"><strong>Automatic waiver:</strong> A co-requisite is automatically waived if you have already passed the co-requisite module in a previous period.</p>
+
+    <details style="margin-bottom:16px;border:1px solid var(--g2);border-radius:var(--rs);overflow:hidden">
+      <summary style="padding:10px 14px;font-size:13px;font-weight:600;color:var(--navy);cursor:pointer;background:var(--g0)">P5 2025\u20132026 co-requisite pairs</summary>
+      <div style="padding:12px 14px;font-size:12.5px;color:var(--g7);line-height:1.7">
+        <p><strong>CHE2010</strong> General Chemistry \u2194 <strong>PRA2034</strong> General Chemistry Laboratory</p>
+        <p style="margin-top:4px"><strong>BIO3001</strong> Molecular Biology \u2194 <strong>PRA3003</strong> Molecular Biology Skills</p>
+        <p style="margin-top:4px"><strong>BIO3003</strong> Medical Microbiology \u2194 <strong>PRA3010</strong> Microbiology Skills</p>
+      </div>
+    </details>
+
+    <hr style="border:none;border-top:1px solid var(--g2);margin:20px 0">
+
+    <h3 style="font-size:15px;color:var(--navy);margin-bottom:10px">Registration</h3>
+    <p style="font-size:13px;color:var(--g5);margin-bottom:4px;font-style:italic">Legal basis: EER Article 4.4, R&amp;R Article 7</p>
+    <ul style="font-size:13px;color:var(--g7);padding-left:20px;margin-bottom:12px;line-height:1.7">
+      <li>You can only participate after registering by the deadline via the registration form</li>
+      <li>If you miss the deadline, registration cannot be guaranteed</li>
+      <li>Upon registration you are automatically registered for the first exam and resit</li>
+    </ul>
+
+    <hr style="border:none;border-top:1px solid var(--g2);margin:20px 0">
+
+    <h3 style="font-size:15px;color:var(--navy);margin-bottom:10px">Switches &amp; Withdrawals</h3>
+    <p style="font-size:13px;color:var(--g5);margin-bottom:4px;font-style:italic">Legal basis: R&amp;R Article 8</p>
+    <p style="font-size:13px;color:var(--g7);margin-bottom:8px">Complete the online <a href="${LINKS.switchForm}" target="_blank" style="color:var(--inf);font-weight:500">withdraw/switch form</a>. Must be supported by your academic advisor and approved by Dr. Chris Pawley.</p>
+    <div class="dl-grid" style="margin-bottom:16px">
+      <div class="dl-box"><div class="dl-lbl">Switch deadline \u2014 P${DEADLINES.period}</div><div class="dl-val">${DEADLINES.switch}</div></div>
+      <div class="dl-box"><div class="dl-lbl">Withdrawal deadline \u2014 P${DEADLINES.period}</div><div class="dl-val">${DEADLINES.withdrawal}</div></div>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--g2);margin:20px 0">
+
+    <h3 style="font-size:15px;color:var(--navy);margin-bottom:10px">Exemptions</h3>
+    <p style="font-size:13px;color:var(--g5);margin-bottom:4px;font-style:italic">Legal basis: R&amp;R Article 12, EER Article 5.13</p>
+    <ul style="font-size:13px;color:var(--g7);padding-left:20px;margin-bottom:12px;line-height:1.7">
+      <li>Only possible for mandatory modules</li>
+      <li>Submit a motivated request to the Board of Examiners no later than 3 weeks before the module starts</li>
+      <li>BTR/Capstone is excluded from exemption</li>
+    </ul>
+
+    <hr style="border:none;border-top:1px solid var(--g2);margin:20px 0">
+
+    <h3 style="font-size:15px;color:var(--navy);margin-bottom:10px">Key Contacts &amp; Forms</h3>
+    <div style="overflow-x:auto">
+      <table class="stbl" style="font-size:12.5px">
+        <thead><tr><th>What</th><th>Who / Where</th></tr></thead>
+        <tbody>
+          <tr><td>Prerequisite waiver</td><td>Email the course coordinator directly</td></tr>
+          <tr><td>Co-requisite waiver</td><td>Email the module coordinator directly</td></tr>
+          <tr><td>Exemption</td><td>Motivated request to Board of Examiners</td></tr>
+          <tr><td>Switch / Withdrawal</td><td>Online form, approved by Dr. Chris Pawley</td></tr>
+          <tr><td>ESD contact</td><td><a href="${LINKS.esd}" style="color:var(--inf);font-weight:500">msp-educationsupport@maastrichtuniversity.nl</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="links-row" style="margin-top:16px">
+      <a href="${LINKS.waivers}" target="_blank">\u{1F4CB} Waivers</a>
+      <a href="${LINKS.switchForm}" target="_blank">\u{1F4DD} Switch/withdraw form</a>
+      <a href="${LINKS.transcript}" target="_blank">\u{1F4C4} Transcript request</a>
+      <a href="${LINKS.additionalModule}" target="_blank">\u{1F4E6} Additional module form</a>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════
+// EVENT LISTENERS & INIT
+// ═══════════════════════════════════════════════════
+function rebuildLabs(){const c1=getCourse1(),c2=getCourse2();const u=new Set([...(c1?.Days||[]),...(c2?.Days||[])]);buildLabs(u);showPanel(getLab(),'pil',true);}
+function resetPlan(){PLANS[act]=emptyPlan();switchPlan(act);updateTabIcons();}
+
+// Transcript upload
+document.getElementById('pdff').addEventListener('change',async e=>{
+  const f=e.target.files[0];if(!f)return;
+  try{
+    APP.transcript=await parseTranscriptPDF(f);
+    buildDashboard();
+    // Refresh planner if already loaded
+    if(courses.length)switchPlan(act);
+    if(catBuilt)applyCatFilters();
+  }catch(err){
+    let msg='We couldn\u2019t read this transcript.';
+    if(err.message==='SCAN')msg='This looks like a scanned document. Please download a digital copy from the Student Portal.';
+    else if(err.message==='NOT_MSP')msg='This doesn\u2019t appear to be an MSP transcript.';
+    alert(msg+' You can still use the Course Planner without transcript data.');
+    console.error('Transcript parse error:',err);
+  }
+  e.target.value='';
+});
+
+// Drag and drop
+const dz=document.getElementById('dropZone');
+if(dz){
+  dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag-over');});
+  dz.addEventListener('dragleave',()=>dz.classList.remove('drag-over'));
+  dz.addEventListener('drop',e=>{
+    e.preventDefault();dz.classList.remove('drag-over');
+    const f=e.dataTransfer.files[0];
+    if(f&&f.type==='application/pdf'){
+      const dt=new DataTransfer();dt.items.add(f);
+      document.getElementById('pdff').files=dt.files;
+      document.getElementById('pdff').dispatchEvent(new Event('change'));
+    }
+  });
+}
+
+// CSV upload
+document.getElementById('csvf').addEventListener('change',e=>{
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();r.onload=ev=>load(ev.target.result);r.readAsText(f);e.target.value='';
+});
+
+// Course selection listeners
+document.getElementById('c1').addEventListener('change',()=>{save();const c1=getCourse1();showPanel(c1,'pi1',false);buildCourse2(c1?.Slot||null);if(!getCourse2())document.getElementById('pi2').classList.remove('show');rebuildLabs();checkPrereqs();buildSummary();buildNextSteps();buildTT();buildAdvicePanel();});
+document.getElementById('c2').addEventListener('change',()=>{save();showPanel(getCourse2(),'pi2',false);rebuildLabs();checkPrereqs();buildSummary();buildNextSteps();buildTT();buildAdvicePanel();});
+document.getElementById('lab').addEventListener('change',()=>{save();showPanel(getLab(),'pil',true);checkPrereqs();buildSummary();buildNextSteps();buildTT();buildAdvicePanel();});
+
+// Init
+window.addEventListener('DOMContentLoaded',async()=>{
+  // Configure pdf.js worker
+  if(typeof pdfjsLib!=='undefined'){
+    pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+
+  // Load CSV + descriptions in parallel
+  try{
+    const [csvRes,mdRes]=await Promise.all([
+      fetch(AUTO).then(r=>{if(!r.ok)throw new Error('CSV');return r.text();}),
+      fetch(DESC_FILE).then(r=>{if(!r.ok)return'';return r.text();}).catch(()=>'')
+    ]);
+    load(csvRes);
+    if(mdRes){parseMD(mdRes);catBuilt=true;}
+    buildFilterChips();
+  }catch(err){
+    console.error('Load error:',err);
+    showScreen('err');
+  }
+});
+
+// Hash routing
+window.addEventListener('hashchange',()=>{
+  const h=window.location.hash.replace('#','');
+  if(['dashboard','planner','catalogue','info'].includes(h)&&h!==activeView)switchView(h);
+});
+</script>
+</body>
+</html>

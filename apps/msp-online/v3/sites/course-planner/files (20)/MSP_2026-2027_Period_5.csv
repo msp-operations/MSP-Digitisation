@@ -1,0 +1,55 @@
+Type,Row,TimeSlot,Code,Title,Coordinator,CoReq,PreReq,Day,ModuleGroup,Notes
+METADATA,,,,Period,MSP Period 5,,,,,Maastricht Science Programme
+METADATA,,,,Academic Year,2026-2027,,,,,
+METADATA,,,,Semester,Spring Semester,,,,,
+METADATA,,,,Start Date,29 March 2027,,,,,
+METADATA,,,,End Date,21 May 2027,,,,,
+METADATA,,,,Holiday,Good Friday,,,,,26 March 2027
+METADATA,,,,Holiday,Easter Monday,,,,,29 March 2027
+METADATA,,,,Holiday,Kings Day,,,,,27 April 2027
+METADATA,,,,Holiday,Liberation Day,,,,,05 May 2027
+METADATA,,,,Holiday,Ascension Day,,,,,6-7 May 2027
+METADATA,,,,Holiday,Pentecost,,,,,16-17 May 2027
+LEGEND,,,◊,has co-requisite,,,,,,
+LEGEND,,,▲,has pre-requisite,,,,,,
+TIMESLOT,1,AE,,Row 1,,,,,,Monday am - Wednesday pm
+TIMESLOT,2,BF,,Row 2,,,,,,Monday pm - Thursday am
+TIMESLOT,3,CF,,Row 3,,,,,,Tuesday am - Thursday pm
+TIMESLOT,4,DG,,Row 4,,,,,,Tuesday pm - Friday am
+TIMESLOT,5,EG,,Row 5,,,,,,Wednesday am - Friday pm
+COURSE,1,AE,CHE2010,General Chemistry,Chris Bahn,◊,▲,,,
+COURSE,1,AE,BIO3001,Molecular Biology,Kathia Jimenez Monroy,◊,▲,,,
+COURSE,1,AE,PHY2002,Thermodynamics and Statistical Mechanics,Slava Vieru,,▲,,,
+COURSE,1,AE,INT1005,Commercializing Science & Technology,Jermain Kaminski,,,,,
+COURSE,2,BF,BIO3004,Animal Behaviour,Linnea van Griethuijsen,,▲,,,
+COURSE,2,BF,PHY2007,Optics,Sebastian Steinlechner,,,,,
+COURSE,2,BF,INT2008,Molecular Toxicology,Misha Vrolijk,,,,,
+COURSE,2,BF,INT3011,Landscape Archaeology,Kyla Jazwa,,▲,,,Note: coordinator spelled 'Kyla Jazwa' in source; likely 'Kyle Jazwa' (consistent with P1/P4)
+COURSE,2,BF,MAT2004,Linear Algebra,Martin Frohn,,,,,
+COURSE,3,CF,BIO2002,Ecology,John Sloggett,,,,,
+COURSE,3,CF,BIO2006,Biotechnology,David Cortens,,▲,,,
+COURSE,3,CF,CHE3012,Nanomaterials and Catalysis,Annelies van der Bok,,▲,,,
+COURSE,3,CF,PHY3006,General Relativity,Gideon Koekoek,,▲,,,
+COURSE,3,CF,MAT2005,Probability and Statistics,Otti d'Huys,,▲,,,
+COURSE,4,DG,BIO3003,Medical Microbiology,Frank Stassen,◊,▲,,,
+COURSE,4,DG,MAT1007,Mathematical Tools for Scientists,Mariët Hofstee,,,,,
+COURSE,4,DG,INT2014,Imaging Engineering,Gavin Hazell,,,,,
+COURSE,4,DG,PHY2005,Fundamentals of Quantum Mechanics,Keri Vos,,▲,,,
+COURSE,5,EG,NEU1003,Computational Neuroscience,Renaud Jolivet,,,,,
+COURSE,5,EG,PHY3005,Electrodynamics,Stefan Danilishin,,▲,,,
+COURSE,5,EG,CHE2007,Solid State Chemistry,Giuditta Perversi,,,,,
+COURSE,5,EG,INT2009,Biophysics,Anjusha Mathew,,,,,
+COURSE,5,EG,PHY2008,Solar System Astronomy,Chad Ellington,,,,,
+PRACTICAL,,,PRA1003,Basic Physics Laboratory,Suzan du Pree,,,Tue/Wed,,
+PRACTICAL,,,PRA1005,Data Collection Techniques in Neuroscience,Mark Roberts,,,Wed/Thu,,
+PRACTICAL,,,PRA2007,Physics Laboratory,Chris Pawley & Maarten van Veghel,,▲,Mon/Fri,,
+PRACTICAL,,,PRA2008,Physical Chemistry,Slava Vieru,,▲,Fri,,
+PRACTICAL,,,PRA2009,Field Skills in Biology,Phil Klahs,,,Tue/Wed,,
+PRACTICAL,,,PRA2020,Practical Mass Spectrometry,Anjusha Mathew,,▲,Thu,,
+PRACTICAL,,,PRA2023,Astronomical Observing Techniques,Chad Ellington,,,Mon,,
+PRACTICAL,,,PRA2034,General Chemistry Laboratory,Chris Bahn,◊,▲,Tue/Fri,,
+PRACTICAL,,,PRA3003,Molecular Biology,Kathia Jimenez Monroy,◊,▲,Tue/Fri,,
+PRACTICAL,,,PRA3010,Microbiology,Frank Stassen,◊,▲,Wed/Thu,,
+PRACTICAL,,,PRA3011,The Limburg Landscape,Phil Klahs,,▲,Fri,,
+PRACTICAL,,,PRA3025,Science Communication: Curating Science Exhibits,May Lee & Kyle Jazwa,,▲,Thu,,
+NOTE,,,,Practical selection rule,,,,,,Practical cannot overlap with chosen courses (cannot be in the same column as your chosen courses).

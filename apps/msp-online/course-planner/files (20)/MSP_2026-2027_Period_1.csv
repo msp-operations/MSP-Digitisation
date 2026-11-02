@@ -1,0 +1,56 @@
+Type,Row,TimeSlot,Code,Title,Coordinator,CoReq,PreReq,Day,ModuleGroup,Notes
+METADATA,,,,Period,MSP Period 1,,,,,Maastricht Science Programme
+METADATA,,,,Academic Year,2026-2027,,,,,
+METADATA,,,,Semester,Fall Semester,,,,,
+METADATA,,,,Start Date,31 August 2026,,,,,
+METADATA,,,,End Date,16 October 2026,,,,,
+LEGEND,,,◊,has co-requisite,,,,,,
+LEGEND,,,▲,has pre-requisite,,,,,,
+LEGEND,,,§,Module group,,,,,,All three modules must be taken simultaneously
+LEGEND,,,§,Module group access,,,,,,Only pre-registered and approved students
+LEGEND,,,**,Location marker,,,,,,Takes place at Campus Venlo
+TIMESLOT,1,AE,,Row 1,,,,,,Monday am - Wednesday pm
+TIMESLOT,2,BF,,Row 2,,,,,,Monday pm - Thursday am
+TIMESLOT,3,CF,,Row 3,,,,,,Tuesday am - Thursday pm
+TIMESLOT,4,DG,,Row 4,,,,,,Tuesday pm - Friday am
+TIMESLOT,5,EG,,Row 5,,,,,,Wednesday am - Friday pm
+COURSE,1,AE,BIO2001,Cell Biology,Aart van Apeldoorn,,,,,
+COURSE,1,AE,CHE1101,CORE: Introduction to Chemistry,Chris Bahn,◊,,,,
+COURSE,1,AE,CHE2004,Spectroscopy,Annelies van der Bok,,▲,,,
+COURSE,1,AE,INT3014,Conservation Palaeobiology,Frank Wesselingh & Jesse Hennekam,,▲,,,
+COURSE,1,AE,PHY2009,Stellar Astronomy,Chad Ellington,,,,,
+COURSE,1,AE,INT3201,Life and Landscape,"Jesse Hennekam, Kyle Jazwa, Phil Klahs, George Mescher",◊,▲,,§,Mediterranean Island Studies - pre-registered/approved students only; all three modules taken simultaneously
+COURSE,1,AE,INT3202,The Mediterranean Region,"Jesse Hennekam, Kyle Jazwa, Phil Klahs, George Mescher",◊,▲,,§,Mediterranean Island Studies - pre-registered/approved students only; all three modules taken simultaneously
+COURSE,1,AE,PRA3201,Fieldwork and Data Collection,"Jesse Hennekam, Kyle Jazwa, Phil Klahs, George Mescher",◊,▲,,§,Mediterranean Island Studies - pre-registered/approved students only; all three modules taken simultaneously
+COURSE,2,BF,CHE3010,Inorganic Chemistry,Giuditta Perversi,◊,▲,,,
+COURSE,2,BF,INT3001,The Philosophy of Technology,Massimiliano Simons,,▲,,,
+COURSE,2,BF,NEU2003,Neuroethology,Linnea van Griethuijsen,,▲,,,
+COURSE,2,BF,MAT2007,Introduction to Programming,Panos Christakoglou,,,,,
+COURSE,3,CF,BIO2007,Genetics,Leon de Windt,◊,▲,,,
+COURSE,3,CF,CHE2009,Fundamentals of Organic Chemistry,Hanne Diliën,◊,,,,
+COURSE,3,CF,PHY1101,CORE: Introduction to Physics,Lorenzo Reverberi,,,,,
+COURSE,3,CF,PHY3001,Quantum Mechanics,Keri Vos,,▲,,,
+COURSE,4,DG,INT3002,Advanced Microscopy: Theory and Applications,Dimitris Kapsokalyvas,,,,,
+COURSE,4,DG,NEU2005,Systems Neuroscience,Daan van Beek,,,,,
+COURSE,4,DG,PHY3009,Hamiltonian and Lagrangian Mechanics,Gideon Koekoek,,▲,,,
+COURSE,4,DG,PHY2012,Structure of Matter,Alex Amato,,▲,,,
+COURSE,5,EG,BIO2004,General Zoology,John Sloggett,,,,,
+COURSE,5,EG,CHE3006,Quantum Chemistry,Slava Vieru,◊,▲,,,
+COURSE,5,EG,INT2013,Fundamentals of Science Education,May Lee,,▲,,,
+COURSE,5,EG,PHY2006,Electronics,Bart van Grinsven,◊,,,,
+PRACTICAL,,,PRA1101,Introduction to Scientific Research I,Chris Pawley & Erik Steen Redeker,◊,▲,Fri,,
+PRACTICAL,,,PRA2003,Programming Skill,Panos Christakoglou,◊,,Wed,,
+PRACTICAL,,,PRA2006,Electronics Lab,Bart van Grinsven,◊,,Tue/Thu,,
+PRACTICAL,,,PRA2014,Genetics,David Cortens & Servé Olieslagers,◊,▲,Mon/Wed/Fri,,
+PRACTICAL,,,PRA2015,Advanced Academic Skills,Kyle Jazwa,,,Mon/Thu,,
+PRACTICAL,,,PRA2019,Natural Science Illustration,Phil Klahs,,,Thu,,
+PRACTICAL,,,PRA2026,R Programming Language,Phil Klahs,,,Mon/Wed,,
+PRACTICAL,,,PRA2027,Fundamentals of Science Communication,May Lee,,▲,Tue/Thu,,
+PRACTICAL,,,PRA2030,Introduction to Mycology,Alexander Umanets,,,Tue,,** takes place at Campus Venlo
+PRACTICAL,,,PRA2032,Fundamentals of Organic Chemistry Laboratory,Hanne Diliën,◊,,Mon/Fri,,
+PRACTICAL,,,PRA3018,Molecular Modelling,Slava Vieru,◊,,Tue,,
+PRACTICAL,,,PRA3021,Topics in Scientific Computing,Marcin Pietrasik,,▲,Mon,,
+PRACTICAL,,,PRA3028,Inorganic Synthesis,Giuditta Perversi,◊,▲,Tue/Wed,,
+PRACTICAL,,,PRA3030,Finite Element Method,Harm Askes & Gerco Onderwater,,,Wed,,
+PRACTICAL,,,PRA3503,Microbiome Analysis,Alexander Umanets,,▲,Thu,,** takes place at Campus Venlo
+NOTE,,,,Practical selection rule,,,,,,Practical cannot overlap with chosen courses (cannot be in the same column as your chosen courses). Grey indicates the practical is unavailable if you have chosen a course in that column.

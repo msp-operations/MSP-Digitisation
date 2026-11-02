@@ -1,0 +1,53 @@
+Type,Row,TimeSlot,Code,Title,Coordinator,CoReq,PreReq,Day,ModuleGroup,Notes
+METADATA,,,,Period,MSP Period 4,,,,,Maastricht Science Programme
+METADATA,,,,Academic Year,2026-2027,,,,,
+METADATA,,,,Semester,Spring Semester,,,,,
+METADATA,,,,Start Date,25 January 2027,,,,,
+METADATA,,,,End Date,26 March 2027,,,,,
+METADATA,,,,Break,Carnival Break,,,,,8-12 February 2027
+LEGEND,,,◊,has co-requisite,,,,,,
+LEGEND,,,▲,has pre-requisite,,,,,,
+LEGEND,,,*,Cohort/timing marker,,,,,,CHE2009: Monday AM + Thursday AM for UCM students
+TIMESLOT,1,AE,,Row 1,,,,,,Monday am - Wednesday pm
+TIMESLOT,2,BF,,Row 2,,,,,,Monday pm - Thursday am
+TIMESLOT,3,CF,,Row 3,,,,,,Tuesday am - Thursday pm
+TIMESLOT,4,DG,,Row 4,,,,,,Tuesday pm - Friday am
+TIMESLOT,5,EG,,Row 5,,,,,,Wednesday am - Friday pm
+COURSE,1,AE,BIO2003,General Botany,Phil Klahs,◊,,,,
+COURSE,1,AE,BIO3010,"Genomics, Proteomics and Other Omics Technologies",Birol Cabukusta,,,,,
+COURSE,1,AE,CHE2009,Fundamentals of Organic Chemistry,Hanne Diliën,◊,,,,* CHE2009: Monday AM + Thursday AM for UCM students
+COURSE,1,AE,CHE3009,Crystallography,Giuditta Perversi,,▲,,,
+COURSE,1,AE,PHY3010,Lasers and Applications,Anna Green,,▲,,,
+COURSE,2,BF,BIO2005,Evolutionary Biology,Linnea van Griethuijsen,,,,,
+COURSE,2,BF,BIO2010,Human Anatomy & Physiology,Aaron Isaacs,,,,,
+COURSE,2,BF,MAT2006,Calculus,Niloufar Yousefimanesh,,,,,
+COURSE,2,BF,MAT2008,Differential Equations,Mariët Hofstee,,▲,,,
+COURSE,2,BF,NEU3002,Brain-Inspired Engineering,Renaud Jolivet,,▲,,,
+COURSE,3,CF,BIO2007,Genetics,Leon de Windt,◊,▲,,,
+COURSE,3,CF,INT2010,Principles of Mass Spectrometry,Ian Anthony,,,,,
+COURSE,3,CF,NEU1001,Introduction to Neuroscience,Laurence de Nijs,,,,,
+COURSE,3,CF,INT2012,Archaeological Science,Kyle Jazwa,,,,,
+COURSE,3,CF,PHY2004,Electricity and Magnetism,Stefan Danilishin,,▲,,,
+COURSE,4,DG,BIO2001,Cell Biology,Martijn van Griensven,,,,,
+COURSE,4,DG,INT3003,Biomaterials,C. Domingues Mota/P. Wieringa,,▲,,,
+COURSE,4,DG,PHY1003,Mechanics,Lorenzo Reverberi,,▲,,,
+COURSE,4,DG,PHY2011,Special Relativity,Jacco de Vries,,▲,,,
+COURSE,5,EG,INT1003,Introduction to Biomedical Engineering,Daan van Beek,,,,,
+COURSE,5,EG,INT1007,Introduction to Earth Sciences,Jesse Hennekam,,,,,
+COURSE,5,EG,INT3008,Regenerative Medicine,David Kilian,,▲,,,
+COURSE,5,EG,CHE3011,Instrumental Analysis,Annelies van der Bok,,▲,,,
+PRACTICAL,,,PRA1008,Basics of Palaeontology,Jesse Hennekam,,,Mon,,
+PRACTICAL,,,PRA1009,Neuro Anatomy Skills,Daan van Beek,◊,,Tue/Thu,,
+PRACTICAL,,,PRA2005,Advanced Molecular Laboratory Skills,Erik Steen Redeker,,▲,Mon/Wed,,
+PRACTICAL,,,PRA2011,Exploring the World of Plants,Phil Klahs,◊,,Tue/Thu,,
+PRACTICAL,,,PRA2014,Genetics,S. Olieslagers / D. Cortens,◊,▲,Mon/Wed/Fri,,
+PRACTICAL,,,PRA2028,Mathematics and Art,Mariet Hofstee,,,Wed,,
+PRACTICAL,,,PRA2029,3D Visualizations and Transformations,May Lee,,,Tue,,
+PRACTICAL,,,PRA2031,Python Programming Language,Ruth Grosseholz,,,Wed/Thu,,
+PRACTICAL,,,PRA2032,Fundamentals of Organic Chemistry Laboratory,Hanne Dilliën,◊,,Tue/Thu/Fri,,Note: coordinator spelled 'Dilliën' (double l) in source; elsewhere 'Diliën'
+PRACTICAL,,,PRA3012,Advanced Electronics,Bart van Grinsven,,▲,Mon/Wed,,
+PRACTICAL,,,PRA3014,Spectroscopic Methods,Annelies van der Bok,,▲,Mon/Tue,,
+PRACTICAL,,,PRA3017,Applied Cell Biology,Silvia Bolognin,,▲,Tue/Thu,,
+PRACTICAL,,,PRA3024,Analysis of Big Data in Physics,Jacco de Vries & Maarten v. Veghel,,▲,Wed,,
+PRACTICAL,,,PRA3504,The Academic Life Cycle,Kyle Jazwa,,▲,Mon,,
+NOTE,,,,Practical selection rule,,,,,,Practical cannot overlap with chosen courses (cannot be in the same column as your chosen courses).

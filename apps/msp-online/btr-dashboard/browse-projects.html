@@ -1,0 +1,297 @@
+<!--
+  ============================================================================
+  browse-projects.html — STUDENT-FACING PROJECT CATALOG
+  ============================================================================
+  This page shows every BTR project students can browse. The actual project
+  data lives in `projects-data.js` — to add or edit a project you only edit
+  that file, NOT this one. See README.md in the repo for the full guide.
+
+  HOW THIS PAGE IS PUT TOGETHER:
+    1. the shared MSP sidebar on the left: nav.js builds it from the one
+       site navigation (assets/msp-ui/msp-shell.js does the rendering)
+    2. <section class="msp-hero"> — page title
+    3. <div class="disclaimer"> — yellow warning that the catalog is not
+       exhaustive and students should still email faculty directly
+    4. <div class="layout"> — splits into:
+         <aside class="filters"> — white filter card with search + chips
+         <div id="grid">         — grid of project cards
+    5. <div class="modal"> — popup window that opens when you click a card
+    6. <script src="projects-data.js"> — loads the project list
+    7. <script> at the bottom — builds filters, renders cards, handles modal
+
+  Only edit this file if you want to change the layout / styling.
+  ============================================================================
+-->
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Browse BTR Projects — Maastricht Science Programme</title>
+    
+
+<meta name="description" content="Browse Bachelor Thesis Research projects offered by Maastricht Science Programme supervisors and partner institutions. Filter by discipline, type, and topic.">
+<link rel="icon" type="image/png" href="msp-logo.png">
+<link rel="apple-touch-icon" href="msp-logo.png">
+<link rel="stylesheet" href="assets/msp-ui/msp-ui.css">
+<link rel="stylesheet" href="styles.css">
+<style>
+  /* Page block for the project browser (tokens come from styles.css / the kit) */
+  .page-browse-projects { --accent: var(--msp-orange); --ink: var(--msp-g9); --muted: var(--msp-g5); --line: var(--msp-g2); }
+
+  .disclaimer { margin: 0 0 20px; }
+  .disclaimer-inner { background: var(--msp-warn-bg); border: 1px solid var(--msp-warn-bd); border-left: 4px solid #D99B00; border-radius: var(--msp-rs); padding: 14px 18px; font-size: 13px; color: var(--msp-warn); display: flex; gap: 12px; align-items: flex-start; line-height: 1.55; }
+  .disclaimer-inner svg { flex-shrink: 0; width: 20px; height: 20px; color: #D99B00; margin-top: 1px; }
+  .disclaimer-inner strong { color: #78350F; }
+
+  /* two columns: filter card + results */
+  .layout { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 24px; align-items: start; }
+  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; gap: 20px; } }
+
+  aside.filters { position: sticky; top: 24px; background: #fff; border: 1px solid var(--line); border-radius: var(--msp-r); box-shadow: var(--msp-sh); padding: 18px 18px 16px; font-size: 13px; }
+  @media (max-width: 900px) { aside.filters { position: static; } }
+  .filter-group { margin-bottom: 20px; }
+  .filter-group h3 { font-family: var(--msp-font); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--msp-g4); margin: 0 0 10px; }
+  .filters .msp-search .msp-input { box-shadow: none; border-radius: var(--msp-rs); font-size: 13px; padding: 9px 12px 9px 36px; }
+  .filters .msp-search::before { left: 12px; }
+  .filter-group label.msp-chip { position: relative; padding: 5px 12px; font-size: 12px; }
+  .filter-group label.msp-chip input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; pointer-events: none; }
+  .clear-btn { width: 100%; justify-content: center; }
+
+  .results-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 12px; }
+  .results-count { font-family: var(--msp-font-display); font-size: 18px; color: var(--navy); font-weight: 700; letter-spacing: -.01em; }
+  .results-count em { font-style: normal; color: var(--accent); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+  .card { border: 1px solid var(--line); border-radius: var(--msp-r); background: #fff; box-shadow: var(--msp-sh); padding: 18px 20px; cursor: pointer; transition: all .18s; display: flex; flex-direction: column; gap: 8px; text-align: left; font: inherit; color: inherit; }
+  .card:hover { border-color: var(--msp-g3); transform: translateY(-2px); box-shadow: var(--msp-sh-md); }
+  .card:focus-visible { outline: 2px solid var(--msp-sky); outline-offset: 2px; }
+  .card h3 { font-family: var(--msp-font-display); font-size: 15.5px; color: var(--navy); font-weight: 700; margin: 0; line-height: 1.3; letter-spacing: -.01em; }
+  .card .sup { font-size: 12.5px; color: var(--muted); font-weight: 500; }
+  .card .desc { font-size: 13px; color: var(--msp-g7); margin: 0; line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .card .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: auto; padding-top: 6px; }
+  .tag { display: inline-flex; align-items: center; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; letter-spacing: .02em; background: var(--msp-a-bg); color: var(--msp-a); }
+  .tag.type { background: var(--msp-warn-bg); color: var(--msp-warn); }
+  .tag.loc { background: var(--msp-g1); color: var(--msp-g5); font-weight: 500; }
+
+  .empty { text-align: center; padding: 48px 20px; color: var(--muted); font-size: 13.5px; background: #fff; border: 1px dashed var(--line); border-radius: var(--msp-r); }
+  .empty strong { display: block; color: var(--navy); font-family: var(--msp-font-display); font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+
+  /* modal: above the sidebar and the drawer toggle */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(1,27,60,.55); backdrop-filter: blur(3px); z-index: var(--msp-z-modal); opacity: 0; pointer-events: none; transition: opacity .2s; }
+  .modal-overlay.active { opacity: 1; pointer-events: auto; }
+  .modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -48%); width: min(720px, calc(100vw - 32px)); max-height: 86vh; background: #fff; border-radius: var(--msp-rl); z-index: calc(var(--msp-z-modal) + 1); opacity: 0; pointer-events: none; transition: all .2s; display: flex; flex-direction: column; overflow: hidden; box-shadow: var(--msp-sh-lg), 0 30px 80px -20px rgba(1,27,60,.5); }
+  .modal.active { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%); }
+  .modal-head { padding: 22px 26px 16px; border-bottom: 1px solid var(--msp-g1); display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+  .modal-head h2 { font-family: var(--msp-font-display); font-size: 20px; font-weight: 700; color: var(--navy); margin: 0 0 4px; letter-spacing: -.01em; line-height: 1.25; }
+  .modal-head .sup { font-size: 13px; color: var(--muted); }
+  .modal-close { background: none; border: 0; font-size: 26px; color: var(--muted); cursor: pointer; line-height: 1; padding: 0 4px; font-family: inherit; }
+  .modal-close:hover { color: var(--navy); }
+  .modal-body { padding: 20px 26px 26px; overflow-y: auto; }
+  .modal-body .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 16px; }
+  .modal-body h4 { font-family: var(--msp-font); font-size: 10px; text-transform: uppercase; letter-spacing: .1em; font-weight: 700; color: var(--msp-g4); margin: 16px 0 6px; }
+  .modal-body p { margin: 0 0 10px; font-size: 13.5px; color: var(--msp-g7); line-height: 1.6; }
+  .modal-body ul { margin: 0 0 10px; padding-left: 20px; font-size: 13.5px; color: var(--msp-g7); list-style: disc; }
+  .modal-body li { margin-bottom: 4px; }
+  .modal-body .contact-row { display: flex; flex-direction: column; gap: 6px; background: var(--msp-g0); border: 1px solid var(--line); border-radius: var(--msp-rs); padding: 12px 14px; font-size: 13px; margin-top: 16px; }
+  .modal-body .contact-row strong { color: var(--navy); font-weight: 600; }
+  .modal-body .contact-row a { color: var(--navy); text-decoration: none; }
+  .modal-body .contact-row a:hover { text-decoration: underline; }
+
+  @media (max-width: 640px) {
+    .modal-head, .modal-body { padding-left: 18px; padding-right: 18px; }
+  }
+</style>
+</head>
+<body class="page-browse-projects">
+
+<main class="msp-main wide">
+
+  <section class="msp-hero btr-hero">
+    <h1>Find your bachelor thesis research.</h1>
+    <p>Projects offered by MSP supervisors and partner institutions. Filter by discipline, type of work and topic.</p>
+  </section>
+
+  <!-- DISCLAIMER: required by Panos — make clear the catalog is NOT exhaustive -->
+  <div class="disclaimer">
+    <div class="disclaimer-inner">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v5"/><path d="M12 16h.01"/></svg>
+      <div><strong>Important:</strong> This catalog only contains projects that supervisors have voluntarily submitted. It is <strong>not</strong> the full set of opportunities. You are still expected to email faculty independently with your own ideas and to explore other research groups within and outside Maastricht University.</div>
+    </div>
+  </div>
+
+  <!--
+    MAIN LAYOUT: 2 columns
+      - Left column (aside): filter card (search, discipline chips, type chips)
+      - Right column: results count + grid of project cards
+  -->
+  <div class="layout">
+    <aside class="filters">
+      <div class="filter-group">
+        <h3>Search</h3>
+        <div class="msp-search"><input id="search" class="msp-input" type="text" placeholder="Title, supervisor, keyword…"></div>
+      </div>
+      <div class="filter-group">
+        <h3>Discipline</h3>
+        <div id="disc-filters" class="msp-chips"></div>
+      </div>
+      <div class="filter-group">
+        <h3>Project type</h3>
+        <div id="type-filters" class="msp-chips"></div>
+      </div>
+      <button class="msp-btn msp-btn-gh msp-btn-sm clear-btn" id="clear" type="button">Clear all filters</button>
+    </aside>
+
+    <div>
+      <div class="results-header">
+        <div class="results-count"><em id="count">0</em> projects</div>
+      </div>
+      <div class="grid" id="grid"></div>
+      <div class="empty" id="empty" style="display:none">
+        <strong>No projects match your filters</strong>
+        Try removing a filter or clearing the search.
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer class="msp-footer">
+  <p>For any questions, contact <a href="mailto:msp-btr@maastrichtuniversity.nl">msp-btr@maastrichtuniversity.nl</a></p>
+  <p>© Maastricht Science Programme</p>
+</footer>
+
+<div class="modal-overlay" id="overlay" onclick="closeModal()"></div>
+<div class="modal" id="modal" role="dialog" aria-modal="true">
+  <div class="modal-head">
+    <div>
+      <h2 id="m-title"></h2>
+      <div class="sup" id="m-sup"></div>
+    </div>
+    <button class="modal-close" onclick="closeModal()" aria-label="Close">×</button>
+  </div>
+  <div class="modal-body" id="m-body"></div>
+</div>
+
+<!--
+  Loads the project list from projects-data.js. To add a new project,
+  edit that file and follow the instructions in README.md.
+-->
+<script src="projects-data.js"></script>
+<script>
+  // ----- ALLOWED FILTER VALUES ---------------------------------------------
+  // These two arrays control which chips appear in the filter card.
+  // If you ever add a new discipline / type, also add it here AND update
+  // every relevant entry in projects-data.js. They must match exactly.
+  const DISCIPLINES = ["Bioinformatics","Biomedical Sciences","Biotechnology","Chemistry","Computer Science","Ecology & Fieldwork","Materials Science","Neuroscience","Physics","Sustainability","Other"];
+  const TYPES = ["Lab","Data Analysis","Simulation","Modelling"];
+  const projects = window.BTR_PROJECTS || [];
+
+  const state = { search:"", disciplines:new Set(), types:new Set() };
+
+  // Each filter is a hidden checkbox inside a chip-styled label; the kit
+  // colours the chip while the checkbox is checked (.msp-chip:has(input:checked)).
+  function buildCheckboxes(containerId, list, stateSet){
+    const c = document.getElementById(containerId);
+    list.forEach(name => {
+      const id = containerId + "-" + name.replace(/\W+/g,"_");
+      const lab = document.createElement("label");
+      lab.className = "msp-chip";
+      lab.innerHTML = `<input type="checkbox" id="${id}" value="${name}">${name}`;
+      c.appendChild(lab);
+      lab.querySelector("input").addEventListener("change", e => {
+        if (e.target.checked) stateSet.add(name); else stateSet.delete(name);
+        lab.classList.toggle("active", e.target.checked);
+        render();
+      });
+    });
+  }
+  buildCheckboxes("disc-filters", DISCIPLINES, state.disciplines);
+  buildCheckboxes("type-filters", TYPES, state.types);
+
+  document.getElementById("search").addEventListener("input", e => { state.search = e.target.value.toLowerCase(); render(); });
+  document.getElementById("clear").addEventListener("click", () => {
+    state.search = ""; state.disciplines.clear(); state.types.clear();
+    document.querySelectorAll(".filter-group input[type=checkbox]").forEach(c => c.checked = false);
+    document.querySelectorAll(".filter-group label.msp-chip").forEach(l => l.classList.remove("active"));
+    document.getElementById("search").value = "";
+    render();
+  });
+
+  function matches(p){
+    if (state.disciplines.size && !p.disciplines.some(d => state.disciplines.has(d))) return false;
+    if (state.types.size && !(p.types || []).some(t => state.types.has(t))) return false;
+    if (state.search){
+      const hay = (p.title + " " + p.supervisor + " " + (p.description||"") + " " + (p.institution||"") + " " + (p.disciplines||[]).join(" ") + " " + (p.methods||"")).toLowerCase();
+      if (!hay.includes(state.search)) return false;
+    }
+    return true;
+  }
+
+  function render(){
+    const grid = document.getElementById("grid");
+    grid.innerHTML = "";
+    const filtered = projects.filter(matches);
+    document.getElementById("count").textContent = filtered.length;
+    document.getElementById("empty").style.display = filtered.length ? "none" : "block";
+    filtered.forEach((p,i) => {
+      const idx = projects.indexOf(p);
+      const card = document.createElement("button");
+      card.className = "card";
+      card.onclick = () => openModal(idx);
+      const discTags = (p.disciplines||[]).map(d => `<span class="tag">${d}</span>`).join("");
+      const typeTags = (p.types||[]).map(t => `<span class="tag type">${t}</span>`).join("");
+      card.innerHTML = `
+        <h3>${p.title}</h3>
+        <div class="sup">${p.supervisor}</div>
+        <p class="desc">${p.description||""}</p>
+        <div class="tags">${discTags}${typeTags}<span class="tag loc">${p.location||""}</span></div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function openModal(idx){
+    const p = projects[idx];
+    document.getElementById("m-title").textContent = p.title;
+    document.getElementById("m-sup").textContent = p.supervisor + " · " + (p.institution||"");
+    const tags = [
+      ...(p.disciplines||[]).map(d => `<span class="tag">${d}</span>`),
+      ...(p.types||[]).map(t => `<span class="tag type">${t}</span>`),
+      `<span class="tag loc">${p.location||""}</span>`
+    ].join("");
+    let html = `<div class="tags">${tags}</div>`;
+    if (p.description){ html += `<h4>Overview</h4><p>${p.description}</p>`; }
+    if (p.background){ html += `<h4>Background</h4><p>${p.background}</p>`; }
+    if (p.objectives && p.objectives.length){ html += `<h4>Objectives</h4><ul>${p.objectives.map(d=>`<li>${d}</li>`).join("")}</ul>`; }
+    if (p.details && p.details.length){ html += `<h4>Details</h4><ul>${p.details.map(d=>`<li>${d}</li>`).join("")}</ul>`; }
+    if (p.methods){ html += `<h4>Methods</h4><p>${p.methods}</p>`; }
+    if (p.recommended){ html += `<h4>Recommended background</h4><p>${p.recommended}</p>`; }
+    if (p.note){ html += `<h4>Note</h4><p>${p.note}</p>`; }
+    if (p.references && p.references.length){ html += `<h4>References</h4><ul>${p.references.map(d=>`<li>${d}</li>`).join("")}</ul>`; }
+    html += `<div class="contact-row"><div><strong>Contact:</strong> ${p.supervisor}</div>`;
+    if (p.email) html += `<div><strong>Email:</strong> <a href="mailto:${p.email}">${p.email}</a></div>`;
+    if (p.location) html += `<div><strong>Location:</strong> ${p.location}</div>`;
+    if (p.dateAdded) html += `<div style="color:var(--muted);font-size:12.5px;margin-top:4px">Added ${p.dateAdded}</div>`;
+    html += `</div>`;
+    document.getElementById("m-body").innerHTML = html;
+    document.getElementById("overlay").classList.add("active");
+    document.getElementById("modal").classList.add("active");
+    document.body.style.overflow = "hidden";
+  }
+  function closeModal(){
+    document.getElementById("overlay").classList.remove("active");
+    document.getElementById("modal").classList.remove("active");
+    document.body.style.overflow = "";
+  }
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+
+  render();
+</script>
+
+<!-- Shared MSP frame: nav.js builds the sidebar from the one site navigation -->
+<script src="assets/msp-ui/msp-shell.js"></script>
+<script src="nav.js"></script>
+</body>
+</html>

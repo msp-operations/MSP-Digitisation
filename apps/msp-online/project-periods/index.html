@@ -1,0 +1,155 @@
+<!doctype html>
+<!--
+  index.html - the dashboard: where everything starts. Period notice,
+  dates, numbers and links, inside the shared MSP frame. Connect Supabase in
+  app/assets/config.js to show the real period and numbers.
+-->
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard - MSP Project Periods</title>
+<meta name="description" content="MSP Project Periods: the project catalogue for P3 and P6, how to offer a project, and the Project Committee dashboard.">
+<link rel="icon" type="image/png" href="assets/img/msp-logo.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="assets/msp-ui/msp-ui.css?v=202610061253">
+<link rel="stylesheet" href="assets/collent.css?v=202610061253">
+</head>
+<body>
+<main class="msp-main wide c-page">
+  <h1 class="c-title">Dashboard</h1>
+  <div class="c-panel">
+    <div class="c-notice" id="notice">Loading the current period&hellip;</div>
+
+    <div class="c-sections">
+      <section class="c-sec">
+        <h2><i class="fa-solid fa-book-open"></i> Projects</h2>
+        <ul>
+          <li><a href="projects.html">Projects <span id="n-all"></span></a></li>
+          <li><a href="projects.html?level=1000">1000-level <span id="n-1000"></span></a></li>
+          <li><a href="projects.html?level=2000">2000-level <span id="n-2000"></span></a></li>
+          <li><a href="projects.html?level=3000">3000-level <span id="n-3000"></span></a></li>
+        </ul>
+      </section>
+      <section class="c-sec">
+        <h2><i class="fa-solid fa-pen-to-square"></i> Forms</h2>
+        <ul>
+          <li><a href="submit.html">Offer a project</a></li>
+          <li><a href="submit.html#guidelines">Description guidelines</a></li>
+        </ul>
+      </section>
+      <section class="c-sec">
+        <h2><i class="fa-solid fa-calendar-days"></i> Period</h2>
+        <ul id="period-list">
+          <li><small>No period published.</small></li>
+        </ul>
+      </section>
+      <section class="c-sec">
+        <h2><i class="fa-solid fa-user-shield"></i> Committee</h2>
+        <ul>
+          <li><a href="admin.html">Dashboard</a></li>
+          <li><a href="admin.html">Log in</a></li>
+        </ul>
+      </section>
+    </div>
+
+    <hr class="c-divider">
+
+    <div class="c-sections">
+      <section class="c-sec">
+        <h2><i class="fa-solid fa-circle-info"></i> Information</h2>
+        <ul>
+          <li class="c-collapse"><a class="c-toggle"><i class="fa-solid fa-caret-right"></i> About the project period</a>
+            <ul class="c-sub" hidden>
+              <li>Three weeks of supervised research in P3 (January) and P6 (June), 5 ECTS.</li>
+              <li>Students list a top five from the catalogue; the committee allocates.</li>
+              <li>A project runs only if it reaches its minimum number of students.</li>
+            </ul>
+          </li>
+          <li class="c-collapse"><a class="c-toggle"><i class="fa-solid fa-caret-right"></i> How to offer a project</a>
+            <ul class="c-sub" hidden>
+              <li>One page of description plus the lab and group-size details, through the <a href="submit.html">form</a>.</li>
+              <li>The committee reviews it, assigns a code and publishes the catalogue.</li>
+              <li>Meet the group in the period before; budget table a month ahead; grades within five days after.</li>
+            </ul>
+          </li>
+        </ul>
+      </section>
+      <section class="c-sec">
+        <h2><i class="fa-solid fa-circle-question"></i> Support</h2>
+        <ul>
+          <li><a id="contact" href="#">Contacts</a></li>
+          <li><a id="help" href="#">Need help?</a></li>
+        </ul>
+      </section>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/config.js?v=202610061253"></script>
+<script src="assets/demo-data.js?v=202610061253"></script>
+<script src="assets/supabase.js?v=202610061253"></script>
+<script src="assets/msp-ui/msp-shell.js?v=202610061253"></script>
+<script src="assets/chrome.js?v=202610061253"></script>
+<script>
+(async function () {
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  MSPChrome.render({ active: "dashboard" });
+  $("contact").href = $("help").href = "mailto:" + MSP.config.CONTACT_EMAIL;
+
+  // caret toggles: children stay hidden until clicked
+  function wireToggles(root) {
+    (root || document).querySelectorAll(".c-toggle").forEach((t) => t.addEventListener("click", (e) => {
+      e.preventDefault();
+      const li = t.closest(".c-collapse");
+      const open = li.classList.toggle("open");
+      li.querySelectorAll(":scope > .c-sub").forEach((u) => { u.hidden = !open; });   // works even with a stale stylesheet
+    }));
+  }
+  wireToggles();
+
+  const fmt = (d) => d ? new Date(d + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "";
+  try {
+    const periods = await MSP.getPeriods();
+    const open = periods.find((p) => p.submissions_open);
+    const pub = periods.find((p) => p.catalogue_published);
+    const lines = [];
+    if (open) lines.push(`Project descriptions for <strong>${esc(open.label)}</strong> are being collected${open.description_deadline ? " until " + fmt(open.description_deadline) : ""}. Staff and student leaders can <a href="submit.html">offer a project</a>.`);
+    if (pub && pub !== open) lines.push(`The catalogue for <strong>${esc(pub.label)}</strong> is published.`);
+    else if (pub) lines.push(`The catalogue for ${esc(pub.label)} is published.`);
+    if (!open && !pub) lines.push("No project period is open at the moment. The committee announces the next round here and on Canvas.");
+    if (MSP.mode === "preview") lines.push("<span style='font-weight:400'>Preview: sample data, Supabase not connected yet (see <code>app/assets/config.js</code>).</span>");
+    $("notice").innerHTML = lines.join("<br>");
+
+    // the period section: one collapsible entry per period that is open or published
+    const shown = periods.filter((p) => p.submissions_open || p.catalogue_published);
+    if (shown.length) {
+      $("period-list").innerHTML = shown.map((p) => {
+        const dates = [["Descriptions due", fmt(p.description_deadline)], ["Sign-up", p.signup_opens ? fmt(p.signup_opens) + (p.signup_closes ? " to " + fmt(p.signup_closes) : "") : ""],
+          ["Project period", p.period_start ? fmt(p.period_start) + (p.period_end ? " to " + fmt(p.period_end) : "") : ""], ["Symposium", fmt(p.symposium)],
+          ["State", [p.submissions_open ? "collecting descriptions" : "", p.catalogue_published ? "catalogue published" : ""].filter(Boolean).join(", ")]]
+          .filter(([, v]) => v);
+        return `<li class="c-collapse"><a class="c-toggle"><i class="fa-solid fa-caret-right"></i> ${esc(p.label)}</a>
+          <ul class="c-sub" hidden>${dates.map(([l, v]) => `<li>${esc(l)}: ${esc(v)}</li>`).join("")}</ul></li>`;
+      }).join("");
+      wireToggles($("period-list"));
+    }
+
+    if (pub) {
+      const projects = await MSP.getCatalogue(pub.id);
+      const by = { "1000": 0, "2000": 0, "3000": 0 };
+      projects.forEach((p) => { by[p.level] = (by[p.level] || 0) + 1; });
+      $("n-all").textContent = `(${projects.length})`;
+      ["1000", "2000", "3000"].forEach((l) => $("n-" + l).textContent = `(${by[l]})`);
+    }
+  } catch (e) {
+    $("notice").className = "c-notice bad";
+    $("notice").textContent = "Could not load the current period: " + (e.message || e);
+  }
+})();
+</script>
+</body>
+</html>

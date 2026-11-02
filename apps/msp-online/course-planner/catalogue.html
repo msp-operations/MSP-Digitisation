@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Course Catalogue — MSP Course Planner</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="stylesheet" href="assets/msp-ui/msp-ui.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:var(--msp-navy);--navy2:var(--msp-navy2);--navy3:var(--msp-navy3);
+  --sky:var(--msp-sky);--orange:var(--msp-orange);--um-red:var(--msp-red);
+  --ok:var(--msp-ok);--ok-bg:var(--msp-ok-bg);--ok-bd:var(--msp-ok-bd);
+  --warn:var(--msp-warn);--warn-bg:var(--msp-warn-bg);--warn-bd:var(--msp-warn-bd);
+  --err:var(--msp-err);--err-bg:var(--msp-err-bg);--err-bd:var(--msp-err-bd);
+  --inf:var(--msp-inf);--inf-bg:var(--msp-inf-bg);--inf-bd:var(--msp-inf-bd);
+  --g0:var(--msp-g0);--g1:var(--msp-g1);--g2:var(--msp-g2);--g3:var(--msp-g3);
+  --g4:var(--msp-g4);--g5:var(--msp-g5);--g7:var(--msp-g7);--g9:var(--msp-g9);
+  --sa-bg:var(--msp-a-bg);--sa:var(--msp-a);--sb-bg:var(--msp-b-bg);--sb:var(--msp-b);
+  --sc-bg:var(--msp-c-bg);--sc:var(--msp-c);--sd-bg:var(--msp-d-bg);--sd:var(--msp-d);
+  --se-bg:var(--msp-e-bg);--se:var(--msp-e);
+  --r:var(--msp-r);--rs:var(--msp-rs);
+  --sh:0 1px 3px rgba(0,0,0,.04),0 1px 2px rgba(0,0,0,.03);
+  --sh-md:0 4px 20px rgba(0,0,0,.06),0 2px 6px rgba(0,0,0,.03);
+  --sh-lg:0 8px 30px rgba(0,0,0,.08),0 4px 10px rgba(0,0,0,.04)
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--msp-font);background:var(--g0);color:var(--g9);min-height:100vh;font-size:14px;line-height:1.6}
+
+
+
+
+/* ── Search + Filter Bar ── */
+.toolbar{display:flex;align-items:center;gap:12px;margin-bottom:28px;flex-wrap:wrap}
+.search-box{flex:1;min-width:240px;position:relative}
+.search-box input{width:100%;padding:11px 16px 11px 40px;border:1.5px solid var(--g2);border-radius:var(--r);font-size:14px;font-family:inherit;color:var(--g9);background:#fff;transition:all .15s;box-shadow:var(--sh)}
+.search-box input:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(1,27,60,.08)}
+.search-box::before{content:'\1F50D';position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:14px;opacity:.4;pointer-events:none}
+.filter-chips{display:flex;gap:6px;flex-wrap:wrap}
+.fchip{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;border:1.5px solid var(--g2);background:#fff;color:var(--g5);cursor:pointer;transition:all .15s;font-family:inherit}
+.fchip:hover{border-color:var(--g3);color:var(--g7)}
+.fchip.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.result-count{font-size:12px;color:var(--g4);font-weight:500}
+
+/* ── Slot Section ── */
+.slot-section{margin-bottom:32px}
+.slot-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid var(--g2)}
+.slot-badge{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:10px;font-size:16px;font-weight:800;color:#fff;letter-spacing:.02em;flex-shrink:0}
+.slot-badge.sl-A{background:var(--sa)} .slot-badge.sl-B{background:var(--sb)} .slot-badge.sl-C{background:#B45309} .slot-badge.sl-D{background:var(--sd)} .slot-badge.sl-E{background:var(--se)} .slot-badge.sl-PRA{background:var(--navy)}
+.slot-header h2{font-family:'DM Sans',sans-serif;font-size:18px;font-weight:700;color:var(--g9)}
+.slot-header .slot-info{font-size:12px;color:var(--g4);font-weight:400}
+.slot-count{margin-left:auto;font-size:11px;color:var(--g4);background:var(--g1);padding:3px 10px;border-radius:12px;font-weight:600}
+
+/* ── Course Cards ── */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
+.ccard{background:#fff;border:1.5px solid var(--g2);border-radius:var(--r);overflow:hidden;transition:all .2s;cursor:pointer;position:relative}
+.ccard:hover{box-shadow:var(--sh-md);transform:translateY(-1px)}
+.ccard.expanded{box-shadow:var(--sh-lg);grid-column:1/-1}
+/* Slot-tinted card backgrounds */
+.ccard.card-A{background:#EBF3FF;border-color:#C5D9F5} .ccard.card-A:hover{border-color:#9BBDE8}
+.ccard.card-B{background:#EDFAF0;border-color:#B8E6C4} .ccard.card-B:hover{border-color:#86D69A}
+.ccard.card-C{background:#FFF7EB;border-color:#F5DFB8} .ccard.card-C:hover{border-color:#ECCC8E}
+.ccard.card-D{background:#F3EEFA;border-color:#D4C4EA} .ccard.card-D:hover{border-color:#B89FDC}
+.ccard.card-E{background:#FFF0F1;border-color:#F5C4C8} .ccard.card-E:hover{border-color:#EA9EA5}
+.ccard.card-PRA{background:#EFF6FF;border-color:#C5D9F5} .ccard.card-PRA:hover{border-color:#9BBDE8}
+.ccard-top{padding:18px 20px 14px;display:flex;flex-direction:column;gap:6px}
+.ccard-row1{display:flex;align-items:flex-start;gap:10px}
+.ccard .cc-code{font-size:12px;font-weight:700;color:#fff;background:var(--navy);padding:3px 10px;border-radius:5px;font-family:'SF Mono',Monaco,Consolas,monospace;letter-spacing:.03em;flex-shrink:0}
+.ccard .cc-slot{font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px;letter-spacing:.05em}
+.cc-slot.sl-A{background:var(--sa-bg);color:var(--sa)} .cc-slot.sl-B{background:var(--sb-bg);color:var(--sb)} .cc-slot.sl-C{background:var(--sc-bg);color:var(--sc)} .cc-slot.sl-D{background:var(--sd-bg);color:var(--sd)} .cc-slot.sl-E{background:var(--se-bg);color:var(--se)}
+.ccard .cc-title{font-size:16px;font-weight:700;color:var(--g9);line-height:1.3;font-family:'DM Sans',sans-serif}
+.ccard .cc-coord{font-size:12px;color:var(--g5)}
+.ccard-meta{display:flex;align-items:center;gap:8px;padding:0 20px 14px;flex-wrap:wrap}
+.ccard-meta .daychip{background:var(--g9);color:#fff;font-size:10px;font-weight:600;padding:3px 9px;border-radius:5px;letter-spacing:.02em}
+.tag{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;padding:3px 9px;border-radius:5px;letter-spacing:.03em}
+.tag-pre{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-bd)}
+.tag-co{background:var(--inf-bg);color:var(--inf);border:1px solid var(--inf-bd)}
+.tag-note{background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok-bd)}
+.ccard-expand{font-size:11px;color:var(--navy);font-weight:600;padding:10px 20px;background:rgba(0,0,0,.03);border-top:1px solid rgba(0,0,0,.06);display:flex;align-items:center;gap:5px;transition:all .15s}
+.ccard:hover .ccard-expand{background:rgba(0,0,0,.06)}
+.ccard.expanded .ccard-expand{display:none}
+
+/* ── Expanded Detail ── */
+.ccard-detail{display:none;padding:0 20px 20px;border-top:1.5px solid var(--g1)}
+.ccard.expanded .ccard-detail{display:block}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:16px}
+.detail-section{margin-bottom:0}
+.detail-section h4{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--g1)}
+.detail-section p{font-size:13px;color:var(--g7);line-height:1.7;margin-bottom:0}
+.detail-section ul{margin:0 0 0 16px;padding:0;list-style:none}
+.detail-section li{font-size:12.5px;color:var(--g7);line-height:1.6;padding:2px 0;position:relative;padding-left:14px}
+.detail-section li::before{content:'\2022';position:absolute;left:0;color:var(--navy);font-weight:700}
+.detail-full{grid-column:1/-1}
+.detail-lit{white-space:pre-line;font-size:12.5px;color:var(--g5);line-height:1.6}
+.detail-close{display:inline-flex;align-items:center;gap:5px;margin-top:16px;padding:8px 16px;border-radius:var(--rs);font-size:12px;font-weight:600;color:var(--navy);background:var(--sa-bg);border:1px solid rgba(29,78,216,.15);cursor:pointer;font-family:inherit;transition:all .15s}
+.detail-close:hover{background:var(--navy);color:#fff}
+
+/* ── Footer ── */
+footer{text-align:center;padding:20px 24px;font-size:12px;color:var(--g4);border-top:1px solid var(--g2);background:#fff;display:flex;flex-direction:column;align-items:center}
+footer .ft-line{margin-bottom:0;font-size:11px}
+
+/* ── Empty/Loading ── */
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;gap:14px;color:var(--g4)}
+.spin{width:32px;height:32px;border:3px solid var(--g2);border-top-color:var(--navy);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.no-results{text-align:center;padding:60px 20px;color:var(--g4)}
+.no-results span{font-size:40px;display:block;margin-bottom:12px;opacity:.5}
+.no-results p{font-size:14px}
+
+@media(max-width:640px){
+  .cards-grid{grid-template-columns:1fr}
+  .detail-grid{grid-template-columns:1fr}
+  .toolbar{flex-direction:column;align-items:stretch}
+}
+</style>
+</head>
+<body>
+<main class="msp-main wide">
+  <div id="loading" class="loading"><div class="spin"></div><p style="font-size:13px">Loading course catalogue&hellip;</p></div>
+  <div id="content" style="display:none">
+    <div class="toolbar">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search by course code, title, coordinator, or keyword..." oninput="applyFilters()">
+      </div>
+      <div class="filter-chips" id="filterChips"></div>
+    </div>
+    <div id="resultCount" class="result-count" style="margin-bottom:16px"></div>
+    <div id="catalogue"></div>
+  </div>
+</main>
+<footer>
+  <img src="logo-main.png" alt="MSP" style="height:28px;width:auto;object-fit:contain;opacity:.5;margin-bottom:6px">
+  <div class="ft-line">Maastricht Science Programme &nbsp;&middot;&nbsp; Faculty of Science and Engineering</div>
+</footer>
+<script src="assets/msp-ui/msp-shell.js"></script>
+<script>
+MSPShell.init({
+  "title": "MSP Course Planner",
+  "home": "index.html",
+  "nav": [
+    {
+      "label": "Course Planner",
+      "hint": "Build your schedule",
+      "href": "index.html",
+      "icon": "calendar"
+    },
+    {
+      "label": "Course Catalogue",
+      "hint": "Browse all courses",
+      "href": "catalogue.html",
+      "icon": "book"
+    }
+  ],
+  "meta": "<span id=\"navInfo\"></span>",
+  "footer": "Your data stays in your browser. Nothing is uploaded."
+});
+</script>
+<script>
+const AUTO='FrameSchedule_P5_v1.csv';
+const DESC_FILE='MSP_P5_Course_Descriptions.md';
+let csvCourses=[], csvLabs=[], descriptions={}, activeFilter='all';
+
+// ── CSV Parsing ──
+function parseRow(row){
+  const res=[];let q=false,c='';
+  for(let i=0;i<row.length;i++){const ch=row[i];if(ch==='"'){q=!q;continue;}if(ch===','&&!q){res.push(c.trim());c='';continue;}c+=ch;}
+  res.push(c.trim());return res;
+}
+
+function loadCSV(text){
+  csvCourses=[];csvLabs=[];
+  const lines=text.split(/\r?\n/).filter(l=>l.trim());
+  let hi=-1;
+  for(let i=0;i<lines.length;i++){
+    const c=parseRow(lines[i]);
+    if(c[0]==='Slot'){hi=i;break;}
+  }
+  if(hi<0)return;
+  const hdrs=parseRow(lines[hi]);
+  for(let i=hi+1;i<lines.length;i++){
+    const row=parseRow(lines[i]);if(row.length<3||!row[1])continue;
+    const e={};hdrs.forEach((h,idx)=>e[h]=(row[idx]||'').trim());
+    e.Corequisite=e.Corequisite?.toUpperCase()==='TRUE';
+    e.Prerequisite=e.Prerequisite?.toUpperCase()==='TRUE';
+    e.Days=e.Days?e.Days.split(/\s*,\s*/).map(d=>d.trim()).filter(Boolean):[];
+    e.CorequisiteOf=(e.CorequisiteOf||'').trim();
+    e.PrerequisiteCodes=(e.PrerequisiteCodes||'').trim();
+    if(e.Slot)csvCourses.push(e);else csvLabs.push(e);
+  }
+}
+
+// ── Markdown Description Parsing ──
+function parseMD(text){
+  descriptions={};
+  // Split into course blocks by --- separator
+  const blocks=text.split(/^---$/m).map(b=>b.trim()).filter(b=>b&&!b.startsWith('#')&&!b.startsWith('Source:'));
+
+  blocks.forEach(block=>{
+    // Skip slot headers
+    if(/^##\s+SLOT\s+[A-E]/i.test(block)||/^##\s+PRACTICALS/i.test(block))return;
+    const cleaned=block.replace(/^##\s+.*\n*/m,'').trim();
+    if(!cleaned)return;
+
+    // First line should contain the code and title
+    const firstLine=cleaned.split('\n')[0].trim();
+    const codeMatch=firstLine.match(/^([A-Z]{2,4}\d{4})\s+(.+)$/);
+    if(!codeMatch)return;
+
+    const code=codeMatch[1];
+    const title=codeMatch[2];
+    const rest=cleaned.substring(firstLine.length).trim();
+
+    // Parse sections
+    const desc={title,raw:rest,sections:{}};
+    let currentSection='';
+    let currentContent=[];
+
+    rest.split('\n').forEach(line=>{
+      const trimmed=line.trim();
+      // Detect section headers
+      const sectionNames=['Course coordinator','Coordinator','Practical coordinator','Contact','Pre-requisites','Prerequisites','Co-requisites','Corequisites','Objectives','Description of the course','Description of the skill','Description of the practical','Literature','Recommended reading','Recommended','Instructional format','Assessment','Note'];
+      const matchedSection=sectionNames.find(s=>trimmed.toLowerCase().startsWith(s.toLowerCase()));
+
+      if(matchedSection&&trimmed.length<matchedSection.length+3){
+        // Save previous section
+        if(currentSection)desc.sections[currentSection]=currentContent.join('\n').trim();
+        currentSection=matchedSection;
+        currentContent=[];
+      }else if(matchedSection&&trimmed.length>=matchedSection.length+3){
+        // Section header with content on same line (e.g., "Contact: email@...")
+        if(currentSection)desc.sections[currentSection]=currentContent.join('\n').trim();
+        currentSection=matchedSection;
+        currentContent=[trimmed.substring(matchedSection.length).replace(/^[:\s]+/,'')];
+      }else{
+        currentContent.push(line);
+      }
+    });
+    if(currentSection)desc.sections[currentSection]=currentContent.join('\n').trim();
+
+    descriptions[code]=desc;
+  });
+}
+
+function formatDay(d){return d.replace('AM',' AM').replace('PM',' PM');}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+// ── Build UI ──
+const SLOT_META={
+  'A':{label:'Slot A',schedule:'Monday AM & Wednesday PM',color:'sa'},
+  'B':{label:'Slot B',schedule:'Monday PM & Thursday AM',color:'sb'},
+  'C':{label:'Slot C',schedule:'Tuesday AM & Thursday PM',color:'sc'},
+  'D':{label:'Slot D',schedule:'Tuesday PM & Friday AM',color:'sd'},
+  'E':{label:'Slot E',schedule:'Wednesday AM & Friday PM',color:'se'},
+  'PRA':{label:'Practicals & Skills',schedule:'Various days',color:'PRA'}
+};
+
+function buildFilterChips(){
+  const el=document.getElementById('filterChips');
+  const slots=['all','A','B','C','D','E','PRA'];
+  const labels={'all':'All','A':'Slot A','B':'Slot B','C':'Slot C','D':'Slot D','E':'Slot E','PRA':'Practicals'};
+  el.innerHTML=slots.map(s=>`<button class="fchip${s===activeFilter?' active':''}" onclick="setFilter('${s}')">${labels[s]}</button>`).join('');
+}
+
+function setFilter(f){
+  activeFilter=f;
+  buildFilterChips();
+  applyFilters();
+}
+
+function applyFilters(){
+  const query=document.getElementById('searchInput').value.toLowerCase().trim();
+  const all=[...csvCourses,...csvLabs];
+
+  // Group by slot
+  const groups={};
+  all.forEach(item=>{
+    const slot=item.Slot||'PRA';
+    if(activeFilter!=='all'&&slot!==activeFilter)return;
+
+    // Search filter
+    if(query){
+      const desc=descriptions[item.Code];
+      const searchable=(item.Code+' '+item.Title+' '+(item.Coordinator||'')+' '+(desc?.sections?.['Description of the course']||'')+' '+(desc?.sections?.['Description of the skill']||'')+' '+(desc?.sections?.['Description of the practical']||'')+' '+(desc?.sections?.['Objectives']||'')).toLowerCase();
+      if(!searchable.includes(query))return;
+    }
+
+    if(!groups[slot])groups[slot]=[];
+    groups[slot].push(item);
+  });
+
+  const order=['A','B','C','D','E','PRA'];
+  let html='';
+  let total=0;
+
+  order.forEach(sl=>{
+    if(!groups[sl])return;
+    const items=groups[sl];
+    total+=items.length;
+    const meta=SLOT_META[sl];
+
+    html+=`<div class="slot-section">`;
+    html+=`<div class="slot-header"><div class="slot-badge sl-${sl}">${sl==='PRA'?'P':sl}</div><div><h2>${meta.label}</h2><span class="slot-info">${meta.schedule}</span></div><span class="slot-count">${items.length} course${items.length!==1?'s':''}</span></div>`;
+    html+=`<div class="cards-grid">`;
+
+    items.forEach(item=>{
+      const desc=descriptions[item.Code];
+      const days=item.Days.map(d=>`<span class="daychip">${formatDay(d)}</span>`).join('');
+      const tags=[];
+      if(item.Slot)tags.push(`<span class="cc-slot sl-${item.Slot}">SLOT ${item.Slot}</span>`);
+      if(item.Prerequisite)tags.push('<span class="tag tag-pre">\u25b2 Pre-req</span>');
+      if(item.Corequisite)tags.push('<span class="tag tag-co">\u25ca Co-req</span>');
+
+      html+=`<div class="ccard card-${item.Slot||'PRA'}" id="card-${item.Code}" onclick="toggleCard('${item.Code}',event)">`;
+      html+=`<div class="ccard-top">`;
+      html+=`<div class="ccard-row1"><span class="cc-code">${item.Code}</span>${tags.join('')}</div>`;
+      html+=`<div class="cc-title">${esc(item.Title)}</div>`;
+      html+=`<div class="cc-coord">${esc(item.Coordinator)}</div>`;
+      html+=`</div>`;
+      html+=`<div class="ccard-meta">${days}</div>`;
+      html+=`<div class="ccard-expand">\u25B6 Click to view full course description</div>`;
+
+      // Detail panel
+      html+=`<div class="ccard-detail">`;
+      if(desc){
+        html+=`<div class="detail-grid">`;
+
+        // Description
+        const descText=desc.sections['Description of the course']||desc.sections['Description of the skill']||desc.sections['Description of the practical']||'';
+        if(descText){
+          html+=`<div class="detail-section detail-full"><h4>Description</h4><p>${esc(descText).replace(/\n/g,'<br>')}</p></div>`;
+        }
+
+        // Objectives
+        const obj=desc.sections['Objectives']||'';
+        if(obj){
+          const items=obj.split(/\n/).map(l=>l.replace(/^[•✓\-\d.]+\s*/,'').trim()).filter(Boolean);
+          html+=`<div class="detail-section"><h4>Objectives</h4><ul>${items.map(o=>`<li>${esc(o)}</li>`).join('')}</ul></div>`;
+        }
+
+        // Prerequisites
+        const pre=desc.sections['Pre-requisites']||desc.sections['Prerequisites']||'';
+        const coreq=desc.sections['Co-requisites']||desc.sections['Corequisites']||'';
+        const rec=desc.sections['Recommended']||'';
+        if(pre||coreq||rec){
+          html+=`<div class="detail-section"><h4>Requirements</h4>`;
+          if(pre){
+            const items=pre.split(/\n/).map(l=>l.replace(/^[•✓\-]+\s*/,'').trim()).filter(Boolean);
+            html+=`<p style="font-size:11px;font-weight:700;color:var(--warn);margin-bottom:2px;text-transform:uppercase;letter-spacing:.06em">Prerequisites</p><ul>${items.map(p=>`<li>${esc(p)}</li>`).join('')}</ul>`;
+          }
+          if(coreq&&!coreq.toLowerCase().includes('none')){
+            const items=coreq.split(/\n/).map(l=>l.replace(/^[•✓\-]+\s*/,'').trim()).filter(Boolean);
+            html+=`<p style="font-size:11px;font-weight:700;color:var(--inf);margin-bottom:2px;margin-top:8px;text-transform:uppercase;letter-spacing:.06em">Co-requisites</p><ul>${items.map(c=>`<li>${esc(c)}</li>`).join('')}</ul>`;
+          }
+          if(rec&&!rec.toLowerCase().includes('none')){
+            const items=rec.split(/\n/).map(l=>l.replace(/^[•✓\-]+\s*/,'').trim()).filter(Boolean);
+            html+=`<p style="font-size:11px;font-weight:700;color:var(--ok);margin-bottom:2px;margin-top:8px;text-transform:uppercase;letter-spacing:.06em">Recommended</p><ul>${items.map(r=>`<li>${esc(r)}</li>`).join('')}</ul>`;
+          }
+          html+=`</div>`;
+        }
+
+        // Literature
+        const lit=desc.sections['Literature']||desc.sections['Recommended reading']||'';
+        if(lit){
+          html+=`<div class="detail-section"><h4>Literature</h4><div class="detail-lit">${esc(lit).replace(/\n/g,'<br>')}</div></div>`;
+        }
+
+        // Format
+        const fmt=desc.sections['Instructional format']||'';
+        if(fmt){
+          html+=`<div class="detail-section"><h4>Instructional Format</h4><p>${esc(fmt).replace(/\n/g,'<br>')}</p></div>`;
+        }
+
+        // Assessment
+        const assess=desc.sections['Assessment']||'';
+        if(assess){
+          const items=assess.split(/\n/).map(l=>l.replace(/^[•✓\-\d.]+\s*/,'').trim()).filter(Boolean);
+          html+=`<div class="detail-section"><h4>Assessment</h4><ul>${items.map(a=>`<li>${esc(a)}</li>`).join('')}</ul></div>`;
+        }
+
+        // Contact
+        const contact=desc.sections['Contact']||'';
+        const coordinator=desc.sections['Course coordinator']||desc.sections['Coordinator']||desc.sections['Practical coordinator']||'';
+        if(coordinator||contact){
+          html+=`<div class="detail-section"><h4>Contact</h4>`;
+          if(coordinator)html+=`<p>${esc(coordinator)}</p>`;
+          if(contact)html+=`<p style="margin-top:2px"><a href="mailto:${esc(contact.trim())}" style="color:var(--sa);font-size:12.5px">${esc(contact.trim())}</a></p>`;
+          html+=`</div>`;
+        }
+
+        html+=`</div>`;
+      }else{
+        html+=`<p style="color:var(--g4);font-size:13px;padding-top:14px;font-style:italic">No detailed description available for this course.</p>`;
+      }
+      html+=`<button class="detail-close" onclick="event.stopPropagation();closeCard('${item.Code}')">\u2190 Collapse details</button>`;
+      html+=`</div>`;
+
+      html+=`</div>`;
+    });
+
+    html+=`</div></div>`;
+  });
+
+  if(!total){
+    html='<div class="no-results"><span>\uD83D\uDD0D</span><p>No courses match your search. Try a different keyword.</p></div>';
+  }
+
+  document.getElementById('catalogue').innerHTML=html;
+  document.getElementById('resultCount').textContent=`Showing ${total} course${total!==1?'s':''}`;
+}
+
+function toggleCard(code,event){
+  // Don't toggle if clicking the close button
+  if(event&&event.target.closest('.detail-close'))return;
+  const el=document.getElementById('card-'+code);
+  if(!el)return;
+  const wasExpanded=el.classList.contains('expanded');
+  // Close all other expanded cards
+  document.querySelectorAll('.ccard.expanded').forEach(c=>c.classList.remove('expanded'));
+  if(!wasExpanded){
+    el.classList.add('expanded');
+    // Smooth scroll to the card
+    setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'nearest'}),50);
+  }
+}
+
+function closeCard(code){
+  const el=document.getElementById('card-'+code);
+  if(el)el.classList.remove('expanded');
+}
+
+// ── Init ──
+async function init(){
+  try{
+    const [csvRes,mdRes]=await Promise.all([
+      fetch(AUTO).then(r=>{if(!r.ok)throw new Error('CSV not found');return r.text();}),
+      fetch(DESC_FILE).then(r=>{if(!r.ok)throw new Error('MD not found');return r.text();})
+    ]);
+    loadCSV(csvRes);
+    parseMD(mdRes);
+
+    document.getElementById('navInfo').textContent=`${csvCourses.length} courses \u00b7 ${csvLabs.length} practicals`;
+    document.getElementById('loading').style.display='none';
+    document.getElementById('content').style.display='block';
+
+    buildFilterChips();
+    applyFilters();
+  }catch(err){
+    console.error('Load error:',err);
+    document.getElementById('loading').innerHTML='<p style="color:var(--err)">Failed to load course data. Make sure FrameSchedule_P5_v1.csv and MSP_P5_Course_Descriptions.md are in the same folder.</p>';
+  }
+}
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,786 @@
+<!doctype html>
+<!--
+  admin.html - MSP office dashboard. Login is a Supabase "magic link" emailed
+  to the address; only allow-listed admins (admin_user table) can see data.
+-->
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Office dashboard - MSP Tutor Registration</title>
+<link rel="icon" type="image/png" href="assets/img/msp-logo.png">
+<link rel="stylesheet" href="assets/msp-ui/msp-ui.css">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<!-- This is the office dashboard (logic-heavy). Most office tasks are done by
+     clicking in the dashboard itself, not by editing this file. See
+     EDITING-INSTRUCTIONS (repo) / the PDF in the Tutoring folder. -->
+
+<!-- Sign out lives in the sidebar (moved there by the shell script at the end of the page) -->
+<button type="button" id="signout" class="msp-sb-cfg" style="display:none">Sign out</button>
+
+<main class="msp-main wide">
+  <div id="notice-area"></div>
+
+  <!-- LOGIN -->
+  <div id="login">
+    <h2 class="section">Office login</h2>
+    <p class="lead">Enter your MSP email. We'll send you a one-time sign-in link - no password to remember. Only addresses on the office allow-list can see registrations.</p>
+    <div class="panel" style="max-width:420px;margin-top:22px">
+      <div id="login-msg"></div>
+      <div class="field"><label>Email address</label><input id="login-email" type="email" placeholder="name@maastrichtuniversity.nl"></div>
+      <button class="btn btn-primary" id="login-btn" style="width:100%">Email me a sign-in link</button>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dash" style="display:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:8px">
+      <h2 class="section" style="margin:0">Tutor registrations</h2>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-ghost" id="refresh-btn">Refresh</button>
+        <button class="btn btn-ghost" id="csv-btn">Export CSV</button>
+      </div>
+    </div>
+
+    <div class="notice info" id="reg-toggle" style="align-items:center;justify-content:space-between">
+      <div style="display:flex;gap:12px;align-items:center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v5"/><path d="M12 16h.01"/></svg>
+        <span id="reg-status">Registration is open.</span></div>
+      <button class="btn btn-ghost" id="toggle-reg">Close registration</button>
+    </div>
+
+    <div class="notice info" id="period-visibility" style="align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <div>
+        <strong>Periods tutors can see</strong>
+        <div id="period-vis-hint" style="color:var(--muted);font-size:.92em;margin-top:2px"></div>
+      </div>
+      <div id="period-vis-toggles" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+    </div>
+
+    <div class="stat-grid" id="stats"></div>
+
+    <div class="toolbar">
+      <input id="adm-search" type="text" placeholder="Search name, email, course, group...">
+      <select id="adm-period" style="width:auto"><option value="">All periods</option></select>
+      <select id="adm-status" style="width:auto">
+        <option value="confirmed">Confirmed only</option>
+        <option value="">All statuses</option>
+        <option value="withdrawn">Withdrawn only</option>
+      </select>
+    </div>
+
+    <div class="table-wrap">
+      <table class="data" id="reg-table">
+        <thead><tr>
+          <th>Tutor</th><th>Type</th><th>Course</th><th>Group</th><th>Period</th><th>Registered</th><th>Status</th><th></th>
+        </tr></thead>
+        <tbody id="reg-body"></tbody>
+      </table>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:48px 0 8px">
+      <h2 class="section" style="margin:0">Courses &amp; groups</h2>
+      <button class="btn btn-primary" id="add-course-btn" style="padding:10px 18px;font-size:14px">+ Add course</button>
+    </div>
+    <p class="lead">Everything tutors can sign up for. Add a course, add its groups, change how many tutors a group needs, or close one. Releasing a tutor reopens their group instantly for everyone.</p>
+    <div class="tabs" id="adm-period-tabs" style="margin-top:18px"></div>
+    <div id="adm-groups"></div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:48px 0 8px">
+      <h2 class="section" style="margin:0">Website feedback</h2>
+      <button class="btn btn-ghost" id="fb-csv-btn">Export CSV</button>
+    </div>
+    <p class="lead">What tutors and visitors told us through the "Share feedback" link. Tick "Done" once handled.</p>
+    <div class="table-wrap" style="margin-top:16px">
+      <table class="data" id="fb-table">
+        <thead><tr>
+          <th>When</th><th>Type</th><th>Feedback</th><th>From</th><th>Page</th><th>Status</th><th></th>
+        </tr></thead>
+        <tbody id="fb-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<!-- form modal: add / edit a course or a group -->
+<div class="modal-overlay" id="overlay"></div>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="head">
+    <h3 id="modal-title">Edit</h3>
+    <button class="close" id="modal-close" aria-label="Close">&times;</button>
+  </div>
+  <div class="body" id="modal-body"></div>
+</div>
+
+<footer class="msp-footer">
+  <div class="footer-inner">
+    <a href="privacy.html">Privacy statement</a>
+    <div class="copy">© Maastricht Science Programme</div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/config.js"></script>
+<script src="assets/demo-data.js"></script>
+<script src="assets/supabase.js"></script>
+<script src="assets/disciplines.js"></script>
+<script>
+(function () {
+  const disc = (code, small) => (window.MSPDISC ? MSPDISC.chip(code, small) : "");
+  const $ = (id) => document.getElementById(id);
+  let catalogue = [], regs = [], settings = {}, admPeriod = "P1", feedback = [];
+  const esc = (s) => (s == null ? "" : String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"));
+
+  const NOTICE_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v5"/><path d="M12 16h.01"/></svg>';
+  const noticeHTML = (kind, msg) => `<div class="notice ${kind}">${NOTICE_SVG}<div>${msg}</div></div>`;
+  function notify(kind, msg, where) {
+    (where || $("notice-area")).innerHTML = noticeHTML(kind, msg);
+  }
+  const g_day = (d) => ({ mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri" }[(d||"").toLowerCase().slice(0,3)] || d || "");
+  const fmtTimes = (g) => {
+    const p = (d, s, e) => (d && s && e) ? `${g_day(d)} ${s}-${e}` : "";
+    return [p(g.day1,g.start1,g.end1), p(g.day2,g.start2,g.end2)].filter(Boolean).join(" · ");
+  };
+
+  // ---------- auth ----------
+  if (MSP.mode === "preview") {
+    notify("info", "<strong>Preview mode.</strong> The dashboard needs Supabase connected (see <code>app/assets/config.js</code>) to sign in and manage live registrations.");
+  }
+  $("login-btn").addEventListener("click", async () => {
+    const email = $("login-email").value.trim();
+    if (!email) { notify("err", "Please enter your email.", $("login-msg")); return; }
+    try {
+      await MSP.admin.signIn(email);
+      notify("ok", "Check your inbox for a sign-in link, then return to this page.", $("login-msg"));
+    } catch (e) { notify("err", e.message || "Could not send link.", $("login-msg")); }
+  });
+  $("signout").addEventListener("click", async (e) => { e.preventDefault(); await MSP.admin.signOut(); location.reload(); });
+
+  // Once we are in, stay in. TOKEN_REFRESHED fires about every hour and again
+  // when the machine wakes from sleep, and it used to re-run the whole gate on
+  // an already-admitted session. One unlucky check then signed the user out and
+  // cost them a fresh magic link, which is why the dashboard appeared to lose
+  // your admin rights at random.
+  let dashboardReady = false;
+  let entering = false;
+
+  MSP.admin.onAuth(async (session, event) => {
+    if (!session) return;
+    if (dashboardReady || entering) return;
+    if (event && event !== "INITIAL_SESSION" && event !== "SIGNED_IN") return;
+    entering = true;
+    try { await enterDashboard(session); } finally { entering = false; }
+  });
+
+  async function enterDashboard(session) {
+    const who = (session && session.user && session.user.email) || "";
+    let allowed = false;
+    try {
+      allowed = await MSP.admin.isAllowed();
+      // is_admin() answers a clean false, not an error, when the request went
+      // out without a usable token (it coalesces a missing JWT email to ''),
+      // so a check that races a token refresh is indistinguishable from a real
+      // refusal. Re-read the session and ask once more before refusing anyone.
+      if (!allowed) {
+        const fresh = await MSP.admin.session();
+        if (fresh) allowed = await MSP.admin.isAllowed();
+      }
+    } catch (e) {
+      // The check could not run. Do not sign the user out: that would cost them
+      // a fresh magic link for what is probably a passing network problem.
+      notify("err", "Could not check your access just now (" + esc(e.message || e) +
+        "). This is not a rejection. Please reload the page in a moment.");
+      return;
+    }
+    if (!allowed) {
+      // Deliberately does NOT sign out. Row-level security is what actually
+      // protects the data, not this screen, so leaving the session alone is
+      // safe and saves a pointless round trip through her inbox.
+      notify("err", "You are signed in as <code>" + esc(who) + "</code>, but that address is not on " +
+        "the office allow-list. Ask an existing admin to add <strong>exactly that address</strong> to " +
+        "<code>admin_user</code>. If you have a second UM address, use Sign out and try that one.");
+      $("signout").style.display = "inline";
+      return;
+    }
+    dashboardReady = true;
+    $("login").style.display = "none";
+    $("dash").style.display = "block";
+    $("signout").style.display = "inline";
+    await loadAll();
+    MSP.subscribe(loadAll);
+  }
+
+  // ---------- data ----------
+  async function loadAll() {
+    // includeHidden: the office must always see every period, including ones
+    // currently hidden from tutors, so they can be managed and switched back on.
+    [catalogue, settings] = await Promise.all([MSP.getCatalogue({ includeHidden: true }), MSP.getSettings()]);
+    try { regs = await MSP.admin.listRegistrations(); }
+    catch (e) { notify("err", "Could not load registrations: " + (e.message || e)); regs = []; }
+    try { feedback = await MSP.admin.listFeedback(); }
+    catch (e) { feedback = []; }
+    renderRegToggle(); renderPeriodVisibility(); renderStats(); renderPeriodFilters(); renderTable(); renderAdmGroups(); renderFeedback();
+  }
+
+  // ---------- feedback ----------
+  function renderFeedback() {
+    const body = $("fb-tbody");
+    if (!feedback.length) { body.innerHTML = `<tr><td colspan="7" style="color:var(--muted);padding:20px">No feedback yet.</td></tr>`; return; }
+    const catPill = { Problem: "amber", Compliment: "green", Suggestion: "grey", Other: "grey" };
+    body.innerHTML = feedback.map((f) => {
+      const when = new Date(f.created_at).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
+      const from = [f.name, f.email].filter(Boolean).map(esc).join("<br>") || '<span style="color:var(--muted)">anonymous</span>';
+      const status = f.handled ? '<span class="pill green">done</span>' : '<span class="pill amber">new</span>';
+      return `<tr style="${f.handled ? "opacity:.6" : ""}">
+        <td style="white-space:nowrap">${when}</td>
+        <td><span class="pill ${catPill[f.category] || "grey"}">${esc(f.category || "")}</span></td>
+        <td style="max-width:360px;white-space:pre-wrap">${esc(f.message || "")}</td>
+        <td style="font-size:12.5px">${from}</td>
+        <td style="font-size:12.5px;color:var(--muted)">${esc(f.page || "")}</td>
+        <td>${status}</td>
+        <td style="white-space:nowrap">
+          <button class="btn btn-ghost" style="padding:6px 10px;font-size:12px" data-fb-toggle="${f.id}" data-handled="${f.handled}">${f.handled ? "Reopen" : "Mark done"}</button>
+          <button class="btn btn-ghost" style="padding:6px 10px;font-size:12px" data-fb-del="${f.id}" aria-label="Delete">Delete</button>
+        </td>
+      </tr>`;
+    }).join("");
+    body.querySelectorAll("[data-fb-toggle]").forEach((b) => b.addEventListener("click", async () => {
+      try { await MSP.admin.setFeedbackHandled(b.dataset.fbToggle, b.dataset.handled !== "true"); await loadAll(); }
+      catch (e) { notify("err", "Could not update feedback: " + (e.message || e)); }
+    }));
+    body.querySelectorAll("[data-fb-del]").forEach((b) => b.addEventListener("click", async () => {
+      if (!confirm("Delete this feedback permanently?")) return;
+      try { await MSP.admin.deleteFeedback(b.dataset.fbDel); await loadAll(); }
+      catch (e) { notify("err", "Could not delete: " + (e.message || e)); }
+    }));
+  }
+
+  function renderRegToggle() {
+    const open = settings.registration_open !== false;
+    $("reg-status").textContent = open ? "Registration is open to tutors." : "Registration is currently CLOSED to tutors.";
+    $("reg-toggle").className = "notice " + (open ? "ok" : "err") + " ";
+    $("reg-toggle").style.cssText = "align-items:center;justify-content:space-between";
+    const btn = $("toggle-reg");
+    btn.textContent = open ? "Close registration" : "Re-open registration";
+    btn.onclick = async () => { await MSP.admin.setRegistrationOpen(!open); await loadAll(); };
+  }
+
+  // Which periods the public register page shows. Everything stays in this
+  // dashboard either way, so hiding a period never hides it from the office.
+  function renderPeriodVisibility() {
+    const all = [...new Set(catalogue.map((c) => c.period))].sort();
+    const stored = settings.active_periods;
+    const active = Array.isArray(stored) && stored.length ? stored.filter((p) => all.includes(p)) : all.slice();
+    const label = (p) => "Period " + p.replace(/^P/, "");
+    $("period-vis-hint").textContent = active.length === all.length
+      ? "Tutors see every period."
+      : "Tutors only see " + active.map(label).join(", ") + ". The rest are managed here as usual.";
+    $("period-vis-toggles").innerHTML = all.map((p) =>
+      `<button class="btn ${active.includes(p) ? "" : "btn-ghost"}" data-vis="${p}">${label(p)}: ${active.includes(p) ? "shown" : "hidden"}</button>`).join("");
+    $("period-vis-toggles").querySelectorAll("button").forEach((b) => b.addEventListener("click", async () => {
+      const p = b.dataset.vis;
+      const next = active.includes(p) ? active.filter((x) => x !== p) : all.filter((x) => active.includes(x) || x === p);
+      if (!next.length) { notify("err", "At least one period has to stay visible to tutors."); return; }
+      try {
+        await MSP.admin.setActivePeriods(next.length === all.length ? null : next);
+        await loadAll();
+      } catch (e) { notify("err", "Could not change what tutors see: " + (e.message || e)); }
+    }));
+  }
+
+  function confirmed(r) { return r.status === "confirmed"; }
+  function renderStats() {
+    const groups = catalogue.flatMap((c) => c.groups);
+    const filled = groups.filter((g) => g.claimed >= g.capacity).length;
+    const cReg = regs.filter(confirmed);
+    const tutors = new Set(cReg.map((r) => (r.tutor_email || r.tutor_name || "").toLowerCase())).size;
+    const stat = (n, l) => `<div class="stat"><div class="n">${n}</div><div class="l">${l}</div></div>`;
+    $("stats").innerHTML =
+      stat(groups.length, "Tutorial groups") +
+      stat(filled, "Groups filled") +
+      stat(groups.length - filled, "Groups still open") +
+      stat(cReg.length, "Confirmed registrations") +
+      stat(tutors, "Distinct tutors");
+  }
+
+  function renderPeriodFilters() {
+    const periods = [...new Set(catalogue.map((c) => c.period))].sort();
+    $("adm-period").innerHTML = '<option value="">All periods</option>' + periods.map((p) => `<option>${p}</option>`).join("");
+    if (!periods.includes(admPeriod)) admPeriod = periods[0] || "P1";
+    $("adm-period-tabs").innerHTML = periods.map((p) =>
+      `<button class="${p === admPeriod ? "active" : ""}" data-p="${p}">Period ${p.replace(/^P/, "")}</button>`).join("");
+    $("adm-period-tabs").querySelectorAll("button").forEach((b) =>
+      b.addEventListener("click", () => { admPeriod = b.dataset.p; renderPeriodFilters(); renderAdmGroups(); }));
+  }
+
+  function filteredRegs() {
+    const q = $("adm-search").value.trim().toLowerCase();
+    const per = $("adm-period").value;
+    const st = $("adm-status").value;
+    return regs.filter((r) => {
+      const tg = r.tutorial_group || {}, co = tg.course || {};
+      if (st && r.status !== st) return false;
+      if (per && co.period !== per) return false;
+      if (q) {
+        const hay = [r.tutor_name, r.tutor_email, r.tutor_type, r.affiliation, co.code, co.title, tg.label].join(" ").toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+  }
+
+  function renderTable() {
+    const body = $("reg-body");
+    const rows = filteredRegs();
+    if (!rows.length) { body.innerHTML = `<tr><td colspan="8" style="color:var(--muted);padding:20px">No registrations match.</td></tr>`; return; }
+    body.innerHTML = rows.map((r) => {
+      const tg = r.tutorial_group || {}, co = tg.course || {};
+      const when = new Date(r.created_at).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
+      const pill = r.status === "confirmed" ? '<span class="pill green">confirmed</span>' : '<span class="pill grey">withdrawn</span>';
+      const action = r.status === "confirmed"
+        ? `<button class="btn btn-ghost" style="padding:6px 12px;font-size:12.5px" data-withdraw="${r.id}" data-label="${(co.code||'')+' '+(tg.label||'')}">Release</button>` : "";
+      return `<tr>
+        <td><strong>${r.tutor_name || ""}</strong>${r.tutor_email ? `<br><span style="color:var(--muted)">${r.tutor_email}</span>` : ""}${r.affiliation ? `<br><span style="color:var(--muted);font-size:12px">${r.affiliation}</span>` : ""}</td>
+        <td>${r.tutor_type || ""}</td>
+        <td>${co.code || ""}<br><span style="color:var(--muted);font-size:12px">${co.title || ""}</span></td>
+        <td>${tg.label || ""}</td>
+        <td>${co.period || ""}</td>
+        <td style="white-space:nowrap">${when}</td>
+        <td>${pill}</td>
+        <td>${action}</td>
+      </tr>`;
+    }).join("");
+    body.querySelectorAll("[data-withdraw]").forEach((b) => b.addEventListener("click", async () => {
+      if (!confirm(`Release ${b.dataset.label}? This reopens the group for other tutors.`)) return;
+      try { await MSP.admin.withdraw(b.dataset.withdraw); await loadAll(); }
+      catch (e) { notify("err", "Could not release: " + (e.message || e)); }
+    }));
+  }
+
+  function renderAdmGroups() {
+    const host = $("adm-groups");
+    const courses = catalogue.filter((c) => c.period === admPeriod);
+    const regByGroup = {};
+    regs.filter(confirmed).forEach((r) => (regByGroup[r.group_id] = regByGroup[r.group_id] || []).push(r));
+
+    if (!courses.length) {
+      host.innerHTML = noticeHTML("info",
+        `Nothing in Period ${esc(admPeriod.replace(/^P/, ""))} yet. Use <strong>+ Add course</strong> above to build it,
+         or open a period that already has courses and use <strong>Copy</strong> to bring one across.`);
+      return;
+    }
+
+    host.innerHTML = courses.map((c) => `
+      <div class="course open" style="margin-top:14px">
+        <div class="course-head" style="cursor:default">
+          ${disc(c.code)}<span class="course-code">${esc(c.code)}</span><span class="course-title">${esc(c.title)}</span>
+          ${c.coordinator ? `<span class="course-meta">${esc(c.coordinator)}${c.coordinator_email ? ` &middot; ${esc(c.coordinator_email)}` : ""}</span>` : ""}
+          <div class="card-acts">
+            <button class="btn btn-ghost btn-mini" data-cedit="${c.id}">Edit course</button>
+            <button class="btn btn-ghost btn-mini" data-ccopy="${c.id}">Copy</button>
+            <button class="btn btn-ghost btn-mini btn-danger" data-cdel="${c.id}">Delete</button>
+          </div>
+        </div>
+        <div class="groups" style="display:grid">
+          ${c.groups.map((g) => {
+            const taken = (regByGroup[g.id] || []).map((r) => r.tutor_name).join(", ");
+            const full = g.claimed >= g.capacity;
+            return `<div class="group ${full ? "full" : ""}" style="cursor:default">
+              <div class="glabel">${esc(g.label)}</div>
+              <div class="gtimes">${fmtTimes(g) || "&nbsp;"}</div>
+              <div class="gstatus ${full ? "s-full" : "s-open"}"><span class="dotstat"></span>${g.claimed}/${g.capacity} filled${taken ? " &middot; " + esc(taken) : ""}</div>
+              <div class="gacts">
+                <label style="margin:0;font-size:11px;color:var(--muted)">Need</label>
+                <input type="number" min="0" value="${g.capacity}" data-cap="${g.id}" style="width:54px;padding:5px 7px">
+                <button class="btn btn-ghost btn-mini" data-toggle="${g.id}" data-open="${g.is_open}">${g.is_open ? "Close" : "Open"}</button>
+                <button class="btn btn-ghost btn-mini" data-gedit="${g.id}">Edit</button>
+                <button class="btn btn-ghost btn-mini btn-danger" data-gdel="${g.id}">Remove</button>
+              </div>
+            </div>`;
+          }).join("")}
+          <button class="group-add" data-addgroup="${c.id}">+ Add group</button>
+        </div>
+      </div>`).join("");
+
+    host.querySelectorAll("[data-cap]").forEach((inp) => inp.addEventListener("change", async () => {
+      const v = Math.max(0, parseInt(inp.value || "0", 10));
+      try { await MSP.admin.updateGroup(inp.dataset.cap, { capacity: v }); await loadAll(); }
+      catch (e) { notify("err", "Could not update capacity: " + (e.message || e)); }
+    }));
+    host.querySelectorAll("[data-toggle]").forEach((b) => b.addEventListener("click", async () => {
+      try { await MSP.admin.updateGroup(b.dataset.toggle, { is_open: b.dataset.open !== "true" }); await loadAll(); }
+      catch (e) { notify("err", "Could not change group: " + (e.message || e)); }
+    }));
+
+    // catalogue editing
+    host.querySelectorAll("[data-cedit]").forEach((b) =>
+      b.addEventListener("click", () => openCourseForm(findCourse(b.dataset.cedit))));
+    host.querySelectorAll("[data-ccopy]").forEach((b) =>
+      b.addEventListener("click", () => openCopyForm(findCourse(b.dataset.ccopy))));
+    host.querySelectorAll("[data-cdel]").forEach((b) =>
+      b.addEventListener("click", () => openCourseDelete(findCourse(b.dataset.cdel))));
+    host.querySelectorAll("[data-addgroup]").forEach((b) =>
+      b.addEventListener("click", () => openGroupForm(findCourse(b.dataset.addgroup), null)));
+    host.querySelectorAll("[data-gedit]").forEach((b) => b.addEventListener("click", () => {
+      const hit = findGroup(b.dataset.gedit);
+      if (hit) openGroupForm(hit.course, hit.group);
+    }));
+    host.querySelectorAll("[data-gdel]").forEach((b) => b.addEventListener("click", () => {
+      const hit = findGroup(b.dataset.gdel);
+      if (hit) removeGroup(hit.course, hit.group);
+    }));
+  }
+
+  // ---------- catalogue editing ----------
+  // All of this exists so that adding a course, or setting up a whole new
+  // period, never needs SQL. The office guide is EDITING-INSTRUCTIONS.md; the
+  // database permissions it relies on are in app/supabase/admin-catalogue.sql.
+  const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
+  const canonDay = (d) => DAYS.find((x) => x.toLowerCase() === String(d || "").toLowerCase().slice(0, 3)) || "";
+
+  function showModal(on) {
+    $("overlay").classList.toggle("active", on);
+    $("modal").classList.toggle("active", on);
+    if (!on) $("modal-body").innerHTML = "";
+  }
+  $("overlay").addEventListener("click", () => showModal(false));
+  $("modal-close").addEventListener("click", () => showModal(false));
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") showModal(false); });
+
+  const findCourse = (id) => catalogue.find((c) => c.id === id);
+  function findGroup(id) {
+    for (const c of catalogue) {
+      const g = c.groups.find((x) => x.id === id);
+      if (g) return { course: c, group: g };
+    }
+    return null;
+  }
+  const formErr = (msg) => notify("err", msg, $("modal-msg"));
+  const periodList = () => [...new Set(catalogue.map((c) => c.period))].sort();
+  const datalist = (id) => `<datalist id="${id}">${periodList().map((p) => `<option value="${esc(p)}">`).join("")}</datalist>`;
+
+  // Turn a database error into something an office colleague can act on.
+  function saveError(e) {
+    const m = (e && (e.message || e.error_description)) || String(e);
+    if (/duplicate key|already exists|23505/i.test(m))
+      return "That course code already exists in that period. Change the code, or pick a different period.";
+    if (/row-level security|violates row-level|42501|permission denied/i.test(m))
+      return `The database has not been given permission for this yet. Someone needs to run
+              <code>app/supabase/admin-catalogue.sql</code> once in the Supabase SQL editor, then this will work.`;
+    return "Could not save: " + esc(m);
+  }
+
+  const actionRow = (saveLabel, danger) => `
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:6px">
+      <button class="btn btn-ghost" id="f-cancel">Cancel</button>
+      <button class="btn ${danger ? "btn-ghost btn-danger" : "btn-primary"}" id="f-save">${saveLabel}</button>
+    </div>`;
+
+  // ---- add / edit a course ---------------------------------------------------
+  function openCourseForm(course) {
+    const isNew = !course;
+    const v = (k) => (isNew ? "" : esc(course[k] || ""));
+    $("modal-title").textContent = isNew ? "Add a course" : "Edit " + course.code;
+    $("modal-body").innerHTML = `
+      <div id="modal-msg"></div>
+      <div class="row2">
+        <div class="field"><label>Course code <span class="req">*</span></label>
+          <input type="text" id="f-code" value="${v("code")}" placeholder="BIO1101"></div>
+        <div class="field"><label>Period <span class="req">*</span></label>
+          <input type="text" id="f-period" list="f-period-list" value="${isNew ? esc(admPeriod) : esc(course.period)}" placeholder="P1">
+          ${datalist("f-period-list")}
+          <div class="hint">Pick an existing period, or type a new one such as P4.</div></div>
+      </div>
+      <div class="field"><label>Course title <span class="req">*</span></label>
+        <input type="text" id="f-title" value="${v("title")}" placeholder="Introduction to Biology"></div>
+      <div class="row2">
+        <div class="field"><label>Course coordinator</label>
+          <input type="text" id="f-coord" value="${v("coordinator")}" placeholder="David Cortens"></div>
+        <div class="field"><label>Coordinator email</label>
+          <input type="email" id="f-cmail" value="${v("coordinator_email")}"></div>
+      </div>
+      <div class="field"><label>Prerequisites</label>
+        <input type="text" id="f-prereq" value="${v("prerequisites")}" placeholder="MSP1000"></div>
+      <div class="field"><label>About this course</label>
+        <textarea id="f-desc" placeholder="The description tutors read when they open the course.">${v("description")}</textarea>
+        <div class="hint">Optional. Plain text, no formatting needed.</div></div>
+      ${actionRow(isNew ? "Add course" : "Save changes")}`;
+    showModal(true);
+
+    $("f-cancel").onclick = () => showModal(false);
+    $("f-save").onclick = async () => {
+      const code = $("f-code").value.trim();
+      const title = $("f-title").value.trim();
+      const period = $("f-period").value.trim().toUpperCase();
+      if (!code || !title || !period) { formErr("Course code, title and period are all required."); return; }
+      const fields = {
+        code, title, period,
+        coordinator: $("f-coord").value.trim() || null,
+        coordinator_email: $("f-cmail").value.trim() || null,
+        prerequisites: $("f-prereq").value.trim() || null,
+        description: $("f-desc").value.trim() || null,
+      };
+      const btn = $("f-save"); btn.disabled = true;
+      try {
+        if (isNew) {
+          fields.sort = Math.max(0, ...catalogue.map((c) => c.sort || 0)) + 1;
+          await MSP.admin.createCourse(fields);
+        } else {
+          await MSP.admin.updateCourse(course.id, fields);
+        }
+        admPeriod = period;
+        showModal(false);
+        await loadAll();
+        notify("ok", `${esc(code)} saved.`);
+      } catch (e) { btn.disabled = false; formErr(saveError(e)); }
+    };
+  }
+
+  // ---- add / edit a tutorial group -------------------------------------------
+  function openGroupForm(course, group) {
+    if (!course) return;
+    const isNew = !group;
+    const daySel = (id, val) => `<select id="${id}"><option value="">not set</option>${
+      DAYS.map((d) => `<option value="${d}"${canonDay(val) === d ? " selected" : ""}>${d}</option>`).join("")}</select>`;
+    const tm = (val) => `value="${esc(val || "")}"`;
+    $("modal-title").textContent = isNew ? "Add a group to " + course.code : "Edit " + course.code + " " + group.label;
+    $("modal-body").innerHTML = `
+      <div id="modal-msg"></div>
+      <div class="row2">
+        <div class="field"><label>Group name <span class="req">*</span></label>
+          <input type="text" id="f-label" value="${isNew ? "" : esc(group.label)}" placeholder="A1 + B1">
+          <div class="hint">Exactly as tutors should see it.</div></div>
+        <div class="field"><label>Tutors needed <span class="req">*</span></label>
+          <input type="number" id="f-cap" min="0" value="${isNew ? 1 : group.capacity}">
+          <div class="hint">Usually 1. Lab sessions are often 2.</div></div>
+      </div>
+
+      <label style="margin-top:6px">First meeting</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px">
+        ${daySel("f-day1", isNew ? "" : group.day1)}
+        <input type="time" id="f-start1" ${tm(isNew ? "" : group.start1)}>
+        <input type="time" id="f-end1" ${tm(isNew ? "" : group.end1)}>
+      </div>
+
+      <label>Second meeting</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:6px">
+        ${daySel("f-day2", isNew ? "" : group.day2)}
+        <input type="time" id="f-start2" ${tm(isNew ? "" : group.start2)}>
+        <input type="time" id="f-end2" ${tm(isNew ? "" : group.end2)}>
+      </div>
+      <div class="hint" style="margin-bottom:18px">Leave the second meeting empty for a one-off session.</div>
+
+      <div class="field">
+        <label style="display:flex;align-items:center;gap:9px;font-weight:600">
+          <input type="checkbox" id="f-open" style="width:16px;height:16px;accent-color:var(--accent)" ${isNew || group.is_open ? "checked" : ""}>
+          Open to tutors
+        </label>
+        <div class="hint">Untick to keep the group in the list but block sign-ups.</div>
+      </div>
+      ${actionRow(isNew ? "Add group" : "Save changes")}`;
+    showModal(true);
+
+    $("f-cancel").onclick = () => showModal(false);
+    $("f-save").onclick = async () => {
+      const label = $("f-label").value.trim();
+      if (!label) { formErr("Give the group a name, for example A1 + B1."); return; }
+      const fields = {
+        label,
+        capacity: Math.max(0, parseInt($("f-cap").value || "1", 10) || 0),
+        day1: $("f-day1").value || null,
+        start1: $("f-start1").value || null,
+        end1: $("f-end1").value || null,
+        day2: $("f-day2").value || null,
+        start2: $("f-start2").value || null,
+        end2: $("f-end2").value || null,
+        is_open: $("f-open").checked,
+      };
+      if (!isNew && fields.capacity < group.claimed) {
+        formErr(`${group.claimed} tutor${group.claimed === 1 ? " is" : "s are"} already signed up for this group,
+                 so it cannot need fewer than ${group.claimed}. Release one of them first.`);
+        return;
+      }
+      const btn = $("f-save"); btn.disabled = true;
+      try {
+        if (isNew) {
+          fields.course_id = course.id;
+          fields.sort = Math.max(0, ...course.groups.map((g) => g.sort || 0)) + 1;
+          await MSP.admin.createGroup(fields);
+        } else {
+          await MSP.admin.updateGroup(group.id, fields);
+        }
+        showModal(false);
+        await loadAll();
+        notify("ok", `${esc(course.code)} ${esc(label)} saved.`);
+      } catch (e) { btn.disabled = false; formErr(saveError(e)); }
+    };
+  }
+
+  async function removeGroup(course, group) {
+    if (group.claimed > 0) {
+      notify("err", `<strong>${esc(course.code)} ${esc(group.label)}</strong> cannot be removed while
+        ${group.claimed} tutor${group.claimed === 1 ? " is" : "s are"} signed up for it. Release them in the
+        registrations table at the top of this page first, then remove the group.`);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    if (!confirm(`Remove group "${group.label}" from ${course.code}? Nobody is signed up for it.`)) return;
+    try {
+      await MSP.admin.deleteGroup(group.id);
+      await loadAll();
+      notify("ok", `${esc(course.code)} ${esc(group.label)} removed.`);
+    } catch (e) {
+      notify("err", e.message === "BLOCKED_BY_REGISTRATION"
+        ? "Somebody signed up for that group a moment ago, so it was not removed. Refresh to see who."
+        : saveError(e));
+    }
+  }
+
+  // ---- copy a course into another period --------------------------------------
+  function openCopyForm(course) {
+    if (!course) return;
+    const also = catalogue.filter((c) => c.code === course.code).map((c) => c.period).sort();
+    const n = course.groups.length;
+    $("modal-title").textContent = "Copy " + course.code;
+    $("modal-body").innerHTML = `
+      <div id="modal-msg"></div>
+      <p class="lead" style="margin-top:0">Makes a fresh copy of <strong>${esc(course.code)}</strong> with
+        ${n === 1 ? "its 1 group" : "all " + n + " groups"}, keeping the days, times and capacities.
+        The copy starts empty: no registrations come with it, and every group is open.</p>
+      <div class="field"><label>Copy into period <span class="req">*</span></label>
+        <input type="text" id="f-period" list="f-copy-list" placeholder="P2">
+        ${datalist("f-copy-list")}
+        <div class="hint">${esc(course.code)} currently exists in ${esc(also.join(", "))}.</div></div>
+      ${actionRow("Copy course")}`;
+    showModal(true);
+
+    $("f-cancel").onclick = () => showModal(false);
+    $("f-save").onclick = async () => {
+      const period = $("f-period").value.trim().toUpperCase();
+      if (!period) { formErr("Say which period to copy it into."); return; }
+      if (period === course.period) { formErr("That is the period it is already in. Pick a different one."); return; }
+      const btn = $("f-save"); btn.disabled = true;
+      try {
+        await MSP.admin.duplicateCourse(course.id, period);
+        admPeriod = period;
+        showModal(false);
+        await loadAll();
+        notify("ok", `${esc(course.code)} copied into Period ${esc(period.replace(/^P/, ""))}. Check the days and times, they came across unchanged.`);
+      } catch (e) { btn.disabled = false; formErr(saveError(e)); }
+    };
+  }
+
+  // ---- delete a course ---------------------------------------------------------
+  function openCourseDelete(course) {
+    if (!course) return;
+    const claimed = course.groups.reduce((n, g) => n + (g.claimed || 0), 0);
+    $("modal-title").textContent = "Delete " + course.code;
+
+    if (claimed > 0) {
+      $("modal-body").innerHTML = noticeHTML("err",
+        `<strong>${esc(course.code)}</strong> still has ${claimed} confirmed registration${claimed === 1 ? "" : "s"}.
+         A course with tutors on it cannot be deleted, by design. Release those tutors in the registrations
+         table first if you really do mean to remove it.`) +
+        `<div style="display:flex;justify-content:flex-end"><button class="btn btn-ghost" id="f-cancel">Close</button></div>`;
+      showModal(true);
+      $("f-cancel").onclick = () => showModal(false);
+      return;
+    }
+
+    $("modal-body").innerHTML =
+      noticeHTML("err", `This permanently deletes <strong>${esc(course.code)}</strong> in Period
+        ${esc(course.period.replace(/^P/, ""))} and ${course.groups.length === 1 ? "its group" : "all " + course.groups.length + " of its groups"}.
+        It cannot be undone. Nobody is signed up, so no registrations will be lost.`) +
+      `<div id="modal-msg"></div>
+       <div class="field"><label>Type <strong>${esc(course.code)}</strong> to confirm</label>
+         <input type="text" id="f-confirm" placeholder="${esc(course.code)}" autocomplete="off"></div>
+       ${actionRow("Delete permanently", true)}`;
+    showModal(true);
+
+    $("f-cancel").onclick = () => showModal(false);
+    $("f-save").onclick = async () => {
+      if ($("f-confirm").value.trim().toUpperCase() !== course.code.toUpperCase()) {
+        formErr("The code does not match, so nothing was deleted.");
+        return;
+      }
+      const btn = $("f-save"); btn.disabled = true;
+      try {
+        await MSP.admin.deleteCourse(course.id);
+        showModal(false);
+        await loadAll();
+        notify("ok", `${esc(course.code)} deleted.`);
+      } catch (e) {
+        btn.disabled = false;
+        formErr(e.message === "BLOCKED_BY_REGISTRATION"
+          ? "Somebody signed up a moment ago, so nothing was deleted. Refresh to see who."
+          : saveError(e));
+      }
+    };
+  }
+
+  $("add-course-btn").addEventListener("click", () => openCourseForm(null));
+
+  // ---------- CSV ----------
+  $("csv-btn").addEventListener("click", () => {
+    const rows = filteredRegs();
+    const head = ["Name", "Email", "Type", "Affiliation", "Phone", "Course code", "Course title", "Group", "Period", "Status", "Registered at", "Notes"];
+    const esc = (v) => `"${(v == null ? "" : String(v)).replace(/"/g, '""')}"`;
+    const lines = [head.join(",")];
+    rows.forEach((r) => {
+      const tg = r.tutorial_group || {}, co = tg.course || {};
+      lines.push([r.tutor_name, r.tutor_email, r.tutor_type, r.affiliation, r.phone, co.code, co.title, tg.label, co.period, r.status, r.created_at, r.motivation].map(esc).join(","));
+    });
+    const blob = new Blob([lines.join("\r\n")], { type: "text/csv;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "msp-tutor-registrations-" + new Date().toISOString().slice(0, 10) + ".csv";
+    a.click();
+  });
+
+  $("fb-csv-btn").addEventListener("click", () => {
+    const head = ["When", "Type", "Feedback", "Name", "Email", "Page", "Handled"];
+    const esc2 = (v) => `"${(v == null ? "" : String(v)).replace(/"/g, '""')}"`;
+    const lines = [head.join(",")];
+    feedback.forEach((f) => lines.push([f.created_at, f.category, f.message, f.name, f.email, f.page, f.handled].map(esc2).join(",")));
+    const blob = new Blob([lines.join("\r\n")], { type: "text/csv;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "msp-feedback-" + new Date().toISOString().slice(0, 10) + ".csv";
+    a.click();
+  });
+
+  $("refresh-btn").addEventListener("click", loadAll);
+  ["adm-search", "adm-period", "adm-status"].forEach((id) => $(id).addEventListener("input", renderTable));
+
+  // already signed in?
+  (async () => { if (await MSP.admin.session()) await enterDashboard(); })();
+})();
+</script>
+<!-- The shared MSP frame (sidebar, canvas, type) - see assets/msp-ui/ -->
+<script src="assets/msp-ui/msp-shell.js"></script>
+<script>
+  MSPShell.init({
+    title: 'MSP Tutor Registration',
+    nav: [
+      { label: 'Home',              hint: 'Open positions',         href: 'index.html',    icon: 'home' },
+      { label: 'Register to tutor', hint: 'Claim a tutorial group', href: 'register.html', icon: 'edit' },
+      { divider: true },
+      { label: 'Office login',      hint: 'Dashboard',              href: 'admin.html',    icon: 'lock' }
+    ],
+    meta: '<span>Office dashboard</span>'
+  });
+  // The Sign out button is written in the page markup (the dashboard script
+  // wires it by id while the page loads) and moves into the sidebar's meta
+  // slot once the shell has built it. Moving a node keeps its listeners.
+  (function () {
+    function place() {
+      var slot = document.getElementById('msp-sb-meta'), btn = document.getElementById('signout');
+      if (slot && btn) slot.appendChild(btn);
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', place); else place();
+  })();
+</script>
+</body>
+</html>

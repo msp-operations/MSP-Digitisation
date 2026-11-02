@@ -1,0 +1,41 @@
+Version,Period,ValidFrom,,,,,,
+1.0,2,2026-2027,,,,,,
+Slot,Code,Title,Coordinator,Corequisite,Prerequisite,Days,CorequisiteOf,PrerequisiteCodes
+A,BIO1101,CORE: Introduction to Biology,David Cortens,TRUE,FALSE,"MonAM, WedPM",PRA1102,
+A,BIO3007,Tropical Biology,Roy Erkens,FALSE,TRUE,"MonAM, WedPM",,BIO2002
+A,CHE2011,Organic Chemistry,Hanne Diliën,TRUE,TRUE,"MonAM, WedPM",PRA2033,CHE2009
+A,INT3007,Systems Biology,Martina Summer-Kutmon,FALSE,TRUE,"MonAM, WedPM",,PRO1002
+A,PHY3008,Cosmology,Lorenzo Reverberi,FALSE,TRUE,"MonAM, WedPM",,MAT2009+PHY2011+PHY2008+PHY2009+PHY2010
+B,INT3012,Science Education: Model-Based Inquiry,May Lee,TRUE,TRUE,"MonPM, ThuAM",PRA3026,INT2013
+B,INT2007,Science in Action,Jessica Mesman,FALSE,FALSE,"MonPM, ThuAM",,
+B,MAT2009,Multivariable Calculus,Mariet Hofstee,FALSE,TRUE,"MonPM, ThuAM",,MAT2006+MAT2004
+B,PHY3004,Elementary Particle Physics,Marcel Merk & Jacco de Vries,FALSE,TRUE,"MonPM, ThuAM",,PHY2005+MAT2004
+B,NEU2004,Neural Circuits and Dynamics,Luke Edwards,FALSE,FALSE,"MonPM, ThuAM",,
+C,BIO3001,Molecular Biology,Kathia Jimenez Monroy,TRUE,TRUE,"TueAM, ThuPM",PRA3003,BIO2001+BIO2007
+C,INT1101,CORE: Introduction to Liberal Arts & Sciences,"Hanne Diliën, Rocio Arreguin Campos",TRUE,FALSE,"TueAM, ThuPM",PRA1102,
+C,INT3005,Biobased Materials and Technology,Yvonne van der Meer & Katie Saralidze,FALSE,TRUE,"TueAM, ThuPM",,
+C,PHY2010,Galactic Astronomy,Chad Ellington,FALSE,FALSE,"TueAM, ThuPM",,
+D,INT3009,Chemical Ecology,John Sloggett,FALSE,TRUE,"TuePM, FriAM",,BIO2001/CHE2009
+D,CHE2006,Biochemistry,Leon Schurgers & Niko Deckers,FALSE,TRUE,"TuePM, FriAM",,BIO1101/CHE1101
+D,CHE3013,Advanced Organic Chemistry,Matt Baker,TRUE,TRUE,"TuePM, FriAM",PRA3029,CHE2011
+D,PHY2003,Vibrations and Waves,Jessica Steinlechner,FALSE,TRUE,"TuePM, FriAM",,PHY2001
+E,BIO2008,Great Transformations in Vertebrate Evolution,Leon Claessens,TRUE,FALSE,"WedAM, FriPM",PRA2025,
+E,CHE3007,Chemical Kinetics,Slava Vieru,FALSE,TRUE,"WedAM, FriPM",,MAT2006+PHY2002
+E,MAT1006,Applied Statistics,Matthijs Hermeling,FALSE,FALSE,"WedAM, FriPM",,
+E,NEU3003,Brain-Body Interactions,Michelle Moerel,FALSE,TRUE,"WedAM, FriPM",,NEU1001+NEU2005+BIO2010
+,PRA1102,Introduction to Scientific Research II,Suzan du Pree,TRUE,TRUE,"WedAM, WedPM",BIO1101+INT1101,MSP1000
+,PRA1003,Basic Physics Laboratory,Chris Pawley,FALSE,FALSE,"WedAM, WedPM",,
+,PRA2010,Synthetic Biology,Erik Steen Redeker,FALSE,TRUE,"TueAM, TuePM, ThuAM, ThuPM",,
+,PRA2013,Practical Zoology,John Sloggett,FALSE,TRUE,"WedAM, WedPM, ThuAM, ThuPM",,PRA1102+BIO2004
+,PRA2018,Capita Selecta in Modern Sciences,Panos Christakoglou,FALSE,FALSE,"MonAM, MonPM, TueAM, TuePM",,
+,PRA2025,Vertebrate Functional Morphology,Leon Claessens & Jesse Hennekam,TRUE,FALSE,"ThuAM, ThuPM",BIO2008,
+,PRA2033,Organic Chemistry Laboratory,Hanne Diliën,TRUE,TRUE,"TueAM, TuePM, ThuAM, ThuPM",CHE2011,PRA2032
+,PRA3029,Advanced Organic Chemistry Laboratory,Matt Baker,TRUE,TRUE,"MonAM, MonPM",CHE3013,CHE2011
+,PRA3002,Advanced Physics Laboratory,Chris Pawley,FALSE,TRUE,"TueAM, TuePM",,PRA1003/PRA2007
+,PRA3003,Molecular Biology,Kathia Jimenez Monroy,TRUE,TRUE,"MonAM, MonPM, WedAM, WedPM",BIO3001,PRA2014
+,PRA3005,Polymer Processing,Eveline Maassen,FALSE,TRUE,"MonAM, MonPM",,CHE2001
+,PRA3006,Programming in the Life Sciences,Egon Willighagen & Rianne Fijten,FALSE,TRUE,"FriAM, FriPM",,MAT2007/PRA2003
+,PRA3023,Plant Physiology and Microbiomes,Aleksander Umanets,FALSE,TRUE,"FriAM, FriPM",,BIO2003
+,PRA3026,Science Teaching Skills,May Lee,TRUE,TRUE,"WedAM, WedPM",INT3012,INT2013
+,PRA3027,Advanced Functional Morphology,Leon Claessens & Jesse Hennekam,FALSE,TRUE,"ThuAM, ThuPM",,PRA2025
+,PRA3031,Statistical Modelling,Joao da Cruz Vargas,FALSE,FALSE,"TueAM, TuePM, FriAM, FriPM",,

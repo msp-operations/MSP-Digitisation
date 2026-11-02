@@ -1,0 +1,92 @@
+<!doctype html>
+<!--
+  privacy.html - specific privacy statement for the MSP Tutor Registration tool.
+  Modeled on UM's specific privacy statements. NOTE FOR UM PRIVACY/ICTS REVIEW:
+  the wording below (lawful basis = consent, retention, and the use of Supabase
+  as an EU-hosted processor) should be confirmed/adjusted by the UM GDPR Team
+  before this is treated as final. A Data Processing Agreement with the hosting
+  provider must be in place.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy statement - MSP Tutor Registration</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="assets/img/msp-logo.png">
+<link rel="stylesheet" href="assets/msp-ui/msp-ui.css">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<!-- This is the privacy statement. To change the wording, edit the text inside
+     the <p> paragraphs below. See EDITING-INSTRUCTIONS for guidance. -->
+
+<main class="msp-main">
+  <div class="panel" style="max-width:760px">
+    <h1 class="display" style="margin-bottom:6px">Privacy statement</h1>
+    <p class="lead">This statement explains how Maastricht University (UM) handles the personal data you provide through the MSP Tutor Registration website. UM is the controller of your personal data.</p>
+    <p class="lead" style="margin-top:8px">UM also has a <a href="https://www.maastrichtuniversity.nl/about-um/organisation/privacy-statement" target="_blank" rel="noopener">general privacy statement</a> that covers anything not specifically described here.</p>
+
+    <h2 class="section" style="margin-top:34px">Contact</h2>
+    <p>For privacy questions, or to exercise your rights, contact UM's Data Protection Officer at <a href="mailto:privacy@maastrichtuniversity.nl">privacy@maastrichtuniversity.nl</a> (or directly at <a href="mailto:fg@maastrichtuniversity.nl">fg@maastrichtuniversity.nl</a>). For questions about this tool specifically, contact the MSP office at <a href="mailto:msp-operations@maastrichtuniversity.nl">msp-operations@maastrichtuniversity.nl</a>.</p>
+
+    <h2 class="section" style="margin-top:30px">Which personal data we process</h2>
+    <p>When you register to tutor, we process the data you enter in the form:</p>
+    <ul>
+      <li>your name;</li>
+      <li>your email address (optional);</li>
+      <li>your role (e.g. PhD candidate, alumnus/alumna, staff) and department/affiliation, if provided;</li>
+      <li>any notes you choose to add;</li>
+      <li>the tutorial group(s) you select, and the date and time of your registration.</li>
+    </ul>
+    <p>If you send feedback through the website, we process your message and, if you provide them, your name and email address.</p>
+
+    <h2 class="section" style="margin-top:30px">Special categories of personal data</h2>
+    <p>We do not ask for sensitive data (such as data about health, religion or ethnic origin). Please do not include such information in the free-text fields. If you provide it anyway, it will be handled with care.</p>
+
+    <h2 class="section" style="margin-top:30px">Purpose</h2>
+    <p>We process your data to recruit and allocate tutors to MSP tutorial groups, and to contact you about the tutorials you sign up for. Feedback is used to improve the website.</p>
+
+    <h2 class="section" style="margin-top:30px">Lawful basis</h2>
+    <p>We process your data on the basis of your <strong>consent</strong>, which you give by ticking the consent box on the registration form. You can withdraw your consent at any time (see "Your rights"). Withdrawing consent does not affect processing that took place before the withdrawal.</p>
+
+    <h2 class="section" style="margin-top:30px">Storage and recipients</h2>
+    <p>Your data is stored on UM's behalf by our hosting provider on servers located in the European Union (Frankfurt, Germany). It is accessible only to authorised MSP office staff and is not shared with any other third parties, unless UM is required to do so by law.</p>
+
+    <h2 class="section" style="margin-top:30px">Retention period</h2>
+    <p>We do not keep your data longer than necessary. Tutor registration data is deleted after the end of the teaching period (semester) it relates to, once tutor allocation for that period is complete. You can ask us to delete your data sooner at any time.</p>
+
+    <h2 class="section" style="margin-top:30px">Your rights</h2>
+    <p>You have the right to access, rectify and erase your personal data, to restrict or object to its processing, to data portability, and to withdraw your consent. To exercise any of these, use UM's <a href="https://www.maastrichtuniversity.nl/about-um/organisation/privacy-statement" target="_blank" rel="noopener">GDPR request form</a>, email <a href="mailto:privacy@maastrichtuniversity.nl">privacy@maastrichtuniversity.nl</a>, or contact the MSP office. UM will respond within one month.</p>
+
+    <h2 class="section" style="margin-top:30px">Complaints</h2>
+    <p>If you have a complaint about how UM processes your personal data, please contact the Data Protection Officer at the address above. You also have the right to lodge a complaint with the Dutch Data Protection Authority (Autoriteit Persoonsgegevens).</p>
+
+    <h2 class="section" style="margin-top:30px">Changes</h2>
+    <p>This statement may be updated from time to time. The current version is the one published here.</p>
+
+    <p style="margin-top:30px"><a href="register.html">&larr; Back to registration</a></p>
+  </div>
+</main>
+
+<footer class="msp-footer">
+  <div class="footer-inner">
+    <a href="privacy.html">Privacy statement</a>
+    <div class="copy">&copy; Maastricht University</div>
+  </div>
+</footer>
+<!-- The shared MSP frame (sidebar, canvas, type) - see assets/msp-ui/ -->
+<script src="assets/msp-ui/msp-shell.js"></script>
+<script>
+  MSPShell.init({
+    title: 'MSP Tutor Registration',
+    nav: [
+      { label: 'Home',              hint: 'Open positions',         href: 'index.html',    icon: 'home' },
+      { label: 'Register to tutor', hint: 'Claim a tutorial group', href: 'register.html', icon: 'edit' },
+      { divider: true },
+      { label: 'Office login',      hint: 'Dashboard',              href: 'admin.html',    icon: 'lock' }
+    ]
+  });
+</script>
+</body>
+</html>

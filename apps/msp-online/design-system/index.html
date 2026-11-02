@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MSP Design System</title>
+<link rel="icon" type="image/png" href="msp-ui/favicon.png">
+<link rel="stylesheet" href="msp-ui/msp-ui.css">
+<style>
+  /* page-local styles for the guide itself */
+  .swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+  .sw{border-radius:var(--msp-r);border:1px solid var(--msp-g2);overflow:hidden;background:#fff}
+  .sw-c{height:56px}
+  .sw-t{padding:8px 10px;font-size:11px;line-height:1.4}
+  .sw-t b{display:block;font-size:12px;color:var(--msp-g9)}
+  .sw-t code{color:var(--msp-g4);font-family:var(--msp-font-mono);font-size:10.5px}
+  .demo{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  pre.code{background:var(--msp-g9);color:#E2E8F0;font-family:var(--msp-font-mono);font-size:11.5px;line-height:1.6;padding:16px 18px;border-radius:var(--msp-r);overflow-x:auto;margin:0}
+  pre.code .k{color:#6ED2EC} pre.code .s{color:#FCD34D}
+  .type-row{display:flex;gap:16px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--msp-g1)}
+  .type-row:last-child{border-bottom:none}
+  .type-row .meta{font-size:11px;color:var(--msp-g4);min-width:200px;font-family:var(--msp-font-mono)}
+  .spacing{display:flex;gap:12px;align-items:flex-end}
+  .spacing div{background:var(--msp-sky);border-radius:3px}
+  .spacing span{display:block;font-size:10px;color:var(--msp-g4);text-align:center;margin-top:6px}
+  .icon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}
+  .icon-grid div{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 4px;border:1px solid var(--msp-g1);border-radius:8px;font-size:10px;color:var(--msp-g5);font-family:var(--msp-font-mono)}
+  .icon-grid svg{width:20px;height:20px;color:var(--msp-navy)}
+</style>
+</head>
+<body>
+
+<main class="msp-main wide" id="top">
+
+  <div class="msp-hero">
+    <div class="msp-hero-kicker">MSP Online · design system</div>
+    <h1>One look for every MSP tool</h1>
+    <p>This page is the living style guide. The sidebar you see on the left is the same one every MSP site gets: it is built by <code>msp-shell.js</code> from a short config, and styled by <code>msp-ui.css</code>. The look is the MSP Course Planner, as proposed by Arthur Foulon in the UI Proposal deck (October 2026).</p>
+    <div class="msp-hero-actions">
+      <a class="msp-btn msp-btn-or" href="#install">How to install it</a>
+      <a class="msp-btn msp-btn-sky" href="#components">Components</a>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────── Colours ─────────────────────────── -->
+  <section class="msp-card static" id="colours">
+    <div class="msp-card-h"><span class="msp-step">1</span><h2>Colours</h2><span class="msp-hint">all tokens are <code>--msp-*</code></span></div>
+    <div class="msp-card-b">
+      <div class="msp-seclbl">Brand</div>
+      <div class="swatches msp-mb-16">
+        <div class="sw"><div class="sw-c" style="background:var(--msp-navy)"></div><div class="sw-t"><b>Sidebar navy</b><code>--msp-navy #011B3C</code></div></div>
+        <div class="sw"><div class="sw-c" style="background:var(--msp-navy2)"></div><div class="sw-t"><b>Navy 2</b><code>--msp-navy2 #02274F</code></div></div>
+        <div class="sw"><div class="sw-c" style="background:var(--msp-navy3)"></div><div class="sw-t"><b>Navy 3</b><code>--msp-navy3 #0A3060</code></div></div>
+        <div class="sw"><div class="sw-c" style="background:var(--msp-sky)"></div><div class="sw-t"><b>Sky</b><code>--msp-sky #6ED2EC</code></div></div>
+        <div class="sw"><div class="sw-c" style="background:var(--msp-orange)"></div><div class="sw-t"><b>Orange</b><code>--msp-orange #E87722</code></div></div>
+        <div class="sw"><div class="sw-c" style="background:var(--msp-red)"></div><div class="sw-t"><b>UM red</b><code>--msp-red #BE0028</code></div></div>
+      </div>
+      <div class="msp-seclbl">Canvas and ink</div>
+      <div class="swatches msp-mb-16">
+        <div class="sw"><div class="sw-c" style="background:var(--msp-g0)"></div><div class="sw-t"><b>Canvas slate</b><code>--msp-g0 #F8FAFC</code></div></div>
+        <div class="sw"><div class="sw-c" style="background:#fff"></div><div class="sw-t"><b>Card surface</b><code>#FFFFFF</code></div></div>
+        <div class="sw"><div class="sw-c" style="background:var(--msp-g2)"></div><div class="sw-t"><b>Border</b><code>--msp-g2 #E2E8F0</code></div></div>
+        <div class="sw"><div class="sw-c" style="background:var(--msp-g4)"></div><div class="sw-t"><b>Hint grey</b><code>--msp-g4 #94A3B8</code></div></div>
+        <div class="sw"><div class="sw-c" style="background:var(--msp-g5)"></div><div class="sw-t"><b>Muted text</b><code>--msp-g5 #64748B</code></div></div>
+        <div class="sw"><div class="sw-c" style="background:var(--msp-g9)"></div><div class="sw-t"><b>Primary ink</b><code>--msp-g9 #0F172A</code></div></div>
+      </div>
+      <div class="msp-seclbl">Semantic states</div>
+      <div class="swatches">
+        <div class="sw"><div class="sw-c" style="background:var(--msp-ok-bg);border-bottom:4px solid var(--msp-ok-bd)"></div><div class="sw-t"><b>Success</b><code>--msp-ok #15803D</code></div></div>
+        <div class="sw"><div class="sw-c" style="background:var(--msp-warn-bg);border-bottom:4px solid var(--msp-warn-bd)"></div><div class="sw-t"><b>Warning</b><code>--msp-warn #92400E</code></div></div>
+        <div class="sw"><div class="sw-c" style="background:var(--msp-err-bg);border-bottom:4px solid var(--msp-err-bd)"></div><div class="sw-t"><b>Error</b><code>--msp-err #B91C1C</code></div></div>
+        <div class="sw"><div class="sw-c" style="background:var(--msp-inf-bg);border-bottom:4px solid var(--msp-inf-bd)"></div><div class="sw-t"><b>Information</b><code>--msp-inf #0C4A6E</code></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────── Type + spacing ─────────────────────────── -->
+  <section class="msp-card static" id="type">
+    <div class="msp-card-h"><span class="msp-step">2</span><h2>Type and spacing</h2><span class="msp-hint">Inter for text, DM Sans for titles, both self-hosted</span></div>
+    <div class="msp-card-b">
+      <div class="type-row"><span class="meta">h1 · DM Sans 700 · 26px</span><h1 style="margin:0">Page title</h1></div>
+      <div class="type-row"><span class="meta">h2 · DM Sans 700 · 20px</span><h2 style="margin:0">Section title</h2></div>
+      <div class="type-row"><span class="meta">h3 / card head · Inter 600 · 15px</span><h3 style="margin:0">Card heading</h3></div>
+      <div class="type-row"><span class="meta">body · Inter 400 · 14px / 1.6</span><span>Body text reads at 14px. Short sentences, one idea each.</span></div>
+      <div class="type-row"><span class="meta">hint · Inter 400 · 12px grey</span><span class="msp-faint msp-small">Hints and helper text in grey.</span></div>
+      <div class="type-row"><span class="meta">label · Inter 700 · 10px caps</span><span class="msp-seclbl" style="margin:0">Section label</span></div>
+      <div class="type-row"><span class="meta">code · mono · 12px</span><span class="msp-code">BIO1101</span></div>
+      <hr class="msp-divider">
+      <div class="msp-seclbl">Spacing scale (4 to 32px)</div>
+      <div class="spacing">
+        <div><div style="width:4px;height:4px"></div><span>4</span></div>
+        <div><div style="width:8px;height:8px"></div><span>8</span></div>
+        <div><div style="width:12px;height:12px"></div><span>12</span></div>
+        <div><div style="width:16px;height:16px"></div><span>16</span></div>
+        <div><div style="width:24px;height:24px"></div><span>24</span></div>
+        <div><div style="width:32px;height:32px"></div><span>32</span></div>
+      </div>
+      <p class="msp-help">Card gutter 24px, card radius 10px (large cards 16px), controls 6px. Sidebar 260px on desktop, 220px between 900 and 1100px, an off-canvas drawer below 900px.</p>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────── Components ─────────────────────────── -->
+  <section class="msp-card static" id="components">
+    <div class="msp-card-h"><span class="msp-step">3</span><h2>Components</h2><span class="msp-hint">copy the markup</span></div>
+    <div class="msp-card-b">
+
+      <div class="msp-seclbl">Buttons</div>
+      <div class="demo msp-mb-24">
+        <button class="msp-btn msp-btn-or">Primary action</button>
+        <button class="msp-btn msp-btn-navy">Emphasised</button>
+        <button class="msp-btn msp-btn-gh">Secondary</button>
+        <button class="msp-btn msp-btn-sky">Helpful</button>
+        <button class="msp-btn msp-btn-link">Link button</button>
+        <button class="msp-btn msp-btn-or msp-btn-sm">Small</button>
+        <button class="msp-btn msp-btn-navy" disabled>Disabled</button>
+      </div>
+
+      <div class="msp-seclbl">Status pills</div>
+      <div class="demo msp-mb-24">
+        <span class="msp-pill">Pending</span>
+        <span class="msp-pill ok">Complete</span>
+        <span class="msp-pill warn">Check this</span>
+        <span class="msp-pill err">Clash</span>
+        <span class="msp-pill inf">Information</span>
+        <span class="msp-pill navy">P1</span>
+        <span class="msp-pill sky">Open</span>
+      </div>
+
+      <div class="msp-seclbl">Chips, tags and codes</div>
+      <div class="demo msp-mb-24">
+        <span class="msp-chips"><button class="msp-chip active">All</button><button class="msp-chip">Period 1</button><button class="msp-chip">Period 2</button></span>
+        <span class="msp-code">BIO1101</span>
+        <span class="msp-tag msp-cat-a">Slot A</span>
+        <span class="msp-tag pre">&#9650; Pre-req</span>
+        <span class="msp-tag co">&#9674; Co-req</span>
+        <span class="msp-tag ok">Passed</span>
+        <span class="msp-tag dark">Mon AM</span>
+        <span class="msp-label">Core</span>
+      </div>
+
+      <div class="msp-seclbl">Alerts</div>
+      <div class="msp-mb-24">
+        <div class="msp-alert ok"><span class="msp-alert-ico">&#10003;</span><div class="msp-alert-body"><strong>Schedule is clash-free</strong><p>All four courses sit in different slots.</p></div></div>
+        <div class="msp-alert warn"><span class="msp-alert-ico">&#9888;</span><div class="msp-alert-body"><strong>Prerequisite not yet confirmed</strong><p>Tick the box once you have passed BIO1101.</p></div></div>
+        <div class="msp-alert err"><span class="msp-alert-ico">&#10007;</span><div class="msp-alert-body"><strong>Timetable clash</strong><p>CHE2001 and PHY2002 both run on Monday morning.</p></div></div>
+        <div class="msp-alert inf"><span class="msp-alert-ico">&#8505;</span><div class="msp-alert-body"><strong>Registration opens 3 November</strong><p>Through the Student Portal, not through this tool.</p></div></div>
+        <div class="msp-note"><strong>Guidance.</strong> A quieter note for advice that is not a state change.</div>
+      </div>
+
+      <div class="msp-seclbl">Forms</div>
+      <div class="msp-grid msp-grid-2 msp-mb-24">
+        <div class="msp-field"><label class="msp-flbl">Select a course</label><div class="msp-select"><select><option>Pick a course</option><option>BIO1101 Cell Biology</option></select></div></div>
+        <div class="msp-field"><label class="msp-flbl">Search</label><div class="msp-search"><input class="msp-input" placeholder="Search courses, codes, tutors"></div></div>
+        <div class="msp-field"><label class="msp-flbl">Your name</label><input class="msp-input" placeholder="First and last name"></div>
+        <div class="msp-field"><label class="msp-flbl">Options</label><label class="msp-check"><input type="checkbox" checked> Show required modules only</label><label class="msp-check" style="margin-top:6px"><input type="checkbox"> Include elective prerequisites</label></div>
+      </div>
+
+      <div class="msp-seclbl">Stat tiles</div>
+      <div class="msp-stats msp-mb-16">
+        <div class="msp-stat"><div class="msp-stat-val">142</div><div class="msp-stat-label">ECTS</div><div class="msp-stat-sub">of 180</div></div>
+        <div class="msp-stat ok"><div class="msp-stat-val">7.8</div><div class="msp-stat-label">GPA</div><div class="msp-stat-sub">Cum laude range</div></div>
+        <div class="msp-stat warn"><div class="msp-stat-val">2</div><div class="msp-stat-label">Open items</div><div class="msp-stat-sub">before registration</div></div>
+        <div class="msp-stat"><div class="msp-stat-val">P2</div><div class="msp-stat-label">Period</div><div class="msp-stat-sub">starts 3 Nov</div></div>
+      </div>
+
+      <div class="msp-seclbl">Table</div>
+      <div class="msp-table-wrap msp-mb-24">
+        <table class="msp-table">
+          <thead><tr><th>Code</th><th>Course</th><th>Slot</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">BIO1101</td><td>Cell Biology</td><td><span class="msp-tag msp-cat-a">A</span></td><td><span class="msp-pill ok">Passed</span></td></tr>
+            <tr><td class="mono">CHE2001</td><td>Organic Chemistry</td><td><span class="msp-tag msp-cat-b">B</span></td><td><span class="msp-pill">Planned</span></td></tr>
+            <tr><td class="mono">PHY2002</td><td>Electromagnetism</td><td><span class="msp-tag msp-cat-c">C</span></td><td><span class="msp-pill warn">Pre-req</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="msp-seclbl">Tabs, steps and links</div>
+      <div class="msp-tabs"><a class="msp-tab active" href="#">Plan A</a><a class="msp-tab" href="#">Plan B</a><a class="msp-tab" href="#">Compare</a></div>
+      <div class="msp-grid msp-grid-2">
+        <ol class="msp-steps"><li>Upload your transcript</li><li>Pick courses per period</li><li>Check the timetable</li><li>Register in the portal</li></ol>
+        <div class="msp-links"><a href="#">Student Portal</a><a href="#">Course catalogue</a><a href="#">Academic advisor</a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────── Icons ─────────────────────────── -->
+  <section class="msp-card static" id="icons">
+    <div class="msp-card-h"><span class="msp-step">4</span><h2>Icons</h2><span class="msp-hint">use the name in a nav item's <code>icon</code></span></div>
+    <div class="msp-card-b"><div class="icon-grid" id="iconGrid"></div></div>
+  </section>
+
+  <!-- ─────────────────────────── Install ─────────────────────────── -->
+  <section class="msp-card static" id="install">
+    <div class="msp-card-h"><span class="msp-step">5</span><h2>How a site gets the frame</h2></div>
+    <div class="msp-card-b">
+      <ol class="msp-steps msp-mb-16">
+        <li>Copy the <code>msp-ui/</code> folder into the site (for example <code>assets/msp-ui/</code>). Fonts and logos travel with it, nothing is fetched from a CDN.</li>
+        <li>Delete the site's old header and nav markup, and the CSS that styled them.</li>
+        <li>Add the stylesheet in <code>&lt;head&gt;</code> and the two scripts at the end of <code>&lt;body&gt;</code>. The shell wraps whatever is in the body into the content column.</li>
+        <li>Map the site's own colour variables onto the tokens (<code>--navy: var(--msp-navy)</code>) and switch its body font to <code>var(--msp-font)</code>.</li>
+        <li>Turn full-bleed heroes into a <code>.msp-hero</code> card, keep everything else.</li>
+      </ol>
+<pre class="code">&lt;link rel="stylesheet" href="assets/msp-ui/msp-ui.css"&gt;
+...
+&lt;script src="assets/msp-ui/msp-shell.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+MSPShell.init({
+  <span class="k">title</span>: <span class="s">'MSP Tutor Registration'</span>,
+  <span class="k">nav</span>: [
+    { label: <span class="s">'Home'</span>,              hint: <span class="s">'Open positions'</span>,     href: <span class="s">'index.html'</span>,    icon: <span class="s">'home'</span> },
+    { label: <span class="s">'Register to tutor'</span>, hint: <span class="s">'Apply for a course'</span>, href: <span class="s">'register.html'</span>, icon: <span class="s">'edit'</span> },
+    { divider: true },
+    { label: <span class="s">'Office login'</span>,      hint: <span class="s">'Dashboard'</span>,          href: <span class="s">'admin.html'</span>,    icon: <span class="s">'lock'</span> }
+  ],
+  <span class="k">footer</span>: <span class="s">'Your data stays in your browser. Nothing is uploaded.'</span>
+});
+&lt;/script&gt;</pre>
+      <p class="msp-help">The active link is detected from the file name or hash. Single-page apps call <code>MSPShell.setActive(href)</code> when their view changes. The slot above the footer takes status lines or buttons through <code>MSPShell.setMeta(html)</code>.</p>
+    </div>
+  </section>
+
+  <footer class="msp-footer">MSP Design System · Maastricht Science Programme · maintained in <code>Operations\Projects\Remodel\MSP-Design-System</code></footer>
+</main>
+
+<script src="msp-ui/msp-shell.js"></script>
+<script>
+MSPShell.init({
+  title: 'MSP Design System',
+  nav: [
+    { label: 'Colours',     hint: 'Tokens and states',      href: '#colours',    icon: 'pie' },
+    { label: 'Type',        hint: 'Fonts and spacing',      href: '#type',       icon: 'filetext' },
+    { label: 'Components',  hint: 'Buttons, cards, forms',  href: '#components', icon: 'layers' },
+    { label: 'Icons',       hint: 'The nav icon set',       href: '#icons',      icon: 'star' },
+    { divider: true },
+    { label: 'Install',     hint: 'How a site gets the frame', href: '#install', icon: 'tool' }
+  ],
+  meta: '<span>Version 0.1 · 6 Oct 2026</span><span>Source: Course Planner + UI Proposal</span>',
+  footer: 'The living style guide for every MSP web tool.'
+});
+// icon gallery
+var g = document.getElementById('iconGrid');
+Object.keys(MSPShell.icons).forEach(function (k) {
+  var d = document.createElement('div'); d.innerHTML = MSPShell.icons[k] + '<span>' + k + '</span>'; g.appendChild(d);
+});
+</script>
+</body>
+</html>

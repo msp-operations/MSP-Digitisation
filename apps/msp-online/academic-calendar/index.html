@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Every operational deadline and rhythm at the Maastricht Science Programme, in one staff calendar with subscribable Outlook feeds.">
+<meta name="theme-color" content="#011B3C">
+<link rel="icon" type="image/png" href="assets/msp-ui/favicon.png">
+<link rel="stylesheet" href="assets/msp-ui/msp-ui.css">
+<title>MSP Operations Calendar</title>
+<style>
+  /* ---------- Tokens: the calendar's names, mapped onto the shared MSP kit (assets/msp-ui/msp-ui.css) ----------
+     The kit's sky (#6ED2EC) is a light cyan: fine for fills, rings and stripes, too pale for text on white.
+     Text and links that used to be sky use --sky-txt (the kit's information blue) instead. */
+  :root {
+    --navy: var(--msp-navy); --navy-2: var(--msp-navy2); --navy-3: var(--msp-navy3);
+    --sky: var(--msp-sky); --sky-txt: var(--msp-inf);
+    --sky-tint: rgba(110,210,236,.22); --exam-tint: rgba(110,210,236,.24); --sky-next: var(--msp-inf-bg); --sky-week: rgba(110,210,236,.13);
+    --ink: var(--msp-g9); --body-2: var(--msp-g7); --body-3: var(--msp-g5); --muted: var(--msp-g5); --faint: var(--msp-g4); --faint-2: var(--msp-g4); --faint-3: var(--msp-g3);
+    --line: var(--msp-g2); --line-2: var(--msp-g2); --line-3: var(--msp-g1); --line-4: var(--msp-g1); --line-in: var(--msp-g2);
+    --surface: var(--msp-g0); --holiday: #eef6f0; --gap: var(--msp-g2);
+    --navy-txt: rgba(255,255,255,.75); --navy-lab: rgba(255,255,255,.5);
+    --gold: #af6500; --gold-txt: #8a4f00; --gold-bg: #fffaf1; --gold-bd: #ecd9b8; --gold-cell: #fdefd6; --gold-tag: #fbeed6;
+    --p1: #001c3d; --p2: #2d5a8a; --p3: #9aabbf; --p4: #001c3d; --p5: #2d5a8a; --p6: #9aabbf;
+    --exams: #0e71bb; --esd: #15817e; --scheduling: #b8741a; --btr: #2e7d5b; --boe: #6a50a7; --general: #66778b;
+    --scrim: rgba(1,27,60,.22); --panel-shadow: 0 0 40px rgba(1,27,60,.18);
+    --r: var(--msp-r); --r-s: var(--msp-rs);
+  }
+  * { box-sizing: border-box; }
+  body { font-variant-numeric: tabular-nums; }
+  input::placeholder { color: var(--msp-g4); }
+  button { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--msp-red); outline-offset: 2px; }
+  [role="button"] { cursor: pointer; }
+
+  /* ---------- Page column (inside the shared frame) ---------- */
+  .msp-main.cal { max-width: 1480px; padding-bottom: 40px; }
+
+  /* ---------- Page head ---------- */
+  .cal-head { display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: flex-end; justify-content: space-between; }
+  .cal-head-left { flex: 1 1 360px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .crumb { font-size: 12px; color: var(--muted); } .crumb i { font-style: normal; color: var(--faint-3); margin: 0 6px; }
+  .crumb a { color: var(--muted); text-decoration: none; } .crumb a:hover { color: var(--navy); }
+  .cal-head h1 { margin: 0; color: var(--navy); }
+  .viewdesc { margin: 0; text-wrap: pretty; }
+  .cal-head-right { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .cal-search { width: 260px; }
+  .cal-search .msp-input { padding-top: 8px; padding-bottom: 8px; -webkit-appearance: none; appearance: none; }
+
+  /* ---------- Filters card: year bar on top, then the chip rows ---------- */
+  .filters .msp-card-b { padding: 18px 22px 16px; }
+  .filters .msp-divider { margin: 16px 0 14px; }
+  .frows { display: flex; flex-direction: column; gap: 10px; }
+  .frow { display: flex; align-items: flex-start; gap: 14px; }
+  .frow .msp-flbl { flex: 0 0 64px; margin: 0; padding-top: 8px; }
+  .msp-chip .odot { width: 9px; height: 9px; border-radius: 50%; border: 2px solid var(--c); background: transparent; flex: 0 0 auto; }
+  .msp-chip.active .odot { background: var(--c); }
+  .msp-chip .ct { padding: 0 7px; font-size: 10.5px; line-height: 16px; border-radius: 10px; background: var(--msp-g1); color: var(--msp-g5); font-weight: 600; }
+  .msp-chip.active .ct { background: rgba(255,255,255,.16); color: #fff; }
+
+  /* ---------- Year bar ---------- */
+  .ybar { padding: 30px 0 0; display: flex; flex-direction: column; gap: 8px; }
+  .ybar:empty { display: none; }
+  .ybrow { position: relative; display: flex; gap: 2px; }
+  .ybseg { flex-basis: 0; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .ybseg .bar { position: relative; height: 8px; border-radius: 1px; background: var(--c, var(--gap)); overflow: hidden; }
+  .ybseg .bar i { position: absolute; top: 0; bottom: 0; background: var(--sky); }
+  .ybseg .lab { font-size: 11px; font-weight: 700; color: var(--navy); }
+  .ybseg[role=button] { cursor: pointer; } .ybseg[role=button]:hover .bar { filter: brightness(1.15); }
+  .ybseg.dim .bar { opacity: .3; } .ybseg.dim .lab { color: var(--faint-3); }
+  .ybseg.sel .lab::after { content: ' · only'; font-weight: 400; color: var(--muted); }
+  .ybtoday { position: absolute; top: -6px; height: 20px; width: 3px; background: var(--gold); }
+  .ybtoday b { position: absolute; top: -27px; left: 6px; font-size: 10px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--gold); white-space: nowrap; }
+  .ybtoday.late b { left: auto; right: 6px; }
+  .ybticks { position: relative; height: 14px; margin-top: -2px; }
+  .ybticks span { position: absolute; top: 0; font-size: 10px; color: var(--faint); padding-left: 4px; border-left: 1px solid var(--line-in); line-height: 14px; }
+  .ybstatus { display: flex; flex-wrap: wrap; gap: 8px 16px; justify-content: space-between; font-size: 12px; color: var(--muted); }
+  .ybstatus .lgs { display: flex; gap: 16px; }
+  .lg { display: inline-flex; align-items: center; gap: 6px; }
+  .lg i { display: inline-block; }
+
+  /* ---------- Main ---------- */
+  #main { display: flex; flex-direction: column; }
+  #main.chains { gap: 26px; max-width: 1240px; }
+  #main.lanes { gap: 14px; }
+  .vcard { background: #fff; border: 1px solid var(--msp-g2); border-radius: var(--msp-r); box-shadow: var(--msp-sh); padding: 18px 20px 20px; }
+  .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .eyebrow.gold { color: var(--gold-txt); }
+  .empty { color: var(--muted); font-size: 14px; padding: 40px 0; text-align: center; }
+  #printstamp { display: none; margin: 0 0 8px; font-size: 12px; font-weight: 700; color: var(--navy); }
+
+  /* Key deadline cards */
+  .keyblock { display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px; }
+  .keygrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
+  .keycard { border: 1px solid var(--gold-bd); background: var(--gold-bg); border-radius: var(--r); padding: 14px 16px 14px 18px; display: flex; flex-direction: column;
+    gap: 6px; cursor: pointer; box-shadow: inset 4px 0 0 var(--gold), var(--msp-sh); transition: border-color .12s ease; text-align: left; }
+  .keycard:hover { border-color: var(--gold); }
+  .keycard .top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .keycard .when { font-size: 20px; font-weight: 700; color: var(--navy); }
+  .keycard .rel { font-size: 12px; font-weight: 700; white-space: nowrap; padding: 2px 8px; border-radius: var(--r-s); color: var(--gold-txt); }
+  .keycard .rel.soon { background: var(--gold); color: #fff; }
+  .keycard .kind { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--gold-txt); }
+  .keycard .title { font-size: 13px; line-height: 1.4; color: var(--body-2); text-wrap: pretty; }
+
+  /* Year grid */
+  .ywrap { overflow-x: auto; }
+  .ygrid { min-width: 1040px; display: flex; flex-direction: column; gap: 1px; background: var(--line-2); border: 1px solid var(--line-2); }
+  .yrow { display: grid; grid-template-columns: 56px repeat(31, minmax(0, 1fr)); gap: 1px; }
+  .ymonth { background: var(--surface); display: flex; flex-direction: column; justify-content: center; padding-left: 10px; cursor: pointer; }
+  .ymonth b { font-size: 13px; font-weight: 700; color: var(--navy); } .ymonth small { font-size: 10px; color: var(--muted); }
+  .ycell { position: relative; height: 54px; padding: 4px 4px 0; background: #fff; display: flex; flex-direction: column; gap: 1px; cursor: pointer;
+    box-shadow: inset 0 2px 0 var(--top, transparent), inset 0 0 0 2px var(--ring, transparent); transition: box-shadow .12s ease; }
+  .ycell:hover { box-shadow: inset 0 0 0 1px var(--sky); }
+  .ycell.out { background: transparent; cursor: default; box-shadow: none; } .ycell.out:hover { box-shadow: none; }
+  .ycell.wknd { background: var(--surface); } .ycell.hol { background: var(--holiday); } .ycell.exam { background: var(--exam-tint); --top: var(--sky); } .ycell.key { background: var(--gold-cell); }
+  .ycell .n { flex-shrink: 0; align-self: flex-start; font-size: 12px; font-weight: 700; line-height: 1.1; padding: 1px 3px; margin: -1px -3px 0; border-radius: 2px; color: var(--ink); }
+  .ycell.wknd .n { color: var(--faint-2); } .ycell.key .n { color: #fff; background: var(--gold); }
+  .ycell.today:not(.key) { background: var(--sky-week); } .ycell.today:not(.key) .n { color: var(--navy); background: var(--sky); }
+  .ycell .dw { flex-shrink: 0; font-size: 9px; line-height: 1.2; font-weight: 700; letter-spacing: -.02em; white-space: nowrap; overflow: hidden; margin: 0 -4px; padding: 0 2px 0 4px; color: var(--faint-2); }
+  .ycell .dw.mon, .ycell .dw.today, .ycell .dw.exam { color: var(--sky-txt); } .ycell .dw.today { font-weight: 700; } .ycell .dw.key { color: var(--gold-txt); }
+  .ycell .dots { display: flex; flex-wrap: wrap; gap: 2px; margin-top: 3px; max-height: 16px; overflow: hidden; }
+  .ycell .dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--c); border: 1.5px solid var(--c); }
+  .ycell .dots i.unc { background: transparent; }
+  .ycell .due { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--gold); }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 20px; padding-top: 12px; font-size: 12px; color: var(--muted); }
+  .legend .key { color: var(--gold-txt); font-weight: 600; }
+
+  /* Coming up */
+  .up { padding-top: 28px; display: flex; flex-direction: column; gap: 10px; }
+  .upgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+  .upcard { border: 1px solid var(--line-2); border-radius: var(--r); padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; cursor: pointer;
+    background: #fff; text-align: left; box-shadow: var(--msp-sh); transition: border-color .12s ease; }
+  .upcard:hover { border-color: var(--faint-3); }
+  .upcard .meta { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+  .upcard .meta i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
+  .upcard .meta b { color: var(--navy); }
+  .upcard .title { font-size: 13px; font-weight: 600; line-height: 1.35; text-wrap: pretty; }
+
+  /* ---------- Key deadlines (chains) ---------- */
+  .mine { display: flex; flex-direction: column; gap: 12px; }
+  .minegrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+  .minecard { border: 1px solid var(--gold-bd); background: var(--gold-bg); border-radius: var(--r); padding: 16px 18px; display: flex; flex-direction: column; gap: 6px; cursor: pointer; text-align: left; box-shadow: var(--msp-sh); transition: border-color .12s ease; }
+  .minecard:hover { border-color: var(--gold); }
+  .minecard .top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .minecard .when { font-size: 22px; font-weight: 700; color: var(--navy); } .minecard .rel { font-size: 13px; font-weight: 600; color: var(--gold-txt); }
+  .minecard .label { font-size: 14px; font-weight: 600; line-height: 1.4; text-wrap: pretty; } .minecard .chainname { font-size: 12px; color: var(--muted); }
+  .chainintro { display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; align-items: center; border-top: 1px solid var(--line); padding-top: 22px; }
+  .chainintro p { margin: 0; font-size: 13px; line-height: 1.5; color: var(--body-2); max-width: 640px; text-wrap: pretty; }
+  .seg { display: flex; background: #fff; border: 1px solid var(--msp-g2); border-radius: var(--msp-r); padding: 4px; gap: 4px; font-size: 13px; font-weight: 600; box-shadow: var(--msp-sh); }
+  .seg button { padding: 6px 14px; border-radius: 7px; cursor: pointer; background: transparent; color: var(--muted); border: 0; transition: background .15s ease, color .15s ease; }
+  .seg button:hover { background: var(--msp-g0); color: var(--body-2); }
+  .seg button.on { background: var(--navy); color: #fff; }
+  .chaingrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(460px, 100%), 1fr)); gap: 16px; align-items: start; }
+  .chain { background: #fff; border: 1px solid var(--line-2); border-radius: var(--r); box-shadow: var(--msp-sh); padding: 18px 20px 12px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .chain .head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .chain .head h3 { margin: 0; display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 700; color: var(--navy); }
+  .chain .head h3 i { width: 12px; height: 12px; border-radius: 3px; background: var(--c); }
+  .chain .head span { font-size: 12px; color: var(--muted); white-space: nowrap; }
+  .chain .prog { height: 3px; background: var(--msp-g1); border-radius: 2px; overflow: hidden; } .chain .prog i { display: block; height: 100%; background: var(--navy); }
+  .csteps { display: flex; flex-direction: column; }
+  .cgap { display: grid; grid-template-columns: 84px 14px minmax(0, 1fr); gap: 0 12px; }
+  .cgap i { justify-self: center; width: 2px; min-height: 14px; background: var(--line-2); } .cgap span { font-size: 11px; color: var(--faint); padding: 2px 0; }
+  .cstep { display: grid; grid-template-columns: 84px 14px minmax(0, 1fr); gap: 0 12px; align-items: start; padding: 6px 8px; margin: 0 -8px; border-radius: var(--r-s);
+    cursor: pointer; background: transparent; border: 0; text-align: left; width: calc(100% + 16px); transition: background .12s ease; }
+  .cstep:hover { background: var(--surface); }
+  .cstep.past { opacity: .5; } .cstep.next { background: var(--sky-next); } .cstep.key { background: var(--gold-bg); }
+  .cstep .when { font-size: 13px; font-weight: 700; color: var(--navy); padding-top: 1px; }
+  .cstep .dot { justify-self: center; width: 12px; height: 12px; margin-top: 3px; border-radius: 50%; background: var(--dc); box-shadow: 0 0 0 3px #fff, 0 0 0 4.5px transparent; }
+  .cstep.key .dot { width: 14px; height: 14px; } .cstep.next .dot { box-shadow: 0 0 0 3px #fff, 0 0 0 4.5px var(--sky); } .cstep.past .dot { background: var(--msp-g3); }
+  .cstep .label { font-size: 13px; line-height: 1.45; text-wrap: pretty; } .cstep.key .label { font-weight: 700; }
+  .tag { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 1px 7px; border-radius: 4px; margin-right: 8px; }
+  .tag.you { background: var(--gold-tag); color: var(--gold-txt); } .tag.office { background: var(--msp-g1); color: var(--navy); } .tag.exams { background: var(--sky-tint); color: var(--sky-txt); } .tag.keyyou { background: var(--gold); color: #fff; }
+  .pill { display: inline-block; white-space: nowrap; margin-left: 8px; font-size: 11px; font-weight: 700; border-radius: 4px; padding: 1px 7px; }
+  .pill.next { color: var(--navy); background: var(--sky); } .pill.unc { color: var(--gold-txt); background: var(--gold-tag); }
+  .done { font-size: 13px; color: var(--muted); }
+
+  /* ---------- By office (lanes) ---------- */
+  .lanehead { display: flex; flex-wrap: wrap; gap: 8px 18px; justify-content: space-between; align-items: center; font-size: 13px; color: var(--body-2); margin-bottom: 14px; }
+  .lanehead .lgs { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 12px; color: var(--muted); }
+  .lanewrap { overflow-x: auto; }
+  .lanewrap .lanes { min-width: 1180px; display: flex; flex-direction: column; --cols: 44; }  /* scoped: #main also carries the class 'lanes' in this view */
+  .lrow { display: grid; grid-template-columns: 140px repeat(var(--cols), minmax(0, 1fr)); }
+  .lrow.months > div { font-size: 12px; font-weight: 600; color: var(--navy); padding: 0 0 6px 4px; border-left: 1px solid var(--line-in); }
+  .lrow.months > div:first-child, .lrow.period > div:first-child, .lrow.weeks > div:first-child { border: 0; padding-left: 0; font-size: 11px; color: var(--faint); font-weight: 400; }
+  .lrow.period { gap: 0 1px; margin-bottom: 2px; }
+  .lrow.period .pw { height: 20px; color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; padding-left: 4px; overflow: hidden; background: var(--pc, var(--gap)); }
+  .lrow.period .pw.ex { color: var(--navy); }
+  .lrow.weeks .wn { font-size: 10px; padding: 3px 0; text-align: center; color: var(--muted); }
+  .lane { border-top: 1px solid var(--line-3); }
+  .lane .ll { display: flex; align-items: center; gap: 10px; height: 50px; font-size: 14px; font-weight: 600; }
+  .lane .ll i { width: 4px; height: 22px; border-radius: 2px; background: var(--c); } .lane .ll small { font-size: 12px; color: var(--faint); font-weight: 400; }
+  .lane .wc { display: flex; align-items: center; justify-content: center; border-left: 1px solid var(--msp-g1); background: transparent; border-top: 0; border-right: 0; border-bottom: 0; padding: 0; cursor: default; transition: background .12s ease; }
+  .lane .wc.cur { background: var(--sky-week); } .lane .wc.hol { background: #f2f6f1; } .lane .wc.ex { background: var(--exam-tint); } .lane .wc.has { cursor: pointer; } .lane .wc.has:hover { background: var(--msp-g1); }
+  .lane .wc b { width: var(--sz); height: var(--sz); border-radius: 50%; background: var(--fill); box-shadow: 0 0 0 2px var(--ringc, transparent); color: #fff; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .lanewrap .end { border-top: 1px solid var(--line-3); }
+
+  /* ---------- Month grid ---------- */
+  .pastlink { font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+  .pastlink button { background: none; border: 0; padding: 0; font: inherit; color: var(--sky-txt); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+  .pastlink button:hover { color: var(--navy); }
+  .month { margin-top: 26px; scroll-margin-top: 16px; } #main.grid .month:first-child, #main.timeline .month:first-child { margin-top: 0; }
+  #main.grid .month { margin-top: 16px; background: #fff; border: 1px solid var(--msp-g2); border-radius: var(--msp-r); box-shadow: var(--msp-sh); padding: 18px 20px 20px; }
+  #main.grid .month:first-child { margin-top: 0; }
+  .month h2 { margin: 0 0 10px; font-family: var(--msp-font); font-size: 13px; text-transform: uppercase; letter-spacing: .12em; color: var(--navy); font-weight: 700; border-bottom: 1px solid var(--line); padding-bottom: 7px; }
+  .calgrid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: var(--line-2); border: 1px solid var(--line-2); }
+  .dowhead { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); font-weight: 600; text-align: center; padding: 6px 0; background: var(--surface); }
+  .day { position: relative; background: #fff; min-height: 84px; padding: 6px 6px 8px; font-size: 12px; overflow: hidden; cursor: pointer;
+    box-shadow: inset 0 2px 0 var(--top, transparent); transition: box-shadow .12s ease; }
+  .day:hover { box-shadow: inset 0 0 0 1px var(--sky); }
+  .day.out { background: var(--surface); cursor: default; box-shadow: none; }
+  .day.wknd { background: var(--surface); } .day.hol { background: var(--holiday); } .day.exam { background: var(--exam-tint); --top: var(--sky); } .day.key { background: var(--gold-cell); }
+  .day.today { box-shadow: inset 0 2px 0 var(--top, transparent), inset 0 0 0 2px var(--sky); }
+  .day .num { font-weight: 700; color: var(--ink); display: flex; justify-content: space-between; gap: 6px; }
+  .day.wknd .num { color: var(--faint-2); }
+  .day.today:not(.key) { background: var(--sky-week); } .day.today:not(.key) .num > span { color: var(--navy); background: var(--sky); padding: 1px 6px; margin: -1px -6px; border-radius: 3px; }
+  .day .num small { font-size: 10px; font-weight: 700; color: var(--sky-txt); }
+  .day .ev { display: block; margin-top: 4px; padding: 2px 6px; border-radius: 4px; box-shadow: inset 3px 0 0 var(--c); background: var(--surface); color: var(--ink);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; font-size: 12px; border: 0; width: 100%; text-align: left; }
+  .day .ev.unc { background: transparent; outline: 1px dashed var(--c); outline-offset: -1px; }
+  .day .ev:hover { background: var(--msp-g1); }
+  .day .due { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--gold); }
+
+  /* ---------- Timeline ---------- */
+  .event { display: flex; gap: 14px; background: #fff; border: 1px solid var(--line-2); border-radius: var(--r); padding: 12px 16px; margin-bottom: 8px; align-items: baseline;
+    cursor: pointer; box-shadow: inset 4px 0 0 var(--c), var(--msp-sh); text-align: left; width: 100%; transition: border-color .12s ease; }
+  .event:hover { border-color: var(--faint-3); } .event.past { opacity: .55; } .event.unc { border-style: dashed; }
+  .event .date { min-width: 86px; font-weight: 700; font-size: 14px; color: var(--navy); } .event .date small { display: block; font-weight: 400; color: var(--muted); font-size: 12px; }
+  .event .body { flex: 1; min-width: 0; } .event .title { font-weight: 600; font-size: 14px; }
+  .event .meta { font-size: 12px; color: var(--muted); margin-top: 3px; line-height: 1.45; }
+  .otag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--c); background: color-mix(in srgb, var(--c) 10%, white); border-radius: 4px; padding: 2px 7px; margin-left: 8px; }
+  .today-rule { border: 0; border-top: 2px solid var(--sky); position: relative; margin: 16px 0; }
+  .today-rule::after { content: "today"; position: absolute; right: 0; top: -10px; background: var(--sky); color: var(--navy); font-size: 10px; font-weight: 700; padding: 1px 8px; border-radius: 4px; }
+
+  /* ---------- Detail panel. The fixed layers stack on the kit's --msp-z-modal, above the sidebar and its drawer toggle ---------- */
+  .scrim { position: fixed; inset: 0; background: var(--scrim); z-index: var(--msp-z-modal); }
+  .panel { position: fixed; top: 0; right: 0; bottom: 0; width: 400px; max-width: 100vw; background: #fff; z-index: calc(var(--msp-z-modal) + 1); box-shadow: var(--panel-shadow);
+    display: flex; flex-direction: column; overflow-y: auto; animation: slidein .18s ease-out; }
+  @keyframes slidein { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: none; } }
+  .phead { background: var(--navy); color: #fff; padding: 20px 24px; display: flex; flex-direction: column; gap: 6px; box-shadow: inset 5px 0 0 var(--c, var(--sky)); }
+  .phead .kick { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: var(--navy-txt); }
+  .phead .close { width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,.12); border: 0; color: #fff; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; flex: 0 0 auto; }
+  .phead .close:hover { background: rgba(255,255,255,.24); }
+  .phead h2 { margin: 0; font-family: var(--msp-font-display); font-size: 19px; font-weight: 700; line-height: 1.3; letter-spacing: -.01em; text-wrap: pretty; } .phead .sub { font-size: 13px; color: var(--navy-txt); }
+  .pbody { padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+  .prow { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--line-4); font-size: 13px; line-height: 1.45; }
+  .prow b { font-size: 11px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); padding-top: 2px; }
+  .pnotes { margin: 0; font-size: 13px; line-height: 1.55; color: var(--body-2); text-wrap: pretty; }
+  .pfeed { justify-content: center; width: 100%; }
+  .report { display: flex; flex-direction: column; gap: 6px; padding-top: 4px; }
+  .report textarea { width: 100%; min-height: 72px; border: 1.5px solid var(--line-in); border-radius: var(--msp-rs); padding: 8px 10px; font: inherit; font-size: 13px; color: var(--ink); resize: vertical; background: #fff; transition: border-color .15s, box-shadow .15s; }
+  .report textarea:hover { border-color: var(--msp-g3); }
+  .report textarea:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgba(1,27,60,.08); }
+  .report .msp-btn { align-self: flex-start; }
+  .report small { font-size: 11px; line-height: 1.5; color: var(--muted); }
+  .plist { padding: 16px 24px; display: flex; flex-direction: column; gap: 8px; }
+  .pitem { display: flex; flex-direction: column; gap: 3px; border: 1px solid var(--line-2); border-radius: var(--r); padding: 10px 12px; cursor: pointer; box-shadow: inset 3px 0 0 var(--c); background: #fff; text-align: left; transition: border-color .12s ease; }
+  .pitem:hover { border-color: var(--faint-3); } .pitem .m { font-size: 12px; color: var(--muted); } .pitem .m b { color: var(--navy); } .pitem .t { font-size: 13px; font-weight: 600; line-height: 1.4; text-wrap: pretty; }
+  .pempty { font-size: 13px; color: var(--muted); padding: 8px 0; }
+  .dei { margin-top: 8px; padding-top: 12px; border-top: 1px solid var(--line-4); }
+  .dei .eyebrow { display: block; margin-bottom: 6px; }
+  .dei span.chip { display: inline-block; background: var(--surface); border: 1px solid var(--line-2); border-radius: var(--r-s); padding: 2px 10px; font-size: 12px; margin: 0 4px 4px 0; }
+  .dei .mo { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+  /* ---------- Landing: who are you (first visit only). Covers the whole viewport, sidebar included ---------- */
+  .landing:focus { outline: none; }
+  .landing { position: fixed; inset: 0; z-index: calc(var(--msp-z-modal) + 3); background: var(--navy); color: #fff; display: flex; align-items: center; justify-content: center; padding: 24px; overflow-y: auto; }
+  .landing .box { max-width: 520px; width: 100%; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; }
+  .landing .mark { width: 124px; height: 124px; overflow: hidden; margin-bottom: 8px; animation: spin 1.4s cubic-bezier(.2,.7,.2,1) 1 both; }
+  .landing .mark img { display: block; height: 184px; margin: -30px -100px; filter: brightness(0) invert(1); }
+  @keyframes spin { from { transform: rotate(-360deg); opacity: 0; } to { transform: none; opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .landing .mark { animation: none; } }
+  .landing .eyebrow { color: var(--navy-lab); }
+  .landing h1 { margin: 0; font-family: var(--msp-font-display); font-size: 30px; font-weight: 700; letter-spacing: -.02em; line-height: 1.15; }
+  .landing p { margin: 0 0 10px; font-size: 15px; line-height: 1.5; color: var(--navy-txt); max-width: 440px; text-wrap: pretty; }
+  .landing .choices { display: grid; gap: 10px; width: 100%; }
+  .landing .choice { background: transparent; border: 1px solid rgba(255,255,255,.35); color: #fff; border-radius: var(--r); padding: 14px 18px; text-align: left; cursor: pointer;
+    display: flex; flex-direction: column; gap: 3px; transition: background .12s ease, border-color .12s ease, color .12s ease; }
+  .landing .choice:hover { background: rgba(255,255,255,.08); border-color: #fff; }
+  .landing .choice b { font-size: 15px; } .landing .choice small { font-size: 12px; line-height: 1.4; color: var(--navy-txt); }
+  .landing .choice.primary { background: var(--msp-orange); border-color: var(--msp-orange); box-shadow: 0 1px 3px rgba(232,119,34,.3); } .landing .choice.primary small { color: #fff; opacity: .9; }
+  .landing .choice.primary:hover { background: #fff; border-color: #fff; color: var(--navy); } .landing .choice.primary:hover small { color: var(--navy); opacity: 1; }
+  .landing .foot { font-size: 12px; color: var(--navy-lab); margin-top: 8px; }
+  .landing .keep { background: transparent; border: 0; color: var(--navy-lab); font-size: 12px; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; margin-top: 4px; }
+  .landing .keep:hover { color: #fff; }
+
+  /* ---------- Subscribe dialog ---------- */
+  .overlay { position: fixed; inset: 0; background: var(--scrim); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: calc(var(--msp-z-modal) + 2); }
+  .card { background: #fff; border-radius: var(--r); max-width: 480px; width: 100%; box-shadow: var(--panel-shadow); overflow: hidden; max-height: 86vh; overflow-y: auto; }
+  .card .phead { box-shadow: inset 5px 0 0 var(--sky); }
+  .card .cbody { padding: 18px 22px 20px; }
+  .subrow { display: block; width: 100%; text-align: left; border: 1px solid var(--line-2); border-radius: var(--r); padding: 10px 14px; margin-bottom: 8px; cursor: pointer;
+    background: var(--surface); text-decoration: none; color: var(--ink); font-family: inherit; font-size: 14px; font-weight: 600; transition: border-color .12s ease; }
+  .subrow:hover { border-color: var(--sky); } .subrow small { display: block; color: var(--muted); font-weight: 400; font-size: 12px; margin-top: 1px; }
+  .subrow.primary { border-color: var(--sky); background: var(--msp-inf-bg); }
+
+  /* ---------- Footer (the kit's .msp-footer, with the calendar's three columns and the feed list) ---------- */
+  .cal-footer { text-align: left; padding: 22px 32px; font-size: 12px; color: var(--muted); }
+  .cal-footer .cols { max-width: 1416px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px 40px; }
+  .cal-footer .col { display: flex; flex-direction: column; gap: 2px; } .cal-footer .col b { color: var(--navy); font-size: 12px; }
+  .cal-footer .report textarea { min-height: 56px; }
+  .cal-footer .feeds { max-width: 1416px; margin: 12px auto 0; display: flex; flex-wrap: wrap; gap: 4px 14px; padding-top: 10px; border-top: 1px solid var(--line); }
+  .cal-footer .feeds button { background: transparent; border: 0; padding: 0; font-size: 12px; color: var(--msp-g5); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+  .cal-footer .feeds button:hover { color: var(--navy); }
+
+  /* ---------- Responsive (same 900px step as the kit's drawer) ---------- */
+  @media (max-width: 900px) {
+    #printbtn { display: none; }
+    .chaingrid { grid-template-columns: 1fr; } .cstep, .cgap { grid-template-columns: 74px 14px minmax(0, 1fr); }
+    .panel { width: 100vw; }
+    .frow { flex-direction: column; gap: 6px; } .frow .msp-flbl { flex-basis: auto; padding-top: 0; }
+  }
+  @media (max-width: 640px) {
+    .cal-head-right, .cal-search { width: 100%; }
+    .vcard, #main.grid .month, .filters .msp-card-b { padding: 12px; }
+    .cal-footer { padding: 18px 16px; }
+  }
+
+  /* ---------- Print (A3 landscape wall chart). The kit already hides the sidebar and zeroes the content margin ---------- */
+  @media print {
+    .panel, .scrim, .overlay, .landing, .cal-head-right, .cal-footer, .up, .keyblock, .lanehead, .frows, .filters .msp-divider { display: none !important; }
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    .msp-content { display: block; }
+    .msp-main.cal { max-width: none; }
+    .filters, .vcard, #main.grid .month { border: 0 !important; box-shadow: none !important; padding: 0 !important; }
+    .filters .msp-card-b { padding: 0; } .ybar { padding-top: 30px; }
+    .ywrap, .lanewrap { overflow: visible; } .ygrid, .lanewrap .lanes { min-width: 0; }
+    .month, .chain { break-inside: avoid; }
+    #printstamp { display: block !important; }
+    @page { size: A3 landscape; margin: 10mm; }
+  }
+</style>
+</head>
+<body>
+
+<div class="msp-main full cal">
+  <header class="msp-page-head cal-head">
+    <div class="cal-head-left">
+      <div class="crumb"><a href="./" id="homelink">Operations Calendar</a><i>/</i><span id="crumbview"></span></div>
+      <h1 id="viewtitle">Year planner</h1>
+      <p class="viewdesc" id="viewdesc"></p>
+    </div>
+    <div class="cal-head-right">
+      <div class="msp-search cal-search"><input class="msp-input" id="search" type="search" placeholder="Search deadlines" aria-label="Search deadlines"></div>
+      <button class="msp-btn msp-btn-gh" id="printbtn" type="button" title="Print the year planner as an A3 landscape wall chart">Print A3</button>
+      <button class="msp-btn msp-btn-gh" id="backbtn" type="button" title="Choose again: academic staff, support staff or both">Back to the start screen</button>
+    </div>
+  </header>
+  <p id="printstamp"></p>
+  <section class="msp-card static filters" aria-label="Year overview and filters">
+    <div class="msp-card-b">
+      <div class="ybar" id="ybar"></div>
+      <hr class="msp-divider">
+      <div class="frows">
+        <div class="frow"><span class="msp-flbl" id="lbl-offices">Offices</span><div class="msp-chips" id="f-offices" role="group" aria-labelledby="lbl-offices"></div></div>
+        <div class="frow"><span class="msp-flbl" id="lbl-roles">For</span><div class="msp-chips" id="f-roles" role="group" aria-labelledby="lbl-roles"></div></div>
+        <div class="frow"><span class="msp-flbl" id="lbl-periods">Period</span><div class="msp-chips" id="f-periods" role="group" aria-labelledby="lbl-periods"></div></div>
+      </div>
+    </div>
+  </section>
+  <main id="main"></main>
+</div>
+<footer class="msp-footer cal-footer">
+  <div class="cols">
+    <div class="col"><b>MSP Operations</b><span id="footline"></span></div>
+    <div class="col"><b>Spotted a wrong date, or have a comment?</b><span>Tell us and it is fixed at the source, so it corrects in everyone's calendar.</span>
+      <div class="report"><textarea id="foot-txt" rows="2" placeholder="Which deadline, what should it be, or what would help you" aria-label="Your comment"></textarea><button class="msp-btn msp-btn-gh msp-btn-sm" id="foot-send" type="button">Send by email</button></div></div>
+    <div class="col"><b>Maastricht University</b><span>Faculty of Science and Engineering · Static site, no tracking, no cookies.</span></div>
+  </div>
+  <div class="feeds" id="feeds"><span>Feeds:</span></div>
+</footer>
+
+<script src="assets/msp-ui/msp-shell.js"></script>
+<script>
+/* The shared MSP frame (assets/msp-ui). The five views are the sidebar navigation: a click runs the
+   calendar's own setView() (onNavigate returns false, so the hash never changes) and buildFilters()
+   marks the active view with MSPShell.setActive. The Outlook button lives in the meta slot, set in init(). */
+MSPShell.init({
+  title: 'MSP Academic Calendar',
+  home: './',
+  nav: [
+    { label: 'Month grid',    hint: 'This month and ahead',      href: '#view-grid',     icon: 'calendar' },
+    { label: 'Year planner',  hint: 'The whole year',            href: '#view-year',     icon: 'grid' },
+    { label: 'Key deadlines', hint: 'Hand-ins and what follows', href: '#view-chains',   icon: 'flag' },
+    { label: 'By office',     hint: 'Week by week per office',   href: '#view-lanes',    icon: 'users' },
+    { label: 'Timeline',      hint: 'Date order from today',     href: '#view-timeline', icon: 'clock' }
+  ],
+  onNavigate: function (item) { if (typeof setView === 'function') setView(item.href.replace('#view-', '')); return false; },
+  footer: 'Deadlines only, no personal data. Static site, no tracking, no cookies.'
+});
+</script>
+<script src="events.js"></script>
+<script>
+/* ==========================================================================
+   EDIT HERE - the names and labels shown on the site.
+
+   TO ADD OR RENAME AN OFFICE (a filter row + its colour layer):
+     1. Add a line to OFFICES below:  key: 'Label shown in the sidebar',
+     2. Use that same key as the `office:` value in data/events.yaml.
+     3. Add a matching colour: OC below, and a --key variable in the stylesheet.
+     4. Add its feed file to FEEDS (build.mjs generates msp-<key>.ics).
+     5. Run  node build.mjs  and push.
+
+   KEY DEADLINES: the hand-ins that get the gold treatment (the four from the
+   28 Aug coordinator talk plus the planning form) are matched on the event id
+   in KEY() below. Full guide: EDITING-INSTRUCTIONS.md.
+   ========================================================================== */
+const OFFICES = { exams: 'Exams', esd: 'ESD', scheduling: 'Scheduling', btr: 'BTR', boe: 'BoE', general: 'General' };
+const OC = { exams: '#0e71bb', esd: '#15817e', scheduling: '#b8741a', btr: '#2e7d5b', boe: '#6a50a7', general: '#66778b' };
+const PC = { P1: '#001c3d', P2: '#2d5a8a', P3: '#9aabbf', P4: '#001c3d', P5: '#2d5a8a', P6: '#9aabbf' };
+const ROLES = { all: 'All staff', academic: 'Academic', support: 'Support' };
+const STAFF_LABEL = { academic: 'Academic staff', support: 'Support staff', both: 'Academic + support staff' };
+const VIEWS = { grid: 'Month grid', year: 'Year planner', chains: 'Key deadlines', lanes: 'By office', timeline: 'Timeline' };
+const VIEW_DESC = {
+  year: 'The full academic year at a glance. Click any day for its deadlines.',
+  chains: 'What you hand in, and what happens to it after.',
+  lanes: 'What each office owes and waits on, week by week.',
+  grid: 'This month and the months ahead, every deadline in its day. Click a day for its deadlines.',
+  timeline: 'Every deadline from today on, in date order.',
+};
+const FEEDS = {
+  'msp-all.ics': 'All offices', 'msp-academic-staff.ics': 'Academic staff', 'msp-support-staff.ics': 'Support staff',
+  'msp-exams.ics': 'Exams', 'msp-esd.ics': 'ESD', 'msp-scheduling.ics': 'Scheduling', 'msp-btr.ics': 'BTR',
+  'msp-boe.ics': 'BoE', 'msp-general.ics': 'General',
+};
+const KEY = (e) => e.key ? (e.key.charAt(0).toUpperCase() + e.key.slice(1)) :
+  /^assessment-announced-/.test(e.id) ? 'Manual' : /^exam-submit-/.test(e.id) ? 'Exam' : /^(project-)?grades-due-/.test(e.id) ? 'Grade' :
+  /^sched-planning-forms-.+-due$/.test(e.id) ? 'Plan' : /^accreditation-deadline-/.test(e.id) ? 'Archive' : '';
+const KEYL = { Manual: 'Course manual on Canvas, with the assessment format', Exam: 'Exam to the Exams office', Grade: 'Grades to the Exams office',
+  Plan: 'Planning form to Scheduling', Archive: 'Exam material for the archive' };
+const CONTACT = 'msp-exams@maastrichtuniversity.nl';
+
+/* ==========================================================================
+   END OF THE EDIT BLOCK. Below is the calendar engine.
+   ========================================================================== */
+
+let DB = null;
+
+// ---------- state: URL params win, then localStorage, then defaults ----------
+const _params = new URLSearchParams(location.search);
+const _saved = (() => { try { return JSON.parse(localStorage.getItem('mspcal2') || '{}'); } catch (_) { return {}; } })();
+const DEFAULT_VIEW = window.innerWidth < 720 ? 'timeline' : 'grid';
+const _pick = (v, allowed, fb) => allowed.includes(v) ? v : fb;
+const VIEW_KEYS = Object.keys(VIEWS);
+const PERIODS = ['', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6'];
+const _offParam = _params.get('office');
+const _initOn = _offParam ? _offParam.split(',').filter(k => OFFICES[k]) : (Array.isArray(_saved.on) ? _saved.on.filter(k => OFFICES[k]) : []);
+const state = {
+  on: new Set(_initOn.length ? _initOn : Object.keys(OFFICES)),
+  view: _pick(_params.get('view'), VIEW_KEYS, _pick(_saved.view, VIEW_KEYS, DEFAULT_VIEW)),
+  role: _pick(_params.get('role'), Object.keys(ROLES), _pick(_saved.role, Object.keys(ROLES), 'all')),
+  period: _pick((_params.get('period') || '').toUpperCase(), PERIODS, _pick(_saved.period, PERIODS, '')),
+  q: '', panel: null, mineOnly: false, showPast: false,
+};
+function syncState() {
+  try { localStorage.setItem('mspcal2', JSON.stringify({ on: [...state.on], view: state.view, role: state.role, period: state.period })); } catch (_) {}
+  const p = new URLSearchParams();
+  if (state.on.size < Object.keys(OFFICES).length) p.set('office', [...state.on].join(','));
+  if (state.role !== 'all') p.set('role', state.role);
+  if (state.period) p.set('period', state.period);
+  if (state.view !== DEFAULT_VIEW) p.set('view', state.view);
+  if (state.panel && state.panel.kind === 'event') p.set('event', state.panel.id);
+  const qs = p.toString();
+  try { history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '')); } catch (_) {}
+}
+
+// ---------- dates (UTC throughout, so DST never moves a day) ----------
+const D = (s) => new Date(s + 'T00:00:00Z');
+const I = (d) => d.toISOString().slice(0, 10);
+const add = (s, n) => { const d = D(s); d.setUTCDate(d.getUTCDate() + n); return I(d); };
+const diff = (a, b) => Math.round((D(b) - D(a)) / 864e5);
+const fmt = (s, o) => D(s).toLocaleDateString('en-GB', Object.assign({ timeZone: 'UTC' }, o || { day: 'numeric', month: 'short' }));
+const fmtDw = (s) => fmt(s, { weekday: 'short' }) + ' ' + fmt(s);
+const fmtLong = (s) => fmt(s, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+const monthKey = (s) => fmt(s, { month: 'long', year: 'numeric' });
+function isoWeek(iso) {
+  const d = D(iso); d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 6) % 7) + 3);
+  const f = new Date(Date.UTC(d.getUTCFullYear(), 0, 4)); f.setUTCDate(f.getUTCDate() - ((f.getUTCDay() + 6) % 7) + 3);
+  return 1 + Math.round((d - f) / 6048e5);
+}
+const rel = (n) => n === 0 ? 'today' : n === 1 ? 'tomorrow' : n < 0 ? (-n) + ' days ago' : n < 14 ? 'in ' + n + ' days' : 'in ' + Math.round(n / 7) + ' weeks';
+const gapText = (n) => n === 0 ? 'same day' : n === 1 ? 'the next day' : n === 7 ? 'a week later' : n % 7 === 0 ? (n / 7) + ' weeks later' : n + ' days later';
+const esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const today = I(new Date());
+
+// ---------- derived from the data ----------
+let periods = [], hols = [], byId = {}, yS = '', yE = '', total = 1;
+const perOf = (iso) => periods.find(p => iso >= p.start && iso <= p.end) || null;
+const holOf = (iso) => hols.find(h => iso >= h.start && iso <= (h.end || h.start)) || null;
+const isExam = (iso) => { const p = perOf(iso); return !!(p && p.exam_start && iso >= p.exam_start && iso <= p.exam_end); };
+const isDue = (e) => e.submit || e.staff === 'academic';
+const periodTag = (e) => { const m = /(?:^|-)p([1-6])(?:-|$)/.exec(e.id); return m ? 'P' + m[1] : ''; };
+const ok = (e) => state.on.has(e.office) && (state.role === 'all' || e.staff === state.role || e.staff === 'both' || !e.staff) &&
+  (!state.period || periodTag(e) === state.period) &&
+  (!state.q || (e.title + ' ' + (e.notes || '') + ' ' + (e.audience || '')).toLowerCase().includes(state.q));
+const filtered = () => DB.events.filter(ok).sort((a, b) => a.date.localeCompare(b.date));
+
+// ---------- clickable elements: mouse and keyboard alike ----------
+function clickable(el, fn) {
+  el.setAttribute('role', 'button'); el.tabIndex = 0;
+  el.addEventListener('click', fn);
+  el.addEventListener('keydown', (ev) => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); fn(ev); } });
+  return el;
+}
+const el = (tag, cls, html) => { const n = document.createElement(tag); if (cls) n.className = cls; if (html != null) n.innerHTML = html; return n; };
+
+// ---------- filters: the chip rows at the top of the content, and the active view in the shared sidebar ----------
+function chip(label, on, prefix) {
+  const b = el('button', 'msp-chip' + (on ? ' active' : ''), (prefix || '') + esc(label));
+  b.type = 'button'; b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  return b;
+}
+function buildFilters() {
+  MSPShell.setActive('#view-' + state.view);
+  const counts = {}; for (const e of DB.events) counts[e.office] = (counts[e.office] || 0) + 1;
+  const lo = document.getElementById('f-offices'); lo.innerHTML = '';
+  for (const [k, label] of Object.entries(OFFICES)) {
+    const b = chip(label, state.on.has(k), '<span class="odot"></span>');
+    b.insertAdjacentHTML('beforeend', `<span class="ct">${counts[k] || 0}</span>`);
+    b.style.setProperty('--c', OC[k]); b.title = label + ': ' + (counts[k] || 0) + ' deadlines';
+    b.onclick = () => { state.on.has(k) ? state.on.delete(k) : state.on.add(k); buildFilters(); syncState(); render(); };
+    lo.appendChild(b);
+  }
+  const all = chip('All', Object.keys(OFFICES).every(k => state.on.has(k))); all.title = 'Show every office';
+  all.onclick = () => { Object.keys(OFFICES).forEach(k => state.on.add(k)); buildFilters(); syncState(); render(); };
+  lo.appendChild(all);
+  const lr = document.getElementById('f-roles'); lr.innerHTML = '';
+  for (const [id, label] of Object.entries(ROLES)) {
+    const b = chip(label, state.role === id);
+    b.onclick = () => { state.role = id; buildFilters(); syncState(); render(); };
+    lr.appendChild(b);
+  }
+  const lp = document.getElementById('f-periods'); lp.innerHTML = '';
+  for (const id of PERIODS) {
+    const b = chip(id || 'All periods', state.period === id);
+    b.title = id ? 'Only the deadlines that belong to ' + id + ', wherever they fall in the year' : 'Every period';
+    b.onclick = () => setPeriod(id);
+    lp.appendChild(b);
+  }
+}
+
+function setPeriod(id) { state.period = PERIODS.includes(id) ? id : ''; syncState(); buildFilters(); buildYearBar(); render(); }
+function setView(id) {
+  if (!VIEWS[id]) return;
+  state.view = id; state.panel = null; closePanel();
+  syncState(); buildFilters(); render();
+  window.scrollTo({ top: 0 });
+}
+
+// ---------- year bar ----------
+function buildYearBar() {
+  const bar = document.getElementById('ybar'); bar.innerHTML = '';
+  if (!periods.length) return;
+  const row = el('div', 'ybrow');
+  let cur = yS;
+  const seg = (grow, colour, label, tip, exL, exW) => {
+    const s = el('div', 'ybseg'); s.style.flexGrow = grow; s.title = tip;
+    if (colour) s.style.setProperty('--c', colour);
+    s.innerHTML = `<div class="bar">${exW ? `<i style="left:${exL}%;width:${exW}%"></i>` : ''}</div><span class="lab">${label}</span>`;
+    return s;
+  };
+  for (const p of periods) {
+    const g = diff(cur, p.start);
+    if (g > 1) row.appendChild(seg(g, null, '', 'No teaching'));
+    const len = diff(p.start, p.end) + 1;
+    const exL = p.exam_start ? diff(p.start, p.exam_start) / len * 100 : 0;
+    const exW = p.exam_start ? (diff(p.exam_start, p.exam_end) + 1) / len * 100 : 0;
+    const s = seg(len, PC[p.id] || '#001c3d', p.id, p.id + ': ' + fmt(p.start) + ' to ' + fmt(p.end) + (p.exam_start ? ' · exams ' + fmt(p.exam_start) + ' to ' + fmt(p.exam_end) : ''), exL, exW);
+    if (state.period && state.period !== p.id) s.classList.add('dim');
+    if (state.period === p.id) s.classList.add('sel');
+    s.title += state.period === p.id ? ' · click to show all periods again' : ' · click to show only ' + p.id;
+    clickable(s, () => setPeriod(state.period === p.id ? '' : p.id));
+    row.appendChild(s);
+    cur = p.end;
+  }
+  if (today >= yS && today <= yE) { const pct = diff(yS, today) / total * 100; const t = el('span', 'ybtoday' + (pct > 85 ? ' late' : ''), '<b>Today · ' + fmt(today) + '</b>'); t.style.left = pct + '%'; t.title = 'Today, ' + fmtDw(today); row.appendChild(t); }
+  bar.appendChild(row);
+  const ticks = el('div', 'ybticks');
+  let m = new Date(Date.UTC(+yS.slice(0, 4), +yS.slice(5, 7), 1));
+  while (I(m) <= yE) { const off = diff(yS, I(m)); if (off >= 0 && off < total) { const t = el('span', '', fmt(I(m), { month: 'short' })); t.style.left = (off / total * 100) + '%'; ticks.appendChild(t); } m = new Date(Date.UTC(m.getUTCFullYear(), m.getUTCMonth() + 1, 1)); }
+  bar.appendChild(ticks);
+  const cp = perOf(today);
+  const now = cp ? `${cp.id} · ${fmt(cp.start)} – ${fmt(cp.end)}${cp.exam_start ? ' · exams ' + fmt(cp.exam_start) + ' – ' + fmt(cp.exam_end) : ''} · today is ${fmtDw(today)}, week ${isoWeek(today)}`
+    : `Between teaching periods · today is ${fmtDw(today)}, week ${isoWeek(today)}`;
+  bar.appendChild(el('div', 'ybstatus', `<span>${now}</span><span class="lgs"><span class="lg"><i style="width:14px;height:6px;background:var(--sky)"></i>Exam week</span><span class="lg"><i style="width:2px;height:12px;background:var(--gold)"></i>Today</span></span>`));
+}
+
+// ---------- render ----------
+function render() {
+  const main = document.getElementById('main');
+  main.innerHTML = ''; main.className = state.view;
+  document.getElementById('crumbview').textContent = VIEWS[state.view];
+  document.getElementById('viewtitle').textContent = VIEWS[state.view];
+  document.getElementById('viewdesc').textContent = VIEW_DESC[state.view] + (state.period ? ' Showing ' + state.period + ' only.' : '');
+  document.title = VIEWS[state.view] + ' · MSP Operations Calendar';
+  const evs = filtered();
+  if (!evs.length && state.view !== 'lanes') {
+    main.appendChild(el('p', 'empty', (state.q ? `No deadlines match "${esc(state.q)}".` : 'No deadlines match this selection.') +
+      `<br>Try turning an office back on, choosing All periods, or clearing the search. If you expected something here, <a href="mailto:${CONTACT}?subject=MSP%20Operations%20Calendar">tell us</a>.`));
+    return;
+  }
+  if (state.view === 'year') renderYear(main, evs);
+  else if (state.view === 'chains') renderChains(main, evs);
+  else if (state.view === 'lanes') renderLanes(main, evs);
+  else if (state.view === 'grid') renderGrid(main, evs);
+  else renderTimeline(main, evs);
+}
+
+function keyCard(e, cls) {
+  const n = diff(today, e.date), k = KEY(e);
+  const c = el('button', cls, `<div class="top"><span class="when">${fmt(e.date, { weekday: 'short', day: 'numeric', month: 'short' })}</span><span class="rel${n <= 14 ? ' soon' : ''}">${rel(n)}</span></div>` +
+    `<div class="kind">${KEYL[k] || 'Key deadline'}</div><div class="title">${esc(e.title)}</div>`);
+  c.onclick = () => openPanel({ kind: 'event', id: e.id });
+  return c;
+}
+
+function renderKeyCards(main, evs) {
+  const keys = evs.filter(e => e.date >= today && KEY(e)).slice(0, 4);
+  if (!keys.length) return;
+  const wrap = el('div', 'keyblock', '<div class="eyebrow gold">Key deadlines ahead</div>');
+  const g = el('div', 'keygrid'); for (const e of keys) g.appendChild(keyCard(e, 'keycard'));
+  wrap.appendChild(g); main.appendChild(wrap);
+}
+// "Show earlier" link for the views that start at today
+function pastLink(main, hiddenLabel) {
+  const row = el('div', 'pastlink');
+  if (state.showPast) row.innerHTML = 'Earlier deadlines are shown. <button type="button">Hide them</button>';
+  else row.innerHTML = esc(hiddenLabel) + ' <button type="button">Show them</button>';
+  row.querySelector('button').onclick = () => {
+    state.showPast = !state.showPast; render();
+    if (state.showPast) { const t = document.querySelector('.today-rule, .day.today'); if (t) t.scrollIntoView({ block: 'center', behavior: 'instant' }); }
+  };
+  main.appendChild(row);
+}
+
+function renderYear(main, evs) {
+  const byDate = {}; for (const e of evs) (byDate[e.date] = byDate[e.date] || []).push(e);
+  renderKeyCards(main, evs);
+  const wrap = el('div', 'ywrap'), grid = el('div', 'ygrid');
+  let y = +yS.slice(0, 4), mo = +yS.slice(5, 7) - 1;
+  for (let k = 0; k < 12; k++) {
+    const first = I(new Date(Date.UTC(y, mo, 1))), n = new Date(Date.UTC(y, mo + 1, 0)).getUTCDate();
+    const row = el('div', 'yrow');
+    const ml = el('div', 'ymonth', `<b>${fmt(first, { month: 'short' })}</b><small>${y}</small>`);
+    ml.title = 'Open ' + monthKey(first) + ' in the month grid';
+    clickable(ml, () => { state.view = 'grid'; syncState(); buildFilters(); render(); gotoMonth(first.slice(0, 7)); });
+    row.appendChild(ml);
+    for (let i = 0; i < 31; i++) {
+      if (i >= n) { row.appendChild(el('div', 'ycell out')); continue; }
+      const iso = add(first, i), wd = D(iso).getUTCDay(), we = wd === 0 || wd === 6;
+      const p = perOf(iso), ex = isExam(iso), h = holOf(iso), de = byDate[iso] || [], isT = iso === today;
+      const kl = (de.map(KEY).find(Boolean)) || '';
+      const c = el('div', 'ycell' + (kl ? ' key' : ex ? ' exam' : h ? ' hol' : we ? ' wknd' : '') + (isT ? ' today' : ''));
+      if (p && !(ex && !kl)) c.style.setProperty('--top', PC[p.id]);
+      if (isT) c.style.setProperty('--ring', 'var(--sky)'); else if (kl) c.style.setProperty('--ring', 'var(--gold)');
+      c.title = fmtDw(iso) + (h ? ' · ' + h.label : '') + (de.length ? ' · ' + de.length + ' deadline' + (de.length > 1 ? 's' : '') : '');
+      c.innerHTML = `<span class="n">${i + 1}</span><span class="dw${kl ? ' key' : isT ? ' today' : wd === 1 ? ' mon' : ex ? ' exam' : ''}">${kl || (isT ? 'Today' : wd === 1 ? 'W' + isoWeek(iso) + (ex ? ' Ex' : '') : ex && !we ? 'Exam' : 'SMTWTFS'[wd])}</span>` +
+        `<div class="dots">${de.slice(0, 6).map(e => `<i class="${e.status === 'unconfirmed' ? 'unc' : ''}" style="--c:${OC[e.office]}"></i>`).join('')}</div>` +
+        (de.some(isDue) ? '<span class="due"></span>' : '');
+      clickable(c, () => openPanel({ kind: 'day', iso }));
+      row.appendChild(c);
+    }
+    grid.appendChild(row);
+    mo++; if (mo > 11) { mo = 0; y++; }
+  }
+  const card = el('div', 'vcard'); wrap.appendChild(grid); card.appendChild(wrap); main.appendChild(card);
+  card.appendChild(el('div', 'legend',
+    `<span class="lg"><i style="width:14px;height:10px;background:var(--exam-tint);box-shadow:inset 0 2px 0 var(--sky)"></i>Exam week</span>` +
+    `<span class="lg"><i style="width:14px;height:10px;background:var(--holiday);border:1px solid #d7eadc"></i>Holiday or break</span>` +
+    `<span class="lg key"><i style="width:14px;height:12px;background:var(--gold-cell);box-shadow:inset 0 0 0 2px var(--gold)"></i>Key deadline: manual, planning form, exam, grades, archive material</span>` +
+    `<span class="lg"><i style="width:14px;height:3px;background:var(--gold)"></i>Academic staff hand something in</span>` +
+    `<span class="lg"><i style="width:7px;height:7px;border-radius:50%;border:1.5px solid var(--muted)"></i>Unconfirmed</span>`));
+  const up = evs.filter(e => e.date >= today && !KEY(e)).slice(0, 6);
+  if (up.length) {
+    const w = el('div', 'up', '<div class="eyebrow">Coming up</div>');
+    const g = el('div', 'upgrid');
+    for (const e of up) {
+      const c = el('button', 'upcard', `<div class="meta"><i style="--c:${OC[e.office]}"></i><b>${fmtDw(e.date)}</b><span>${rel(diff(today, e.date))}</span></div><div class="title">${esc(e.title)}</div>`);
+      c.onclick = () => openPanel({ kind: 'event', id: e.id });
+      g.appendChild(c);
+    }
+    w.appendChild(g); main.appendChild(w);
+  }
+}
+
+function chainDefs() {
+  const exam = (p) => {
+    const per = periods.find(x => x.id === p.toUpperCase());
+    const range = per && per.exam_start ? fmt(per.exam_start) + ' to ' + fmt(per.exam_end) : '';
+    return { title: p.toUpperCase() + ' exam + grading cycle', c: PC[p.toUpperCase()], steps: [
+      [`assessment-announced-${p}`, 'a', 'Your assessment format has to be in the course manual'],
+      [`invigilators-${p}`, 's', 'We book the halls, the invigilators and the equipment'],
+      [`exam-submit-${p}`, 'a', 'Your exam paper and your digital test are due'],
+      [`print-order-${p}`, 's', 'We send your exam to be printed'],
+      [`exam-week-${p}`, 'w', `Exam week starts${range ? ' (runs ' + range + ')' : ''}: rooms, transport, invigilation`],
+      [`grades-due-${p}`, 'a', 'Your filled-in grading sheet is due, 10 working days after the exam'],
+      [`grades-published-${p}`, 's', 'We process the grades and publish them to students. We get 5 working days'],
+      [`accreditation-ask-${p}`, 's', 'We ask you for the exam material we have to archive'],
+      [`exam-inspection-${p}`, 'w', 'Students may inspect their exam up to this date. This is why our 5 days cannot move'],
+      [`accreditation-deadline-${p}`, 'a', 'Your exam material is due: manual, exam, rubrics, attendance'],
+      [`transcript-final-update-${p}`, 's', 'Final transcripts, once the inspection window closes'],
+    ] };
+  };
+  const btr = (k, l) => ({ title: 'BTR grading, ' + l + ' cohort', c: OC.btr, steps: [
+    [`btr-proposal-grades-due-${k}`, 'a', 'Proposal grades due from you and the second assessor'],
+    [`btr-proposal-grades-pub-${k}`, 's', 'We publish proposal grades to students'],
+    [`btr-midterm-grades-due-${k}`, 'a', 'Midterm practical grade due from the supervisor'],
+    [`btr-midterm-grades-pub-${k}`, 's', 'We publish midterm grades'],
+    [`btr-final-grades-due-${k}`, 'a', 'Final thesis and video grades due'],
+    [`btr-final-grades-pub-${k}`, 's', 'We publish the final grades; the graduation decision follows'],
+  ] });
+  return [exam('p1'), exam('p2'), exam('p4'), exam('p5'),
+    { title: 'June resit week cycle', c: OC.exams, steps: [
+      ['invigilators-resits', 's', 'We book the resit invigilation and the equipment'],
+      ['exam-submit-resits', 'a', 'Your resit exam is due. This round is 2 weeks, not 3, because we print in house'],
+      ['resit-week-p5', 'w', 'Resit week starts (runs 14 to 18 Jun)'],
+      ['grades-due-resits', 'a', 'Your resit grades are due'],
+      ['grades-published-resits', 's', 'We process and publish the resit grades'],
+      ['accreditation-ask-resits', 's', 'We ask you for the resit material we have to archive'],
+      ['exam-inspection-resits', 'w', 'Students may inspect their resit up to this date'],
+      ['accreditation-deadline-resits', 'a', 'Your resit material is due'],
+      ['transcript-final-update-resits', 's', 'Final transcripts, once the inspection window closes'],
+    ] },
+    btr('sept', 'September'), btr('feb', 'February'),
+    { title: 'New academic year: catalogue + exam planning', c: OC.esd, steps: [
+      ['catalogue-letters-out', 's', 'We send the catalogue update letters'],
+      ['catalogue-coordinator-updates', 'a', 'Your course description updates are due'],
+      ['assessment-survey', 'a', 'Your assessment survey is due (exam formats + needs)'],
+      ['catalogue-publication', 's', 'We publish the course catalogue (hard deadline)'],
+      ['exam-request-offweek', 's', "We fix next year's exam days with SSC"],
+      ['sap-mendix-pass', 's', 'SAP + Mendix new-year pass; intranet forms updated'],
+    ] },
+  ];
+}
+
+function renderChains(main) {
+  const mine = [], chains = [], done = [];
+  for (const ch of chainDefs()) {
+    let steps = ch.steps.map(([id, who, label]) => ({ e: byId[id], who, label, id })).filter(x => x.e).sort((a, b) => a.e.date.localeCompare(b.e.date));
+    if (!steps.length) continue;
+    if (state.period && !steps.some(s => periodTag(s.e) === state.period)) continue;
+    const all = steps.length, past = steps.filter(s => s.e.date < today).length;
+    for (const s of steps) if (s.who === 'a' && s.e.date >= today) mine.push({ s, chain: ch.title });
+    if (past === all) { done.push(ch.title); continue; }
+    const nextDate = steps.find(s => s.e.date >= today).e.date;
+    if (state.mineOnly) steps = steps.filter(s => s.who === 'a');
+    const nextId = (steps.find(s => s.e.date >= today) || {}).id;
+    chains.push({ ch, steps, all, past, nextId, sort: nextDate });
+  }
+  chains.sort((a, b) => a.sort.localeCompare(b.sort));
+  mine.sort((a, b) => a.s.e.date.localeCompare(b.s.e.date));
+
+  const mw = el('div', 'mine', '<div class="eyebrow gold">Your next deadlines</div>');
+  const mg = el('div', 'minegrid');
+  for (const { s, chain } of mine.slice(0, 3)) {
+    const c = el('button', 'minecard', `<div class="top"><span class="when">${fmt(s.e.date, { weekday: 'short', day: 'numeric', month: 'short' })}</span><span class="rel">${rel(diff(today, s.e.date))}</span></div>` +
+      `<div class="label">${esc(s.label)}</div><div class="chainname">${esc(chain)}</div>`);
+    c.onclick = () => openPanel({ kind: 'event', id: s.e.id });
+    mg.appendChild(c);
+  }
+  if (mine.length) { mw.appendChild(mg); main.appendChild(mw); }
+
+  const intro = el('div', 'chainintro', `<p>The hand-off chains behind the big deadlines. <b style="color:var(--gold-txt)">Gold steps are yours</b> (academic staff), navy steps are what the office does with your input. Click a step for details.</p>`);
+  const sg = el('div', 'seg', `<button class="${state.mineOnly ? '' : 'on'}">Full chain</button><button class="${state.mineOnly ? 'on' : ''}">My steps only</button>`);
+  const [bf, bm] = sg.querySelectorAll('button');
+  bf.onclick = () => { state.mineOnly = false; render(); }; bm.onclick = () => { state.mineOnly = true; render(); };
+  intro.appendChild(sg); main.appendChild(intro);
+
+  const grid = el('div', 'chaingrid');
+  for (const { ch, steps, all, past, nextId } of chains) {
+    const sec = el('section', 'chain');
+    sec.innerHTML = `<div class="head"><h3><i style="--c:${ch.c}"></i>${esc(ch.title)}</h3><span>${past} of ${all} done</span></div><div class="prog"><i style="width:${past / all * 100}%"></i></div>`;
+    const list = el('div', 'csteps');
+    let prev = null;
+    for (const s of steps) {
+      if (prev) list.appendChild(el('div', 'cgap', `<span></span><i></i><span>${gapText(diff(prev, s.e.date))}</span>`));
+      prev = s.e.date;
+      const isPast = s.e.date < today, isNext = s.id === nextId, isKey = !!KEY(s.e);
+      const T = isKey ? ['Key · You', 'keyyou', '#af6500'] : s.who === 'a' ? ['You', 'you', '#af6500'] : s.who === 'w' ? ['Exams', 'exams', 'var(--sky)'] : ['Office', 'office', '#2d5a8a'];
+      const row = el('button', 'cstep' + (isPast ? ' past' : '') + (isNext ? ' next' : '') + (isKey ? ' key' : ''));
+      row.style.setProperty('--dc', T[2]);
+      row.innerHTML = `<span class="when">${fmtDw(s.e.date)}</span><span class="dot"></span><span class="label"><span class="tag ${T[1]}">${T[0]}</span>${esc(s.label)}` +
+        (isNext ? `<span class="pill next">Next · ${rel(diff(today, s.e.date))}</span>` : '') + (s.e.status === 'unconfirmed' ? '<span class="pill unc">Unconfirmed</span>' : '') + '</span>';
+      row.onclick = () => openPanel({ kind: 'event', id: s.e.id });
+      list.appendChild(row);
+    }
+    sec.appendChild(list); grid.appendChild(sec);
+  }
+  main.appendChild(grid);
+  if (done.length) main.appendChild(el('div', 'done', 'Completed this year: ' + esc(done.join(', '))));
+}
+
+function renderLanes(main, evs) {
+  const start = add(yS, -((D(yS).getUTCDay() + 6) % 7));
+  const lastEv = DB.events.length ? DB.events[DB.events.length - 1].date : yE;
+  const nWeeks = Math.max(44, Math.ceil((diff(start, lastEv > yE ? lastEv : yE) + 1) / 7));
+  const weeks = [];
+  for (let i = 0; i < nWeeks; i++) {
+    const s = add(start, 7 * i), e = add(s, 6), p = perOf(s), ex = isExam(s), h = holOf(s), cur = today >= s && today <= e;
+    weeks.push({ s, e, wk: isoWeek(s), thu: add(s, 3), p, ex, h, cur, tip: 'Week ' + isoWeek(s) + ' · ' + fmt(s) + ' – ' + fmt(e) + (h ? ' · ' + h.label : '') });
+  }
+  const card = el('div', 'vcard'); main.appendChild(card);
+  card.appendChild(el('div', 'lanehead', `<div>Click a week for its deadlines.</div><div class="lgs">` +
+    `<span class="lg"><i style="width:10px;height:10px;border-radius:50%;background:var(--body-2)"></i>Deadlines that week</span>` +
+    `<span class="lg" style="color:var(--gold-txt);font-weight:600"><i style="width:10px;height:10px;border-radius:50%;background:var(--gold)"></i>Key deadline that week</span>` +
+    `<span class="lg"><i style="width:10px;height:10px;border-radius:50%;background:#fff;border:2px solid var(--gold)"></i>Includes academic staff hand-in</span>` +
+    `<span class="lg"><i style="width:14px;height:10px;background:var(--exam-tint)"></i>Exam week</span>` +
+    `<span class="lg"><i style="width:14px;height:10px;background:var(--sky-week)"></i>This week</span></div>`));
+  const wrap = el('div', 'lanewrap'), lanes = el('div', 'lanes'); lanes.style.setProperty('--cols', nWeeks);
+  const mh = []; for (const w of weeks) { const l = fmt(w.thu, { month: 'short' }); const last = mh[mh.length - 1]; if (last && last.l === l) last.span++; else mh.push({ l, span: 1 }); }
+  lanes.appendChild(el('div', 'lrow months', '<div></div>' + mh.map(m => `<div style="grid-column:span ${m.span}">${m.l}</div>`).join('')));
+  lanes.appendChild(el('div', 'lrow period', '<div>Period</div>' + weeks.map(w => `<div class="pw${w.ex ? ' ex' : ''}" title="${esc(w.tip)}" style="--pc:${w.p ? (w.ex ? 'var(--sky)' : PC[w.p.id]) : 'var(--gap)'}">${w.p ? (w.ex ? 'Ex' : (w.p.start >= w.s && w.p.start <= w.e ? w.p.id : '')) : ''}</div>`).join('')));
+  lanes.appendChild(el('div', 'lrow weeks', '<div>Week</div>' + weeks.map(w => `<div class="wn" style="background:${w.cur ? 'var(--sky-week)' : w.ex ? 'var(--exam-tint)' : w.h ? '#f2f6f1' : 'transparent'}">${w.wk}</div>`).join('')));
+  for (const k of Object.keys(OFFICES).filter(k => state.on.has(k))) {
+    const mine = evs.filter(e => e.office === k);
+    const row = el('div', 'lrow lane', `<div class="ll"><i style="--c:${OC[k]}"></i>${OFFICES[k]}<small>${mine.length}</small></div>`);
+    for (const w of weeks) {
+      const list = mine.filter(e => e.date >= w.s && e.date <= w.e), n = list.length;
+      const cell = el('button', 'wc' + (w.cur ? ' cur' : w.ex ? ' ex' : w.h ? ' hol' : '') + (n ? ' has' : ''));
+      cell.title = n ? n + ' deadline' + (n > 1 ? 's' : '') + ', week ' + w.wk : w.tip;
+      cell.style.setProperty('--sz', n ? Math.min(8 + n * 3, 20) + 'px' : '0px');
+      cell.style.setProperty('--fill', list.some(KEY) ? '#af6500' : n ? OC[k] : 'transparent');
+      cell.style.setProperty('--ringc', n && list.some(isDue) ? '#af6500' : 'transparent');
+      cell.innerHTML = `<b>${n > 1 ? n : ''}</b>`;
+      if (n) cell.onclick = () => openPanel({ kind: 'week', office: k, s: w.s }); else cell.tabIndex = -1;
+      row.appendChild(cell);
+    }
+    lanes.appendChild(row);
+  }
+  lanes.appendChild(el('div', 'end'));
+  wrap.appendChild(lanes); card.appendChild(wrap);
+}
+
+function gotoMonth(ym) {
+  let sec = document.getElementById('m-' + ym);
+  if (!sec && !state.showPast) { state.showPast = true; render(); sec = document.getElementById('m-' + ym); }
+  if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function renderGrid(main, evs) {
+  renderKeyCards(main, evs);
+  const byDay = {}; for (const e of evs) (byDay[e.date] = byDay[e.date] || []).push(e);
+  const earliest = evs[0].date < yS ? evs[0].date : yS, last = evs[evs.length - 1].date > yE ? evs[evs.length - 1].date : yE;
+  const thisMonth = today.slice(0, 7) + '-01';
+  const canHidePast = thisMonth > earliest && today <= last;
+  const first = (canHidePast && !state.showPast) ? thisMonth : earliest;
+  if (canHidePast) pastLink(main, 'Months before ' + monthKey(thisMonth) + ' are hidden.');
+  let y = +first.slice(0, 4), m = +first.slice(5, 7);
+  const endY = +last.slice(0, 4), endM = +last.slice(5, 7);
+  while (y < endY || (y === endY && m <= endM)) {
+    const ym = `${y}-${String(m).padStart(2, '0')}`;
+    const section = el('section', 'month', `<h2>${monthKey(ym + '-01')}</h2>`); section.id = 'm-' + ym;
+    const grid = el('div', 'calgrid');
+    for (const d of ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']) grid.appendChild(el('div', 'dowhead', d));
+    const firstDow = (D(ym + '-01').getUTCDay() + 6) % 7;
+    for (let i = 0; i < firstDow; i++) grid.appendChild(el('div', 'day out'));
+    const n = new Date(Date.UTC(y, m, 0)).getUTCDate();
+    for (let d = 1; d <= n; d++) {
+      const iso = `${ym}-${String(d).padStart(2, '0')}`, dow = (firstDow + d - 1) % 7, de = byDay[iso] || [];
+      const p = perOf(iso), h = holOf(iso), kl = de.map(KEY).find(Boolean);
+      const cell = el('div', 'day' + (kl ? ' key' : isExam(iso) ? ' exam' : h ? ' hol' : dow >= 5 ? ' wknd' : '') + (iso === today ? ' today' : ''));
+      const exd = isExam(iso);
+      if (p && !(exd && !kl)) cell.style.setProperty('--top', PC[p.id]);
+      if (h) cell.title = h.label;
+      cell.innerHTML = `<div class="num"><span>${d}</span>${iso === today ? '<small>Today</small>' : dow === 0 ? `<small title="ISO week ${isoWeek(iso)}">W${isoWeek(iso)}${exd ? ' · Exam' : ''}</small>` : exd && dow < 5 ? '<small>Exam</small>' : ''}</div>`;
+      for (const e of de) {
+        const b = el('button', 'ev' + (e.status === 'unconfirmed' ? ' unc' : ''), esc(e.title));
+        b.style.setProperty('--c', OC[e.office]); b.title = e.title;
+        b.onclick = (ev) => { ev.stopPropagation(); openPanel({ kind: 'event', id: e.id }); };
+        cell.appendChild(b);
+      }
+      if (de.some(isDue)) cell.appendChild(el('span', 'due'));
+      clickable(cell, () => openPanel({ kind: 'day', iso }));
+      grid.appendChild(cell);
+    }
+    section.appendChild(grid); main.appendChild(section);
+    m++; if (m > 12) { m = 1; y++; }
+  }
+}
+
+function renderTimeline(main, all) {
+  const past = all.filter(e => e.date < today);
+  const evs = (state.showPast || !past.length) ? all : all.filter(e => e.date >= today);
+  if (past.length) pastLink(main, past.length + ' earlier deadline' + (past.length > 1 ? 's are' : ' is') + ' hidden.');
+  if (!evs.length) { main.appendChild(el('p', 'empty', 'Nothing left this year for this selection.')); return; }
+  let cur = null, sec = null, todayDrawn = today < evs[0].date;
+  for (const e of evs) {
+    const mk = monthKey(e.date);
+    if (mk !== cur) { cur = mk; sec = el('section', 'month', `<h2>${mk}</h2>`); sec.id = 'm-' + e.date.slice(0, 7); main.appendChild(sec); }
+    if (!todayDrawn && e.date >= today) { sec.appendChild(el('hr', 'today-rule')); todayDrawn = true; }
+    const b = el('button', 'event' + (e.date < today ? ' past' : '') + (e.status === 'unconfirmed' ? ' unc' : ''));
+    b.style.setProperty('--c', OC[e.office]);
+    b.innerHTML = `<div class="date">${fmt(e.date)}<small>${fmt(e.date, { weekday: 'short' })}</small></div><div class="body"><span class="title">${esc(e.title)}</span>` +
+      `<span class="otag">${OFFICES[e.office] || e.office}</span>${e.status === 'unconfirmed' ? '<span class="pill unc">Unconfirmed</span>' : ''}` +
+      ((e.notes || e.audience) ? `<div class="meta">${esc([e.notes, e.audience && 'For: ' + e.audience].filter(Boolean).join(' · '))}</div>` : '') + '</div>';
+    b.onclick = () => openPanel({ kind: 'event', id: e.id });
+    sec.appendChild(b);
+  }
+}
+
+// ---------- detail panel ----------
+function sendReport(subject, text, footer) {
+  const body = (text.trim() || '(no comment typed)') + '\n\n' + footer;
+  location.href = 'mailto:' + CONTACT + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+}
+function closePanel() {
+  for (const s of document.querySelectorAll('.scrim, .panel')) s.remove();
+  if (state.panel) { state.panel = null; syncState(); }
+}
+function openPanel(pn) {
+  closePanel(); state.panel = pn; syncState();
+  const scrim = el('div', 'scrim'); scrim.onclick = closePanel;
+  const panel = el('aside', 'panel'); panel.setAttribute('aria-modal', 'true'); panel.setAttribute('role', 'dialog');
+  const head = (c, kicker, title, sub) => `<div class="phead" style="--c:${c}"><div class="kick"><span>${kicker}</span><button class="close" aria-label="Close">✕</button></div><h2>${title}</h2><div class="sub">${sub}</div></div>`;
+  const item = (e) => { const b = el('button', 'pitem', `<span class="m"><b>${fmtDw(e.date)}</b> · ${OFFICES[e.office] || e.office}</span><span class="t">${esc(e.title)}</span>`); b.style.setProperty('--c', OC[e.office]); b.onclick = () => openPanel({ kind: 'event', id: e.id }); return b; };
+  if (pn.kind === 'event') {
+    const e = byId[pn.id]; if (!e) { state.panel = null; return; }
+    const p = perOf(e.date), k = KEY(e);
+    const webcal = new URL('feeds/msp-' + e.office + '.ics', location.href).href.replace(/^https?:/, 'webcal:');
+    const rows = [['For', STAFF_LABEL[e.staff] || e.staff], ['Audience', e.audience], ['In', rel(diff(today, e.date))],
+      ['Owner', e.owner]].filter(r => r[1]);
+    panel.innerHTML = head(k ? '#af6500' : OC[e.office], esc((k ? 'Key deadline · ' + KEYL[k] + ' · ' : '') + (OFFICES[e.office] || e.office) + (e.status === 'unconfirmed' ? ' · unconfirmed' : '')), esc(e.title),
+      esc(fmtLong(e.date) + (e.end && e.end !== e.date ? ' – ' + fmtLong(e.end) : '') + ' · week ' + isoWeek(e.date) + (p ? ' · ' + p.id : ''))) +
+      `<div class="pbody"><div>${rows.map(r => `<div class="prow"><b>${r[0]}</b><span>${esc(r[1])}</span></div>`).join('')}</div>` +
+      (e.notes ? `<p class="pnotes">${esc(e.notes)}</p>` : '') +
+      `<a class="pfeed msp-btn msp-btn-sky" href="https://outlook.office.com/calendar/0/addfromweb?url=${encodeURIComponent(webcal)}&name=${encodeURIComponent('MSP ' + (OFFICES[e.office] || e.office))}" target="_blank" rel="noopener">Subscribe to ${OFFICES[e.office] || e.office} in Outlook</a>` +
+      `<div class="report"><label class="eyebrow" for="rep-txt">Spotted a wrong date, or have a comment?</label><textarea id="rep-txt" rows="3" placeholder="What should it be, and how do you know?"></textarea>` +
+      `<button class="msp-btn msp-btn-gh msp-btn-sm" id="rep-send" type="button">Send by email</button><small>Opens in your mail app, addressed to the Operations desk, with this deadline already in the subject.</small></div></div>`;
+    panel.querySelector('#rep-send').onclick = () => sendReport('Date check: ' + e.title + ' (' + e.date + ')', panel.querySelector('#rep-txt').value,
+      'Deadline: ' + e.title + ' (' + e.date + ', id ' + e.id + ')\nPage: ' + location.origin + location.pathname + '?event=' + encodeURIComponent(e.id));
+  } else if (pn.kind === 'day') {
+    const list = DB.events.filter(e => e.date === pn.iso && ok(e)), h = holOf(pn.iso), p = perOf(pn.iso);
+    panel.innerHTML = head('var(--sky)', 'Week ' + isoWeek(pn.iso) + (p ? ' · ' + p.id : '') + (isExam(pn.iso) ? ' · exam week' : ''), fmtLong(pn.iso), esc(h ? h.label : (list.length ? list.length + ' deadline' + (list.length > 1 ? 's' : '') : 'No deadlines')));
+    const body = el('div', 'plist');
+    if (!list.length) body.appendChild(el('div', 'pempty', 'No deadlines match the current filters.'));
+    for (const e of list) body.appendChild(item(e));
+    const deiDay = (DB.dei && DB.dei.days && DB.dei.days[pn.iso]) || [], deiMonth = (DB.dei && DB.dei.months && DB.dei.months[pn.iso.slice(0, 7)]) || [];
+    if (deiDay.length || deiMonth.length) body.appendChild(el('div', 'dei', '<span class="eyebrow">Diversity, Equity and Inclusion</span>' + deiDay.map(l => `<span class="chip">${esc(l)}</span>`).join('') + (deiMonth.length ? `<div class="mo">${esc(deiMonth.join(' · '))}</div>` : '')));
+    panel.appendChild(body);
+  } else {
+    const e = add(pn.s, 6), list = filtered().filter(x => x.office === pn.office && x.date >= pn.s && x.date <= e);
+    panel.innerHTML = head(OC[pn.office], OFFICES[pn.office], 'Week ' + isoWeek(pn.s), fmt(pn.s) + ' – ' + fmt(e, { day: 'numeric', month: 'short', year: 'numeric' }));
+    const body = el('div', 'plist');
+    if (!list.length) body.appendChild(el('div', 'pempty', 'No deadlines match the current filters.'));
+    for (const x of list) body.appendChild(item(x));
+    panel.appendChild(body);
+  }
+  panel.querySelector('.close').onclick = closePanel;
+  document.body.appendChild(scrim); document.body.appendChild(panel);
+  panel.querySelector('.close').focus();
+}
+document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') { closePanel(); const o = document.querySelector('.overlay'); if (o) o.remove(); } });
+
+// ---------- subscribe dialog (unchanged flow: one click for UM Outlook, webcal, Google, copy) ----------
+function showSubscribeCard(feed) {
+  const label = FEEDS[feed] || feed;
+  const httpsUrl = new URL('feeds/' + feed, location.href).href;
+  if (!location.protocol.startsWith('http')) { location.href = 'feeds/' + feed; return; }
+  const webcal = httpsUrl.replace(/^https?:/, 'webcal:');
+  const old = document.querySelector('.overlay'); if (old) old.remove();
+  const overlay = el('div', 'overlay'), card = el('div', 'card');
+  card.innerHTML = `<div class="phead"><div class="kick"><span>Subscribe · updates arrive automatically</span><button class="close" aria-label="Close">✕</button></div><h2>MSP deadlines: ${esc(label)}</h2></div>` +
+    `<div class="cbody">` +
+    `<a class="subrow primary" href="https://outlook.office.com/calendar/0/addfromweb?url=${encodeURIComponent(webcal)}&name=${encodeURIComponent('MSP ' + label)}" target="_blank" rel="noopener">UM Outlook (Microsoft 365)<small>One click: opens Outlook on the web with this calendar ready to add</small></a>` +
+    `<a class="subrow" href="${webcal}">Apple Calendar / Outlook desktop<small>Opens your default calendar app via webcal</small></a>` +
+    `<a class="subrow" href="https://calendar.google.com/calendar/r?cid=${encodeURIComponent(webcal)}" target="_blank" rel="noopener">Google Calendar<small>For private devices</small></a>` +
+    `<button class="subrow" id="subcopy">Copy the feed URL<small>Paste it into any calendar app's subscribe-from-web option</small></button></div>`;
+  overlay.appendChild(card);
+  overlay.onclick = (ev) => { if (ev.target === overlay) overlay.remove(); };
+  card.querySelector('.close').onclick = () => overlay.remove();
+  card.querySelector('#subcopy').onclick = (ev) => {
+    const btn = ev.currentTarget;
+    navigator.clipboard.writeText(httpsUrl).then(() => { btn.firstChild.textContent = 'Copied!'; setTimeout(() => { btn.firstChild.textContent = 'Copy the feed URL'; }, 1400); })
+      .catch(() => { prompt('Feed URL:', httpsUrl); });
+  };
+  document.body.appendChild(overlay);
+}
+
+// ---------- landing: the audience choice, once ----------
+function showLanding(reopen) {
+  const old = document.querySelector('.landing'); if (old) old.remove();
+  const l = el('div', 'landing');
+  l.setAttribute('role', 'dialog'); l.setAttribute('aria-label', 'Who are you');
+  l.innerHTML = `<div class="box"><span class="mark"><img src="msp-logo.png" alt=""></span>` +
+    `<span class="eyebrow">Maastricht Science Programme</span><h1>Operations Calendar</h1>` +
+    `<p>Every operational deadline at MSP, in one place. Tell us who you are and the calendar shows only what concerns you.</p>` +
+    `<div class="choices">` +
+    `<button class="choice primary" data-role="academic"><b>Academic staff</b><small>Course coordinators, tutors and supervisors: what you hand in, and when.</small></button>` +
+    `<button class="choice" data-role="support"><b>Support staff</b><small>Exams, ESD, Scheduling, BTR and BoE: what the offices owe and wait on.</small></button>` +
+    `<button class="choice" data-role="all"><b>Both</b><small>Everything: all ${DB.events.length} deadlines, every office, every role.</small></button>` +
+    `</div><span class="foot">You can change this any time under For, above the calendar.</span>` +
+    (reopen ? `<button class="keep" type="button">Keep my current choice</button>` : '') + `</div>`;
+  for (const b of l.querySelectorAll('.choice')) b.onclick = () => {
+    state.role = b.dataset.role;
+    try { localStorage.setItem('mspcal_entered', '1'); } catch (_) {}
+    l.remove(); syncState(); buildFilters(); render();
+  };
+  const keep = l.querySelector('.keep'); if (keep) keep.onclick = () => l.remove();
+  if (reopen) l.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') l.remove(); });
+  l.tabIndex = -1;
+  document.body.appendChild(l);
+  l.focus({ preventScroll: true });
+}
+
+// ---------- boot ----------
+function init() {
+  periods = DB.periods.slice().sort((a, b) => a.start.localeCompare(b.start));
+  hols = DB.holidays || [];
+  for (const e of DB.events) byId[e.id] = e;
+  yS = periods[0].start; yE = periods[periods.length - 1].end; total = diff(yS, yE) + 1;
+  document.getElementById('printstamp').textContent = 'MSP Operations Calendar · academic year ' + DB.year + ' · printed from data updated ' + DB.generated;
+  document.getElementById('footline').textContent = 'Academic year ' + DB.year + ' · data updated ' + fmt(DB.generated, { day: 'numeric', month: 'long', year: 'numeric' }) +
+    ' · ' + DB.events.length + ' deadlines, ' + DB.events.filter(e => e.status !== 'confirmed').length + ' awaiting confirmation';
+  document.getElementById('foot-send').onclick = () => sendReport('MSP Operations Calendar: comment', document.getElementById('foot-txt').value, 'Page: ' + location.origin + location.pathname + location.search);
+  const feeds = document.getElementById('feeds');
+  for (const [f, l] of Object.entries(FEEDS)) { const b = el('button', '', l); b.onclick = () => showSubscribeCard(f); feeds.appendChild(b); }
+  const search = document.getElementById('search');
+  search.oninput = () => { state.q = search.value.trim().toLowerCase(); render(); };
+  document.getElementById('printbtn').onclick = () => { if (state.view !== 'year') setView('year'); setTimeout(() => window.print(), 150); };
+  document.getElementById('homelink').onclick = (ev) => { ev.preventDefault(); state.q = ''; search.value = ''; setView('year'); };
+  const back = document.getElementById('backbtn');
+  back.innerHTML = MSPShell.icon('back') + 'Back to the start screen';
+  back.onclick = () => showLanding(true);
+  // The Outlook button sits in the shared sidebar's meta slot, under the navigation
+  const yr = (DB.year || '').replace(/^(\d{4})-(\d{2})$/, '$1–$2');
+  MSPShell.setMeta(`<span>Academic year ${esc(yr)}</span><span>Optional. The site is the calendar; Outlook subscribers get updates automatically.</span>` +
+    `<button type="button" class="msp-sb-cfg" id="sb-subscribe">${MSPShell.icon('mail')} Get this in Outlook</button>`);
+  document.getElementById('sb-subscribe').onclick = () => showSubscribeCard(state.role === 'academic' ? 'msp-academic-staff.ics' : state.role === 'support' ? 'msp-support-staff.ics' : 'msp-all.ics');
+  buildFilters(); buildYearBar();
+  syncState(); render();
+  const evId = _params.get('event');
+  if (evId && byId[evId]) openPanel({ kind: 'event', id: evId });
+  // First visit with no link that already says where to go: ask who they are. A shared link skips it.
+  const entered = (() => { try { return localStorage.getItem('mspcal_entered'); } catch (_) { return null; } })();
+  const deepLink = ['role', 'event', 'view', 'office', 'period'].some(k => _params.has(k));
+  if (!entered && !deepLink) showLanding();
+}
+window.onerror = (msg) => { document.getElementById('main').innerHTML = `<p class="empty">Sorry, something went wrong loading the calendar. Please let us know: ${esc(msg)}</p>`; };
+// Boot once the shared frame exists: MSPShell.init defers to DOMContentLoaded, so this does too, in that order
+function boot() {
+  if (window.MSP_EVENTS) { DB = window.MSP_EVENTS; init(); }
+  else fetch('events.json').then(r => r.json()).then(db => { DB = db; init(); })
+    .catch(() => { document.getElementById('main').innerHTML = '<p class="empty">The calendar data could not be loaded. Please refresh, and tell us if it keeps happening.</p>'; });
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+</script>
+</body>
+</html>

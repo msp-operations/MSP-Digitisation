@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community | CE Alumni Network</title>
+    <link rel="icon" type="image/png" href="assets/logos/ce-logo.png">
+    <meta name="description" content="Join the Circular Engineering alumni community. Update your information and stay connected with fellow CE graduates.">
+
+    <!-- Shared MSP frame: sidebar, tokens, type (self-hosted fonts) -->
+    <link rel="stylesheet" href="assets/msp-ui/msp-ui.css">
+
+    <!-- Lucide Icons (pinned) -->
+    <script src="https://unpkg.com/lucide@0.576.0/dist/umd/lucide.js"></script>
+
+    <!-- CE Alumni Data -->
+    <script src="data.js"></script>
+
+    <style>
+        /* ============================================
+           TOKENS, mapped onto the shared MSP kit
+        ============================================ */
+        :root {
+            --um-dark-blue: var(--msp-navy);
+            --um-darker-blue: var(--msp-navy);
+            --um-light-blue: #00A2DB;
+
+            --ce-green-primary: #10B981;   /* CE identity accents, kept */
+            --ce-green-dark: #059669;
+            --ce-green-light: #34D399;
+            --ce-green-glow: rgba(16, 185, 129, 0.3);
+            --ce-teal: #14B8A6;
+
+            --ce-sand: var(--msp-g0);
+            --ce-warm-white: var(--msp-g0);
+
+            --gray-50: var(--msp-g0);
+            --gray-100: var(--msp-g1);
+            --gray-200: var(--msp-g2);
+            --gray-300: var(--msp-g3);
+            --gray-500: var(--msp-g5);
+            --gray-600: var(--msp-g7);
+            --gray-800: var(--msp-g9);
+
+            --font-heading: var(--msp-font-display);
+            --font-body: var(--msp-font);
+
+            --shadow-sm: var(--msp-sh);
+            --shadow-md: var(--msp-sh-md);
+            --shadow-lg: var(--msp-sh-lg);
+
+            --radius-sm: var(--msp-rs);
+            --radius-md: var(--msp-r);
+            --radius-lg: var(--msp-r);
+            --radius-xl: var(--msp-rl);
+            --radius-full: 9999px;
+
+            --transition-fast: 0.15s ease;
+            --transition-smooth: 0.3s ease;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; }
+        h1, h2, h3, h4, h5, h6, p { margin: 0; }
+
+        /* ============================================
+           HERO (in-column .msp-hero card)
+        ============================================ */
+        .hero-badge { display: inline-flex; align-items: center; gap: 7px; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ce-green-light); margin-bottom: 10px; }
+        .hero-badge [data-lucide] { width: 14px; height: 14px; }
+
+        /* ============================================
+           SECTION CARDS
+        ============================================ */
+        .update-section, .privacy-section {
+            background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm); padding: 28px 32px; margin-bottom: 20px;
+        }
+        .update-header, .connect-header, .privacy-header { text-align: center; margin-bottom: 24px; }
+        .update-header h2, .connect-header h2, .privacy-header h2 { font-size: 22px; font-weight: 700; margin: 0 0 6px; line-height: 1.2; }
+        .update-header p, .connect-header p, .privacy-header p { font-size: 13.5px; color: var(--gray-500); max-width: 52ch; margin: 0 auto; }
+
+        /* Update info */
+        .update-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start; }
+        .update-info h3 { font-size: 15px; font-weight: 600; margin: 0 0 8px; }
+        .info-list { list-style: none; margin: 0 0 22px; padding: 0; }
+        .info-list li { display: flex; align-items: center; gap: 10px; padding: 10px 0; color: var(--gray-600); font-size: 13.5px; border-bottom: 1px solid var(--gray-100); }
+        .info-list li:last-child { border-bottom: none; }
+        .info-list li [data-lucide] { width: 18px; height: 18px; color: var(--ce-green-primary); flex-shrink: 0; }
+
+        .why-card { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: var(--radius-md); padding: 22px 24px; }
+        .why-card h3 { font-size: 14px; font-weight: 600; margin: 0 0 8px; display: flex; align-items: center; gap: 8px; }
+        .why-card h3 [data-lucide] { width: 18px; height: 18px; color: var(--ce-green-primary); }
+        .why-list { list-style: none; margin: 0; padding: 0; }
+        .why-list li { display: flex; align-items: flex-start; gap: 10px; padding: 7px 0; font-size: 13px; color: var(--gray-600); line-height: 1.5; }
+        .why-list li [data-lucide] { width: 16px; height: 16px; color: var(--ce-green-primary); flex-shrink: 0; margin-top: 2px; }
+
+        /* Connect */
+        .connect-section { margin-bottom: 20px; }
+        .connect-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        .connect-card { background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius-md); padding: 24px; box-shadow: var(--shadow-sm); transition: box-shadow var(--transition-fast), border-color var(--transition-fast); }
+        .connect-card:hover { box-shadow: var(--shadow-md); border-color: var(--gray-300); }
+        .connect-card.linkedin { border-top: 3px solid #0A66C2; }
+        .connect-card.email { border-top: 3px solid var(--ce-green-primary); }
+        .connect-icon { width: 40px; height: 40px; border-radius: 9px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+        .connect-card.linkedin .connect-icon { background: rgba(10, 102, 194, 0.1); }
+        .connect-card.email .connect-icon { background: rgba(16, 185, 129, 0.1); }
+        .connect-icon [data-lucide] { width: 20px; height: 20px; }
+        .connect-card.linkedin .connect-icon [data-lucide] { color: #0A66C2; }
+        .connect-card.email .connect-icon [data-lucide] { color: var(--ce-green-primary); }
+        .connect-card h3 { font-size: 15px; font-weight: 600; margin: 0 0 6px; }
+        .connect-card p { font-size: 13px; color: var(--gray-500); margin: 0 0 14px; line-height: 1.6; }
+        .connect-link { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 13px; text-decoration: none; }
+        .connect-link:hover { text-decoration: underline; }
+        .connect-link [data-lucide] { width: 15px; height: 15px; }
+        .connect-card.linkedin .connect-link { color: #0A66C2; }
+        .connect-card.email .connect-link { color: var(--ce-green-dark); }
+
+        /* Data privacy */
+        .privacy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .privacy-card { padding: 20px 22px; border-radius: var(--radius-md); }
+        .privacy-card.do { background: var(--msp-ok-bg); border: 1px solid var(--msp-ok-bd); }
+        .privacy-card.dont { background: var(--msp-err-bg); border: 1px solid var(--msp-err-bd); }
+        .privacy-card h3 { font-size: 14px; font-weight: 600; margin: 0 0 10px; display: flex; align-items: center; gap: 8px; }
+        .privacy-card.do h3 { color: var(--msp-ok); }
+        .privacy-card.dont h3 { color: var(--msp-err); }
+        .privacy-card h3 [data-lucide] { width: 18px; height: 18px; }
+        .privacy-list { list-style: none; margin: 0; padding: 0; }
+        .privacy-list li { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; font-size: 13px; color: var(--gray-600); }
+        .privacy-list li [data-lucide] { width: 15px; height: 15px; flex-shrink: 0; margin-top: 2px; }
+        .privacy-card.do .privacy-list li [data-lucide] { color: var(--msp-ok); }
+        .privacy-card.dont .privacy-list li [data-lucide] { color: var(--msp-err); }
+        .privacy-cta { text-align: center; margin-top: 22px; padding-top: 22px; border-top: 1px solid var(--gray-100); }
+        .privacy-cta p { font-size: 13px; color: var(--gray-500); margin: 0 0 12px; }
+
+        /* ---- Page footer: links the sidebar does not carry ---- */
+        .msp-footer .foot-links { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 6px; }
+        .msp-footer a { text-decoration: none; }
+        .msp-footer a:hover { text-decoration: underline; }
+        /* kit: .msp-content a (0,1,1) outranks .msp-btn-* colours, restore them */
+        .msp-content a.msp-btn-or, .msp-content a.msp-btn-navy, .msp-content a.msp-btn-or:hover, .msp-content a.msp-btn-navy:hover { color: #fff; }
+        .msp-content a.msp-btn-sky { color: var(--msp-inf); }
+        .msp-content a.msp-btn-gh { color: var(--msp-g5); }
+        .msp-content .uni-modal-header .uni-modal-name, .msp-content .um-link-card.featured .um-link-title { color: #fff; }
+
+        /* ============================================
+           RESPONSIVE
+        ============================================ */
+        @media (max-width: 768px) {
+            .update-section, .privacy-section { padding: 22px 18px; }
+            .update-grid, .connect-grid, .privacy-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <main class="msp-main wide">
+        <!-- Hero -->
+        <section class="msp-hero hero">
+            <div class="hero-badge">
+                <i data-lucide="users"></i>
+                Join the Loop
+            </div>
+            <h1>Stay Connected</h1>
+            <p>Help us track where CE alumni are making an impact. Update your information and connect with fellow circular engineers around the world.</p>
+        </section>
+
+        <section class="update-section">
+            <div class="update-header">
+                <h2>Update Your Information</h2>
+                <p>It takes 30 seconds and helps us build a stronger community</p>
+            </div>
+            
+            <div class="update-grid">
+                <div class="update-info">
+                    <h3>What we need from you:</h3>
+                    <ul class="info-list">
+                        <li><i data-lucide="user"></i> Your name</li>
+                        <li><i data-lucide="map-pin"></i> Current city and country</li>
+                        <li><i data-lucide="graduation-cap"></i> Master's university (if applicable)</li>
+                        <li><i data-lucide="book-open"></i> Master's programme</li>
+                        <li><i data-lucide="briefcase"></i> Current role or what you're doing now</li>
+                    </ul>
+                    
+                    <a href="mailto:fse-alumni@maastrichtuniversity.nl?subject=CE Alumni Info Update&body=Hi FSE Alumni Team,%0D%0A%0D%0AHere's my updated info:%0D%0A%0D%0AName:%0D%0AGraduation Year:%0D%0ACE Concentration:%0D%0ACurrent City/Country:%0D%0AMaster's University:%0D%0AMaster's Programme:%0D%0ACurrent Role/What I'm doing now:%0D%0A%0D%0AThanks!" class="update-btn msp-btn msp-btn-or msp-btn-lg">
+                        <i data-lucide="send"></i>
+                        Send My Info
+                    </a>
+                </div>
+                
+                <div class="why-card">
+                    <h3><i data-lucide="help-circle"></i> Why does this matter?</h3>
+                    <ul class="why-list">
+                        <li>
+                            <i data-lucide="check"></i>
+                            <span>Helps us show prospective students where CE graduates end up</span>
+                        </li>
+                        <li>
+                            <i data-lucide="check"></i>
+                            <span>Supports accreditation and programme development</span>
+                        </li>
+                        <li>
+                            <i data-lucide="check"></i>
+                            <span>Enables us to connect alumni in similar fields or locations</span>
+                        </li>
+                        <li>
+                            <i data-lucide="check"></i>
+                            <span>Demonstrates CE's contribution to the regional knowledge economy</span>
+                        </li>
+                        <li>
+                            <i data-lucide="check"></i>
+                            <span>Helps plan future alumni events and networking opportunities</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Connect Section -->
+        <section class="connect-section">
+            <div class="connect-header">
+                <h2>Other Ways to Connect</h2>
+                <p>Stay in touch with the CE community</p>
+            </div>
+            
+            <div class="connect-grid">
+                <div class="connect-card linkedin">
+                    <div class="connect-icon">
+                        <i data-lucide="linkedin"></i>
+                    </div>
+                    <h3>FSE Alumni Network</h3>
+                    <p>Join the Faculty of Science and Engineering alumni group on LinkedIn. Share achievements, career updates, and connect with graduates from all FSE programmes.</p>
+                    <a href="https://www.linkedin.com/groups/14782233/" target="_blank" rel="noopener" class="connect-link">
+                        Join on LinkedIn <i data-lucide="external-link"></i>
+                    </a>
+                </div>
+                
+                <div class="connect-card email">
+                    <div class="connect-icon">
+                        <i data-lucide="mail"></i>
+                    </div>
+                    <h3>Get in Touch</h3>
+                    <p>Have questions about the CE Alumni Network? Want to share your story or get involved? We'd love to hear from you.</p>
+                    <a href="mailto:fse-alumni@maastrichtuniversity.nl" class="connect-link">
+                        fse-alumni@maastrichtuniversity.nl <i data-lucide="arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Privacy Section -->
+        <section class="privacy-section">
+            <div class="privacy-header">
+                <h2>Your Data, Your Control</h2>
+                <p>Here's exactly what we do - and don't do - with your information</p>
+            </div>
+            
+            <div class="privacy-grid">
+                <div class="privacy-card do">
+                    <h3><i data-lucide="check-circle"></i> What We Do</h3>
+                    <ul class="privacy-list">
+                        <li><i data-lucide="check"></i> Create anonymous, aggregated statistics (e.g., "10 alumni in Maastricht")</li>
+                        <li><i data-lucide="check"></i> Track Master's destinations for programme development</li>
+                        <li><i data-lucide="check"></i> Connect you with other alumni if you both agree</li>
+                        <li><i data-lucide="check"></i> Always ask before featuring you publicly</li>
+                    </ul>
+                </div>
+                
+                <div class="privacy-card dont">
+                    <h3><i data-lucide="shield"></i> What We Never Do</h3>
+                    <ul class="privacy-list">
+                        <li><i data-lucide="x"></i> Share your personal information with third parties</li>
+                        <li><i data-lucide="x"></i> Display your name publicly without explicit consent</li>
+                        <li><i data-lucide="x"></i> Sell or monetize your data in any way</li>
+                        <li><i data-lucide="x"></i> Make it difficult to opt out</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="privacy-cta">
+                <p>Questions about how we handle your data? Just ask.</p>
+                <a href="mailto:fse-alumni@maastrichtuniversity.nl?subject=Privacy Question" class="privacy-link msp-btn msp-btn-gh">
+                    <i data-lucide="mail"></i>
+                    Contact Us
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="msp-footer">
+        <div class="foot-links">
+            <a href="https://www.maastrichtuniversity.nl/about-um/faculties/science-and-engineering" target="_blank" rel="noopener">FSE Homepage</a>
+            <a href="https://www.maastrichtuniversity.nl/education/bachelor/circular-engineering" target="_blank" rel="noopener">CE Programme</a>
+            <a href="https://www.maastrichtuniversity.nl/alumni" target="_blank" rel="noopener">UM Alumni</a>
+            <a href="privacy.html">Privacy Policy</a>
+        </div>
+        &copy; 2025 Maastricht University  -  Faculty of Science and Engineering &middot; <a href="mailto:fse-alumni@maastrichtuniversity.nl">fse-alumni@maastrichtuniversity.nl</a>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+
+    <script src="assets/msp-ui/msp-shell.js"></script>
+    <script>
+        MSPShell.init({
+            title: 'CE Alumni Network',
+            subtitle: 'Circular Engineering<br>Maastricht University',
+            nav: [
+                { label: 'Home',            hint: 'The alumni dashboard',     href: 'index.html',          icon: 'globe' },
+                { label: 'Community',       hint: 'Stay connected',           href: 'community.html',      icon: 'users' },
+                { label: 'Considering CE?', hint: 'For prospective students', href: 'considering-ce.html', icon: 'gradcap' },
+                { divider: true },
+                { label: 'Privacy',         hint: 'How we handle your data',  href: 'privacy.html',        icon: 'shield' }
+            ],
+            footer: 'Aggregated, anonymised statistics. Individual alumni appear only with their consent.'
+        });
+    </script>
+</body>
+</html>

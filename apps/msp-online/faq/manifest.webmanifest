@@ -1,0 +1,13 @@
+{
+  "name": "MSP Student FAQ",
+  "short_name": "MSP FAQ",
+  "description": "Search the Maastricht Science Programme student FAQ.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F8FAFC",
+  "theme_color": "#011B3C",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

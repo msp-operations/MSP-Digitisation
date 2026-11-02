@@ -1,0 +1,178 @@
+<!--
+  ============================================================================
+  index.html — LANDING PAGE
+  ============================================================================
+  This is the homepage of the site. It does only one thing: send visitors
+  to the right page. There are two big cards in the middle:
+    - "For supervisors" → submit.html (the project submission form)
+    - "For students"    → projects.html (the catalog students browse)
+
+  Other pages on the site:
+    - submit.html   — supervisor form (only supervisors)
+    - projects.html — student catalog (only students)
+
+  The navy sidebar on the left is the shared MSP frame: assets/msp-ui/
+  msp-shell.js builds it from the MSPShell.init() config at the bottom of
+  this file, and assets/msp-ui/msp-ui.css styles it (tokens, fonts, cards).
+
+  Admin guide for adding new projects: see README.md in the repo root.
+
+  Only edit this file if you want to change the landing page text/styling.
+  ============================================================================
+-->
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BTR Projects — Maastricht Science Programme</title>
+<meta name="description" content="The Bachelor Thesis Research project hub for the Maastricht Science Programme. Supervisors can submit projects; students can browse them.">
+<link rel="icon" type="image/png" href="msp-logo.png">
+<link rel="apple-touch-icon" href="msp-logo.png">
+<link rel="stylesheet" href="assets/msp-ui/msp-ui.css">
+<style>
+  /* Site tokens, mapped onto the shared MSP tokens (assets/msp-ui/msp-ui.css) */
+  :root{
+    --navy:var(--msp-navy);
+    --accent:var(--msp-orange);
+    --ink:var(--msp-g9);
+    --muted:var(--msp-g5);
+    --line:var(--msp-g2);
+    --bg:var(--msp-g0);
+    --bg-soft:#fff;
+    --radius:var(--msp-r);
+    --sans:var(--msp-font);
+    --display:var(--msp-font-display);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--sans);color:var(--ink);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .msp-content{display:flex;flex-direction:column}
+  .msp-content .msp-main{flex:1;width:100%}
+  .msp-content a{text-decoration:none}
+
+  /* hero card (the old full-bleed hero now sits inside the content column) */
+  .hero.msp-hero{padding:56px 36px 52px;text-align:center}
+  /* subtle scientific molecule pattern */
+  .hero svg.pattern{position:absolute;inset:0;width:100%;height:100%;opacity:.1;pointer-events:none}
+  .hero-inner{position:relative;max-width:720px;margin:0 auto}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;text-transform:uppercase;letter-spacing:.14em;font-size:10.5px;font-weight:700;color:var(--msp-sky);margin-bottom:16px}
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--msp-sky);box-shadow:0 0 0 4px rgba(110,210,236,.18)}
+  .hero h1{font-size:36px;line-height:1.1;margin:0 0 14px}
+  .hero h1 em{font-style:normal;color:var(--msp-sky)}
+  .hero p.lead{max-width:60ch;margin:0 auto;font-size:15px;opacity:.78;line-height:1.7}
+
+  .choice-grid{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))!important;display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:4px}
+  @media (max-width:760px){.choice-grid{grid-template-columns:1fr}}
+  .choice{display:block;border:1px solid var(--line);border-radius:var(--radius);padding:28px 28px 26px;background:#fff;box-shadow:var(--msp-sh);transition:all .2s;position:relative;overflow:hidden}
+  .choice::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent);transform:scaleY(0);transform-origin:top;transition:transform .25s}
+  .choice:hover{border-color:var(--msp-g3);transform:translateY(-2px);box-shadow:var(--msp-sh-md)}
+  .choice:hover::before{transform:scaleY(1)}
+  .choice:focus-visible{outline:2px solid var(--msp-sky);outline-offset:2px}
+  .choice .ico{width:44px;height:44px;border-radius:10px;background:var(--msp-a-bg);color:var(--navy);display:grid;place-items:center;margin-bottom:18px}
+  .choice .ico svg{width:22px;height:22px}
+  .choice h2{font-family:var(--display);font-weight:700;font-size:20px;color:var(--navy);margin:0 0 8px;letter-spacing:-.01em}
+  .choice p{margin:0 0 18px;color:var(--muted);font-size:13.5px;line-height:1.6}
+  .choice .arrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--navy);letter-spacing:.01em}
+  .choice .arrow svg{width:14px;height:14px;transition:transform .2s}
+  .choice:hover .arrow svg{transform:translateX(4px)}
+  .choice:hover .arrow{color:var(--accent)}
+
+  @media (max-width:640px){
+    .hero.msp-hero{padding:32px 20px 30px}
+    .hero h1{font-size:28px}
+    .choice{padding:22px 20px}
+  }
+</style>
+</head>
+<body>
+
+<main class="msp-main wide">
+
+  <section class="hero msp-hero">
+    <!-- subtle molecular / lattice pattern -->
+    <svg class="pattern" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <pattern id="hex" width="80" height="70" patternUnits="userSpaceOnUse">
+          <polygon points="40,2 76,22 76,52 40,72 4,52 4,22" fill="none" stroke="#6ED2EC" stroke-width="1"/>
+          <circle cx="40" cy="2" r="2" fill="#6ED2EC"/>
+          <circle cx="76" cy="22" r="2" fill="#6ED2EC"/>
+          <circle cx="76" cy="52" r="2" fill="#6ED2EC"/>
+          <circle cx="40" cy="72" r="2" fill="#6ED2EC"/>
+          <circle cx="4" cy="22" r="2" fill="#6ED2EC"/>
+          <circle cx="4" cy="52" r="2" fill="#6ED2EC"/>
+        </pattern>
+      </defs>
+      <rect width="1200" height="600" fill="url(#hex)"/>
+    </svg>
+    <div class="hero-inner">
+      <div class="eyebrow"><span class="dot"></span> Bachelor Thesis Research · Maastricht Science Programme</div>
+      <h1>Bachelor Thesis Research<br>for <em>Supervisors</em></h1>
+      <p class="lead">Offer a project to MSP students and find everything about your role as research supervisor or internal advisor.</p>
+    </div>
+  </section>
+
+  <div class="choice-grid">
+    <a class="choice" href="submit.html">
+      <div class="ico">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M12 18v-6"/><path d="M9 15h6"/></svg>
+      </div>
+      <h2>Offer a project</h2>
+      <p>Propose a new BTR project for MSP students. A short, structured form sends your proposal directly to the BTR office.</p>
+      <span class="arrow">Submit a project
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </span>
+    </a>
+
+    <a class="choice" href="supervisor-btr-overview.html">
+      <div class="ico">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      </div>
+      <h2>What is the BTR?</h2>
+      <p>The Bachelor Thesis Research in brief: structure, timeline, assessment and what students deliver.</p>
+      <span class="arrow">Read the overview
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </span>
+    </a>
+
+    <a class="choice" href="supervisor-role.html">
+      <div class="ico">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <h2>Your role</h2>
+      <p>What is expected of a research supervisor and of an internal advisor, step by step.</p>
+      <span class="arrow">Research supervisor
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </span>
+    </a>
+  </div>
+
+</main>
+
+<footer class="msp-footer">
+  For any questions, contact <a href="mailto:msp-btr@maastrichtuniversity.nl">msp-btr@maastrichtuniversity.nl</a><br>
+  © Maastricht Science Programme
+</footer>
+
+<!-- Shared MSP frame: the sidebar is built from this config -->
+<script src="assets/msp-ui/msp-shell.js"></script>
+<script>
+  MSPShell.init({
+    title: 'BTR for Supervisors',
+    nav: [
+      { label: 'Supervisors', group: true },
+      { label: 'Home', href: 'index.html', icon: 'home', hint: 'BTR for supervisors' },
+      { label: 'Offer a project', href: 'submit.html', icon: 'edit', hint: 'Submit a BTR project' },
+      { label: 'What is the BTR?', href: 'supervisor-btr-overview.html', icon: 'info', hint: 'The programme in brief' },
+      { label: 'Research supervisor', href: 'supervisor-role.html', icon: 'users', hint: 'Your role and tasks' },
+      { label: 'Internal advisor', href: 'internal-advisor-role.html', icon: 'shield', hint: 'Your role and tasks' },
+      { divider: true },
+      { label: 'Contact the BTR office', href: 'mailto:msp-btr@maastrichtuniversity.nl', icon: 'mail', external: true }
+    ],
+    footer: 'Bachelor Thesis Research, Maastricht Science Programme.'
+  });
+</script>
+
+</body>
+</html>
