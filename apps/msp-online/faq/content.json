@@ -640,7 +640,7 @@
     {
       "id": "are-there-figures-on-what-msp-graduates-go-on-to-do",
       "q": "Are there figures on what MSP graduates go on to do?",
-      "a": "There is no single published MSP employment percentage, but two sources give you a real picture. The MSP alumni site, https://msp-operations.github.io/MSP-Remodel-Preview/msp-alumni/, shows where MSP graduates actually went: the master's programmes they moved into, the universities, and the kinds of work they now do. More broadly, Maastricht University takes part in the national graduate surveys, which report employment and further-study outcomes per programme.\n\nOne caveat when you read any of this. MSP is a broad bachelor's and most graduates continue straight into a master's rather than into a job, so an employment rate measured at graduation says less about MSP than it would about a vocational programme.",
+      "a": "There is no single published MSP employment percentage, but two sources give you a real picture. The MSP alumni site, https://msp-operations.github.io/MSP-Digital/msp-alumni/, shows where MSP graduates actually went: the master's programmes they moved into, the universities, and the kinds of work they now do. More broadly, Maastricht University takes part in the national graduate surveys, which report employment and further-study outcomes per programme.\n\nOne caveat when you read any of this. MSP is a broad bachelor's and most graduates continue straight into a master's rather than into a job, so an employment rate measured at graduation says less about MSP than it would about a vocational programme.",
       "topic": "Getting Started",
       "office": "intro",
       "category": "Careers and Further Study",
@@ -4693,7 +4693,7 @@
     {
       "id": "other-systems-and-external",
       "q": "Other systems and external",
-      "a": "The key systems you will use and useful outside services.\n\n- **BTR dashboard and submissions**: follow your thesis on https://msp-operations.github.io/MSP-Remodel-Preview/btr-dashboard/ and submit your work through Collent at https://collent-fsemsp.maastrichtuniversity.nl\n- **Digital exams (TestVision)**: info on digital and online exams. https://library.maastrichtuniversity.nl/study/digital-exams/\n- **DUO**: diploma legalisation, the digital diploma certificate, and student finance. https://duo.nl\n- **My Maastricht**: living in Maastricht, including housing, benefits and health insurance. https://mymaastricht.nl\n- **GP Medical Post**: the out-of-hours doctor service (HAP). https://www.hapmaastricht.nl",
+      "a": "The key systems you will use and useful outside services.\n\n- **BTR dashboard and submissions**: follow your thesis on https://msp-operations.github.io/MSP-Digital/btr-dashboard/ and submit your work through Collent at https://collent-fsemsp.maastrichtuniversity.nl\n- **Digital exams (TestVision)**: info on digital and online exams. https://library.maastrichtuniversity.nl/study/digital-exams/\n- **DUO**: diploma legalisation, the digital diploma certificate, and student finance. https://duo.nl\n- **My Maastricht**: living in Maastricht, including housing, benefits and health insurance. https://mymaastricht.nl\n- **GP Medical Post**: the out-of-hours doctor service (HAP). https://www.hapmaastricht.nl",
       "topic": "Forms & Links",
       "office": "forms",
       "category": "",

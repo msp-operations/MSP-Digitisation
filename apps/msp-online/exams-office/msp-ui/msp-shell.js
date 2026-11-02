@@ -58,7 +58,7 @@
 (function (global) {
   'use strict';
 
-  var HUB_URL = 'https://msp-operations.github.io/MSP-Remodel-Preview/staff.html';   // not live yet, see _REMODEL_CONTEXT.md
+  var HUB_URL = 'https://msp-operations.github.io/MSP-Digital/staff.html';   // not live yet, see _REMODEL_CONTEXT.md
   var SUBTITLE = 'Maastricht Science Programme<br>Faculty of Science &amp; Engineering';
 
   var scriptEl = document.currentScript;
