@@ -1,0 +1,11 @@
+{
+  "name": "Stay in touch with MSP",
+  "short_name": "MSP sign-up",
+  "description": "Open day email sign-up for the Maastricht Science Programme.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "background_color": "#000831",
+  "theme_color": "#000831",
+  "icons": [{ "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }]
+}
