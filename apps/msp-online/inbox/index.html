@@ -87,6 +87,34 @@
   .form .row{grid-column:1/-1;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
   .form .row .msg{margin:0}
   @media(max-width:640px){.form{grid-template-columns:1fr}}
+
+  /* team: coming up + links */
+  .sec-h{display:flex;align-items:center;gap:12px;margin:0 0 12px}
+  .sec-h h2{font-family:var(--msp-font-display);font-size:19px;margin:0}
+  .sec-h label{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:13px;color:var(--msp-g7)}
+  .sec-h .btn{padding:8px 14px;font-size:13px}
+  .up{display:flex;gap:14px;align-items:flex-start;background:#fff;border:1px solid var(--msp-g2);border-left:4px solid var(--msp-g3);border-radius:12px;padding:12px 14px;margin-bottom:8px}
+  .up.soon{border-left-color:var(--msp-orange)} .up.late{border-left-color:var(--msp-err)} .up.done{opacity:.55}
+  .up .d{flex-shrink:0;width:64px;text-align:center;line-height:1.1}
+  .up .d b{display:block;font-family:var(--msp-font-display);font-size:20px;color:var(--msp-navy)}
+  .up .d small{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--msp-g5)}
+  .up.late .d b{color:var(--msp-err)} .up.soon .d b{color:var(--msp-orange)}
+  .up .b{flex:1;min-width:0}
+  .up .b strong{font-size:14.5px;display:block}
+  .up .b span{font-size:12.5px;color:var(--msp-g5)}
+  .up .acts{flex-shrink:0}
+  .links{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:28px}
+  .lgrp{background:#fff;border:1px solid var(--msp-g2);border-radius:14px;padding:14px 16px}
+  .lgrp h3{font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--msp-g5);margin:0 0 8px}
+  .lrow{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-top:1px solid var(--msp-g1)}
+  .lrow:first-of-type{border-top:0}
+  .lrow .w{flex:1;min-width:0}
+  .lrow a{font-weight:600;font-size:14px;color:var(--msp-navy);text-decoration:none}
+  .lrow a:hover{text-decoration:underline}
+  .lrow small{display:block;font-size:12px;color:var(--msp-g5);line-height:1.4}
+  .lrow .mini{border:0;background:none;color:var(--msp-g4);font:inherit;font-size:12px;cursor:pointer;padding:2px 4px;border-radius:6px}
+  .lrow .mini:hover{background:var(--msp-g1);color:var(--msp-g9)}
+  .form.compact{margin-bottom:14px}
   [hidden]{display:none!important}
 </style>
 </head>
@@ -98,7 +126,7 @@
 
 <main class="wrap">
   <h1>Team console</h1>
-  <p class="sub">For the people who build the MSP Digital Hub: what users send us, and what the hubs announce.</p>
+  <p class="sub">For the people who build the MSP Digital Hub: what users send us, what the hubs announce, and what is coming up.</p>
 
   <section class="panel" id="signin" hidden>
     <form id="signinForm">
@@ -119,6 +147,7 @@
     <nav class="tabs" role="tablist" aria-label="Team console">
       <button type="button" role="tab" data-tab="inbox" id="tabInbox">Inbox <span class="badge" id="openBadge"></span></button>
       <button type="button" role="tab" data-tab="ann" id="tabAnn">Announcements</button>
+      <button type="button" role="tab" data-tab="team" id="tabTeam">Team <span class="badge" id="dueBadge"></span></button>
     </nav>
 
     <!-- inbox -->
@@ -184,6 +213,33 @@
         </div>
       </form>
       <div id="annItems"></div>
+    </div>
+
+    <!-- team: coming up + links -->
+    <div id="pTeam" role="tabpanel" aria-labelledby="tabTeam" hidden>
+      <p class="msg err" id="teamErr" hidden></p>
+
+      <div class="sec-h"><h2>Coming up</h2><label><input type="checkbox" id="showDone"> Show done</label><button class="btn ghost" type="button" id="upAdd">+ Add</button></div>
+      <form class="form compact" id="upForm" novalidate hidden>
+        <div class="full"><label class="l" for="uTitle">What</label><input id="uTitle" maxlength="160" required placeholder="e.g. Frame schedules P1/P2 into the planner"></div>
+        <div><label class="l" for="uDue">Due</label><input id="uDue" type="date" required></div>
+        <div><label class="l" for="uOwner">Who</label><input id="uOwner" maxlength="60" placeholder="e.g. Arthur"></div>
+        <div class="full"><label class="l" for="uNote">Note (optional)</label><input id="uNote" maxlength="300"></div>
+        <div class="row"><button class="btn" type="submit" id="uSave">Add</button><button class="btn ghost" type="button" id="uCancel">Cancel</button><p class="msg" id="uOut" role="status"></p></div>
+      </form>
+      <div id="upItems" style="margin-bottom:30px"></div>
+
+      <div class="sec-h"><h2>Team links</h2><button class="btn ghost" type="button" id="lAdd" style="margin-left:auto">+ Add link</button></div>
+      <form class="form compact" id="lForm" novalidate hidden>
+        <div><label class="l" for="lGrp">Group</label><input id="lGrp" maxlength="40" required list="lGroups" placeholder="e.g. Team space"><datalist id="lGroups"></datalist></div>
+        <div><label class="l" for="lTitle">Title</label><input id="lTitle" maxlength="80" required></div>
+        <div class="full"><label class="l" for="lUrl">Link</label><input id="lUrl" maxlength="500" required placeholder="https://… or mailto:…"></div>
+        <div><label class="l" for="lNote">Note (optional)</label><input id="lNote" maxlength="200"></div>
+        <div><label class="l" for="lSort">Order in its group</label><input id="lSort" type="number" value="100"></div>
+        <div class="row"><button class="btn" type="submit" id="lSave">Add link</button><button class="btn ghost" type="button" id="lCancel">Cancel</button><p class="msg" id="lOut" role="status"></p></div>
+      </form>
+      <div class="links" id="linkGroups"></div>
+      <p class="msg">Links and notes only. No passwords, keys or personal data; files go in the team's Teams space.</p>
     </div>
   </section>
 </main>
@@ -270,19 +326,22 @@
       });
     }).then(function (ok) {
       if (!ok) { $('ntEmail').textContent = session.email; show('notTeam'); return; }
-      show('console'); tab(sessionStorage.getItem('console-tab') || 'inbox'); refresh(); loadAnns();
+      show('console'); tab(sessionStorage.getItem('console-tab') || 'inbox'); refresh(); loadAnns(); loadTeam();
     }).catch(function () { store(null); $('who').hidden = true; show('signin'); });
   }
 
   // ── tabs ──
+  var TABS = { inbox: ['tabInbox', 'pInbox'], ann: ['tabAnn', 'pAnn'], team: ['tabTeam', 'pTeam'] };
   function tab(which) {
-    $('pInbox').hidden = which !== 'inbox'; $('pAnn').hidden = which !== 'ann';
-    $('tabInbox').classList.toggle('on', which === 'inbox'); $('tabAnn').classList.toggle('on', which === 'ann');
-    $('tabInbox').setAttribute('aria-selected', which === 'inbox'); $('tabAnn').setAttribute('aria-selected', which === 'ann');
+    if (!TABS[which]) which = 'inbox';
+    Object.keys(TABS).forEach(function (k) {
+      $(TABS[k][1]).hidden = k !== which;
+      $(TABS[k][0]).classList.toggle('on', k === which);
+      $(TABS[k][0]).setAttribute('aria-selected', k === which);
+    });
     try { sessionStorage.setItem('console-tab', which); } catch (e) {}
   }
-  $('tabInbox').addEventListener('click', function () { tab('inbox'); });
-  $('tabAnn').addEventListener('click', function () { tab('ann'); });
+  Object.keys(TABS).forEach(function (k) { $(TABS[k][0]).addEventListener('click', function () { tab(k); }); });
 
   function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
   function when(iso) { return new Date(iso).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }); }
@@ -456,6 +515,129 @@
       out.textContent = editing ? 'Saved.' : 'Published. It shows on the hub from the start time.';
       resetForm();
     }, function () { $('aSave').disabled = false; });
+  });
+
+  // ── team: coming up + links ──
+  var ups = [], links = [], upEditing = null, lEditing = null;
+  function teamError(err) {
+    var e = $('teamErr'); e.hidden = false;
+    e.textContent = /hub_(link|upcoming)/.test(err.message) && /find|exist/i.test(err.message)
+      ? 'The Team tables are not set up yet: run backend/hub-team.sql in Supabase first.'
+      : 'Could not load: ' + err.message;
+  }
+  function loadTeam() {
+    token().then(function (t) {
+      return Promise.all([rest('hub_upcoming?select=*&order=due.asc,created_at.asc', null, t), rest('hub_link?select=*&order=grp.asc,sort.asc,title.asc', null, t)]);
+    }).then(function (r) { $('teamErr').hidden = true; ups = r[0] || []; links = r[1] || []; renderUps(); renderLinks(); }, teamError);
+  }
+  function days(iso) { var d = new Date(iso + 'T00:00:00'), t = new Date(); t.setHours(0, 0, 0, 0); return Math.round((d - t) / 864e5); }
+
+  function renderUps() {
+    var box = $('upItems'), showDone = $('showDone').checked;
+    var list = ups.filter(function (u) { return showDone || !u.done; });
+    var due = ups.filter(function (u) { return !u.done && days(u.due) <= 7; }).length;
+    $('dueBadge').textContent = due ? String(due) : '';
+    box.innerHTML = '';
+    if (!list.length) { box.appendChild(el('p', 'empty', ups.length ? 'Nothing open.' : 'Nothing planned yet.')); return; }
+    list.forEach(function (u) {
+      var n = days(u.due), it = el('div', 'up' + (u.done ? ' done' : n < 0 ? ' late' : n <= 7 ? ' soon' : ''));
+      var d = el('div', 'd'), dt = new Date(u.due + 'T00:00:00');
+      d.appendChild(el('b', null, String(dt.getDate())));
+      d.appendChild(el('small', null, dt.toLocaleString('en-GB', { month: 'short' }) + (dt.getFullYear() !== new Date().getFullYear() ? ' ' + dt.getFullYear() : '')));
+      it.appendChild(d);
+      var b = el('div', 'b');
+      b.appendChild(el('strong', null, u.title));
+      var bits = [];
+      if (u.owner) bits.push(u.owner);
+      if (!u.done) bits.push(n === -1 ? '1 day late' : n < 0 ? (-n) + ' days late' : n === 0 ? 'today' : n === 1 ? 'tomorrow' : 'in ' + n + ' days');
+      if (u.note) bits.push(u.note);
+      b.appendChild(el('span', null, bits.join(' · ')));
+      it.appendChild(b);
+      var acts = el('div', 'acts');
+      var db = el('button', null, u.done ? 'Not done' : 'Done'); db.type = 'button';
+      db.addEventListener('click', function () { saveRow('hub_upcoming', u.id, { done: !u.done }); });
+      var eb = el('button', null, 'Edit'); eb.type = 'button';
+      eb.addEventListener('click', function () {
+        upEditing = u; $('upForm').hidden = false; $('uTitle').value = u.title; $('uDue').value = u.due; $('uOwner').value = u.owner || ''; $('uNote').value = u.note || '';
+        $('uSave').textContent = 'Save'; $('uTitle').focus();
+      });
+      var xb = el('button', 'del', 'Delete'); xb.type = 'button';
+      xb.addEventListener('click', function () { if (confirm('Delete "' + u.title + '"?')) delRow('hub_upcoming', u.id); });
+      acts.appendChild(db); acts.appendChild(eb); acts.appendChild(xb);
+      it.appendChild(acts);
+      box.appendChild(it);
+    });
+  }
+
+  function renderLinks() {
+    var box = $('linkGroups'), groups = {};
+    box.innerHTML = '';
+    links.forEach(function (l) { (groups[l.grp] = groups[l.grp] || []).push(l); });
+    // the usual groups in a fixed order, any new group after them alphabetically
+    var ORDER = ['Team space', 'Live sites', 'Admin pages', 'Code and publishing', 'How we work', 'Who to ask'];
+    var names = Object.keys(groups).sort(function (a, b) {
+      var ia = ORDER.indexOf(a), ib = ORDER.indexOf(b);
+      return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib) || a.localeCompare(b);
+    });
+    $('lGroups').innerHTML = '';
+    names.forEach(function (g) { var o = document.createElement('option'); o.value = g; $('lGroups').appendChild(o); });
+    if (!names.length) { box.appendChild(el('p', 'empty', 'No links yet.')); return; }
+    names.forEach(function (g) {
+      var card = el('section', 'lgrp');
+      card.appendChild(el('h3', null, g));
+      groups[g].forEach(function (l) {
+        var row = el('div', 'lrow'), w = el('div', 'w');
+        var a = el('a', null, l.title);
+        if (/^(https:\/\/|mailto:)/.test(l.url)) { a.href = l.url; if (/^https/.test(l.url)) { a.target = '_blank'; a.rel = 'noopener'; } }
+        w.appendChild(a);
+        if (l.note) w.appendChild(el('small', null, l.note));
+        row.appendChild(w);
+        var e = el('button', 'mini', 'Edit'); e.type = 'button';
+        e.addEventListener('click', function () {
+          lEditing = l; $('lForm').hidden = false; $('lGrp').value = l.grp; $('lTitle').value = l.title; $('lUrl').value = l.url;
+          $('lNote').value = l.note || ''; $('lSort').value = l.sort; $('lSave').textContent = 'Save'; $('lTitle').focus();
+        });
+        var x = el('button', 'mini', '×'); x.type = 'button'; x.setAttribute('aria-label', 'Delete ' + l.title);
+        x.addEventListener('click', function () { if (confirm('Delete the link "' + l.title + '"?')) delRow('hub_link', l.id); });
+        row.appendChild(e); row.appendChild(x);
+        card.appendChild(row);
+      });
+      box.appendChild(card);
+    });
+  }
+
+  function saveRow(table, id, body) {
+    return token().then(function (t) {
+      return id ? rest(table + '?id=eq.' + encodeURIComponent(id), { method: 'PATCH', body: body }, t) : rest(table, { method: 'POST', body: body }, t);
+    }).then(loadTeam, function (err) { alert('Could not save: ' + err.message); throw err; });
+  }
+  function delRow(table, id) {
+    token().then(function (t) { return rest(table + '?id=eq.' + encodeURIComponent(id), { method: 'DELETE' }, t); })
+      .then(loadTeam, function (err) { alert('Could not delete: ' + err.message); });
+  }
+
+  function closeUp() { upEditing = null; $('upForm').reset(); $('upForm').hidden = true; $('uSave').textContent = 'Add'; $('uOut').textContent = ''; }
+  $('upAdd').addEventListener('click', function () { closeUp(); $('upForm').hidden = false; $('uTitle').focus(); });
+  $('uCancel').addEventListener('click', closeUp);
+  $('showDone').addEventListener('change', renderUps);
+  $('upForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var title = $('uTitle').value.trim(), due = $('uDue').value;
+    if (!title || !due) { $('uOut').className = 'msg err'; $('uOut').textContent = 'Fill in what and when.'; return; }
+    saveRow('hub_upcoming', upEditing && upEditing.id, { title: title, due: due, owner: $('uOwner').value.trim() || null, note: $('uNote').value.trim() || null }).then(closeUp, function () {});
+  });
+
+  function closeL() { lEditing = null; $('lForm').reset(); $('lForm').hidden = true; $('lSave').textContent = 'Add link'; $('lOut').textContent = ''; $('lSort').value = 100; }
+  $('lAdd').addEventListener('click', function () { closeL(); $('lForm').hidden = false; $('lGrp').focus(); });
+  $('lCancel').addEventListener('click', closeL);
+  $('lForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var out = $('lOut'), url = $('lUrl').value.trim();
+    out.className = 'msg err';
+    if (!$('lGrp').value.trim() || !$('lTitle').value.trim() || !url) { out.textContent = 'Fill in group, title and link.'; return; }
+    if (!/^(https:\/\/|mailto:)/.test(url)) { out.textContent = 'The link has to start with https:// or mailto:'; return; }
+    saveRow('hub_link', lEditing && lEditing.id, { grp: $('lGrp').value.trim(), title: $('lTitle').value.trim(), url: url,
+      note: $('lNote').value.trim() || null, sort: parseInt($('lSort').value, 10) || 100, updated_at: new Date().toISOString() }).then(closeL, function () {});
   });
 
   resetForm();
