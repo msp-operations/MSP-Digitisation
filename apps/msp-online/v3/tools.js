@@ -5,22 +5,27 @@
    ownNav: true = the tool brings its own navy sidebar; the shared nav then shrinks to an icon rail.
    note  = optional line under the nav; build-preview.py adds 'Pending change, not on the live site yet' (and swaps
            the url to sites/...) for tools listed in its PENDING table, so do not look for that text here.
+   Landing view (the cards), all optional:
+   card  = 'search' (wide, with a search box that opens the tool with ?q=) or 'tall' (two rows high, light, small picture)
+   mark  = a big word shown on the card instead of the icon (e.g. 'P3 · P6')
+   cta   = the link text at the bottom of a 'search' or 'tall' card
+   The order here is the order of the cards (left to right, top to bottom) and of the menu.
    Edit this file to add, remove or reorder tools. Version 2 (the restyle) is separate. */
 window.V3 = {
-  name: 'MSP Online',   // placeholder name, Martijn's call
+  name: 'MSP Digital Hub',   // Martijn, 2 Nov 2026 (was the placeholder 'MSP Online')
   suites: {
     students: {
       label: 'Students', one: 'student', title: 'For Students', other: 'staff', otherLabel: 'Staff tools',
-      line: 'Everything you need as an MSP student, in one place.',
+      line: 'Answers from the office, your course plan, projects, your thesis and where graduates went.',
       tools: [
-        { id: 'faq',             name: 'Student FAQ',     icon: 'help',     hint: 'Answers from the office',
+        { id: 'faq',             name: 'Student FAQ',     icon: 'help',     hint: 'Answers from the office', card: 'search', cta: 'Open the FAQ',
           blurb: 'Search-first answers to the questions students ask the office.', url: 'https://msp-faqs.nl/' },
-        { id: 'course-planner',  name: 'Course Planner',  icon: 'calendar', hint: 'Plan your courses',
+        { id: 'course-planner',  name: 'Course Planner',  icon: 'calendar', hint: 'Plan your courses', card: 'tall', cta: 'Plan your courses',
           blurb: 'Build a clash-free schedule and track your progress.', url: 'sites/course-planner/index.html', ownNav: true },
+        { id: 'project-periods', name: 'Project Periods', icon: 'target',   hint: 'P3 and P6 projects', mark: 'P3 · P6',
+          blurb: 'The P3 and P6 project catalogue and your preferences.', url: 'sites/project-periods/', note: 'Pending change, not on the live site yet' },
         { id: 'btr',             name: 'BTR Dashboard',   icon: 'book',     hint: 'Your bachelor thesis',
           blurb: 'Guides, cohorts, rubrics and the projects on offer for your thesis.', url: 'sites/btr/', note: 'Pending change, not on the live site yet' },
-        { id: 'project-periods', name: 'Project Periods', icon: 'target',   hint: 'P3 and P6 projects',
-          blurb: 'The P3 and P6 project catalogue and your preferences.', url: 'sites/project-periods/', note: 'Pending change, not on the live site yet' },
         { id: 'msp-alumni',      name: 'MSP Alumni',      icon: 'globe',    hint: 'Where graduates went',
           blurb: 'Where MSP graduates went: destinations, stories, community.', url: 'sites/msp-alumni/', note: 'Pending change, not on the live site yet' }
       ]
@@ -29,9 +34,9 @@ window.V3 = {
       label: 'Staff', one: 'staff', title: 'For Staff', other: 'students', otherLabel: 'Student tools',
       line: 'The tools behind the programme, for support and academic staff.',
       tools: [
-        { id: 'project-periods',   name: 'Project Periods',    icon: 'target',    hint: 'Offer and allocate projects',
+        { id: 'project-periods',   name: 'Project Periods',    icon: 'target',    hint: 'Offer and allocate projects', mark: 'P3 · P6',
           blurb: 'Offer a P3 or P6 project, or run the allocation as the committee.', url: 'sites/project-periods/', note: 'Pending change, not on the live site yet' },
-        { id: 'academic-calendar', name: 'Academic Calendar',  icon: 'clock',     hint: 'Deadlines per office',
+        { id: 'academic-calendar', name: 'Academic Calendar',  icon: 'clock',     hint: 'Deadlines per office', card: 'tall', cta: 'Open the calendar',
           blurb: 'Every operational deadline per office and period.', url: 'sites/academic-calendar/', note: 'Pending change, not on the live site yet', ownNav: true },
         { id: 'tutoring',          name: 'Tutor Registration', icon: 'users',     hint: 'Tutorial groups',
           blurb: 'Claim the tutorial groups you want to teach; the office allocates from here.', url: 'https://msp-tutoring.nl/' },

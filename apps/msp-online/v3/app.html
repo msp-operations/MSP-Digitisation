@@ -10,10 +10,10 @@
 <link rel="preload" href="msp-ui/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="msp-ui/msp-ui.css">
 <style>
-  /* Version 3: one page. Without a tool in the address (#faq) the navy side nav fills the whole
-     screen as the landing view, with the tools on an orbit around the emblem. Choosing a tool shrinks
-     that same navy panel into the side nav while the tool's website slides in beside it; "All tools"
-     grows it back. Each tool lives in its own frame, created once and kept, so switching is instant
+  /* Version 3: one page. Without a tool in the address (#faq) the navy panel fills the whole
+     screen as the landing view: the MSP Digital Hub, with the tools as cards. Choosing a tool shrinks
+     that same navy panel into the menu (at the top by default) while the tool's website slides in;
+     "All tools" grows it back. Each tool lives in its own frame, created once and kept, so switching is instant
      and keeps your place. The frames show the real sites; nothing in them is restyled. */
   html,body{height:100%;margin:0;overflow:hidden;background:var(--msp-navy)}
   body{font-family:var(--msp-font)}
@@ -82,42 +82,69 @@
   body.forced .v3-collapse{display:none}
   @media(max-width:1100px){.v3-stage{left:var(--msp-sb-w-md)} body.rail .v3-stage{left:68px}}
 
-  /* ── the landing view: a large version of the side nav ──
-     Each tool row is the side nav's own row, drawn at 1.5x. When a tool opens, every row flies to
-     its exact spot in the side nav (see fly() in the script); the emblem shrinks into the footer. */
-  .h-bar{display:flex;align-items:flex-start;justify-content:space-between;padding:28px 44px 0 24px;gap:16px}
-  .h-switch{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:.06em;color:rgba(255,255,255,.75);text-decoration:none;padding:9px 16px;border:1px solid rgba(255,255,255,.18);border-radius:999px;transition:all .2s}
-  .h-switch:hover{background:#fff;color:var(--msp-navy);border-color:#fff}
+  /* ── the landing view: the MSP Digital Hub, the tools as cards (2 Nov 2026) ──
+     A tool's card, mark and cta fields in tools.js pick its shape. */
+  .v3-home{overflow-y:auto;overflow-x:hidden}
+  .hb-wrap{width:100%;max-width:1180px;margin:0 auto;padding:0 44px;box-sizing:border-box}
+  .hb-bar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:26px;padding-bottom:26px}
+  .hb-brand{display:flex;align-items:center;gap:12px;min-width:0}
+  .hb-brand img{width:34px;height:34px;opacity:.95;display:block}
+  .hb-brand .name{font-size:14px;font-weight:600;letter-spacing:-.005em;white-space:nowrap}
+  .hb-kick{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--msp-sky);padding:4px 10px;border:1px solid rgba(110,210,236,.35);border-radius:999px;white-space:nowrap}
+  .h-switch{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.8);text-decoration:none;padding:9px 16px;border:1px solid rgba(255,255,255,.2);border-radius:999px;transition:all .2s;white-space:nowrap}
+  .h-switch:hover,.h-switch:focus-visible{background:#fff;color:var(--msp-navy);border-color:#fff;outline:none}
   .h-switch svg{width:14px;height:14px}
-  .h-main{flex:1 1 auto;display:flex;align-items:center;justify-content:center;gap:clamp(48px,7vw,120px);padding:0 56px;min-height:0}
-  .h-left{width:380px;text-align:center;flex-shrink:0}
-  .h-emb{position:relative;width:200px;height:200px;margin:0 auto}
-  .h-emb::before,.h-emb::after{content:'';position:absolute;border-radius:50%;pointer-events:none}
-  .h-emb::before{inset:-38px;border:1px solid rgba(255,255,255,.08)}
-  .h-emb::after{inset:-80px;border:1px solid rgba(110,210,236,.09)}
-  .h-emb .glow{position:absolute;inset:-50px;border-radius:50%;background:radial-gradient(circle,rgba(110,210,236,.16) 0%,rgba(110,210,236,0) 65%)}
-  .h-emb img{position:absolute;left:6px;top:6px;width:188px;height:auto;opacity:.96}
-  .h-kick{display:inline-block;margin-top:34px;font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--msp-sky);padding:5px 12px;border:1px solid rgba(110,210,236,.35);border-radius:999px}
-  .h-left h1{font-family:var(--msp-font-display);font-weight:700;font-size:32px;letter-spacing:-.02em;margin:12px 0 0;line-height:1.15;color:#fff}
-  .h-line{margin-top:10px;font-size:14px;line-height:1.6;color:rgba(255,255,255,.6)}
-  .h-rows{display:flex;flex-direction:column;gap:8px}
-  .h-label{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.35);margin:0 0 8px 21px}
-  .h-row{display:flex;align-items:center;gap:22px;text-decoration:none;border-radius:16px;padding-right:22px;transition:background .2s}
-  .h-row:hover,.h-row:focus-visible{background:rgba(255,255,255,.035)}
-  .h-row:focus-visible,.h-tool:focus-visible{outline:2px solid var(--msp-sky);outline-offset:3px}
-  .h-wrap{position:relative;flex-shrink:0;width:calc(var(--v3-roww,232px) * 1.5);height:calc(var(--v3-rowh,60px) * 1.5)}
-  .h-item{position:absolute!important;left:0;top:0;width:var(--v3-roww,232px)!important;margin:0!important;transform:scale(1.5);transform-origin:0 0;pointer-events:none;color:rgba(255,255,255,.92)!important}
-  .h-row:hover .h-item,.h-row:focus-visible .h-item{background:rgba(255,255,255,.1);color:#fff!important}
-  .h-row:hover .h-item .msp-sb-ico,.h-row:focus-visible .h-item .msp-sb-ico{background:rgba(110,210,236,.15);color:var(--msp-sky)}
-  .h-desc{max-width:260px;font-size:13px;line-height:1.55;color:rgba(255,255,255,.5);transition:color .2s}
-  .h-row:hover .h-desc{color:rgba(255,255,255,.8)}
-  @media(max-width:1240px){.h-desc{max-width:190px;font-size:12px}}
-  @media(max-width:1080px){.h-desc{display:none}}
-  .h-list{display:none}
-  .h-foot{display:flex;justify-content:space-between;gap:16px;padding:22px 44px 28px;font-size:11px;color:rgba(255,255,255,.38)}
-  .h-foot a{color:rgba(255,255,255,.6);text-decoration:none;border-bottom:1px solid rgba(255,255,255,.18)}
-  body.home .h-row{animation:hrise .55s cubic-bezier(.2,.7,.2,1) both}
-  @keyframes hrise{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
+  .hb-hero{padding-top:30px}
+  .hb-hero h1{font-family:var(--msp-font-display);font-weight:700;font-size:56px;line-height:1.04;letter-spacing:-.03em;margin:0;color:#fff}
+  .hb-hero p{margin:14px 0 0;max-width:760px;font-size:15px;line-height:1.6;color:rgba(255,255,255,.65)}
+  .hb-grid{--cols:4;display:grid;grid-template-columns:repeat(var(--cols),minmax(0,1fr));grid-auto-rows:minmax(196px,auto);grid-auto-flow:row dense;gap:16px;margin-top:34px}
+  .hb-grid.c3{--cols:3}
+  .hb-card{position:relative;display:flex;flex-direction:column;gap:6px;padding:22px;border-radius:18px;text-decoration:none;color:#fff;overflow:hidden;
+    background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.12);transition:background .25s,border-color .25s,transform .25s,box-shadow .25s}
+  a.hb-card:hover,a.hb-card:focus-visible,.hb-card.search:focus-within{background:rgba(255,255,255,.075);border-color:rgba(110,210,236,.5);box-shadow:0 14px 34px rgba(0,0,0,.25);outline:none}
+  a.hb-card:hover,a.hb-card:focus-visible{transform:translateY(-2px)}
+  .hb-card .ic{width:22px;height:22px;color:rgba(255,255,255,.82)}
+  .hb-card .ic svg{width:22px;height:22px;display:block}
+  .hb-card h2{font-family:var(--msp-font-display);font-size:17px;font-weight:700;letter-spacing:-.01em;margin:0;line-height:1.25}
+  .hb-card p{margin:0;font-size:13px;line-height:1.55;color:rgba(255,255,255,.62)}
+  .hb-card .end{margin-top:auto;display:flex;flex-direction:column;gap:6px}
+  .hb-card .cta{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;text-decoration:none;color:inherit}
+  .hb-card .cta svg{width:14px;height:14px;transition:transform .2s}
+  .hb-card:hover .cta svg,.hb-card .cta:hover svg{transform:translateX(3px)}
+  .hb-card.search{grid-column:span 2}
+  .hb-card.search .top{display:flex;align-items:center;gap:12px}
+  .hb-card.search .top .cta{margin-left:auto;color:var(--msp-sky)}
+  .hb-card.search form{margin-top:auto;display:flex;gap:8px;align-items:center;padding:6px 6px 6px 14px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.2)}
+  .hb-card.search form:focus-within{border-color:var(--msp-sky)}
+  .hb-card.search form svg{width:16px;height:16px;color:rgba(255,255,255,.55);flex-shrink:0}
+  .hb-card.search input{flex:1;min-width:0;background:none;border:0;outline:none;color:#fff;font:inherit;font-size:14px;padding:8px 0}
+  .hb-card.search input::placeholder{color:rgba(255,255,255,.45)}
+  .hb-card.search button{border:0;border-radius:9px;background:var(--msp-sky);color:var(--msp-navy);font:inherit;font-size:13px;font-weight:700;padding:9px 16px;cursor:pointer}
+  .hb-card.search button:hover,.hb-card.search button:focus-visible{background:#fff;outline:none}
+  .hb-card.tall{grid-row:span 2;background:var(--msp-sky);border-color:var(--msp-sky);color:var(--msp-navy)}
+  a.hb-card.tall:hover,a.hb-card.tall:focus-visible{background:#8ADCF1;border-color:#fff}
+  .hb-card.tall .ic{color:var(--msp-navy)}
+  .hb-card.tall p{color:rgba(1,27,60,.72)}
+  .hb-card.tall .pic{margin:14px 0 4px;border-radius:12px;background:rgba(255,255,255,.55);padding:12px}
+  .hb-card.tall .pic svg{display:block;width:100%;height:auto}
+  .hb-card .mark{font-family:var(--msp-font-display);font-size:42px;font-weight:800;letter-spacing:-.03em;line-height:1;color:var(--msp-orange)}
+  .hb-card.dots::after{content:'';position:absolute;top:0;right:0;width:46%;height:52%;pointer-events:none;
+    background-image:radial-gradient(rgba(255,255,255,.22) 1px, transparent 1.4px);background-size:11px 11px;
+    -webkit-mask-image:linear-gradient(225deg,#000 0%,transparent 70%);mask-image:linear-gradient(225deg,#000 0%,transparent 70%)}
+  .hb-card.contact{background:transparent;border:1.5px dashed rgba(255,255,255,.28)}
+  .hb-card.contact .ic{color:var(--msp-orange)}
+  .hb-card.contact a{color:var(--msp-sky);font-size:12.5px;font-weight:600;word-break:break-all}
+  .hb-card.contact a:hover{color:#fff}
+  .hb-foot{padding-top:40px;padding-bottom:28px;font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.02em}
+  body.home .hb-card{animation:hrise .55s cubic-bezier(.2,.7,.2,1) both}
+  @keyframes hrise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @media(max-width:1100px){.hb-grid,.hb-grid.c3{--cols:2} .hb-hero h1{font-size:46px}}
+  @media(max-width:640px){
+    .hb-wrap{padding-left:16px;padding-right:16px} .hb-bar{padding-top:18px;padding-bottom:18px} .hb-brand .name{display:none}
+    .hb-hero{padding-top:14px} .hb-hero h1{font-size:36px} .hb-hero p{font-size:14px}
+    .hb-grid,.hb-grid.c3{--cols:1;grid-auto-rows:auto;margin-top:24px;gap:12px}
+    .hb-card.search,.hb-card.tall{grid-column:auto;grid-row:auto} .hb-card{min-height:150px} .hb-card.tall .pic{max-width:300px}
+  }
 
   /* the UM wordmark sits in one fixed spot in both states, so it never moves */
   /* the MSP emblem is the logo at the top of the side nav; the landing's big emblem flies into it */
@@ -205,49 +232,26 @@
     body.home .v3-top{display:none}
     body.home .msp-sidebar{z-index:400;transform:none!important;width:100vw!important;transition:none}
     body.home .v3-home{width:100%}
-    .h-list{margin:0 auto}
     .v3-collapse{display:none}
     .v3-home{overflow-y:auto}
-    .h-bar{padding:22px}
-    .h-main{flex:0 0 auto;flex-direction:column;padding:10px 0 8px;gap:0}
-    .h-left{width:auto;padding:0 22px}
-    .h-emb{width:150px;height:150px}.h-emb img{width:140px;left:5px;top:5px}.h-emb::after{display:none}
-    .h-left h1{font-size:26px}.h-line{display:none}
-    .h-rows{display:none}
-    .h-list{display:grid;gap:8px;width:100%;max-width:520px;padding:26px 22px 0;box-sizing:border-box;margin:0 auto}
-    .h-tool{display:flex;align-items:center;gap:11px;border-radius:14px;padding:12px 16px 12px 12px;text-decoration:none;color:#fff;font-size:14px;font-weight:600;
-      background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.13)}
-    .h-tool .ic{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(110,210,236,.14);color:var(--msp-sky);flex-shrink:0}
-    .h-tool .ic svg{width:15px;height:15px}
-    .h-list small{display:block;font-size:11.5px;font-weight:400;color:rgba(255,255,255,.55)}
-    .h-foot{flex-direction:column;align-items:center;text-align:center;padding:24px 22px 32px}
   }
-  @media(prefers-reduced-motion:reduce){:root{--v3-t:.01s} body.home .h-tool{animation:none}}
+  @media(prefers-reduced-motion:reduce){:root{--v3-t:.01s} body.home .hb-card{animation:none}}
 </style>
 </head>
 <body class="msp-body home">
 
 <aside class="msp-sidebar" id="msp-sidebar" aria-label="MSP tools">
-  <!-- the landing view -->
+  <!-- the landing view: the MSP Digital Hub -->
   <div class="v3-home" id="home">
-    <header class="h-bar">
-      <span></span>
+    <header class="hb-wrap hb-bar">
+      <span class="hb-brand"><img src="msp-ui/msp-emblem-white.png" alt=""><span class="name">Maastricht Science Programme</span><span class="hb-kick" id="hKick"></span></span>
       <a class="h-switch" id="homeSwitch" href="#"></a>
     </header>
-    <div class="h-main">
-      <div class="h-left">
-        <div class="h-emb"><div class="glow"></div><img id="hEmb" src="msp-ui/msp-emblem-white.png" alt="Maastricht Science Programme"></div>
-        <div class="h-kick" id="hKick"></div>
-        <h1 id="hName"></h1>
-        <div class="h-line" id="hLine"></div>
-      </div>
-      <nav class="h-rows" id="hRows" aria-label="All tools"><div class="h-label">Tools</div></nav>
-      <nav class="h-list" id="hList" aria-label="All tools (compact list)"></nav>
+    <div class="hb-wrap">
+      <section class="hb-hero"><h1 id="hName"></h1><p id="hLine"></p></section>
+      <nav class="hb-grid" id="hGrid" aria-label="All tools"></nav>
     </div>
-    <footer class="h-foot">
-      <span>Maastricht Science Programme · Faculty of Science and Engineering · Maastricht University</span>
-      <span>Questions about a tool: <a href="mailto:msp-operations@maastrichtuniversity.nl">msp-operations@maastrichtuniversity.nl</a></span>
-    </footer>
+    <footer class="hb-wrap hb-foot">Maastricht Science Programme · Faculty of Science and Engineering · Maastricht University</footer>
   </div>
 
   <!-- the menu as a top bar (when the visitor chooses it) -->
@@ -378,23 +382,64 @@
       '<span class="v3-dot" title="Loaded in the background"></span></a>';
   }).join('');
 
-  // ── landing view: big rows that are the side nav's own rows at 1.5x ──
+  // ── landing view: the tools as cards (MSP Digital Hub, 2 Nov 2026) ──
+  var FEEDBACK = 'msp-digital@maastrichtuniversity.nl';
   $('homeSwitch').href = sideUrl(S.other);
   $('homeSwitch').innerHTML = S.otherLabel + ' ' + ARROW;
   $('hKick').textContent = S.title; $('hName').textContent = V.name; $('hLine').textContent = S.line;
+  function esc(x) { return String(x).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  // small pictures for the tall cards: a month for the calendar, a week of course blocks otherwise
+  function picture(t) {
+    var navy = '#011B3C', slate = '#8DB4CB', orange = '#E87722', g = '';
+    function head(days, step, x0) { return days.map(function (d, i) { return '<text x="' + (x0 + i * step) + '" y="12" font-size="9" font-weight="700" text-anchor="middle" fill="' + navy + '" opacity=".7">' + d + '</text>'; }).join(''); }
+    if (t.icon === 'clock') {
+      var due = { 3: navy, 9: navy, 12: orange, 18: navy, 24: navy, 26: navy, 31: navy };
+      g += head(['M', 'T', 'W', 'T', 'F', 'S', 'S'], 28, 16);
+      for (var n = 0; n < 35; n++) g += '<rect x="' + (5 + (n % 7) * 28) + '" y="' + (20 + Math.floor(n / 7) * 25) + '" width="22" height="19" rx="5" fill="' + (due[n] || slate) + '"' + (due[n] ? '' : ' opacity=".45"') + '/>';
+    } else {
+      g += head(['M', 'T', 'W', 'T', 'F'], 40, 20);
+      [[0, 0, 34, navy], [0, 44, 22, slate], [0, 98, 18, navy], [1, 0, 18, slate], [1, 26, 34, navy], [1, 70, 22, slate], [1, 104, 16, slate],
+       [2, 0, 22, navy], [2, 30, 20, slate], [2, 64, 26, orange], [3, 8, 30, navy], [3, 52, 20, slate], [4, 0, 20, slate], [4, 26, 30, navy]]
+        .forEach(function (b) { g += '<rect x="' + (4 + b[0] * 40) + '" y="' + (20 + b[1]) + '" width="32" height="' + b[2] + '" rx="5" fill="' + b[3] + '"/>'; });
+    }
+    return '<svg viewBox="0 0 200 145" aria-hidden="true">' + g + '</svg>';
+  }
+  $('hGrid').classList.toggle('c3', tools.length < 5);
+  var plain = 0;
   tools.forEach(function (t, i) {
-    var r = document.createElement('a');
-    r.className = 'h-row'; r.href = '#' + t.id; r.style.animationDelay = (0.05 * i + 0.1) + 's';
-    r.innerHTML = '<span class="h-wrap"><span class="msp-sb-link h-item">' +
-      '<span class="msp-sb-ico">' + I(t.icon) + '</span>' +
-      '<span class="msp-sb-text">' + t.name + '<span class="msp-sb-hint">' + t.hint + '</span></span></span></span>' +
-      '<span class="h-desc">' + t.blurb + '</span>';
-    $('hRows').appendChild(r);
-    var m = document.createElement('a');
-    m.className = 'h-tool'; m.href = '#' + t.id;
-    m.innerHTML = '<span class="ic">' + I(t.icon) + '</span><span>' + t.name + '<small>' + t.blurb + '</small></span>';
-    $('hList').appendChild(m);
+    var el = document.createElement(t.card === 'search' ? 'div' : 'a');
+    el.className = 'hb-card' + (t.card ? ' ' + t.card : '');
+    if (!t.card && !t.mark && (plain++ % 2 === 1)) el.className += ' dots';
+    if (el.tagName === 'A') el.href = '#' + t.id;
+    el.style.animationDelay = (0.05 * i + 0.1) + 's';
+    var icon = '<span class="ic">' + I(t.icon) + '</span>', name = '<h2>' + esc(t.name) + '</h2>', text = '<p>' + esc(t.blurb) + '</p>';
+    if (t.card === 'search') {
+      el.innerHTML = '<div class="top">' + icon + name + '<a class="cta" href="#' + t.id + '">' + esc(t.cta || 'Open') + ' ' + ARROW + '</a></div>' + text +
+        '<form role="search">' + I('search') + '<input name="q" type="search" placeholder="Ask a question: resit, registration, thesis..." aria-label="Search the ' + esc(t.name) + '" autocomplete="off">' +
+        '<button type="submit">Search</button></form>';
+      el.querySelector('form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var q = el.querySelector('input').value.trim();
+        if (q) openWithSearch(t, q); else location.hash = t.id;
+      });
+    } else if (t.card === 'tall') {
+      el.innerHTML = icon + name + text + '<div class="pic">' + picture(t) + '</div><div class="end">' + (t.cta ? '<span class="cta">' + esc(t.cta) + ' ' + ARROW + '</span>' : '') + '</div>';
+    } else {
+      el.innerHTML = (t.mark ? '<span class="mark">' + esc(t.mark) + '</span>' : icon) + '<div class="end">' + name + text + '</div>';
+    }
+    $('hGrid').appendChild(el);
   });
+  var contact = document.createElement('div');
+  contact.className = 'hb-card contact';
+  contact.innerHTML = '<span class="ic">' + I('mail') + '</span><div class="end"><h2>Something not working?</h2><p>Tell the team that builds these tools.</p>' +
+    '<a href="mailto:' + FEEDBACK + '">' + FEEDBACK + '</a></div>';
+  $('hGrid').appendChild(contact);
+  // the search card opens its tool with the question in the link (?q=), which the FAQ picks up
+  function openWithSearch(t, q) {
+    var u = t.url + (t.url.indexOf('?') < 0 ? '?' : '&') + 'q=' + encodeURIComponent(q);
+    if (frames[t.id]) { delete frames[t.id].dataset.ready; frames[t.id].src = u; } else { t.firstUrl = u; }
+    location.hash = t.id;
+  }
   // the big rows use the side nav's exact row size, so the flight is a pure move and scale
   function finalAside() { return window.innerWidth <= 1100 ? 220 : 260; }
   function setRowVars() {
@@ -407,7 +452,8 @@
   // ── the flight: rows and emblem move between the landing view and the side nav ──
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var EASE = 'cubic-bezier(.65,0,.35,1)', DUR = 620, flying = false;
-  function canFly(t) { return !reduce && !flying && window.innerWidth > 900 && !document.body.classList.contains('top') && !!Element.prototype.animate && !(t && (t.ownNav || collapsed)); }
+  // the card landing has no big rows to fly into the side nav, so the flight only runs if #hRows exists
+  function canFly(t) { return !!document.getElementById('hRows') && !reduce && !flying && window.innerWidth > 900 && !document.body.classList.contains('top') && !!Element.prototype.animate && !(t && (t.ownNav || collapsed)); }
   function fly(open, activeId, change) {
     flying = true;
     var small = [].slice.call(document.querySelectorAll('#toolNav .msp-sb-link'));
@@ -456,7 +502,7 @@
   function frameFor(t, visible) {
     if (frames[t.id]) return frames[t.id];
     var f = document.createElement('iframe');
-    f.title = t.name; f.src = t.url; f.setAttribute('allow', 'clipboard-write; fullscreen'); f.referrerPolicy = 'no-referrer';
+    f.title = t.name; f.src = t.firstUrl || t.url; delete t.firstUrl; f.setAttribute('allow', 'clipboard-write; fullscreen'); f.referrerPolicy = 'no-referrer';
     f.addEventListener('load', function () {
       f.dataset.ready = '1'; if (current === t.id) stuck(false);
       var a = document.querySelector('.msp-sb-link[data-id="' + t.id + '"]'); if (a) a.classList.add('loaded');
