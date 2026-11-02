@@ -229,7 +229,10 @@
   Loads the project list from projects-data.js. To add a new project,
   edit that file and follow the instructions in README.md.
 -->
-<script src="projects-data.js"></script>
+<!-- the project list comes live from the BTR site, so projects added there show up here at once;
+     the copy next to this page is the fallback when msp-btr.nl cannot be reached -->
+<script src="https://msp-btr.nl/projects-data.js"></script>
+<script>if (!window.BTR_PROJECTS) document.write('<script src="projects-data.js"><\/script>');</script>
 <script>
   // ----- ALLOWED FILTER VALUES ---------------------------------------------
   // These two arrays control which checkboxes appear in the sidebar.
