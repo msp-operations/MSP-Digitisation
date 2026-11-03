@@ -147,6 +147,9 @@
       if (ic) { var k = document.createElement('span'); k.className = 'kick'; k.textContent = KICK[id] || ''; ic.parentNode.replaceChild(k, ic); }
       if (cls.indexOf('tall') < 0) a.insertAdjacentHTML('beforeend', '<span class="arr" aria-hidden="true">&rarr;</span>');
       a.addEventListener('click', function (e) { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) return; e.preventDefault(); go(a, t); });
+      // a tool still in development carries (beta) in its name: shown lighter after the title
+      var h3 = a.querySelector('h3');
+      if (h3 && /\s*\(beta\)$/i.test(h3.textContent)) h3.innerHTML = esc(h3.textContent.replace(/\s*\(beta\)$/i, '')) + ' <span class="beta">(beta)</span>';
       cards.appendChild(a); return a;
     }
     var calCard = null, tutCard = null, faqCard = null;

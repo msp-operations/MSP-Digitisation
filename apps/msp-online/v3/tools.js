@@ -27,7 +27,7 @@ window.V3 = {
         { id: 'course-planner',  name: 'Course Planner',  icon: 'calendar', hint: 'Plan your courses', card: 'tall', cta: 'Plan your courses',
           blurb: 'Build a clash-free schedule and track your progress.', url: 'https://arthurgallaxy.github.io/msp-course-lab-selector-development/',
           ownNav: true, note: 'Preview of the new planner: test accounts only' },
-        { id: 'project-periods', name: 'Project Periods', icon: 'target',   hint: 'P3 and P6 projects', mark: 'P3 · P6',
+        { id: 'project-periods', name: 'Project Periods (beta)', icon: 'target',   hint: 'P3 and P6 projects', mark: 'P3 · P6',
           blurb: 'The P3 and P6 project catalogue and your preferences.', url: 'sites/project-periods/', note: 'Pending change, not on the live site yet' },
         { id: 'btr',             name: 'BTR Dashboard',   icon: 'book',     hint: 'Your bachelor thesis',
           blurb: 'Guides, cohorts, rubrics and the projects on offer for your thesis.', url: 'sites/btr/', note: 'Pending change, not on the live site yet' },
@@ -39,7 +39,7 @@ window.V3 = {
       label: 'Staff', one: 'staff', title: 'For Staff', other: 'students', otherLabel: 'Student tools',
       line: 'The tools behind the programme, for support and academic staff.',
       tools: [
-        { id: 'project-periods',   name: 'Project Periods',    icon: 'target',    hint: 'Offer and allocate projects', mark: 'P3 · P6',
+        { id: 'project-periods',   name: 'Project Periods (beta)',    icon: 'target',    hint: 'Offer and allocate projects', mark: 'P3 · P6',
           blurb: 'Offer a P3 or P6 project, or run the allocation as the committee.', url: 'sites/project-periods/', note: 'Pending change, not on the live site yet' },
         { id: 'academic-calendar', name: 'Academic Calendar',  icon: 'clock',     hint: 'Deadlines per office', card: 'tall', cta: 'Open the calendar',
           blurb: 'Every operational deadline per office and period.', url: 'sites/academic-calendar/', note: 'Pending change, not on the live site yet', ownNav: true },

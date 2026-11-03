@@ -31,7 +31,7 @@ window.MSP_PROJECTS = [
   { id: 'planner',  name: 'Course Planner',     hubs: ['students'],          icon: 'calendar',  live: '', next: 'course-planner/', status: 'live',
     card: 'tall', cta: 'Plan your courses',
     blurb: 'Build a clash-free schedule and track your progress.' },
-  { id: 'periods',  name: 'Project Periods',    hubs: ['students', 'staff'], icon: 'target',    live: 'https://msp-operations.github.io/MSP-Digital/project-periods/', next: 'project-periods/', status: 'live',
+  { id: 'periods',  name: 'Project Periods (beta)',    hubs: ['students', 'staff'], icon: 'target',    live: 'https://msp-operations.github.io/MSP-Digital/project-periods/', next: 'project-periods/', status: 'live',
     mark: 'P3 · P6',
     blurb: 'The P3 and P6 project catalogue and your preferences.',
     blurbStaff: 'Offer a P3 or P6 project, or run the allocation as the committee.' },
