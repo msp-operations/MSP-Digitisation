@@ -12,9 +12,11 @@ body.hub-home .v3-home > :not(.shp){display:none!important}
 
 /* left: the building, plain and institutional */
 .sh-left{position:relative;overflow:hidden;color:#fff;background:linear-gradient(165deg,#0A3060 0%,#011B3C 72%);display:flex;flex-direction:column;padding:38px 46px 30px}
-.sh-left .sh-ph{position:absolute;inset:0;background:url(assets/building.jpg) 40% center/cover;mix-blend-mode:luminosity;opacity:.5;filter:contrast(1.15)}
+.sh-left .sh-ph{position:absolute;inset:0;background:url(assets/phs-building.jpg) center/cover;mix-blend-mode:luminosity;opacity:.5;filter:contrast(1.15)}
+.sh-left .sh-vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;mix-blend-mode:luminosity;filter:contrast(1.15);opacity:0;transition:opacity 1.2s ease;pointer-events:none}
+.sh-left .sh-vid.on{opacity:.5}
 .sh-left .sh-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(1,27,60,.12) 0%,rgba(1,27,60,.35) 42%,rgba(1,27,60,.93) 74%)}
-.sh-left > *:not(.sh-ph):not(.sh-shade){position:relative}
+.sh-left > *:not(.sh-ph):not(.sh-shade):not(.sh-vid){position:relative}
 .sh-brand{display:flex;align-items:center;gap:16px}
 .sh-brand img{width:64px;height:64px}
 .sh-brand b{display:block;font-size:15px;font-weight:600}

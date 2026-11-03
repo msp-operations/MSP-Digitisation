@@ -99,7 +99,7 @@
     root.className = 'shp ' + (staff ? 'is-staff' : 'is-students');
     root.innerHTML =
       '<section class="sh-left">' +
-        '<div class="sh-ph"></div><div class="sh-shade"></div>' +
+        '<div class="sh-ph"></div><video class="sh-vid" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video><div class="sh-shade"></div>' +
         '<div class="sh-brand">' + brand + '</div>' +
         '<div class="sh-mid">' +
           '<h1>MSP Digital Hub</h1>' +
@@ -120,6 +120,19 @@
       '</section>';
     root.hidden = false;
     var $ = function (s) { return root.querySelector(s); };
+
+    // ── the clouds moving over the building: desktop only, not for reduced motion or data saving;
+    //    the still photo shows first, the video fades in once it plays and pauses while a tool is open ──
+    var vid = $('.sh-vid'), conn = navigator.connection || {};
+    var calm = global.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (vid && window.innerWidth > 900 && !calm && !conn.saveData && !/2g/.test(conn.effectiveType || '')) {
+      vid.addEventListener('playing', function () { vid.classList.add('on'); }, { once: true });
+      vid.src = 'assets/phs-clouds.webm';
+      var sync = function () { if (document.body.classList.contains('home') && !document.hidden) { var p = vid.play(); if (p && p.catch) p.catch(function () {}); } else vid.pause(); };
+      new MutationObserver(sync).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+      document.addEventListener('visibilitychange', sync);
+      sync();
+    } else if (vid) { vid.remove(); }
 
     // ── announcements (only shown when the team posted one) ──
     if (global.MSPAnnounce) MSPAnnounce.mount($('.sh-ann'), staff ? 'staff' : 'students');
